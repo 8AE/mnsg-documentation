@@ -1,0 +1,2567 @@
+{
+  "func_80002040_2C40": {
+    "title": "Dispatch the current system step",
+    "summary": "Runs the callback for the current g_system step; mods use its return as a recurring frame integration point.",
+    "behavior": [
+      "Live Ghidra decompilation indexes a callback table using the byte g_system->stepw and invokes that entry. This dispatches title/menu/gameplay/transition work depending on the active step.",
+      "Multiplayer and Team Up attach RECOMP_HOOK_RETURN callbacks here to update followers, publish state, refresh UI, and reapply pool limits after the native step completes. A callback here does not guarantee a gameplay scene or a live save."
+    ],
+    "cautions": [
+      "Do not call this dispatcher recursively from its own hook.",
+      "Return hooks have no original arguments or return-value parameter. Guard against title screens, transitions, and stale actor pointers."
+    ],
+    "related": [
+      "D_8015C5C8_15D1C8",
+      "func_80003728_4328"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/anchor_actors.c",
+        "line": 862,
+        "note": "Live Ghidra 2026-09-04 at 0x80002040; frame-return hook verified at this source line."
+      },
+      {
+        "project": "mnsg-team-up",
+        "path": "src/team_up_followers.c",
+        "line": 646,
+        "note": "Follower recruitment, player state and lifecycle use verified in current source."
+      }
+    ],
+    "confidence": "decompiled",
+    "example": "#include \"modding.h\"\n\nRECOMP_HOOK_RETURN(\"func_80002040_2C40\")\nvoid on_system_step_finished(void) {\n    /* Check save, scene and object validity before gameplay work. */\n}",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation.",
+    "returns": "No return value."
+  },
+  "func_8020D6BC_5C8B8C": {
+    "title": "Gameplay stage resource loading",
+    "summary": "Native gameplay stage resource-loading function used as a return hook to stage additional character assets.",
+    "behavior": [
+      "The two model mods extend this stage-load boundary after normal resources are installed. They load broad character files into the scene registry, copy immutable action files, then reserve face buffers.",
+      "The exact full native routine is not reproduced here; the stage-loading role is source-documented. This hook is distinct from the per-frame dispatcher."
+    ],
+    "cautions": [
+      "Loading broad resources from a render/update callback can collide with the native resource lifecycle.",
+      "Overlay addresses and cached resource pointers cease to be valid across stage teardown."
+    ],
+    "related": [
+      "func_80013B14_14714",
+      "D_80167FC0_168BC0"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/anchor_actors.c",
+        "line": 211,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      },
+      {
+        "project": "mnsg-team-up",
+        "path": "src/team_up_followers.c",
+        "line": 638,
+        "note": "Follower recruitment, player state and lifecycle use verified in current source."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "#include \"modding.h\"\n\nRECOMP_HOOK_RETURN(\"func_8020D6BC_5C8B8C\")\nvoid after_stage_resources(void) {\n    /* Load scene-dependent resources; invalidate previous scene pointers. */\n}",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation."
+  },
+  "func_80034E08_35A08": {
+    "title": "Create and insert an engine task",
+    "summary": "Allocates an engine task with an update callback and inserts it under a task owner/list.",
+    "behavior": [
+      "Live decompilation shows the task allocation helper at 0x80034B58 followed by the insertion helper at 0x80034D24. Assembly preserves the latter helper result in v0 through return; that helper returns the task pointer. This confirms the pointer return consumed by both mods despite the wrapper decompiler initially inferring void.",
+      "Multiplayer and Team Up create independent model tasks beneath the live player task. The callback receives task/object arguments in the source declaration; this is a rendering task, not a playable-character constructor."
+    ],
+    "cautions": [
+      "Keep the owner valid and check allocation failure.",
+      "A non-null pointer alone does not prove a retained task is still linked after pool reuse."
+    ],
+    "related": [
+      "func_8000DBF0_E7F0",
+      "D_801FC604_5B8514",
+      "func_80034EF8_35AF8"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/anchor_player_models.c",
+        "line": 125,
+        "note": "Live Ghidra 2026-09-04: 0x80034E08 assembly preserves v0 from 0x80034D24; that helper returns the task pointer. Source declaration/call at lines 125/674 agrees."
+      },
+      {
+        "project": "mnsg-team-up",
+        "path": "src/team_up_models.c",
+        "line": 107,
+        "note": "Same native API is used for independent follower model tasks in Team Up."
+      }
+    ],
+    "confidence": "decompiled",
+    "example": "extern void *func_80034E08_35A08(void *task_list, void (*update)(void *, void *),\n                                 unsigned short flags);\n\nstatic void model_update(void *task, void *object) {\n    (void)task;\n    (void)object;\n}\n\nvoid *make_model_task(void *owner) {\n    if (!owner) return 0;\n    return func_80034E08_35A08(owner, model_update, 0);\n}",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation.",
+    "parameters": [
+      {
+        "name": "task_list",
+        "type": "void *",
+        "description": "Engine task owner/list used for insertion."
+      },
+      {
+        "name": "update",
+        "type": "void (*)(void *, void *)",
+        "description": "Native scheduler-compatible update callback."
+      },
+      {
+        "name": "flags",
+        "type": "unsigned short",
+        "description": "Task flags; both model mods pass zero."
+      }
+    ],
+    "returns": "Created/inserted task pointer, or null on allocation failure."
+  },
+  "func_8000DBF0_E7F0": {
+    "title": "Attach a model/display object to a task",
+    "summary": "Allocates a kind-2 display record and initializes its model, animation context, transform, and resource segment IDs.",
+    "behavior": [
+      "Live decompilation calls func_80035EEC_36AEC(task, 2, 1). It initializes position at +0x08/+0x0C/+0x10, rotations at +0x14/+0x16/+0x18, scale at +0x1C/+0x20/+0x24, frame at +0x28, model command at +0x2C and animation context at +0x30.",
+      "Segment file IDs are written at +0x34 and +0x3C, followed by native segment binding. The mods create hidden objects with model_ptr=0 and bind character assets later. They explicitly set object byte +0x05 to 2 for the clothed-character render mode because allocation does not initialize that mode."
+    ],
+    "cautions": [
+      "Supply a valid task before calling: the native function reaches its allocator before its null-task branch.",
+      "The animation-context constant and object mode in this example are specific to the clothed Goemon character assets.",
+      "This object provides visual rendering only. It does not create player input, collision, AI or character behavior."
+    ],
+    "related": [
+      "func_80034E08_35A08",
+      "func_80035EEC_36AEC",
+      "func_8001B5AC_1C1AC"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/anchor_player_models.c",
+        "line": 132,
+        "note": "Live Ghidra 2026-09-04 at 0x8000DBF0 confirms object offsets and allocator path; source call at line 685."
+      },
+      {
+        "project": "mnsg-team-up",
+        "path": "src/team_up_models.c",
+        "line": 114,
+        "note": "Same native API is used for independent follower model tasks in Team Up."
+      }
+    ],
+    "confidence": "decompiled",
+    "example": "extern void *func_8000DBF0_E7F0(void *task, unsigned int model_ptr, unsigned int anim_ptr,\n                                float x, float y, float z,\n                                short rot_x, short rot_y, short rot_z,\n                                float scale_x, float scale_y, float scale_z,\n                                short seg8_file_id, short seg9_file_id);\n\nvoid *create_hidden_model(void *task, float x, float y, float z) {\n    if (!task) return 0;\n    void *object = func_8000DBF0_E7F0(\n        task, 0, 0xC01FC680u, x, y, z,\n        0, 0, 0, 0.1f, 0.1f, 0.1f, 0, 0);\n    if (object) ((unsigned char *)object)[5] = 2;\n    return object;\n}",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation.",
+    "parameters": [
+      {
+        "name": "task",
+        "type": "void *",
+        "description": "Owning native task."
+      },
+      {
+        "name": "model_ptr",
+        "type": "unsigned int",
+        "description": "Encoded model-command pointer; zero starts hidden."
+      },
+      {
+        "name": "anim_ptr",
+        "type": "unsigned int",
+        "description": "Animation/render context pointer."
+      },
+      {
+        "name": "x, y, z",
+        "type": "float",
+        "description": "World position."
+      },
+      {
+        "name": "rot_x, rot_y, rot_z",
+        "type": "short",
+        "description": "Native signed-angle rotations."
+      },
+      {
+        "name": "scale_x, scale_y, scale_z",
+        "type": "float",
+        "description": "Scale on each axis."
+      },
+      {
+        "name": "seg8_file_id, seg9_file_id",
+        "type": "short",
+        "description": "File IDs used to initialize object segment bindings."
+      }
+    ],
+    "returns": "Display object pointer, or null on allocation failure."
+  },
+  "func_80013B14_14714": {
+    "title": "Load a resident scene file",
+    "summary": "Loads a file into the scene resource registry and advances its aligned arena cursor.",
+    "behavior": [
+      "Live decompilation scans the registry for an existing file or the first file_id==0 entry. New files are loaded with the general file loader and registered; the following entry becomes the sentinel containing a 64-byte-aligned next-free destination. Some files receive 4096-byte alignment and a tagged cached base.",
+      "Both mods call this only from stage resource loading. They then use func_800141C4_14DC4 to obtain the actual file base."
+    ],
+    "cautions": [
+      "The return is the next arena cursor / next registry entry data, not the loaded file base.",
+      "Only use a valid file ID during a scene-loading phase, with registry and arena capacity available.",
+      "Scene-resident pointers must be reacquired after a stage change."
+    ],
+    "related": [
+      "func_800141C4_14DC4",
+      "D_80167FC0_168BC0"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/anchor_player_models.c",
+        "line": 140,
+        "note": "Live Ghidra 2026-09-04 at 0x80013B14; source line 514 deliberately ignores return and looks up base."
+      },
+      {
+        "project": "mnsg-team-up",
+        "path": "src/team_up_models.c",
+        "line": 122,
+        "note": "Same native API is used for independent follower model tasks in Team Up."
+      }
+    ],
+    "confidence": "decompiled",
+    "example": "extern void *func_80013B14_14714(unsigned int file_id);\n\nextern void *func_800141C4_14DC4(unsigned int file_id);\n\nvoid *load_scene_file(unsigned int file_id) {\n    if (!file_id) return 0;\n    func_80013B14_14714(file_id);\n    void *base = func_800141C4_14DC4(file_id);\n    if (base == (void *)(unsigned long)0xFFFFFFFFu) return 0;\n    return base;\n}",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation.",
+    "parameters": [
+      {
+        "name": "file_id",
+        "type": "unsigned int",
+        "description": "File ID; native decompilation narrows it to 16 bits."
+      }
+    ],
+    "returns": "Aligned next-free arena address (or next entry data if already loaded); null if the scan exhausts the registry."
+  },
+  "func_800141C4_14DC4": {
+    "title": "Look up a resident file",
+    "summary": "Returns the registered data base for an already loaded scene file without loading it.",
+    "behavior": [
+      "Live decompilation searches D_80167FC0_168BC0 up to the first zero file ID. A zero request returns null; a nonzero ID not found returns 0xFFFFFFFF.",
+      "Model renderers use it after loading broad character resources. It is also the safe preflight for segmented-address resolution, whose native missing-file path intentionally faults."
+    ],
+    "cautions": [
+      "Checking only null is insufficient: missing nonzero files return (void *)-1.",
+      "Registered bases may carry the cache tag used by the engine. Only normalize addresses according to the destination subsystem.",
+      "A successful lookup does not extend the resource lifetime beyond the current scene."
+    ],
+    "related": [
+      "func_80013B14_14714",
+      "func_80014840_15440",
+      "D_80167FC0_168BC0"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/anchor_player_models.c",
+        "line": 144,
+        "note": "Live Ghidra 2026-09-04 at 0x800141C4 confirms sentinel behavior; model helper at line 380 checks both failures."
+      },
+      {
+        "project": "mnsg-team-up",
+        "path": "src/team_up_models.c",
+        "line": 126,
+        "note": "Same native API is used for independent follower model tasks in Team Up."
+      }
+    ],
+    "confidence": "decompiled",
+    "example": "extern void *func_800141C4_14DC4(unsigned int file_id);\n\nvoid *find_resident_file(unsigned int file_id) {\n    void *base = func_800141C4_14DC4(file_id);\n    if (!base || base == (void *)(unsigned long)0xFFFFFFFFu)\n        return 0;\n    return base;\n}",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation.",
+    "parameters": [
+      {
+        "name": "file_id",
+        "type": "unsigned int",
+        "description": "Resident scene file ID to locate."
+      }
+    ],
+    "returns": "Data pointer when found; null for ID zero; (void *)0xFFFFFFFF when absent."
+  },
+  "func_80001640_2240": {
+    "title": "Copy a ROM range to memory",
+    "summary": "Blocking native ROM DMA-copy primitive used to fill raw action-model caches.",
+    "behavior": [
+      "Live Ghidra decompilation invalidates destination data/instruction caches, starts a ROM-to-RAM PI DMA, and blocks on its completion message before returning. The function itself does not read the surrounding loader-mode byte.",
+      "The model mods obtain a file start/end pair, allocate enough aligned storage, and copy that ROM range into the cache. They also preserve and temporarily set the loader-mode byte at address 0x8015C5D4 around the call to mirror the stock action-loader convention."
+    ],
+    "cautions": [
+      "The destination must already have capacity for the complete byte range and meet the DMA path alignment requirements.",
+      "This copies raw bytes; it does not by itself decompress or register the resource."
+    ],
+    "related": [
+      "func_80001D68_2968",
+      "func_80001D94_2994"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/anchor_player_models.c",
+        "line": 154,
+        "note": "Live Ghidra 2026-09-04 at 0x80001640 confirms cache invalidation, PI DMA and blocking osRecvMesg; mode save/restore verified at source lines 471-474."
+      },
+      {
+        "project": "mnsg-team-up",
+        "path": "src/team_up_models.c",
+        "line": 136,
+        "note": "Same native API is used for independent follower model tasks in Team Up."
+      }
+    ],
+    "confidence": "decompiled",
+    "example": "extern void func_80001640_2240(unsigned int rom_addr, void *dst, unsigned int size);\n\nvoid copy_action_file(unsigned int start, unsigned int end, void *dst) {\n    if (!dst || end <= start) return;\n    volatile unsigned char *mode =\n        (volatile unsigned char *)0x8015C5D4;\n    unsigned char previous = *mode;\n    *mode = 1;\n    func_80001640_2240(start, dst, end - start);\n    *mode = previous;\n}",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation.",
+    "parameters": [
+      {
+        "name": "rom_addr",
+        "type": "unsigned int",
+        "description": "ROM source address."
+      },
+      {
+        "name": "dst",
+        "type": "void *",
+        "description": "Writable destination with sufficient capacity."
+      },
+      {
+        "name": "size",
+        "type": "unsigned int",
+        "description": "Number of bytes to copy."
+      }
+    ],
+    "returns": "No return value."
+  },
+  "func_80001D68_2968": {
+    "title": "Get a file ROM start",
+    "summary": "Returns the ROM start address associated with a file ID.",
+    "behavior": [
+      "Multiplayer and Team Up query both bounds to determine the raw action-model file size before allocating and copying it. The renderer rejects end <= start."
+    ],
+    "cautions": [
+      "A plausible ROM range does not prove the file is raw rather than compressed. These mods use the character action-file table known to contain raw model data."
+    ],
+    "related": [
+      "func_80001640_2240",
+      "D_80204028_5BFF38"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/anchor_player_models.c",
+        "line": 157,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      },
+      {
+        "project": "mnsg-team-up",
+        "path": "src/team_up_models.c",
+        "line": 139,
+        "note": "Same native API is used for independent follower model tasks in Team Up."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern unsigned int func_80001D68_2968(unsigned int file_id);\n\nextern unsigned int func_80001D94_2994(unsigned int file_id);\n\n/* File ID must identify a known raw action-model file. */\nunsigned int raw_file_size(unsigned int file_id) {\n    unsigned int start = func_80001D68_2968(file_id);\n    unsigned int end = func_80001D94_2994(file_id);\n    return end > start ? end - start : 0;\n}\n",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation.",
+    "parameters": [
+      {
+        "name": "file_id",
+        "type": "unsigned int",
+        "description": "File-table ID."
+      }
+    ],
+    "returns": "ROM start address as unsigned int."
+  },
+  "func_80001D94_2994": {
+    "title": "Get a file ROM end",
+    "summary": "Returns the ROM end address associated with a file ID.",
+    "behavior": [
+      "Multiplayer and Team Up query both bounds to determine the raw action-model file size before allocating and copying it. The renderer rejects end <= start."
+    ],
+    "cautions": [
+      "A plausible ROM range does not prove the file is raw rather than compressed. These mods use the character action-file table known to contain raw model data."
+    ],
+    "related": [
+      "func_80001640_2240",
+      "D_80204028_5BFF38"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/anchor_player_models.c",
+        "line": 158,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      },
+      {
+        "project": "mnsg-team-up",
+        "path": "src/team_up_models.c",
+        "line": 140,
+        "note": "Same native API is used for independent follower model tasks in Team Up."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern unsigned int func_80001D68_2968(unsigned int file_id);\n\nextern unsigned int func_80001D94_2994(unsigned int file_id);\n\n/* File ID must identify a known raw action-model file. */\nunsigned int raw_file_size(unsigned int file_id) {\n    unsigned int start = func_80001D68_2968(file_id);\n    unsigned int end = func_80001D94_2994(file_id);\n    return end > start ? end - start : 0;\n}\n",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation.",
+    "parameters": [
+      {
+        "name": "file_id",
+        "type": "unsigned int",
+        "description": "File-table ID."
+      }
+    ],
+    "returns": "ROM end address as unsigned int."
+  },
+  "func_800145B4_151B4": {
+    "title": "Load an auxiliary resource into a buffer",
+    "summary": "Loads a resource ID into caller-provided memory and returns the end of the written range.",
+    "behavior": [
+      "Live decompilation distinguishes two namespaces: IDs below 0x8000 use the general file loader; IDs from 0x8000 through 0x876F resolve a packed-resource ROM slice and copy it using synchronous DMA. IDs >=0x8770 leave the destination unchanged.",
+      "The remote renderers use this for timed face/part data in alternate 0x1000-byte buffers. They bind the newly filled buffer to an object segment after loading."
+    ],
+    "cautions": [
+      "The API has no destination-capacity parameter; caller validation is required.",
+      "Stored ROM size is not generally the decompressed output size for IDs below 0x8000; only use the fixed-buffer pattern for assets whose output is known to fit.",
+      "Texture/display-list buffers used by this renderer must stay in original 8 MiB RDRAM; an extended recomp heap address can be truncated by graphics commands."
+    ],
+    "related": [
+      "func_80014698_15298",
+      "D_80203FF0_5BFF00",
+      "D_80203FF8_5BFF08"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/anchor_player_models.c",
+        "line": 162,
+        "note": "Live Ghidra 2026-09-04 at 0x800145B4; source resource validation at lines 748-785."
+      },
+      {
+        "project": "mnsg-team-up",
+        "path": "src/team_up_models.c",
+        "line": 144,
+        "note": "Same native API is used for independent follower model tasks in Team Up."
+      }
+    ],
+    "confidence": "decompiled",
+    "example": "extern unsigned char *func_800145B4_151B4(unsigned int resource_id, void *dst);\n\nextern int func_80014698_15298(unsigned int resource_id, void *rom_address_out);\n\nunsigned char *load_aux(unsigned int id, unsigned char *buffer) {\n    /* This bounded example accepts packed raw resources only. */\n    if (!buffer || id < 0x8000u || id >= 0x8770u) return 0;\n    int size = func_80014698_15298(id, 0);\n    if (size <= 0 || size > 0x1000) return 0;\n    unsigned char *end = func_800145B4_151B4(id, buffer);\n    return end > buffer && end <= buffer + 0x1000 ? end : 0;\n}",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation.",
+    "parameters": [
+      {
+        "name": "resource_id",
+        "type": "unsigned int",
+        "description": "General-file or packed-resource ID."
+      },
+      {
+        "name": "dst",
+        "type": "void *",
+        "description": "Caller-owned writable output buffer."
+      }
+    ],
+    "returns": "Pointer just past the loaded data; unchanged dst for an out-of-range resource ID."
+  },
+  "func_80014698_15298": {
+    "title": "Query a resource ROM size and address",
+    "summary": "Computes the stored byte size of a resource and optionally writes its ROM address.",
+    "behavior": [
+      "For IDs below 0x8000, live decompilation subtracts file start from file end. Higher valid IDs resolve a packed-resource offset and the next resource boundary or containing-file end.",
+      "Passing null for rom_address_out asks only for the size. The model mods reject invalid or oversized auxiliary resource IDs before loading into their fixed buffers."
+    ],
+    "cautions": [
+      "This reports stored size, not a universal decompressed capacity requirement.",
+      "IDs >=0x8770 return zero and write zero when an output pointer is supplied."
+    ],
+    "related": [
+      "func_800145B4_151B4",
+      "func_80001D68_2968",
+      "func_80001D94_2994"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/anchor_player_models.c",
+        "line": 167,
+        "note": "Live Ghidra 2026-09-04 at 0x80014698 confirms file/packed-resource paths and optional output."
+      },
+      {
+        "project": "mnsg-team-up",
+        "path": "src/team_up_models.c",
+        "line": 149,
+        "note": "Same native API is used for independent follower model tasks in Team Up."
+      }
+    ],
+    "confidence": "decompiled",
+    "example": "extern int func_80014698_15298(unsigned int resource_id, void *rom_address_out);\n\n/* Queries stored ROM bytes, not decompressed output capacity. */\nint query_resource(unsigned int resource_id, unsigned int *rom_address) {\n    if (!rom_address) return 0;\n    return func_80014698_15298(resource_id, rom_address);\n}\n",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation.",
+    "parameters": [
+      {
+        "name": "resource_id",
+        "type": "unsigned int",
+        "description": "Resource ID to inspect."
+      },
+      {
+        "name": "rom_address_out",
+        "type": "void *",
+        "description": "Optional pointer to a 32-bit ROM-address output; null is allowed."
+      }
+    ],
+    "returns": "Stored byte length as int; zero for an out-of-range ID."
+  },
+  "func_8001B5AC_1C1AC": {
+    "title": "Read the bound model animation length",
+    "summary": "Resolves an object model command and returns its encoded animation frame count as a float.",
+    "behavior": [
+      "Live decompilation reads object+0x2C, accepts the supported model pointer encodings, resolves positive segmented pointers through the object segment bases, and returns the low byte of the resolved model header as a float. Unsupported encodings and a zero model pointer return 0.0.",
+      "The mods send the local frame count to peers and use the remote object count for phase mapping, frame wrapping and animation validation."
+    ],
+    "cautions": [
+      "Pass a live display/model object, not a player task.",
+      "The function does not validate that an arbitrary pointer is safe to dereference. Check object lifetime and resource binding first.",
+      "Zero is a valid unsupported/empty model result; never divide by it when normalizing animation phase."
+    ],
+    "related": [
+      "D_801FC60C_5B851C",
+      "func_8000DBF0_E7F0",
+      "D_80203F34_5BFE44"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/anchor_player_models.c",
+        "line": 171,
+        "note": "Live Ghidra 2026-09-04 at 0x8001B5AC; source uses count at line 1060."
+      },
+      {
+        "project": "mnsg-team-up",
+        "path": "src/team_up_models.c",
+        "line": 153,
+        "note": "Same native API is used for independent follower model tasks in Team Up."
+      }
+    ],
+    "confidence": "decompiled",
+    "example": "extern float func_8001B5AC_1C1AC(void *model);\n\n/* Caller supplies a live display object with valid resident model bindings. */\nvoid wrap_model_frame(void *object) {\n    if (!object) return;\n    float count = func_8001B5AC_1C1AC(object);\n    if (count > 0.0f) {\n        float *frame = (float *)((unsigned char *)object + 0x28);\n        if (*frame >= count) *frame = 0.0f;\n    }\n}\n",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation.",
+    "parameters": [
+      {
+        "name": "object",
+        "type": "void *",
+        "description": "Live model/display object with initialized segment bases."
+      }
+    ],
+    "returns": "Frame count as float, or 0.0 for unsupported/empty model encodings."
+  },
+  "func_8001C3E0_1CFE0": {
+    "title": "Replace model display pointers",
+    "summary": "Traverses a bound model tree and applies a display-pointer replacement table.",
+    "behavior": [
+      "The stock character appearance path uses this to mutate model display pointers. Multiplayer applies the forward Sudden Impact table D_80204048_5BFF58[1] to a slot-private copy of Goemon action data.",
+      "The renderer rebases only the active action slice for the slot so the substitution cannot change another remote player or the immutable cached action file."
+    ],
+    "cautions": [
+      "This mutates model data. Never use it against shared immutable action caches when multiple models need independent appearance.",
+      "Model pointer zero is the call pattern used after the object has been bound; do not infer it means any arbitrary object is valid."
+    ],
+    "related": [
+      "D_80204048_5BFF58",
+      "D_80203F34_5BFE44"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/anchor_player_models.c",
+        "line": 202,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern void *D_80204048_5BFF58[];\n\nextern int func_8001C3E0_1CFE0(void *object, unsigned int model_ptr,\n                               const void *replacement_table);\n\n/* object must bind a private, writable Goemon action-model copy. */\nint apply_private_sudden_impact(void *object) {\n    if (!object) return 0;\n    return func_8001C3E0_1CFE0(object, 0, D_80204048_5BFF58[1]);\n}\n",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation.",
+    "parameters": [
+      {
+        "name": "object",
+        "type": "void *",
+        "description": "Display object with valid model bindings."
+      },
+      {
+        "name": "model_ptr",
+        "type": "unsigned int",
+        "description": "Model pointer/selector; the renderer passes zero for its bound model."
+      },
+      {
+        "name": "replacement_table",
+        "type": "const void *",
+        "description": "Stock display-pointer replacement table."
+      }
+    ],
+    "returns": "Integer success result as tested by the source; exact additional values are not established."
+  },
+  "D_801FC604_5B8514": {
+    "title": "Live player task pointer",
+    "summary": "Pointer to the engine task representing the current player.",
+    "behavior": [
+      "The task stores current action at byte +0xCC and the character identifier at +0x60. The mods read action state and use the live task as the parent for model-only child tasks."
+    ],
+    "cautions": [
+      "Pointers are reused by the task pool; compare lifecycle/ownership as well as address.",
+      "The 0x80000000 engine sentinel is not a live object."
+    ],
+    "related": [
+      "D_801FC60C_5B851C",
+      "func_80034E08_35A08"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/anchor_actors.c",
+        "line": 99,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      },
+      {
+        "project": "mnsg-team-up",
+        "path": "src/team_up_followers.c",
+        "line": 85,
+        "note": "Follower recruitment, player state and lifecycle use verified in current source."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern void *D_801FC604_5B8514;\n\n/* Call only in a live gameplay scene after validating task ownership. */\nint read_current_player_action(void) {\n    void *task = D_801FC604_5B8514;\n    if (!task || task == (void *)0x80000000u) return -1;\n    return ((const unsigned char *)task)[0xCC];\n}\n",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation."
+  },
+  "D_801FC60C_5B851C": {
+    "title": "Live player display object",
+    "summary": "Pointer to the current player model/display object.",
+    "behavior": [
+      "The source documents the native assignment from player task+0x18. Position occupies float offsets +0x08,+0x0C,+0x10; rotations are signed shorts at +0x14,+0x16,+0x18; frame is a float at +0x28. The publisher reads this object each frame and resets motion baselines when it changes."
+    ],
+    "cautions": [
+      "PlayerObject is the partial struct defined in the mod; it is not a complete native layout.",
+      "Do not confuse this display object with D_801FC604, the task pointer."
+    ],
+    "related": [
+      "D_801FC604_5B8514",
+      "func_8001B5AC_1C1AC"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/anchor_actors.c",
+        "line": 103,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      },
+      {
+        "project": "mnsg-team-up",
+        "path": "src/team_up_followers.c",
+        "line": 86,
+        "note": "Follower recruitment, player state and lifecycle use verified in current source."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "typedef struct PlayerObject {\n    unsigned char header[8];\n    float x, y, z;\n} PlayerObject;\n\nextern PlayerObject *D_801FC60C_5B851C;\n\n/* The current scene must own this live player display object. */\nint read_player_position(float *x, float *y, float *z) {\n    PlayerObject *object = D_801FC60C_5B851C;\n    if (!object || object == (PlayerObject *)0x80000000u || !x || !y || !z)\n        return 0;\n    *x = object->x;\n    *y = object->y;\n    *z = object->z;\n    return 1;\n}\n",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation."
+  },
+  "D_8020D1C0_5C90D0": {
+    "title": "Camera vector used for projection",
+    "summary": "Three floating-point camera components used by remote nameplate projection.",
+    "behavior": [
+      "The publisher copies x, y and z into the AnchorNameplateCamera input. The source describes these as the game-maintained camera offset; it does not establish a general-purpose view-matrix contract."
+    ],
+    "cautions": [
+      "Vec3f here is three consecutive floats as declared by the mod.",
+      "Its projection meaning is tied to the current gameplay camera, not arbitrary cutscenes."
+    ],
+    "related": [
+      "D_8020D1D0_5C90E0"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/anchor_actors.c",
+        "line": 107,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "typedef struct Vec3f { float x, y, z; } Vec3f;\n\nextern Vec3f D_8020D1C0_5C90D0;\n\n/* Use the current gameplay camera projection convention. */\nVec3f read_camera_vector(void) {\n    return D_8020D1C0_5C90D0;\n}\n",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation."
+  },
+  "D_8020D1D0_5C90E0": {
+    "title": "Camera radius used for projection",
+    "summary": "Floating-point game camera radius read by the remote nameplate projector.",
+    "behavior": [
+      "The mod combines this scalar with D_8020D1C0_5C90D0 when projecting positions to screen. Reading the field is verified; broader camera control behavior is not established by the use site."
+    ],
+    "cautions": [
+      "Do not write this value as a substitute for the native camera state machine."
+    ],
+    "related": [
+      "D_8020D1C0_5C90D0"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/anchor_actors.c",
+        "line": 108,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "typedef struct Vec3f { float x, y, z; } Vec3f;\n\nextern Vec3f D_8020D1C0_5C90D0;\n\nextern float D_8020D1D0_5C90E0;\n\n/* Pair with D_8020D1C0_5C90D0 in the matching gameplay projector. */\nfloat read_camera_radius(void) {\n    return D_8020D1D0_5C90E0;\n}\n",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation."
+  },
+  "D_80167FC0_168BC0": {
+    "title": "Scene resource registry and arena cursor",
+    "summary": "Array of resident file records ending in a zero-file sentinel whose data pointer marks free scene memory.",
+    "behavior": [
+      "The mods declare 48 records, each with a 16-bit file ID, 16-bit padding, and data pointer. Native resident loading advances the next record sentinel. After broad resources are loaded, the model mods reserve aligned face buffers by advancing this sentinel cursor."
+    ],
+    "cautions": [
+      "Do not overwrite the sentinel cursor without checking bounds, alignment and all later allocations.",
+      "Model texture buffers need original RDRAM addresses below 0x80800000.",
+      "All registry-backed addresses are scene-lifetime resources."
+    ],
+    "related": [
+      "func_80013B14_14714",
+      "func_800141C4_14DC4"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/anchor_player_models.c",
+        "line": 150,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      },
+      {
+        "project": "mnsg-team-up",
+        "path": "src/team_up_models.c",
+        "line": 132,
+        "note": "Same native API is used for independent follower model tasks in Team Up."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "#define SCENE_RESOURCE_ENTRY_COUNT 48\ntypedef struct SceneResourceEntry {\n    unsigned short file_id, padding;\n    unsigned char *data;\n} SceneResourceEntry;\n\nextern SceneResourceEntry D_80167FC0_168BC0[SCENE_RESOURCE_ENTRY_COUNT];\n\n/* Inspect only after the native stage resource registry is initialized. */\nvoid *scene_arena_cursor(void) {\n    for (int i = 0; i < SCENE_RESOURCE_ENTRY_COUNT; ++i) {\n        if (D_80167FC0_168BC0[i].file_id == 0)\n            return D_80167FC0_168BC0[i].data;\n    }\n    return 0;\n}\n",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation."
+  },
+  "D_80203F34_5BFE44": {
+    "title": "Per-character action metadata tables",
+    "summary": "Array of four pointers to 0x1C-byte character action records.",
+    "behavior": [
+      "For character IDs Goemon=0, Ebisumaru=1, Sasuke=2, Yae=3, record fields include model command +0x00, animation speed scaled by 100 at +0x04, action-data range at +0x0C/+0x10, auxiliary selector +0x14 and auxiliary resource table +0x18. The renderer reads records for actions below 0xE8."
+    ],
+    "cautions": [
+      "These are immutable metadata tables. Do not mutate shared action data to customize one remote.",
+      "The numeric action limit and layout are specific to this game version."
+    ],
+    "related": [
+      "D_80204028_5BFF38",
+      "func_8001B5AC_1C1AC"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/anchor_player_models.c",
+        "line": 176,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      },
+      {
+        "project": "mnsg-team-up",
+        "path": "src/team_up_models.c",
+        "line": 158,
+        "note": "Same native API is used for independent follower model tasks in Team Up."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern unsigned char *D_80203F34_5BFE44[];\n\n/* The gameplay overlay containing these tables must be resident. */\nconst unsigned char *character_action_record(unsigned int character,\n                                             unsigned int action) {\n    if (character >= 4u || action >= 0xE8u) return 0;\n    return D_80203F34_5BFE44[character] + action * 0x1C;\n}\n",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation."
+  },
+  "D_80203FF0_5BFF00": {
+    "title": "Initial auxiliary segment descriptors",
+    "summary": "Byte descriptors selecting object segments for the two face/part resource channels at action start.",
+    "behavior": [
+      "Each channel uses a two-byte descriptor; the second byte chooses the segment. The renderer binds the loaded buffer through the object segment base at +0x38 + segment*8."
+    ],
+    "cautions": [
+      "The first descriptor byte is not explained by this mod use; do not invent a meaning for it."
+    ],
+    "related": [
+      "D_80203FF8_5BFF08",
+      "func_800145B4_151B4"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/anchor_player_models.c",
+        "line": 180,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      },
+      {
+        "project": "mnsg-team-up",
+        "path": "src/team_up_models.c",
+        "line": 162,
+        "note": "Same native API is used for independent follower model tasks in Team Up."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern unsigned char D_80203FF0_5BFF00[];\n\n/* The returned value still needs validation for the target object. */\nint initial_aux_segment(unsigned int channel) {\n    if (channel >= 2u) return -1;\n    return D_80203FF0_5BFF00[channel * 2 + 1];\n}\n",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation."
+  },
+  "D_80203FF8_5BFF08": {
+    "title": "Timed auxiliary segment descriptors",
+    "summary": "16-bit descriptors whose low bytes select segments for per-frame face/part changes.",
+    "behavior": [
+      "The renderer uses the low byte for each of two channels when timed auxiliary sequences change resources during an action. It loads into the alternate buffer and updates that object segment."
+    ],
+    "cautions": [
+      "The high byte is not consumed by this documented use and its meaning is unverified."
+    ],
+    "related": [
+      "D_80203FF0_5BFF00",
+      "func_800145B4_151B4"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/anchor_player_models.c",
+        "line": 184,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      },
+      {
+        "project": "mnsg-team-up",
+        "path": "src/team_up_models.c",
+        "line": 166,
+        "note": "Same native API is used for independent follower model tasks in Team Up."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern unsigned short D_80203FF8_5BFF08[];\n\n/* Selects the segment to rebind after loading a timed auxiliary frame. */\nint timed_aux_segment(unsigned int channel) {\n    if (channel >= 2u) return -1;\n    return D_80203FF8_5BFF08[channel] & 0xFFu;\n}\n",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation."
+  },
+  "D_80204020_5BFF30": {
+    "title": "Broad character resource IDs",
+    "summary": "Four 16-bit file IDs selecting the broad/clothed render resources for each playable character.",
+    "behavior": [
+      "Both model mods load these files during stage resource loading and bind their resident bases into segment 9 of character display objects. Index order is Goemon, Ebisumaru, Sasuke, Yae."
+    ],
+    "cautions": [
+      "Treat this table as read-only; loading does not construct a playable character."
+    ],
+    "related": [
+      "D_80204028_5BFF38",
+      "func_80013B14_14714"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/anchor_player_models.c",
+        "line": 188,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      },
+      {
+        "project": "mnsg-team-up",
+        "path": "src/team_up_models.c",
+        "line": 170,
+        "note": "Same native API is used for independent follower model tasks in Team Up."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern unsigned short D_80204020_5BFF30[];\n\nextern void *func_80013B14_14714(unsigned int file_id);\n\nextern void *func_800141C4_14DC4(unsigned int file_id);\n\n/* Call during stage resource loading with room in the native scene arena. */\nvoid *load_character_broad_file(unsigned int character) {\n    if (character >= 4u) return 0;\n    unsigned int file_id = D_80204020_5BFF30[character];\n    func_80013B14_14714(file_id);\n    void *base = func_800141C4_14DC4(file_id);\n    return base == (void *)0xFFFFFFFFu ? 0 : base;\n}\n",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation."
+  },
+  "D_80204028_5BFF38": {
+    "title": "Raw action-model file IDs",
+    "summary": "Four 16-bit file IDs selecting each character raw action-model data file.",
+    "behavior": [
+      "The mods copy the complete ROM file into an immutable cache, then select each action range from D_80203F34. This allows simultaneous characters without the stock single-player staging state."
+    ],
+    "cautions": [
+      "Only index 0..3. Action records must be range-checked against the cached file length."
+    ],
+    "related": [
+      "D_80203F34_5BFE44",
+      "D_80204020_5BFF30"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/anchor_player_models.c",
+        "line": 192,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      },
+      {
+        "project": "mnsg-team-up",
+        "path": "src/team_up_models.c",
+        "line": 174,
+        "note": "Same native API is used for independent follower model tasks in Team Up."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern unsigned short D_80204028_5BFF38[];\n\nextern unsigned int func_80001D68_2968(unsigned int file_id);\n\nextern unsigned int func_80001D94_2994(unsigned int file_id);\n\n/* Return the raw ROM bounds; this does not load or allocate the file. */\nint character_action_rom_range(unsigned int character,\n                               unsigned int *start, unsigned int *end) {\n    if (character >= 4u || !start || !end) return 0;\n    unsigned int id = D_80204028_5BFF38[character];\n    *start = func_80001D68_2968(id);\n    *end = func_80001D94_2994(id);\n    return *end > *start;\n}\n",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation."
+  },
+  "D_80204048_5BFF58": {
+    "title": "Player appearance replacement tables",
+    "summary": "Pointer array selecting stock model display-pointer substitutions.",
+    "behavior": [
+      "The documented Goemon entries are index 1 for the forward Sudden Impact hair replacement and index 2 for reversing it. Multiplayer starts with a pristine private action slice and applies index 1."
+    ],
+    "cautions": [
+      "Only indices 1 and 2 have an established purpose in these sources.",
+      "The operation changes pointed-to model data; shared caches must remain pristine."
+    ],
+    "related": [
+      "func_8001C3E0_1CFE0"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/anchor_player_models.c",
+        "line": 198,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern void *D_80204048_5BFF58[];\n\nextern int func_8001C3E0_1CFE0(void *object, unsigned int model_ptr,\n                               const void *replacement_table);\n\n/* object must bind a private, writable Goemon action-model copy. */\nint apply_private_sudden_impact(void *object) {\n    if (!object) return 0;\n    return func_8001C3E0_1CFE0(object, 0, D_80204048_5BFF58[1]);\n}\n",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation."
+  },
+  "func_80035D8C_3698C": {
+    "title": "Pop an engine pool record",
+    "summary": "Removes one record from a kind-specific free list and increments that kind active allocation counter.",
+    "behavior": [
+      "Live decompilation reads the free-list head, returns null when empty, detaches the first record, clears its next pointer and high-bit marker, and increments D_8016DAD8[kind]. The multiplayer allocator patches reuse this helper so native release paths retain ownership."
+    ],
+    "cautions": [
+      "No capacity or kind bounds check is visible in this helper; caller must select a valid pool kind.",
+      "A successful raw allocation must be attached/released correctly or the pool record leaks."
+    ],
+    "related": [
+      "func_80035EEC_36AEC",
+      "func_80036448_37048",
+      "D_8016DAD8_16E6D8"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/global_patches/anchor_remote_model_pool.c",
+        "line": 49,
+        "note": "Live Ghidra 2026-09-04 at 0x80035D8C confirms free-list and counter operations."
+      }
+    ],
+    "confidence": "decompiled",
+    "example": "extern void *func_80035D8C_3698C(short kind);\n\n/* Low-level allocator primitive only. Caller must attach the returned\n * record and release it through the native engine path. */\nvoid *take_kind2_pool_record(void) {\n    return func_80035D8C_3698C(2);\n}\n",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation.",
+    "parameters": [
+      {
+        "name": "kind",
+        "type": "short",
+        "description": "Native pool-record kind; display objects use kind 2."
+      }
+    ],
+    "returns": "Record pointer or null when that free list is empty."
+  },
+  "func_80035EEC_36AEC": {
+    "title": "Allocate task-owned pool records",
+    "summary": "Allocates a bounded chain of engine records and appends them to a task record list.",
+    "behavior": [
+      "Native code uses count & 0xFF, checks capacity minus active count for kind, then repeatedly calls func_80035D8C. It updates task+0x18 as the head and task+0x1C as the tail, returning the first new record.",
+      "Multiplayer patches this function to give kind-2 model records a minimum cap of 0xC0 and marks each record kind in byte +4. Other kinds keep their configured capacity."
+    ],
+    "cautions": [
+      "Count is truncated to eight bits; 256 becomes zero.",
+      "A mid-loop failure returns null after earlier records have already been appended. It is not an all-or-nothing allocator.",
+      "Raising a limit alone does not create more free-list backing records."
+    ],
+    "related": [
+      "func_80035D8C_3698C",
+      "func_8000DBF0_E7F0",
+      "D_8006D350_6DF50"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/global_patches/anchor_remote_model_pool.c",
+        "line": 98,
+        "note": "Live Ghidra 2026-09-04 at 0x80035EEC compared with the current RECOMP_PATCH."
+      }
+    ],
+    "confidence": "decompiled",
+    "example": "extern void *func_80035EEC_36AEC(void *task, short kind, unsigned int count);\n\n/* task must be a live native owner with an initialized record list. */\nvoid *allocate_task_display_record(void *task) {\n    if (!task) return 0;\n    return func_80035EEC_36AEC(task, 2, 1);\n}\n",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation.",
+    "parameters": [
+      {
+        "name": "task",
+        "type": "void *",
+        "description": "Valid owning task with native record-list fields."
+      },
+      {
+        "name": "kind",
+        "type": "short",
+        "description": "Native pool-record kind."
+      },
+      {
+        "name": "count",
+        "type": "unsigned int",
+        "description": "Requested record count; native code uses the low byte."
+      }
+    ],
+    "returns": "First allocated record or null for zero count/capacity/allocation failure."
+  },
+  "func_80036448_37048": {
+    "title": "Allocate a single kind-2 record",
+    "summary": "Allocates one model/display pool record, consulting an optional recycling list and allocation limits.",
+    "behavior": [
+      "Native code increments D_8016DAB0 and updates its peak before any capacity failure. If D_8006D320 is non-null it frees/recycles one record through func_80036058; otherwise it checks the kind-2 cap against D_8016DADC. It then pops kind 2 from the free list.",
+      "Multiplayer patches the capacity decision to share the larger model allowance and preserves native telemetry and engine-owned allocation."
+    ],
+    "cautions": [
+      "This returns a bare pool record; it does not initialize a complete render object or attach it to your task.",
+      "Telemetry is incremented even when allocation fails, so it is not identical to the active kind-2 counter."
+    ],
+    "related": [
+      "func_80035D8C_3698C",
+      "func_80036058_36C58",
+      "D_8016DADC_16E6DC"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/global_patches/anchor_remote_model_pool.c",
+        "line": 141,
+        "note": "Live Ghidra 2026-09-04 at 0x80036448 confirms telemetry occurs before capacity checks."
+      }
+    ],
+    "confidence": "decompiled",
+    "example": "extern void *func_80036448_37048(void);\n\n/* Low-level primitive: the caller still owns initialization/attachment. */\nvoid *allocate_single_display_record(void) {\n    return func_80036448_37048();\n}\n",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation.",
+    "returns": "Kind-2 record pointer or null on failure."
+  },
+  "func_80036058_36C58": {
+    "title": "Recycle records from an owner list",
+    "summary": "Removes and releases records from an owner list so their backing pool can be reused.",
+    "behavior": [
+      "Live decompilation takes list head from owner+0x18, obtains the next chain link, updates head/tail, and calls the record release helper. The single kind-2 allocator uses it to recycle one record from D_8006D320 when that list is present.",
+      "The source declaration names its first argument list and its second count. The native code narrows count to a byte. This is not a general memory allocation API."
+    ],
+    "cautions": [
+      "This removes existing engine-owned records; do not call it on an unrelated task or arbitrary memory.",
+      "The integer result can contain a removed record address and is not documented as a simple boolean; the current allocator ignores it."
+    ],
+    "related": [
+      "func_80036448_37048",
+      "D_8006D320_6DF20"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/global_patches/anchor_remote_model_pool.c",
+        "line": 53,
+        "note": "Live Ghidra 2026-09-04 at 0x80036058 confirms unlink/release behavior."
+      }
+    ],
+    "confidence": "decompiled",
+    "example": "extern void *D_8006D320_6DF20;\n\nextern int func_80036058_36C58(void *list, int count);\n\n/* This deliberately releases an existing record. Use only inside the\n * verified native allocator/recycling path, not an arbitrary frame hook. */\nvoid recycle_one_overflow_record(void) {\n    if (D_8006D320_6DF20)\n        (void)func_80036058_36C58(D_8006D320_6DF20, 1);\n}\n",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation.",
+    "parameters": [
+      {
+        "name": "list",
+        "type": "void *",
+        "description": "Native owner/list object whose records can be recycled."
+      },
+      {
+        "name": "count",
+        "type": "int",
+        "description": "Number of records to release; low eight bits used by native routine."
+      }
+    ],
+    "returns": "Native integer/address result; zero is used for empty/short-list paths. Do not dereference a released record."
+  },
+  "D_8016DAD8_16E6D8": {
+    "title": "Per-kind active pool counters",
+    "summary": "Signed 16-bit active-allocation counters indexed by pool kind.",
+    "behavior": [
+      "func_80035D8C increments this array as it removes a record from the free list. The chain allocator compares each count to D_8006D350[kind]."
+    ],
+    "cautions": [
+      "Treat engine counters as read-only outside a verified allocator patch; release paths depend on consistency."
+    ],
+    "related": [
+      "D_8006D350_6DF50",
+      "func_80035EEC_36AEC"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/global_patches/anchor_remote_model_pool.c",
+        "line": 26,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern short D_8016DAD8_16E6D8[];\n\nshort active_display_records(void) {\n    return D_8016DAD8_16E6D8[2];\n}\n",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation."
+  },
+  "D_8016DADC_16E6DC": {
+    "title": "Active kind-2 pool count",
+    "summary": "Signed 16-bit active allocation counter for display/model kind 2.",
+    "behavior": [
+      "This is the address alias for element 2 of D_8016DAD8, not a separate independent counter. The single-record allocator checks it against the kind-2 capacity."
+    ],
+    "cautions": [
+      "Treat engine counters as read-only outside a verified allocator patch; release paths depend on consistency."
+    ],
+    "related": [
+      "D_8016DAD8_16E6D8",
+      "func_80036448_37048"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/global_patches/anchor_remote_model_pool.c",
+        "line": 30,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern unsigned short D_8006D350_6DF50[];\n\nextern short D_8016DADC_16E6DC;\n\nint remaining_display_allowance(void) {\n    return (int)D_8006D350_6DF50[2] - D_8016DADC_16E6DC;\n}\n",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation."
+  },
+  "D_8006D350_6DF50": {
+    "title": "Per-kind pool capacity table",
+    "summary": "Unsigned 16-bit maximum active record counts indexed by native pool kind.",
+    "behavior": [
+      "Multiplayer raises index 2 to at least 0xC0 to accommodate remote character display records alongside scene actors. Initializers may restore values, so the mod reapplies the capacity during frame-return updates."
+    ],
+    "cautions": [
+      "Treat engine counters as read-only outside a verified allocator patch; release paths depend on consistency."
+    ],
+    "related": [
+      "D_8016DAD8_16E6D8",
+      "func_80035EEC_36AEC"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/global_patches/anchor_remote_model_pool.c",
+        "line": 34,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern unsigned short D_8006D350_6DF50[];\n\n/* Mirror the verified multiplayer cap patch only when the backing native\n * pools and other actor limits have also been provisioned. */\nvoid raise_display_allowance(void) {\n    if (D_8006D350_6DF50[2] < 0xC0)\n        D_8006D350_6DF50[2] = 0xC0;\n}\n",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation."
+  },
+  "D_8006D320_6DF20": {
+    "title": "Optional record recycling owner",
+    "summary": "Optional engine owner/list consulted before single kind-2 allocation.",
+    "behavior": [
+      "When present, func_80036448 calls func_80036058 on it to release one existing record before popping from the normal kind-2 free list. The source describes it as an emergency/overflow path."
+    ],
+    "cautions": [
+      "Treat engine counters as read-only outside a verified allocator patch; release paths depend on consistency."
+    ],
+    "related": [
+      "func_80036448_37048",
+      "func_80036058_36C58"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/global_patches/anchor_remote_model_pool.c",
+        "line": 38,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern void *D_8006D320_6DF20;\n\nint has_display_recycling_owner(void) {\n    return D_8006D320_6DF20 != 0;\n}\n",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation."
+  },
+  "D_8016DAB0_16E6B0": {
+    "title": "Single-allocation telemetry counter",
+    "summary": "Unsigned 16-bit telemetry incremented when the single kind-2 allocator is invoked.",
+    "behavior": [
+      "Live decompilation increments it before the allocator checks capacity or returns failure. The patch preserves this order; it must not be substituted for the active-record count D_8016DADC."
+    ],
+    "cautions": [
+      "Treat engine counters as read-only outside a verified allocator patch; release paths depend on consistency."
+    ],
+    "related": [
+      "D_8016DAB2_16E6B2",
+      "D_8016DADC_16E6DC"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/global_patches/anchor_remote_model_pool.c",
+        "line": 43,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern unsigned short D_8016DAB0_16E6B0;\n\nunsigned short display_allocation_telemetry(void) {\n    return D_8016DAB0_16E6B0;\n}\n",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation."
+  },
+  "D_8016DAB2_16E6B2": {
+    "title": "Peak single-allocation telemetry",
+    "summary": "Unsigned 16-bit peak of the single-allocation telemetry counter.",
+    "behavior": [
+      "func_80036448 raises this value when the incremented D_8016DAB0 exceeds it. It records the native telemetry peak, not total memory capacity."
+    ],
+    "cautions": [
+      "Treat engine counters as read-only outside a verified allocator patch; release paths depend on consistency."
+    ],
+    "related": [
+      "D_8016DAB0_16E6B0"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/global_patches/anchor_remote_model_pool.c",
+        "line": 44,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern unsigned short D_8016DAB2_16E6B2;\n\nunsigned short peak_display_allocation_telemetry(void) {\n    return D_8016DAB2_16E6B2;\n}\n",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation."
+  },
+  "D_8015C608_15D208": {
+    "title": "Packed save flags and item data base",
+    "summary": "Native save-data base used for packed event flags and adjacent structured player/item fields.",
+    "behavior": [
+      "The source documents a 0x304-byte region initialized for a new file and mirrored into runtime/backup memory. Packed event flag ID n uses byte n>>3 and bit n&7. This array is also the reference base for typed save fields.",
+      "Four recruited-character fields are signed 32-bit values at +0x94,+0x98,+0x9C,+0xA0. Weapon levels occupy +0xA4..+0xB0. Spawn fields include room +0x204 and signed 16-bit rotation/coordinates +0x208..+0x210; maximum health is a signed 32-bit value at -0x28, before this named array.",
+      "Team Up reads recruitment fields to decide followers. Multiplayer synchronizes a curated item/flag catalog, while race startup writes a new-save configuration before the native mirror/scene-load routines consume it."
+    ],
+    "cautions": [
+      "Offsets before the array are adjacent native storage, not elements of a C array declared here; the mods deliberately use address arithmetic.",
+      "Flag changes can affect scripts and save progression without updating live actors. Use native actor transitions for bosses and active doors.",
+      "Use the correct field width: recruitment/items are 32-bit, spawn coordinates are 16-bit, flags are packed bits."
+    ],
+    "related": [
+      "func_8000B640_C240",
+      "func_8000B5D0_C1D0",
+      "func_800240DC_24CDC",
+      "D_8015C5D8_15D1D8"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/item_sync.c",
+        "line": 55,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      },
+      {
+        "project": "mnsg-team-up",
+        "path": "src/team_up_followers.c",
+        "line": 81,
+        "note": "Follower recruitment, player state and lifecycle use verified in current source."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern unsigned char D_8015C608_15D208[];\n\nint character_is_recruited(unsigned int character) {\n    if (character >= 4) return 0;\n    const signed int *field = (const signed int *)(\n        D_8015C608_15D208 + 0x94 + character * 4);\n    return *field != 0;\n}",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation."
+  },
+  "D_8015C5D8_15D1D8": {
+    "title": "Runtime save/control mirror",
+    "summary": "Array of 32-bit runtime control/save words including current character and dirty state.",
+    "behavior": [
+      "func_8000B5D0 copies save/control state into this area. The character-cycler patch reads/writes element 1 as current character, while element 0x2C/4 is marked dirty after a change. The first word is also used by save-start flow."
+    ],
+    "cautions": [
+      "Current character at +4 aliases the direct-address 0x8015C5DC global.",
+      "Writing only the mirror does not perform the live player state transition."
+    ],
+    "related": [
+      "func_801DD5C0_5994D0",
+      "func_801DD50C_59941C",
+      "func_8000B5D0_C1D0"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/global_patches/character_cycler.c",
+        "line": 12,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern unsigned int D_8015C5D8_15D1D8[];\n\nunsigned int selected_character_id(void) {\n    return D_8015C5D8_15D1D8[1] & 0xFFu;\n}\n",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation."
+  },
+  "func_801DD5C0_5994D0": {
+    "title": "Apply a live player character swap",
+    "summary": "Reconfigures the live player task for a selected playable character.",
+    "behavior": [
+      "The source documents native writes to task+0x60 and global current character 0x8015C5DC, resets of movement/action fields, a character-change flag, and a new player-state callback.",
+      "The patched character cycler first updates the save/control mirror and dirty bit, then invokes this transition on the live player task."
+    ],
+    "cautions": [
+      "Use only on the actual live player and an enabled/recruited character.",
+      "This changes global player state. It is inappropriate for spawning another visual player model."
+    ],
+    "related": [
+      "func_801DD50C_59941C",
+      "D_8015C5D8_15D1D8",
+      "D_801FC604_5B8514"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/global_patches/character_cycler.c",
+        "line": 17,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern unsigned int D_8015C5D8_15D1D8[];\n\nextern void func_801DD5C0_5994D0(void *arg0, unsigned char value);\n\nvoid change_player_character(void *player_task, unsigned char character) {\n    if (!player_task || character >= 4) return;\n    D_8015C5D8_15D1D8[1] = character;\n    D_8015C5D8_15D1D8[0x2C / 4] = 1;\n    func_801DD5C0_5994D0(player_task, character);\n}",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation.",
+    "parameters": [
+      {
+        "name": "arg0",
+        "type": "void *",
+        "description": "Live player task."
+      },
+      {
+        "name": "value",
+        "type": "unsigned char",
+        "description": "Character ID: Goemon=0, Ebisumaru=1, Sasuke=2, Yae=3."
+      }
+    ],
+    "returns": "No return value."
+  },
+  "func_801DD50C_59941C": {
+    "title": "Cycle to an enabled character",
+    "summary": "Native character-cycle entry point replaced to honor recruited-character save fields.",
+    "behavior": [
+      "The multiplayer patch starts after current task byte +0x60, wraps candidates with &3, and selects the first enabled character among the other three. It normalizes recruitment values greater than one to one.",
+      "On success it updates task character, runtime mirror and dirty state, calls func_801DD5C0, and returns zero. When no alternative is enabled it returns one. These are the patch semantics; the complete original selection policy is not established from the replacement alone."
+    ],
+    "cautions": [
+      "This symbol is patched by multiplayer, so installed-mod behavior can differ from vanilla.",
+      "Do not call on a render-only remote task; the transition alters authoritative player state."
+    ],
+    "related": [
+      "func_801DD5C0_5994D0",
+      "D_8015C608_15D208"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/global_patches/character_cycler.c",
+        "line": 75,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern int func_801DD50C_59941C(void *arg0);\n\nint cycle_character(void *player_task) {\n    if (!player_task) return 1;\n    return func_801DD50C_59941C(player_task);\n}",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation.",
+    "parameters": [
+      {
+        "name": "arg0",
+        "type": "void *",
+        "description": "Live player task."
+      }
+    ],
+    "returns": "The multiplayer patch returns 0 after switching, 1 if no alternate enabled character is available."
+  },
+  "func_8000B640_C240": {
+    "title": "Initialize a fresh save",
+    "summary": "Clears and seeds native save state for a new file.",
+    "behavior": [
+      "The current source describes clearing 0x304 bytes at the save base, seeding health/items/recruitment, choosing Goemon house as default spawn, and copying to backup memory.",
+      "Race startup calls this before its custom writes and hooks its return to enforce selected race characters before mirroring."
+    ],
+    "cautions": [
+      "Calling the initializer resets save memory; do not use it to edit an already loaded adventure."
+    ],
+    "related": [
+      "D_8015C608_15D208",
+      "func_8000B5D0_C1D0"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/ui/startup_race_ui.c",
+        "line": 31,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern void func_8000B640_C240(void);\n\n#include \"modding.h\"\n\nRECOMP_HOOK_RETURN(\"func_8000B640_C240\")\nvoid after_fresh_save(void) {\n    /* Apply selected new-game defaults before save mirroring. */\n}",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation.",
+    "returns": "No return value in the source declaration."
+  },
+  "func_8000B5D0_C1D0": {
+    "title": "Activate and mirror initialized save state",
+    "summary": "Copies prepared save/control data into the runtime mirror and marks it active.",
+    "behavior": [
+      "The source describes clearing a system field, copying from D_8015C66C to D_8015C5D8, mirroring the save region to D_8015C910, and setting the runtime active word to one.",
+      "Race startup hooks the return to apply settings after the valid initialized save is mirrored."
+    ],
+    "cautions": [
+      "Run in the native start/load sequence after initialization; this is not a disk-save API."
+    ],
+    "related": [
+      "func_8000B640_C240",
+      "D_8015C5D8_15D1D8"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/ui/startup_race_ui.c",
+        "line": 38,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern void func_8000B5D0_C1D0(void);\n\n#include \"modding.h\"\n\nRECOMP_HOOK_RETURN(\"func_8000B5D0_C1D0\")\nvoid after_save_activation(void) {\n    /* Apply settings that require a loaded, mirrored save. */\n}",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation.",
+    "returns": "No return value in the source declaration."
+  },
+  "func_80003478_4078": {
+    "title": "Initialize gameplay control/UI state",
+    "summary": "Resets control and UI substates when entering gameplay.",
+    "behavior": [
+      "The source documents advancement of g_system+0x3ADDE, clearing +0x3ADDF, and resetting the substate bytes +0x3ADE0/+0x3ADE1.",
+      "Direct race launch calls this after scene setup and render reset, restoring the normal gameplay UI state."
+    ],
+    "cautions": [
+      "This is one step of a larger transition sequence; it does not load a scene or initialize a save by itself."
+    ],
+    "related": [
+      "func_8000383C_443C",
+      "func_8000B364_BF64"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/ui/startup_race_ui.c",
+        "line": 54,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern void func_80003478_4078(void);\n\nextern void func_8000383C_443C(void);\n\n/* Requires the native start/load preparation described above.\n * This helper is one step of that sequence, not a complete launch API. */\nvoid finish_prepared_scene_ui(void) {\n    /* During a prepared native scene transition: */\n    func_8000383C_443C();\n    func_80003478_4078();\n}\n",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation.",
+    "returns": "No return value in the source declaration."
+  },
+  "func_80004240_4E40": {
+    "title": "Clear native text/UI slots",
+    "summary": "Clears the sixteen small native text/UI slots used during start and transition setup.",
+    "behavior": [
+      "The current source places those slots at g_system+0x3B168. Direct race launch clears them before scene-load setup, render reset and gameplay-state initialization."
+    ],
+    "cautions": [
+      "This concerns native UI slots, not the independent recompui context/resource API."
+    ],
+    "related": [
+      "func_8000B364_BF64"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/ui/startup_race_ui.c",
+        "line": 59,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern void func_80004240_4E40(void);\n\nextern void func_8000B364_BF64(void);\n\n/* Requires the native start/load preparation described above.\n * This helper is one step of that sequence, not a complete launch API. */\nvoid begin_prepared_scene_ui(void) {\n    /* During a prepared scene transition: */\n    func_80004240_4E40();\n    func_8000B364_BF64();\n}\n",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation.",
+    "returns": "No return value in the source declaration."
+  },
+  "func_8000B364_BF64": {
+    "title": "Prepare destination scene loading",
+    "summary": "Transfers the prepared destination into active stage fields and initializes scene-load bookkeeping.",
+    "behavior": [
+      "The source describes copying destination_stage, computing region/substage via a native helper, and resetting transition counters.",
+      "Race startup first makes native destination and save spawn data agree, then calls this as part of the scene setup sequence."
+    ],
+    "cautions": [
+      "Changing only current room or calling this with stale destination fields can load inconsistent state."
+    ],
+    "related": [
+      "func_8000607C_6C7C",
+      "func_8000383C_443C"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/ui/startup_race_ui.c",
+        "line": 65,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern void func_80003478_4078(void);\n\nextern void func_8000383C_443C(void);\n\nextern void func_8000B364_BF64(void);\n\n/* Requires the native start/load preparation described above.\n * This helper is one step of that sequence, not a complete launch API. */\nvoid prepare_destination_scene(void) {\n    /* First prepare a valid native destination and save spawn fields. */\n    func_8000B364_BF64();\n    func_8000383C_443C();\n    func_80003478_4078();\n}\n",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation.",
+    "returns": "No return value in the source declaration."
+  },
+  "func_8000383C_443C": {
+    "title": "Reset render and texture buffers",
+    "summary": "Runs render initialization and clears graphics/texture state for the next scene.",
+    "behavior": [
+      "The direct race-launch source calls this between scene-load bookkeeping and control/UI initialization. Its comment records that this setup was required to avoid overbright texture/contrast after jumping directly into warp step 12."
+    ],
+    "cautions": [
+      "Do not invoke from ordinary object rendering; it resets scene-level graphics state."
+    ],
+    "related": [
+      "func_80003478_4078",
+      "func_8000B364_BF64"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/ui/startup_race_ui.c",
+        "line": 71,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern void func_80003478_4078(void);\n\nextern void func_8000383C_443C(void);\n\n/* Requires the native start/load preparation described above.\n * This helper is one step of that sequence, not a complete launch API. */\nvoid reset_prepared_scene_rendering(void) {\n    /* During scene setup, before gameplay control initialization: */\n    func_8000383C_443C();\n    func_80003478_4078();\n}\n",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation.",
+    "returns": "No return value in the source declaration."
+  },
+  "func_801CD890_660740": {
+    "title": "Native gameplay/load scheduler callback",
+    "summary": "Overlay callback installed by the original file-select flow and reused for direct race launch.",
+    "behavior": [
+      "Race startup passes this symbol as the callback pointer to func_8003521C after preparing a no-diary save and switching to warp step 12.",
+      "The source explicitly notes imperfect Ghidra function boundaries around this overlay, so the complete internal behavior and argument ABI are not established. Its verified role is as the callback value used for this handoff."
+    ],
+    "cautions": [
+      "Use the complete symbol including ROM suffix; overlays can reuse RAM addresses.",
+      "Do not treat the void(void) declaration used to name the callback as a verified full scheduler ABI for manual direct calls."
+    ],
+    "related": [
+      "func_8003521C_35E1C",
+      "func_80003728_4328"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/ui/startup_race_ui.c",
+        "line": 84,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern void func_8003521C_35E1C(void *func_ptr);\n\nextern void func_801CD890_660740(void);\n\n/* Requires the native start/load preparation described above.\n * This helper is one step of that sequence, not a complete launch API. */\nvoid handoff_prepared_start_task(void) {\n    /* After completing native start/load preparation: */\n    func_8003521C_35E1C(func_801CD890_660740);\n}\n",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation.",
+    "returns": "No return value in the source declaration."
+  },
+  "func_8000607C_6C7C": {
+    "title": "Set the engine destination",
+    "summary": "Writes room, position, rotations and related fields consumed by the scene loader.",
+    "behavior": [
+      "Race startup writes both the typed save spawn fields and this engine destination so the save reader and native loader agree. Camera/player rotations come from the per-room debug start table; user-configured coordinates are retained."
+    ],
+    "cautions": [
+      "This queues destination state; it does not alone execute a complete warp.",
+      "field90/field91 names in the source are unresolved; the race path passes zero rather than assigning unsupported meanings."
+    ],
+    "related": [
+      "D_8006B780_6C380",
+      "func_8000B364_BF64",
+      "func_80003728_4328"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/ui/startup_race_ui.c",
+        "line": 45,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern void func_8000607C_6C7C(unsigned short room, short x, short y, short z,\n                               short camera_rot, short player_rot,\n                               short field90, int field91);\n\n/* Caller must also update save spawn fields before switching system steps. */\nvoid set_prepared_destination(unsigned short room, short x, short y, short z,\n                              short camera_rotation, short player_rotation) {\n    func_8000607C_6C7C(room, x, y, z, camera_rotation, player_rotation, 0, 0);\n}\n",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation.",
+    "parameters": [
+      {
+        "name": "room",
+        "type": "unsigned short",
+        "description": "Destination room/stage identifier."
+      },
+      {
+        "name": "x, y, z",
+        "type": "short",
+        "description": "Destination player coordinates."
+      },
+      {
+        "name": "camera_rot, player_rot",
+        "type": "short",
+        "description": "Native signed-angle rotations."
+      },
+      {
+        "name": "field90",
+        "type": "short",
+        "description": "Additional load field; race startup uses zero."
+      },
+      {
+        "name": "field91",
+        "type": "int",
+        "description": "Additional load field; race startup uses zero."
+      }
+    ],
+    "returns": "No return value."
+  },
+  "func_8003521C_35E1C": {
+    "title": "Set the active scheduler callback",
+    "summary": "Replaces the callback pointer stored in the active task at offset +0x0C.",
+    "behavior": [
+      "Direct race launch uses the native handoff to install func_801CD890_660740 after configuring a no-diary save and warp step. This changes what the current task executes next; it does not immediately call the supplied callback."
+    ],
+    "cautions": [
+      "Requires a valid active native task context.",
+      "Provide an engine-compatible callback that remains resident in the relevant overlay."
+    ],
+    "related": [
+      "func_801CD890_660740",
+      "func_80003728_4328"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/ui/startup_race_ui.c",
+        "line": 78,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern void func_8003521C_35E1C(void *func_ptr);\n\nextern void func_801CD890_660740(void);\n\n/* Requires the native start/load preparation described above.\n * This helper is one step of that sequence, not a complete launch API. */\nvoid install_prepared_gameplay_callback(void) {\n    /* In the native start task after scene preparation: */\n    func_8003521C_35E1C(func_801CD890_660740);\n}\n",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation.",
+    "parameters": [
+      {
+        "name": "func_ptr",
+        "type": "void *",
+        "description": "Code pointer for the native scheduler callback."
+      }
+    ],
+    "returns": "No return value."
+  },
+  "func_80003728_4328": {
+    "title": "Switch the system execution step",
+    "summary": "Sets g_system stepw and resets the transition substate.",
+    "behavior": [
+      "The source describes writing the step byte, clearing stepw_end, marking transition state and resetting substate. Race launch uses step 12 after rebuilding save, scene, graphics and UI setup; step 7 from its recomp UI entry instead enters the title/demo flow."
+    ],
+    "cautions": [
+      "Step numbers are state-machine selectors, not arbitrary room IDs.",
+      "Jumping to a step without its expected prior initialization can leave invalid render or game state."
+    ],
+    "related": [
+      "func_80002040_2C40",
+      "func_8000607C_6C7C"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/ui/startup_race_ui.c",
+        "line": 102,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern void func_80003728_4328(unsigned char step);\n\n/* Requires the native start/load preparation described above.\n * This helper is one step of that sequence, not a complete launch API. */\nvoid enter_prepared_warp_step(void) {\n    /* Only after native save/destination/render setup is complete: */\n    func_80003728_4328(12);\n}\n",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation.",
+    "parameters": [
+      {
+        "name": "step",
+        "type": "unsigned char",
+        "description": "Native system-step index; the documented race warp path uses 12."
+      }
+    ],
+    "returns": "No return value."
+  },
+  "func_8000B2A0_BEA0": {
+    "title": "Consume saved spawn configuration",
+    "summary": "Native load/start entry that reads prepared save spawn fields.",
+    "behavior": [
+      "The race mod hooks entry to reapply selected location and character settings before the native routine consumes them. Its complete original implementation is not established from this hook alone; the documented contract is the timing of save-spawn consumption."
+    ],
+    "cautions": [
+      "Avoid launching or resetting a save recursively from this hook."
+    ],
+    "related": [
+      "D_8015C608_15D208",
+      "func_8000B5D0_C1D0"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/ui/startup_race_ui.c",
+        "line": 3177,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "#include \"modding.h\"\n\nRECOMP_HOOK(\"func_8000B2A0_BEA0\")\nvoid before_spawn_consumption(void) {\n    /* Reapply already-validated save spawn settings here. */\n}",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation."
+  },
+  "D_8006B780_6C380": {
+    "title": "Room default start transform table",
+    "summary": "Room-indexed signed-short table containing default position and rotations.",
+    "behavior": [
+      "Each room entry has five signed shorts in order x,y,z,camera rotation,player rotation. Race startup indexes room*5 to obtain default rotations while preserving user-selected coordinates."
+    ],
+    "cautions": [
+      "Validate the room against known game room entries before indexing; the mod extern has no declared length."
+    ],
+    "related": [
+      "func_8000607C_6C7C"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/ui/startup_race_ui.c",
+        "line": 24,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern signed short D_8006B780_6C380[];\n\n/* Caller must validate room against this game's known room table. */\nint default_room_rotations(unsigned int room, short *camera, short *player) {\n    if (!camera || !player) return 0;\n    const signed short *start = &D_8006B780_6C380[room * 5];\n    *camera = start[3];\n    *player = start[4];\n    return 1;\n}\n",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation."
+  },
+  "D_8015C5C8_15D1C8": {
+    "title": "Runtime g_system pointer",
+    "summary": "Pointer to the active system-state structure used by native step and scene-loading code.",
+    "behavior": [
+      "The source declares a byte pointer because only selected offsets are needed. Race startup reads/writes transition and diary state through it when non-null and mirrors selected changes into static g_system storage."
+    ],
+    "cautions": [
+      "The byte-pointer declaration is partial typing, not proof that the whole system layout is known.",
+      "Use named structure definitions when available; offset writes must match the exact game version."
+    ],
+    "related": [
+      "D_800BCCC0_BD8C0",
+      "func_80003728_4328"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/ui/startup_race_ui.c",
+        "line": 89,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern unsigned char *D_8015C5C8_15D1C8;\n\nint read_runtime_destination(short *room) {\n    unsigned char *system = D_8015C5C8_15D1C8;\n    if (!system || !room) return 0;\n    *room = *(short *)(system + 0x3AFE0);\n    return 1;\n}\n",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation."
+  },
+  "D_800BCCC0_BD8C0": {
+    "title": "Static g_system storage",
+    "summary": "Static storage block for the native system state.",
+    "behavior": [
+      "Race transport writes selected destination and diary fields into this storage as well as through D_8015C5C8 when present, because native paths reference both forms. The table includes high offsets, so it is much larger than a small standalone variable."
+    ],
+    "cautions": [
+      "Do not copy or clear this entire opaque block based on the unsized extern declaration."
+    ],
+    "related": [
+      "D_8015C5C8_15D1C8",
+      "func_8000607C_6C7C"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/ui/startup_race_ui.c",
+        "line": 95,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern unsigned char D_800BCCC0_BD8C0[];\n\n/* Read only while the native system structure is initialized. */\nshort read_static_destination(void) {\n    return *(short *)(D_800BCCC0_BD8C0 + 0x3AFE0);\n}\n",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation."
+  },
+  "func_80034EF8_35AF8": {
+    "title": "Destroy a specified engine task",
+    "summary": "Runs the native teardown/removal path for a task handle.",
+    "behavior": [
+      "Multiplayer uses this only for the owned Benkei bridge-controller child when rebuilding the idle entrance trigger into the native post-fight topology. Live Ghidra shows the wrapper forwarding through task teardown helpers; source behavior establishes its targeted destruction use."
+    ],
+    "cautions": [
+      "Only destroy a validated task that this owner controls. Shared render pointers and trackers become stale immediately.",
+      "Do not use generic destruction to simulate boss victory: damage, animation, reward and terminal callbacks still need to run."
+    ],
+    "related": [
+      "func_80034E08_35A08",
+      "func_08001464_70B4A4"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/boss_sync.c",
+        "line": 29,
+        "note": "Live Ghidra 2026-09-04 at 0x80034EF8 plus targeted child-removal use at source line 1130."
+      }
+    ],
+    "confidence": "decompiled",
+    "example": "extern void func_80034EF8_35AF8(void *actor);\n\n/* Only for a verified child this caller owns, at a safe native boundary.\n * Any other actor trackers referencing this child must also be cleared. */\nvoid destroy_owned_child(void **owned_child) {\n    if (!owned_child || !*owned_child) return;\n    func_80034EF8_35AF8(*owned_child);\n    *owned_child = 0;\n}\n",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation.",
+    "parameters": [
+      {
+        "name": "actor",
+        "type": "void *",
+        "description": "Engine task handle to tear down."
+      }
+    ],
+    "returns": "No return value."
+  },
+  "func_80218350_5D3820": {
+    "title": "Process actor damage and hit reactions",
+    "summary": "Consumes actor hit state, updates health and dispatches the native hit or death path.",
+    "behavior": [
+      "Live decompilation has a fast path for status bit 0x00040000 at actor+0x68: it subtracts one from the health byte +0x8D without requiring the normal attacker pointer. The regular collision-hit path considers actor flags, hit bit 0x80, attacker data and damage type.",
+      "Nonzero remaining health sets status bit 0 and may install/invoke the actor-specific +0x90 callback. Zero health enters the generic death path. Dharmanyo calls this inner routine directly and uses a separate lives byte +0xD1; multiplayer sets lives=1, carrier HP=2, and the pending-damage bit before this call, then clears the synthetic input after it returns."
+    ],
+    "cautions": [
+      "Generic HP zero is not a universal boss-completion signal. Tsurami and Dharmanyo require their custom remaining-HP callbacks.",
+      "The inner routine does not clear pending bit 0x40000 like the outer func_80218E7C wrapper; synthetic direct-call inputs must not persist across frames.",
+      "The current mods hook this routine rather than declaring/calling its full return ABI."
+    ],
+    "related": [
+      "func_80218E7C_5D434C",
+      "func_08003F84_6CC194",
+      "func_0800432C_6CC53C"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/boss_sync.c",
+        "line": 978,
+        "note": "Live Ghidra 2026-09-04 at 0x80218350 confirms fast/normal damage branches; pre/post hooks at lines 978/997."
+      }
+    ],
+    "confidence": "decompiled",
+    "example": "#include \"modding.h\"\n\nRECOMP_HOOK(\"func_80218350_5D3820\")\nvoid inspect_actor_damage(void *actor) {\n    if (!actor) return;\n    unsigned char health = ((unsigned char *)actor)[0x8D];\n    unsigned int status = *(unsigned int *)((char *)actor + 0x68);\n    /* Observe the exact actor and encounter; do not damage every caller. */\n    (void)health; (void)status;\n}",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation."
+  },
+  "func_80218E7C_5D434C": {
+    "title": "Run the common actor update pipeline",
+    "summary": "Runs the common actor processing and damage pipeline, then clears its one-shot pending damage input.",
+    "behavior": [
+      "Live decompilation runs the main common pipeline only when actor+0x18 has a display object. It calls func_80218350, later clears status bit 0x40000, then runs a final common helper.",
+      "Multiplayer hooks entry/return for the exact tracked Congo and Tsurami roots. Congo is set to one HP so the pending hit reaches zero. Tsurami is set to two HP so one point remains and its actor-specific lethal callback runs."
+    ],
+    "cautions": [
+      "This global routine also runs for unrelated actors. Never inject damage without exact actor and room validation.",
+      "Do not replay this routine solely to advance visual animation; it includes gameplay damage and other common state processing."
+    ],
+    "related": [
+      "func_80218350_5D3820",
+      "func_80218F30_5D4400",
+      "func_0800A228_6BD4C8"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/boss_sync.c",
+        "line": 651,
+        "note": "Live Ghidra 2026-09-04 at 0x80218E7C confirms display-object gate and final damage-bit clearing."
+      }
+    ],
+    "confidence": "decompiled",
+    "example": "#include \"modding.h\"\n\nRECOMP_HOOK(\"func_80218E7C_5D434C\")\nvoid before_common_actor_update(void *actor) {\n    if (!actor) return;\n    /* Match a tracked live encounter before modifying actor state. */\n}",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation."
+  },
+  "func_80218F30_5D4400": {
+    "title": "Finalize an actor update and process removal",
+    "summary": "Runs the common actor pipeline and consumes the actor remove-pending status through native cleanup.",
+    "behavior": [
+      "Live decompilation invokes the common updater, clears actor+0x34/+0x38 references and checks status bit 0x2 at +0x68. When removal is requested it runs the native task-removal path and associated spawn-instance bookkeeping.",
+      "Item synchronization hooks entry so it can mark a specifically matched remote collectible for removal before native cleanup checks the bit. The allowlist is silver/gold dolls, dungeon keys, Mr. Elly Fant and Mr. Arrow."
+    ],
+    "cautions": [
+      "A save bit alone does not refresh an existing collectible actor.",
+      "Do not apply this pattern to Miracle items or bosses: they require their own cutscene/defeat lifecycles.",
+      "An actor can be freed by this routine; a return hook must not blindly dereference the old pointer."
+    ],
+    "related": [
+      "func_80218E7C_5D434C",
+      "func_80034EF8_35AF8"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/item_sync.c",
+        "line": 735,
+        "note": "Live Ghidra 2026-09-04 at 0x80218F30; allowlisted item-removal integration at line 735."
+      }
+    ],
+    "confidence": "decompiled",
+    "example": "/* Call from an entry hook for func_80218F30 only after the exact matching\n * same-room remote pickup event has been consumed. Let native cleanup run. */\nvoid mark_matching_collectible(void *actor, int matched_pickup) {\n    if (!actor || !matched_pickup) return;\n    unsigned short id = *(unsigned short *)((char *)actor + 0x5C);\n    if (id != 0x86 && id != 0x87 && id != 0x88 && id != 0x89 && id != 0x193)\n        return;\n    *(unsigned int *)((char *)actor + 0x68) |= 2u;\n}\n",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation."
+  },
+  "func_80219CA0_5D5170": {
+    "title": "Select an actor owner list with capacity checks",
+    "summary": "Returns the appropriate native actor owner/list for an actor category while enforcing manager capacity.",
+    "behavior": [
+      "Live decompilation checks total limits, records the selected actor type, chooses a category-specific owner and counts existing members for capped categories. Type 0x0D returns the supplied task, while other categories choose manager lists.",
+      "The enemy multiplier queries the actor category from D_802297D6, requests its owner with a null supplied task, and aborts duplication when this function returns null."
+    ],
+    "cautions": [
+      "This selects a list; it does not allocate the enemy itself.",
+      "The function has shared actor-manager side effects. Preserve native spawning order and validate actor IDs before table access."
+    ],
+    "related": [
+      "func_8003555C_3615C",
+      "D_802297D6_5E4CA6"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/global_patches/race_enemy_multiplier.c",
+        "line": 31,
+        "note": "Live Ghidra 2026-09-04 at 0x80219CA0 confirms list selection and capacity checks."
+      }
+    ],
+    "confidence": "decompiled",
+    "example": "extern unsigned char D_802297D6_5E4CA6[];\n\nextern int *func_80219CA0_5D5170(int *task, unsigned char actor_type);\n\n/* actor_id must come from a validated, eligible native actor definition. */\nint *owner_for_actor_id(unsigned short actor_id) {\n    unsigned char type = D_802297D6_5E4CA6[actor_id + 0x80D];\n    return func_80219CA0_5D5170(0, type);\n}\n",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation.",
+    "parameters": [
+      {
+        "name": "task",
+        "type": "int *",
+        "description": "Fallback/current task used for category 0x0D; multiplier supplies null."
+      },
+      {
+        "name": "actor_type",
+        "type": "unsigned char",
+        "description": "Native actor category from actor metadata."
+      }
+    ],
+    "returns": "Native owner/list pointer, or null when capacity/selection disallows spawning."
+  },
+  "func_8003555C_3615C": {
+    "title": "Create a task and initialize its render state",
+    "summary": "Allocates an engine task with a kind-2 model record and forwards transform/render setup to a native initializer.",
+    "behavior": [
+      "Live decompilation calls the task allocator with owner, entry, kind 2 and model_id, then forwards the remaining arguments to its initialization helper and returns the handle.",
+      "The enemy multipliers pass the actor entry from D_802287BC, zero initial transform, shared native context 0xC006D920, and the default actor scale. They then call func_80218A54 with a copied room instance to populate the actual actor definition and placement."
+    ],
+    "cautions": [
+      "Several arguments retain unresolved source names; do not infer that the argument named flags is a generic bitmask just from its name.",
+      "The imported signature uses int for x/y/z. Preserve that exact ABI until validated; a similar display-object API uses floats.",
+      "A task allocation alone does not perform room actor initialization."
+    ],
+    "related": [
+      "func_80219CA0_5D5170",
+      "func_80218A54_5D3F24",
+      "D_802287BC_5E3C8C"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/global_patches/race_enemy_multiplier.c",
+        "line": 32,
+        "note": "Live Ghidra 2026-09-04 at 0x8003555C confirms allocator/helper wrapper; preserve current source argument types."
+      }
+    ],
+    "confidence": "decompiled",
+    "example": "extern void *D_802287BC_5E3C8C[];\n\nextern unsigned char D_802297D6_5E4CA6[];\n\nextern float D_80239AFC_5F4FCC;\n\nextern int func_8003555C_3615C(int *owner, void *entry, int arg2, int flags,\n                               int x, int y, int z, short pitch, short yaw, short roll,\n                               float scale_x, float scale_y, float scale_z,\n                               short arg13, short arg14, short model_id);\n\nextern int *func_80219CA0_5D5170(int *task, unsigned char actor_type);\n\n/* Use during native spawning for a validated eligible actor ID. The\n * returned task still requires func_80218A54 room-instance initialization. */\nint create_enemy_task(unsigned short actor_id) {\n    unsigned char type = D_802297D6_5E4CA6[actor_id + 0x80D];\n    short model_id = *(short *)&D_802297D6_5E4CA6[actor_id * 2];\n    int *owner = func_80219CA0_5D5170(0, type);\n    if (!owner) return 0;\n    float scale = D_80239AFC_5F4FCC;\n    return func_8003555C_3615C(\n        owner, D_802287BC_5E3C8C[actor_id], 0, 0xC006D920,\n        0, 0, 0, 0, 0, 0, scale, scale, scale, 0, 0, model_id);\n}\n",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation.",
+    "parameters": [
+      {
+        "name": "owner",
+        "type": "int *",
+        "description": "Native actor owner/list."
+      },
+      {
+        "name": "entry",
+        "type": "void *",
+        "description": "Actor table entry/callback."
+      },
+      {
+        "name": "arg2",
+        "type": "int",
+        "description": "Unresolved setup field; multiplier passes zero."
+      },
+      {
+        "name": "flags",
+        "type": "int",
+        "description": "Unresolved render/context field; multiplier passes 0xC006D920."
+      },
+      {
+        "name": "x, y, z",
+        "type": "int",
+        "description": "Initial transform fields as declared by the mods; multiplier uses zero."
+      },
+      {
+        "name": "pitch, yaw, roll",
+        "type": "short",
+        "description": "Initial rotation fields."
+      },
+      {
+        "name": "scale_x, scale_y, scale_z",
+        "type": "float",
+        "description": "Initial model scales."
+      },
+      {
+        "name": "arg13, arg14",
+        "type": "short",
+        "description": "Additional unresolved setup fields; multiplier passes zero."
+      },
+      {
+        "name": "model_id",
+        "type": "short",
+        "description": "Model identifier read from actor metadata."
+      }
+    ],
+    "returns": "32-bit actor/task handle as int, zero on allocation failure."
+  },
+  "func_80218A54_5D3F24": {
+    "title": "Initialize an actor from a room instance",
+    "summary": "Copies a room actor instance and definition into an allocated actor task and installs its native callbacks.",
+    "behavior": [
+      "Live decompilation resolves instance->definition via the current actor-data file, updates D_8015CDE0, copies actor ID to +0x5C/+0x5E, and writes instance position/rotation into the task display object. Definition payload goes to +0xD0/+0xD4/+0xD8, and native update/finalizer callbacks are installed.",
+      "The enemy multiplier hooks this boundary to duplicate only its explicit enemy allowlist. It requires D_8015CDDC to equal the current instance, reads the already exposed definition, allocates another task, offsets a copied instance and calls this initializer under a recursion guard."
+    ],
+    "cautions": [
+      "Requires a valid allocated actor with a display object and resident actor-data wave. Native segmented definition resolution can fault when resources are absent.",
+      "Its global definition context changes during initialization. Do not retain it as a per-enemy stable pointer without validating the scene.",
+      "Calling from its own hook requires a recursion guard. The example assumes duplicate and duplicate_instance were prepared by the source spawning pattern."
+    ],
+    "related": [
+      "func_8003555C_3615C",
+      "D_8015CDDC",
+      "D_8015CDE0",
+      "func_80218F30_5D4400"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/global_patches/race_enemy_multiplier.c",
+        "line": 194,
+        "note": "Live Ghidra 2026-09-04 at 0x80218A54 confirms definition resolution, transforms and callback installation."
+      }
+    ],
+    "confidence": "decompiled",
+    "example": "typedef struct RaceEnemyVec3s { short x, y, z; } RaceEnemyVec3s;\ntypedef struct RaceEnemyActorInstance {\n    RaceEnemyVec3s position, rotation;\n    void *definition;\n    unsigned char is_spawned, unk_11, unk_12, unk_13;\n} RaceEnemyActorInstance;\n\nextern void func_80218A54_5D3F24(int actor, RaceEnemyActorInstance *instance);\n\n/* This helper must run in the native spawn context after the caller has\n * allocated a task with a display object and validated resident actor data.\n * Its hook must also observe this guard before attempting more duplication. */\nstatic int initializing_duplicate;\nvoid initialize_duplicate_actor(int duplicate, RaceEnemyActorInstance *copy) {\n    if (!duplicate || !copy || initializing_duplicate) return;\n    initializing_duplicate = 1;\n    func_80218A54_5D3F24(duplicate, copy);\n    initializing_duplicate = 0;\n}\n",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation.",
+    "parameters": [
+      {
+        "name": "actor",
+        "type": "int",
+        "description": "Allocated native actor/task handle."
+      },
+      {
+        "name": "instance",
+        "type": "RaceEnemyActorInstance *",
+        "description": "Room placement and definition record; this typedef is the mod partial native layout."
+      }
+    ],
+    "returns": "No return value."
+  },
+  "D_8015CDDC": {
+    "title": "Current actor spawn instance",
+    "summary": "Pointer to the room actor instance currently exposed by native spawning.",
+    "behavior": [
+      "The multiplier requires this pointer to equal its func_80218A54 instance argument before reading the shared definition context. This avoids treating a nested/unrelated initialization as a room spawn eligible for duplication."
+    ],
+    "cautions": [
+      "This is native scene/overlay state. Validate actor IDs and resource lifetime; do not assume an unsized extern provides bounds."
+    ],
+    "related": [
+      "D_8015CDE0",
+      "func_80218A54_5D3F24"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/global_patches/race_enemy_multiplier.c",
+        "line": 41,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "typedef struct RaceEnemyVec3s { short x, y, z; } RaceEnemyVec3s;\ntypedef struct RaceEnemyActorInstance {\n    RaceEnemyVec3s position, rotation;\n    void *definition;\n    unsigned char is_spawned, unk_11, unk_12, unk_13;\n} RaceEnemyActorInstance;\n\ntypedef struct RaceEnemyActorDefinition {\n    unsigned short actor_id, params;\n    unsigned int data[3];\n} RaceEnemyActorDefinition;\n\nextern RaceEnemyActorInstance *D_8015CDDC;\n\nextern RaceEnemyActorDefinition *D_8015CDE0;\n\nint is_current_room_spawn(RaceEnemyActorInstance *instance) {\n    return instance && D_8015CDDC == instance && D_8015CDE0 != 0;\n}\n",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation."
+  },
+  "D_8015CDE0": {
+    "title": "Current actor definition context",
+    "summary": "Pointer to the native actor definition used by the current spawn operation.",
+    "behavior": [
+      "The partial source layout begins with unsigned-short actor_id and params, followed by three 32-bit payload words. Native actor initialization resolves the instance definition and writes this shared pointer."
+    ],
+    "cautions": [
+      "This is native scene/overlay state. Validate actor IDs and resource lifetime; do not assume an unsized extern provides bounds."
+    ],
+    "related": [
+      "D_8015CDDC",
+      "func_80218A54_5D3F24"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/global_patches/race_enemy_multiplier.c",
+        "line": 42,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "typedef struct RaceEnemyActorDefinition {\n    unsigned short actor_id, params;\n    unsigned int data[3];\n} RaceEnemyActorDefinition;\n\nextern RaceEnemyActorDefinition *D_8015CDE0;\n\n/* Only meaningful during the current validated native spawn operation. */\nint current_spawn_actor_id(void) {\n    return D_8015CDE0 ? D_8015CDE0->actor_id : -1;\n}\n",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation."
+  },
+  "D_802287BC_5E3C8C": {
+    "title": "Actor entry/callback table",
+    "summary": "Native actor entries indexed by actor ID and supplied to task creation.",
+    "behavior": [
+      "The enemy multiplier obtains the entry at actor_id and passes it to func_8003555C. The mod declares void pointers, so the exact entry layout/callback ABI is not established by the lookup alone."
+    ],
+    "cautions": [
+      "This is native scene/overlay state. Validate actor IDs and resource lifetime; do not assume an unsized extern provides bounds."
+    ],
+    "related": [
+      "func_8003555C_3615C",
+      "D_802297D6_5E4CA6"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/global_patches/race_enemy_multiplier.c",
+        "line": 38,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern void *D_802287BC_5E3C8C[];\n\n/* Caller must supply a validated native actor ID; table bounds are not\n * recovered by the unsized extern declaration. */\nvoid *actor_entry(unsigned short actor_id) {\n    return D_802287BC_5E3C8C[actor_id];\n}\n",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation."
+  },
+  "D_802297D6_5E4CA6": {
+    "title": "Actor model and category metadata",
+    "summary": "Byte-addressed actor metadata used to select model IDs and owner categories.",
+    "behavior": [
+      "The multiplier reads a signed 16-bit model ID at byte actor_id*2 and an unsigned category byte at actor_id+0x80D. The unsized byte declaration exposes multiple packed tables through one base."
+    ],
+    "cautions": [
+      "This is native scene/overlay state. Validate actor IDs and resource lifetime; do not assume an unsized extern provides bounds."
+    ],
+    "related": [
+      "func_80219CA0_5D5170",
+      "func_8003555C_3615C"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/global_patches/race_enemy_multiplier.c",
+        "line": 39,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern unsigned char D_802297D6_5E4CA6[];\n\n/* actor_id must be valid for the game's native metadata tables. */\nint read_actor_metadata(unsigned short actor_id, short *model,\n                        unsigned char *category) {\n    if (!model || !category) return 0;\n    *model = *(short *)&D_802297D6_5E4CA6[actor_id * 2];\n    *category = D_802297D6_5E4CA6[actor_id + 0x80D];\n    return 1;\n}\n",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation."
+  },
+  "D_80239AFC_5F4FCC": {
+    "title": "Default actor spawn scale",
+    "summary": "Floating-point scale used when the multiplier creates native enemy tasks.",
+    "behavior": [
+      "Both enemy multiplier implementations read this value once and pass it as x/y/z scale to func_8003555C. Its use as the shared spawn scale is established; a broader configuration or ownership role is not."
+    ],
+    "cautions": [
+      "This is native scene/overlay state. Validate actor IDs and resource lifetime; do not assume an unsized extern provides bounds."
+    ],
+    "related": [
+      "func_8003555C_3615C"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/global_patches/race_enemy_multiplier.c",
+        "line": 40,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern float D_80239AFC_5F4FCC;\n\n/* The gameplay actor overlay must be resident. */\nfloat default_actor_scale(void) {\n    return D_80239AFC_5F4FCC;\n}\n",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation."
+  },
+  "func_08000AA8_6F3F88": {
+    "title": "Initialize a locked doorway",
+    "summary": "Native door initializer that decides whether to create a padlock child from persistent lock state.",
+    "behavior": [
+      "Multiplayer hooks entry to consume an unlock event that arrived before this actor existed. The save lock bit is already set, so the original initializer creates an unlocked door without a padlock child. No live unlock animation is needed in this ordering."
+    ],
+    "cautions": [
+      "Do not force the live child-removal state if the padlock was never spawned: no child exists to signal completion.",
+      "The hook signature shows the captured actor and ignored second argument; it is not a complete verified native return ABI."
+    ],
+    "related": [
+      "func_08001020_6F4500",
+      "func_800240DC_24CDC"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/item_sync.c",
+        "line": 852,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "#include \"modding.h\"\n\nRECOMP_HOOK(\"func_08000AA8_6F3F88\")\nvoid inspect_door_initialization(void *actor, void *unused) {\n    (void)unused;\n    if (!actor) return;\n    unsigned short lock_flag = *(unsigned short *)((char *)actor + 0xD4);\n    /* Match a queued same-room unlock before native initialization. */\n    (void)lock_flag;\n}",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation."
+  },
+  "func_08001020_6F4500": {
+    "title": "Update a live locked doorway",
+    "summary": "Native door update that handles interaction and the padlock-removal state machine.",
+    "behavior": [
+      "For a live door already built before a remote unlock, multiplayer reads lock flag +0xD4, clears interaction latch +0xDA, clears state bit 0x4 and sets state bit 0x1 in +0xEC. The padlock child observes the unlocking bit, animates its disappearance and sets bit 0x2 when complete. The original parent callback remains installed."
+    ],
+    "cautions": [
+      "The lock save bit and key accounting must already be applied exactly once before the live animation.",
+      "Leave the parent callback intact so the update does not pull the local player through the doorway.",
+      "Only use this layout for the native door actor matched by this callback."
+    ],
+    "related": [
+      "func_08000AA8_6F3F88"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/item_sync.c",
+        "line": 877,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "/* Invoke only in this door's native update entry hook after consuming the\n * exact same-room unlock and accounting for the lock bit/key once. */\nvoid begin_matching_door_unlock(void *actor, int matched_remote_unlock) {\n    if (!actor || !matched_remote_unlock) return;\n    unsigned int *state = (unsigned int *)((char *)actor + 0xEC);\n    if ((*state & 3u) == 0) {\n        *(unsigned short *)((char *)actor + 0xDA) = 0;\n        *state = (*state & ~4u) | 1u;\n    }\n    /* Keep the original parent callback; it owns child animation. */\n}\n",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation."
+  },
+  "func_0800A228_6BD4C8": {
+    "title": "Evaluate Congo health and death transition",
+    "summary": "Native health-handling boundary shared by Congo and Tsurami roots.",
+    "behavior": [
+      "The source documents Congo zero-health handling here scheduling its victory callback func_08007D24. Tsurami can call this helper too, so a Congo tracker validates entity ID 0x323 at actor+0x5E.",
+      "Multiplayer captures the actual health-bearing actor during setup, before its first main update, enabling a remote final-hit event to be queued without exposing reward progression too early."
+    ],
+    "cautions": [
+      "A visual component is not authoritative boss health. Validate the actor ID and current encounter.",
+      "Example shows the source hook boundary, not a full recovered native function prototype."
+    ],
+    "related": [
+      "func_08007D24_6BAFC4",
+      "func_80218E7C_5D434C"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/boss_sync.c",
+        "line": 580,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "#include \"modding.h\"\n\nRECOMP_HOOK(\"func_0800A228_6BD4C8\")\nvoid observe_0800a228(void *actor) {\n    if (!actor) return;\n    unsigned short entity = *(unsigned short *)((char *)actor + 0x5E);\n    if (entity != 0x323u) return;\n    unsigned char health = ((unsigned char *)actor)[0x8D];\n    (void)health;\n}",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation."
+  },
+  "func_08007D24_6BAFC4": {
+    "title": "Congo native victory callback",
+    "summary": "Terminal victory callback scheduled from Congo native zero-health handling.",
+    "behavior": [
+      "Multiplayer treats this callback as proof that the official defeat transition has reached the victory/reward boundary. Only then does it release a held remote reward flag 0x12D.",
+      "Observing health zero earlier acknowledges damage, but does not prove this victory callback ran."
+    ],
+    "cautions": [
+      "Do not call this callback manually to bypass Congo damage and teardown.",
+      "Example shows the source hook boundary, not a full recovered native function prototype."
+    ],
+    "related": [
+      "func_0800A228_6BD4C8"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/boss_sync.c",
+        "line": 765,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "#include \"modding.h\"\n\nRECOMP_HOOK(\"func_08007D24_6BAFC4\")\nvoid observe_08007d24(void *actor) {\n    if (!actor) return;\n    /* Match actor to the tracked Congo root.\n       Native victory is now reaching its callback. */\n}",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation."
+  },
+  "func_080017F4_6B4A94": {
+    "title": "Initialize the Tsurami health root",
+    "summary": "Native initializer that installs the Tsurami root combat callback.",
+    "behavior": [
+      "Multiplayer captures the root pointer here without reading not-yet-initialized health. Each initializer invocation marks a fresh encounter even when the task pool reuses the same address.",
+      "The authoritative live root update is func_08000388; nearby entity 0xCB tasks can be visual children."
+    ],
+    "cautions": [
+      "A reused pointer and unchanged room do not by themselves prove the old encounter is still alive.",
+      "Example shows the source hook boundary, not a full recovered native function prototype."
+    ],
+    "related": [
+      "func_08000388_6B3628"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/boss_sync.c",
+        "line": 783,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "#include \"modding.h\"\n\nRECOMP_HOOK(\"func_080017F4_6B4A94\")\nvoid observe_080017f4(void *actor) {\n    if (!actor) return;\n    /* Record this setup event as a new encounter.\n       Wait for the root update before reading initialized health. */\n}",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation."
+  },
+  "func_08000388_6B3628": {
+    "title": "Update the Tsurami health root",
+    "summary": "Native main update installed on the health-bearing Tsurami root.",
+    "behavior": [
+      "Multiplayer tracks health at root+0x8D and uses this callback to rearm pending native defeat after room reentry. This root does not initialize the usual actor+0x5E entity ID, so pointer provenance comes from its unique initializer/callback.",
+      "Its custom damage path treats one remaining HP as lethal; multiplayer enters the common one-point pipeline at two HP to reach the root callback instead of generic HP-zero death."
+    ],
+    "cautions": [
+      "Do not validate this root with the usual entity ID 0xCB: that ID belongs to visual components.",
+      "Example shows the source hook boundary, not a full recovered native function prototype."
+    ],
+    "related": [
+      "func_080017F4_6B4A94",
+      "func_08002FFC_6B629C"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/boss_sync.c",
+        "line": 799,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern void func_08000388_6B3628(void *task, void *object);\n\n#include \"modding.h\"\n\nRECOMP_HOOK(\"func_08000388_6B3628\")\nvoid observe_08000388(void *actor) {\n    if (!actor) return;\n    unsigned char root_health = ((unsigned char *)actor)[0x8D];\n    (void)root_health;\n}",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation."
+  },
+  "func_08002FFC_6B629C": {
+    "title": "Enter the Tsurami native death state",
+    "summary": "Official Tsurami death entry reached through its custom remaining-health callback.",
+    "behavior": [
+      "The tracked root reaches this after the native damage pipeline leaves one HP. Multiplayer publishes the defeat event here and clears pending hit state, but still waits for the later teardown callback before committing remote progression."
+    ],
+    "cautions": [
+      "Death entry is earlier than completed destruction; reward/progression should wait for the terminal callback.",
+      "Example shows the source hook boundary, not a full recovered native function prototype."
+    ],
+    "related": [
+      "func_08000388_6B3628",
+      "func_08003A00_6B6CA0"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/boss_sync.c",
+        "line": 855,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "#include \"modding.h\"\n\nRECOMP_HOOK(\"func_08002FFC_6B629C\")\nvoid observe_08002ffc(void *actor) {\n    if (!actor) return;\n    /* Match the tracked Tsurami root and room.\n       Emit an encounter-scoped defeat event once. */\n}",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation."
+  },
+  "func_08003A00_6B6CA0": {
+    "title": "Finish Tsurami destruction",
+    "summary": "Native Tsurami terminal callback that tears down the root after destruction completes.",
+    "behavior": [
+      "The source documents scheduling only after destruction flag 0x1C1 and a post-destruction wait. Multiplayer commits its held fl_tsurami progression here, then clears encounter pending state."
+    ],
+    "cautions": [
+      "The original callback destroys the root; retained handles must be invalidated.",
+      "Example shows the source hook boundary, not a full recovered native function prototype."
+    ],
+    "related": [
+      "func_08002FFC_6B629C"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/boss_sync.c",
+        "line": 878,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "#include \"modding.h\"\n\nRECOMP_HOOK(\"func_08003A00_6B6CA0\")\nvoid observe_08003a00(void *actor) {\n    if (!actor) return;\n    /* Match the tracked root before native teardown.\n       This is the completion boundary for held progression. */\n}",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation."
+  },
+  "func_08003E64_6CC074": {
+    "title": "Initialize the Dharmanyo boss controller",
+    "summary": "Creates the actual Dharmanyo boss controller with twelve lives.",
+    "behavior": [
+      "The authoritative controller is entity 0xCC with lives at +0xD1. Multiplayer captures it during initialization so an early remote defeat cannot prematurely expose the progression bit.",
+      "Ordinary actor 0x132 is a separate bouncing Darumanyo enemy and is not this boss controller."
+    ],
+    "cautions": [
+      "Use entity 0xCC for this boss; ordinary enemy 0x132 has a different role.",
+      "Example shows the source hook boundary, not a full recovered native function prototype."
+    ],
+    "related": [
+      "func_08003F84_6CC194"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/boss_sync.c",
+        "line": 904,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "#include \"modding.h\"\n\nRECOMP_HOOK(\"func_08003E64_6CC074\")\nvoid observe_08003e64(void *actor) {\n    if (!actor) return;\n    /* Capture the controller setup event.\n       Wait for the first initialized combat update before reading lives. */\n}",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation."
+  },
+  "func_08003F84_6CC194": {
+    "title": "Update the Dharmanyo boss controller",
+    "summary": "Authoritative live Dharmanyo combat update using its separate lives counter.",
+    "behavior": [
+      "The controller resets generic health +0x8D to ten during ordinary updates; the actual encounter life count is byte +0xD1. It calls inner damage routine func_80218350 directly, unlike the Congo/Tsurami outer pipeline.",
+      "Multiplayer queues one final native hit only after validating this initialized controller and its hit timing."
+    ],
+    "cautions": [
+      "Generic actor HP is a damage carrier, not the boss remaining-lives value.",
+      "Example shows the source hook boundary, not a full recovered native function prototype."
+    ],
+    "related": [
+      "func_08003E64_6CC074",
+      "func_80218350_5D3820",
+      "func_0800432C_6CC53C"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/boss_sync.c",
+        "line": 918,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern void func_08003F84_6CC194(void *task, void *object);\n\n#include \"modding.h\"\n\nRECOMP_HOOK(\"func_08003F84_6CC194\")\nvoid observe_08003f84(void *actor) {\n    if (!actor) return;\n    unsigned char remaining_lives = ((unsigned char *)actor)[0xD1];\n    (void)remaining_lives;\n}",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation."
+  },
+  "func_0800432C_6CC53C": {
+    "title": "Consume a Dharmanyo life",
+    "summary": "Dharmanyo native hit callback that consumes a real boss life.",
+    "behavior": [
+      "When its hit timer +0xD6 is zero, entering with lives +0xD1 equal to one is the final-hit onset. The source documents native decrement to zero followed by the destruction callback chain.",
+      "Multiplayer sends a defeat event at this native last-life boundary, then waits for its post-fight controller before progression is released."
+    ],
+    "cautions": [
+      "Do not equate every hit callback with final defeat; validate lives and hit timer.",
+      "Example shows the source hook boundary, not a full recovered native function prototype."
+    ],
+    "related": [
+      "func_08003F84_6CC194",
+      "func_0800636C_6CE57C"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/boss_sync.c",
+        "line": 1036,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "#include \"modding.h\"\n\nRECOMP_HOOK(\"func_0800432C_6CC53C\")\nvoid observe_0800432c(void *actor) {\n    if (!actor) return;\n    unsigned short timer = *(unsigned short *)((char *)actor + 0xD6);\n    unsigned char lives = ((unsigned char *)actor)[0xD1];\n    if (timer == 0 && lives == 1) {\n        /* Last-life callback is beginning. */\n    }\n}",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation."
+  },
+  "func_0800636C_6CE57C": {
+    "title": "Update Dharmanyo post-fight controller",
+    "summary": "Native gauge/fade controller that waits for Dharmanyo destruction.",
+    "behavior": [
+      "The source documents polling destruction flag 0x16B, then scheduling a later wait and terminal callback func_080066E0. Multiplayer records this separate controller pointer only after native last-life onset."
+    ],
+    "cautions": [
+      "The terminal controller can have a different address from the health-bearing boss.",
+      "Example shows the source hook boundary, not a full recovered native function prototype."
+    ],
+    "related": [
+      "func_0800432C_6CC53C",
+      "func_080066E0_6CE8F0"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/boss_sync.c",
+        "line": 1059,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "#include \"modding.h\"\n\nRECOMP_HOOK(\"func_0800636C_6CE57C\")\nvoid observe_0800636c(void *actor) {\n    if (!actor) return;\n    /* This is the post-fight controller, not the combat actor.\n       Track it only for the current defeat sequence. */\n}",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation."
+  },
+  "func_080066E0_6CE8F0": {
+    "title": "Finish Dharmanyo post-fight teardown",
+    "summary": "Terminal Dharmanyo callback after the post-fight wait completes.",
+    "behavior": [
+      "The source documents native internal flag 0x16D and fight teardown at this boundary. Multiplayer matches the previously tracked post-fight controller, commits held fl_dharmanyo progression and clears the terminal pointer."
+    ],
+    "cautions": [
+      "Completion is tied to this terminal callback, not just lives zero or a reward bit.",
+      "Example shows the source hook boundary, not a full recovered native function prototype."
+    ],
+    "related": [
+      "func_0800636C_6CE57C"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/boss_sync.c",
+        "line": 1070,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "#include \"modding.h\"\n\nRECOMP_HOOK(\"func_080066E0_6CE8F0\")\nvoid observe_080066e0(void *actor) {\n    if (!actor) return;\n    /* Match the tracked post-fight controller and room.\n       Commit held progression before native cleanup completes. */\n}",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation."
+  },
+  "func_08001464_70B4A4": {
+    "title": "Update Benkei bridge encounter topology",
+    "summary": "Native bridge controller selecting the entrance challenge or post-fight interaction.",
+    "behavior": [
+      "The controller data pointer is at actor+0xD0; its phase byte is data+0x08 and owned child pointer is data+0x2C. It uses won flag 0x069 to choose post-fight topology, while durable dialogue flag 0x033 alone is insufficient.",
+      "Multiplayer repairs only idle phase 2 with no active fight flag 0x07A: it tears down that owned child, clears the pointer, sets phase zero, and lets the original update recreate the post-fight actor."
+    ],
+    "cautions": [
+      "Phases 3 and later are event/fight states and must finish through their own native paths.",
+      "Do not delete all Benkei actors to refresh dialogue; only the verified controller-owned idle child is eligible.",
+      "Example shows the source hook boundary, not a full recovered native function prototype."
+    ],
+    "related": [
+      "func_08000B98_70ABD8",
+      "func_80034EF8_35AF8"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/boss_sync.c",
+        "line": 1100,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "#include \"modding.h\"\n\nRECOMP_HOOK(\"func_08001464_70B4A4\")\nvoid observe_08001464(void *actor) {\n    if (!actor) return;\n    void *data = *(void **)((char *)actor + 0xD0);\n    if (!data) return;\n    unsigned char phase = ((unsigned char *)data)[0x08];\n    (void)phase;\n}",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation."
+  },
+  "func_08000B98_70ABD8": {
+    "title": "Update Benkei scripted combat",
+    "summary": "Benkei actor state machine for initialization, combat hits and fall animation.",
+    "behavior": [
+      "Benkei uses signed lives byte +0xD3, AI state byte +0xD0 and command byte +0xD2, rather than common actor health. Native combat states 2,5,6 consume status hit bit 0x80.",
+      "Multiplayer waits until state-zero initialization is complete, validates active fight flag 0x07A and entity 0x1C0, then queues a final hit only while no command is active. Its return hook observes lives zero and lets the native fall/reward sequence finish."
+    ],
+    "cautions": [
+      "The actor also exists as an idle NPC; health/lives alone do not prove a fight is active.",
+      "Do not drive Benkei through common +0x8D health or generic HP-zero death.",
+      "Example shows the source hook boundary, not a full recovered native function prototype."
+    ],
+    "related": [
+      "func_08001464_70B4A4"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/boss_sync.c",
+        "line": 1147,
+        "note": "Current mod source reviewed; native interpretation follows the documented call path."
+      }
+    ],
+    "confidence": "source-reviewed",
+    "example": "#include \"modding.h\"\n\nRECOMP_HOOK(\"func_08000B98_70ABD8\")\nvoid observe_08000b98(void *actor) {\n    if (!actor) return;\n    unsigned char state = ((unsigned char *)actor)[0xD0];\n    if (state == 0) return; /* Still initializing. */\n    signed char lives = *(signed char *)((char *)actor + 0xD3);\n    (void)lives;\n}",
+    "exampleExplanation": "Complete C syntax example with observed native declarations. It is an integration pattern for the lifecycle described above, not a standalone runnable program; native symbols and resources must be supplied by the recompilation."
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "name": "mnsg-documentation",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Mystical Ninja Starring Goemon native recompilation API reference",
+  "scripts": {
+    "generate": "python3 scripts/generate_docs.py",
+    "start": "npm run generate && docusaurus start",
+    "build": "npm run generate && docusaurus build",
+    "serve": "docusaurus serve",
+    "clear": "docusaurus clear",
+    "test": "python3 -m unittest discover -s tests -v && python3 scripts/validate_site.py"
+  },
+  "dependencies": {
+    "@docusaurus/core": "3.10.2",
+    "@docusaurus/preset-classic": "3.10.2",
+    "@mdx-js/react": "^3.0.1",
+    "clsx": "^2.1.1",
+    "prism-react-renderer": "^2.4.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "engines": {"node": ">=20.0"},
+  "browserslist": {
+    "production": [">0.5%", "not dead", "not op_mini all"],
+    "development": ["last 3 chrome versions", "last 3 firefox versions", "last 3 safari versions"]
+  }
+}

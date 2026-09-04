@@ -1,0 +1,1847 @@
+{
+  "func_80002040_2C40": {
+    "title": "Dispatch the current system step",
+    "summary": "Dispatches the callback selected by the current system step.",
+    "behavior": [
+      "Indexes a native callback table with the byte g_system->stepw and invokes that entry. The selected work can belong to title screens, menus, gameplay or transitions.",
+      "A return hook runs after that selected step completes and is a useful recurring integration boundary. It does not guarantee a loaded save or a live gameplay actor."
+    ],
+    "cautions": [
+      "Do not call this dispatcher recursively from its own hook.",
+      "Return hooks have no original arguments or return-value parameter. Guard against title screens, transitions, and stale actor pointers."
+    ],
+    "related": [
+      "D_8015C5C8_15D1C8",
+      "func_80003728_4328"
+    ],
+    "confidence": "decompiled",
+    "example": "#include \"modding.h\"\n\nRECOMP_HOOK_RETURN(\"func_80002040_2C40\")\nvoid on_system_step_finished(void) {\n    /* Check save, scene and object validity before gameplay work. */\n}",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources.",
+    "returns": "No return value."
+  },
+  "func_8020D6BC_5C8B8C": {
+    "title": "Gameplay stage resource loading",
+    "summary": "Gameplay stage resource-loading boundary.",
+    "behavior": [
+      "Identified as the gameplay stage resource-loading routine. Its return is an appropriate boundary for acquiring additional resident render resources after the normal scene resources are available.",
+      "Treat registry pointers and scene allocations as belonging to the current stage. Invalidate retained scene pointers before loading or binding resources for another stage. The complete native implementation is not reproduced here."
+    ],
+    "cautions": [
+      "Loading broad resources from a render/update callback can collide with the native resource lifecycle.",
+      "Overlay addresses and cached resource pointers cease to be valid across stage teardown."
+    ],
+    "related": [
+      "func_80013B14_14714",
+      "D_80167FC0_168BC0"
+    ],
+    "confidence": "source-reviewed",
+    "example": "#include \"modding.h\"\n\nRECOMP_HOOK_RETURN(\"func_8020D6BC_5C8B8C\")\nvoid after_stage_resources(void) {\n    /* Load scene-dependent resources; invalidate previous scene pointers. */\n}",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources."
+  },
+  "func_80034E08_35A08": {
+    "title": "Create and insert an engine task",
+    "summary": "Creates and inserts a native scheduler task with an update callback.",
+    "behavior": [
+      "Calls the task allocation helper, then adjusts the scheduler links through an insertion helper. The second helper returns the task pointer and assembly preserves that value in v0 through return.",
+      "The new task belongs under the supplied engine owner/list. Its update callback is independent of playable-character behavior; attaching a model object later creates visual state without creating player input or AI."
+    ],
+    "cautions": [
+      "Keep the owner valid and check allocation failure.",
+      "A non-null pointer alone does not prove a retained task is still linked after pool reuse."
+    ],
+    "related": [
+      "func_8000DBF0_E7F0",
+      "D_801FC604_5B8514",
+      "func_80034EF8_35AF8"
+    ],
+    "confidence": "decompiled",
+    "example": "extern void *func_80034E08_35A08(void *task_list, void (*update)(void *, void *),\n                                 unsigned short flags);\n\nstatic void model_update(void *task, void *object) {\n    (void)task;\n    (void)object;\n}\n\nvoid *make_model_task(void *owner) {\n    if (!owner) return 0;\n    return func_80034E08_35A08(owner, model_update, 0);\n}",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources.",
+    "parameters": [
+      {
+        "name": "task_list",
+        "type": "void *",
+        "description": "Engine task owner/list used for insertion."
+      },
+      {
+        "name": "update",
+        "type": "void (*)(void *, void *)",
+        "description": "Native scheduler-compatible update callback."
+      },
+      {
+        "name": "flags",
+        "type": "unsigned short",
+        "description": "Task flags; zero is the documented basic creation pattern."
+      }
+    ],
+    "returns": "Created/inserted task pointer, or null on allocation failure."
+  },
+  "func_8000DBF0_E7F0": {
+    "title": "Attach a model/display object to a task",
+    "summary": "Allocates and initializes a kind-2 model/display object beneath an engine task.",
+    "behavior": [
+      "Calls func_80035EEC_36AEC(task, 2, 1), then writes position at +0x08/+0x0C/+0x10, signed rotations at +0x14/+0x16/+0x18, scale at +0x1C/+0x20/+0x24, animation frame at +0x28, model command at +0x2C and animation context at +0x30.",
+      "Initializes file IDs at +0x34 and +0x3C and runs native segment binding. A zero model command starts hidden. For the clothed playable-character assets, render-mode byte +0x05 must be set explicitly to 2; this allocator does not initialize that byte."
+    ],
+    "cautions": [
+      "Supply a valid task before calling: the native function reaches its allocator before its null-task branch.",
+      "The animation-context constant and object mode in this example are specific to the clothed Goemon character assets.",
+      "This object provides visual rendering only. It does not create player input, collision, AI or character behavior."
+    ],
+    "related": [
+      "func_80034E08_35A08",
+      "func_80035EEC_36AEC",
+      "func_8001B5AC_1C1AC"
+    ],
+    "confidence": "decompiled",
+    "example": "extern void *func_8000DBF0_E7F0(void *task, unsigned int model_ptr, unsigned int anim_ptr,\n                                float x, float y, float z,\n                                short rot_x, short rot_y, short rot_z,\n                                float scale_x, float scale_y, float scale_z,\n                                short seg8_file_id, short seg9_file_id);\n\nvoid *create_hidden_model(void *task, float x, float y, float z) {\n    if (!task) return 0;\n    void *object = func_8000DBF0_E7F0(\n        task, 0, 0xC01FC680u, x, y, z,\n        0, 0, 0, 0.1f, 0.1f, 0.1f, 0, 0);\n    if (object) ((unsigned char *)object)[5] = 2;\n    return object;\n}",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources.",
+    "parameters": [
+      {
+        "name": "task",
+        "type": "void *",
+        "description": "Owning native task."
+      },
+      {
+        "name": "model_ptr",
+        "type": "unsigned int",
+        "description": "Encoded model-command pointer; zero starts hidden."
+      },
+      {
+        "name": "anim_ptr",
+        "type": "unsigned int",
+        "description": "Animation/render context pointer."
+      },
+      {
+        "name": "x, y, z",
+        "type": "float",
+        "description": "World position."
+      },
+      {
+        "name": "rot_x, rot_y, rot_z",
+        "type": "short",
+        "description": "Native signed-angle rotations."
+      },
+      {
+        "name": "scale_x, scale_y, scale_z",
+        "type": "float",
+        "description": "Scale on each axis."
+      },
+      {
+        "name": "seg8_file_id, seg9_file_id",
+        "type": "short",
+        "description": "File IDs used to initialize object segment bindings."
+      }
+    ],
+    "returns": "Display object pointer, or null on allocation failure."
+  },
+  "func_80013B14_14714": {
+    "title": "Load a resident scene file",
+    "summary": "Loads a file into the resident scene registry and advances the scene arena.",
+    "behavior": [
+      "Searches for an existing file or the first zero-file sentinel. For a new file, it loads the data, registers its segment metadata, then writes a following zero-file sentinel containing the next 64-byte-aligned destination. Certain files additionally require 4096-byte alignment and a cached-address tag.",
+      "Its return is the next arena cursor, not the loaded file base. Retrieve the registered base with func_800141C4_14DC4 after loading."
+    ],
+    "cautions": [
+      "The return is the next arena cursor / next registry entry data, not the loaded file base.",
+      "Only use a valid file ID during a scene-loading phase, with registry and arena capacity available.",
+      "Scene-resident pointers must be reacquired after a stage change."
+    ],
+    "related": [
+      "func_800141C4_14DC4",
+      "D_80167FC0_168BC0"
+    ],
+    "confidence": "decompiled",
+    "example": "extern void *func_80013B14_14714(unsigned int file_id);\n\nextern void *func_800141C4_14DC4(unsigned int file_id);\n\nvoid *load_scene_file(unsigned int file_id) {\n    if (!file_id) return 0;\n    func_80013B14_14714(file_id);\n    void *base = func_800141C4_14DC4(file_id);\n    if (base == (void *)(unsigned long)0xFFFFFFFFu) return 0;\n    return base;\n}",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources.",
+    "parameters": [
+      {
+        "name": "file_id",
+        "type": "unsigned int",
+        "description": "File ID; native decompilation narrows it to 16 bits."
+      }
+    ],
+    "returns": "Aligned next-free arena address (or next entry data if already loaded); null if the scan exhausts the registry."
+  },
+  "func_800141C4_14DC4": {
+    "title": "Look up a resident file",
+    "summary": "Looks up an already resident scene file without loading it.",
+    "behavior": [
+      "Scans D_80167FC0_168BC0 until a matching file ID or the zero-file sentinel. ID zero returns null; an absent nonzero ID returns 0xFFFFFFFF.",
+      "Use this to obtain loaded data and to preflight segmented-pointer resolution. A successful lookup does not extend the resource lifetime past scene teardown."
+    ],
+    "cautions": [
+      "Checking only null is insufficient: missing nonzero files return (void *)-1.",
+      "Registered bases may carry the cache tag used by the engine. Only normalize addresses according to the destination subsystem.",
+      "A successful lookup does not extend the resource lifetime beyond the current scene."
+    ],
+    "related": [
+      "func_80013B14_14714",
+      "func_80014840_15440",
+      "D_80167FC0_168BC0"
+    ],
+    "confidence": "decompiled",
+    "example": "extern void *func_800141C4_14DC4(unsigned int file_id);\n\nvoid *find_resident_file(unsigned int file_id) {\n    void *base = func_800141C4_14DC4(file_id);\n    if (!base || base == (void *)(unsigned long)0xFFFFFFFFu)\n        return 0;\n    return base;\n}",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources.",
+    "parameters": [
+      {
+        "name": "file_id",
+        "type": "unsigned int",
+        "description": "Resident scene file ID to locate."
+      }
+    ],
+    "returns": "Data pointer when found; null for ID zero; (void *)0xFFFFFFFF when absent."
+  },
+  "func_80001640_2240": {
+    "title": "Copy a ROM range to memory",
+    "summary": "Copies a ROM byte range to memory and waits for DMA completion.",
+    "behavior": [
+      "Invalidates destination data and instruction caches, starts a PI DMA read from ROM, blocks on its completion message, then returns. The function itself does not read the separate loader-mode byte.",
+      "The example preserves the surrounding loader-mode convention at address 0x8015C5D4 while copying raw action data. Decompression, destination allocation and scene registration are separate operations."
+    ],
+    "cautions": [
+      "The destination must already have capacity for the complete byte range and meet the DMA path alignment requirements.",
+      "This copies raw bytes; it does not by itself decompress or register the resource."
+    ],
+    "related": [
+      "func_80001D68_2968",
+      "func_80001D94_2994"
+    ],
+    "confidence": "decompiled",
+    "example": "extern void func_80001640_2240(unsigned int rom_addr, void *dst, unsigned int size);\n\nvoid copy_raw_rom_range(unsigned int start, unsigned int end, void *dst) {\n    if (!dst || end <= start) return;\n    volatile unsigned char *mode =\n        (volatile unsigned char *)0x8015C5D4;\n    unsigned char previous = *mode;\n    *mode = 1;\n    func_80001640_2240(start, dst, end - start);\n    *mode = previous;\n}",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources.",
+    "parameters": [
+      {
+        "name": "rom_addr",
+        "type": "unsigned int",
+        "description": "ROM source address."
+      },
+      {
+        "name": "dst",
+        "type": "void *",
+        "description": "Writable destination with sufficient capacity."
+      },
+      {
+        "name": "size",
+        "type": "unsigned int",
+        "description": "Number of bytes to copy."
+      }
+    ],
+    "returns": "No return value."
+  },
+  "func_80001D68_2968": {
+    "title": "Get a file ROM start",
+    "summary": "Returns the ROM start address for a file-table ID.",
+    "behavior": [
+      "Query both ROM boundaries to calculate the stored file length. Reject end <= start before allocating a destination or requesting DMA.",
+      "The boundaries describe stored ROM bytes. Whether they are raw model data or a compressed file depends on the selected asset."
+    ],
+    "cautions": [
+      "A plausible ROM range does not prove the selected file is raw rather than compressed. The character action-file table identifies known raw model data."
+    ],
+    "related": [
+      "func_80001640_2240",
+      "D_80204028_5BFF38"
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern unsigned int func_80001D68_2968(unsigned int file_id);\n\nextern unsigned int func_80001D94_2994(unsigned int file_id);\n\n/* File ID must identify a known raw action-model file. */\nunsigned int raw_file_size(unsigned int file_id) {\n    unsigned int start = func_80001D68_2968(file_id);\n    unsigned int end = func_80001D94_2994(file_id);\n    return end > start ? end - start : 0;\n}\n",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources.",
+    "parameters": [
+      {
+        "name": "file_id",
+        "type": "unsigned int",
+        "description": "File-table ID."
+      }
+    ],
+    "returns": "ROM start address as unsigned int."
+  },
+  "func_80001D94_2994": {
+    "title": "Get a file ROM end",
+    "summary": "Returns the ROM end address for a file-table ID.",
+    "behavior": [
+      "Query both ROM boundaries to calculate the stored file length. Reject end <= start before allocating a destination or requesting DMA.",
+      "The boundaries describe stored ROM bytes. Whether they are raw model data or a compressed file depends on the selected asset."
+    ],
+    "cautions": [
+      "A plausible ROM range does not prove the selected file is raw rather than compressed. The character action-file table identifies known raw model data."
+    ],
+    "related": [
+      "func_80001640_2240",
+      "D_80204028_5BFF38"
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern unsigned int func_80001D68_2968(unsigned int file_id);\n\nextern unsigned int func_80001D94_2994(unsigned int file_id);\n\n/* File ID must identify a known raw action-model file. */\nunsigned int raw_file_size(unsigned int file_id) {\n    unsigned int start = func_80001D68_2968(file_id);\n    unsigned int end = func_80001D94_2994(file_id);\n    return end > start ? end - start : 0;\n}\n",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources.",
+    "parameters": [
+      {
+        "name": "file_id",
+        "type": "unsigned int",
+        "description": "File-table ID."
+      }
+    ],
+    "returns": "ROM end address as unsigned int."
+  },
+  "func_800145B4_151B4": {
+    "title": "Load an auxiliary resource into a buffer",
+    "summary": "Loads a resource ID into a supplied destination and returns its output end pointer.",
+    "behavior": [
+      "IDs below 0x8000 use the general file loader. IDs 0x8000 through 0x876F identify packed raw resource slices: the routine resolves ROM address and length, then copies the slice with synchronous DMA. IDs at or above 0x8770 leave the destination unchanged.",
+      "This routine has no capacity argument. Validate the asset and output size before use. Timed face/part animation can load into an alternate buffer and then rebind the corresponding object segment."
+    ],
+    "cautions": [
+      "The API has no destination-capacity parameter; caller validation is required.",
+      "Stored ROM size is not generally the decompressed output size for IDs below 0x8000; only use the fixed-buffer pattern for assets whose output is known to fit.",
+      "Texture/display-list buffers used by this renderer must stay in original 8 MiB RDRAM; an extended recomp heap address can be truncated by graphics commands."
+    ],
+    "related": [
+      "func_80014698_15298",
+      "D_80203FF0_5BFF00",
+      "D_80203FF8_5BFF08"
+    ],
+    "confidence": "decompiled",
+    "example": "extern unsigned char *func_800145B4_151B4(unsigned int resource_id, void *dst);\n\nextern int func_80014698_15298(unsigned int resource_id, void *rom_address_out);\n\nunsigned char *load_aux(unsigned int id, unsigned char *buffer) {\n    /* This bounded example accepts packed raw resources only. */\n    if (!buffer || id < 0x8000u || id >= 0x8770u) return 0;\n    int size = func_80014698_15298(id, 0);\n    if (size <= 0 || size > 0x1000) return 0;\n    unsigned char *end = func_800145B4_151B4(id, buffer);\n    return end > buffer && end <= buffer + 0x1000 ? end : 0;\n}",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources.",
+    "parameters": [
+      {
+        "name": "resource_id",
+        "type": "unsigned int",
+        "description": "General-file or packed-resource ID."
+      },
+      {
+        "name": "dst",
+        "type": "void *",
+        "description": "Caller-owned writable output buffer."
+      }
+    ],
+    "returns": "Pointer just past the loaded data; unchanged dst for an out-of-range resource ID."
+  },
+  "func_80014698_15298": {
+    "title": "Query a resource ROM size and address",
+    "summary": "Returns a resource stored ROM length and optionally its ROM address.",
+    "behavior": [
+      "For file IDs below 0x8000, subtracts the ROM start from the end. For packed resource IDs, resolves the offset within the containing file and determines the next boundary or containing-file end.",
+      "A null ROM-address output pointer requests only the size. IDs at or above 0x8770 return zero and write zero when an output pointer is supplied."
+    ],
+    "cautions": [
+      "This reports stored size, not a universal decompressed capacity requirement.",
+      "IDs >=0x8770 return zero and write zero when an output pointer is supplied."
+    ],
+    "related": [
+      "func_800145B4_151B4",
+      "func_80001D68_2968",
+      "func_80001D94_2994"
+    ],
+    "confidence": "decompiled",
+    "example": "extern int func_80014698_15298(unsigned int resource_id, void *rom_address_out);\n\n/* Queries stored ROM bytes, not decompressed output capacity. */\nint query_resource(unsigned int resource_id, unsigned int *rom_address) {\n    if (!rom_address) return 0;\n    return func_80014698_15298(resource_id, rom_address);\n}\n",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources.",
+    "parameters": [
+      {
+        "name": "resource_id",
+        "type": "unsigned int",
+        "description": "Resource ID to inspect."
+      },
+      {
+        "name": "rom_address_out",
+        "type": "void *",
+        "description": "Optional pointer to a 32-bit ROM-address output; null is allowed."
+      }
+    ],
+    "returns": "Stored byte length as int; zero for an out-of-range ID."
+  },
+  "func_8001B5AC_1C1AC": {
+    "title": "Read the bound model animation length",
+    "summary": "Resolves a display object model command and returns its animation frame count.",
+    "behavior": [
+      "Reads the encoded model pointer at object+0x2C, accepts supported pointer kinds, resolves positive segmented pointers through object segment bases, and returns the low byte of the resolved header as a float.",
+      "Unsupported model encodings and a zero model pointer return 0.0. Use a positive result to bound animation frame +0x28 or normalize animation phase."
+    ],
+    "cautions": [
+      "Pass a live display/model object, not a player task.",
+      "The function does not validate that an arbitrary pointer is safe to dereference. Check object lifetime and resource binding first.",
+      "Zero is a valid unsupported/empty model result; never divide by it when normalizing animation phase."
+    ],
+    "related": [
+      "D_801FC60C_5B851C",
+      "func_8000DBF0_E7F0",
+      "D_80203F34_5BFE44"
+    ],
+    "confidence": "decompiled",
+    "example": "extern float func_8001B5AC_1C1AC(void *model);\n\n/* Caller supplies a live display object with valid resident model bindings. */\nvoid wrap_model_frame(void *object) {\n    if (!object) return;\n    float count = func_8001B5AC_1C1AC(object);\n    if (count > 0.0f) {\n        float *frame = (float *)((unsigned char *)object + 0x28);\n        if (*frame >= count) *frame = 0.0f;\n    }\n}\n",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources.",
+    "parameters": [
+      {
+        "name": "object",
+        "type": "void *",
+        "description": "Live model/display object with initialized segment bases."
+      }
+    ],
+    "returns": "Frame count as float, or 0.0 for unsupported/empty model encodings."
+  },
+  "func_8001C3E0_1CFE0": {
+    "title": "Replace model display pointers",
+    "summary": "Applies a display-pointer replacement table to a bound model tree.",
+    "behavior": [
+      "Traverses model data and replaces matching display pointers. The native character appearance path uses this for transformations such as Goemon Sudden Impact hair.",
+      "Replacement mutates pointed-to model data. To customize one instance without affecting other instances, bind that object to a private writable action-data copy before applying the replacement table."
+    ],
+    "cautions": [
+      "This mutates model data. Never use it against shared immutable action caches when multiple models need independent appearance.",
+      "Model pointer zero is the call pattern used after the object has been bound; do not infer it means any arbitrary object is valid."
+    ],
+    "related": [
+      "D_80204048_5BFF58",
+      "D_80203F34_5BFE44"
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern void *D_80204048_5BFF58[];\n\nextern int func_8001C3E0_1CFE0(void *object, unsigned int model_ptr,\n                               const void *replacement_table);\n\n/* object must bind a private, writable Goemon action-model copy. */\nint apply_private_sudden_impact(void *object) {\n    if (!object) return 0;\n    return func_8001C3E0_1CFE0(object, 0, D_80204048_5BFF58[1]);\n}\n",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources.",
+    "parameters": [
+      {
+        "name": "object",
+        "type": "void *",
+        "description": "Display object with valid model bindings."
+      },
+      {
+        "name": "model_ptr",
+        "type": "unsigned int",
+        "description": "Model pointer/selector; the renderer passes zero for its bound model."
+      },
+      {
+        "name": "replacement_table",
+        "type": "const void *",
+        "description": "Stock display-pointer replacement table."
+      }
+    ],
+    "returns": "Integer success result as tested by the recovered call pattern; exact additional values are not established."
+  },
+  "D_801FC604_5B8514": {
+    "title": "Live player task pointer",
+    "summary": "Pointer to the current live player task.",
+    "behavior": [
+      "The task contains the selected character byte at +0x60 and current action byte at +0xCC. It also owns the primary display object and can provide an owner for appropriately scoped visual child tasks.",
+      "The task pool can reuse an address after a room transition. Validate scene, linkage and ownership before retaining or dereferencing this pointer."
+    ],
+    "cautions": [
+      "Pointers are reused by the task pool; compare lifecycle/ownership as well as address.",
+      "The 0x80000000 engine sentinel is not a live object."
+    ],
+    "related": [
+      "D_801FC60C_5B851C",
+      "func_80034E08_35A08"
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern void *D_801FC604_5B8514;\n\n/* Call only in a live gameplay scene after validating task ownership. */\nint read_current_player_action(void) {\n    void *task = D_801FC604_5B8514;\n    if (!task || task == (void *)0x80000000u) return -1;\n    return ((const unsigned char *)task)[0xCC];\n}\n",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources."
+  },
+  "D_801FC60C_5B851C": {
+    "title": "Live player display object",
+    "summary": "Pointer to the current player model/display object.",
+    "behavior": [
+      "Assigned from the player task primary object at task+0x18. The display layout contains position floats at +0x08/+0x0C/+0x10, signed rotations at +0x14/+0x16/+0x18 and animation frame at +0x28.",
+      "Use this object for model transforms and animation inspection. It is distinct from the player task pointer D_801FC604_5B8514."
+    ],
+    "cautions": [
+      "PlayerObject is a partial native layout containing only the displayed fields.",
+      "Do not confuse this display object with D_801FC604, the task pointer."
+    ],
+    "related": [
+      "D_801FC604_5B8514",
+      "func_8001B5AC_1C1AC"
+    ],
+    "confidence": "source-reviewed",
+    "example": "typedef struct PlayerObject {\n    unsigned char header[8];\n    float x, y, z;\n} PlayerObject;\n\nextern PlayerObject *D_801FC60C_5B851C;\n\n/* The current scene must own this live player display object. */\nint read_player_position(float *x, float *y, float *z) {\n    PlayerObject *object = D_801FC60C_5B851C;\n    if (!object || object == (PlayerObject *)0x80000000u || !x || !y || !z)\n        return 0;\n    *x = object->x;\n    *y = object->y;\n    *z = object->z;\n    return 1;\n}\n",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources."
+  },
+  "D_8020D1C0_5C90D0": {
+    "title": "Camera vector used for projection",
+    "summary": "Three floating-point camera components used for gameplay projection.",
+    "behavior": [
+      "Exposed as a vector of three consecutive floats and paired with D_8020D1D0_5C90E0 by the gameplay camera projection convention.",
+      "The observed use identifies a camera offset/vector; it does not establish a complete camera matrix contract or prove the same interpretation in every cutscene."
+    ],
+    "cautions": [
+      "Vec3f here is a partial layout of three consecutive floats.",
+      "Its projection meaning is tied to the current gameplay camera, not arbitrary cutscenes."
+    ],
+    "related": [
+      "D_8020D1D0_5C90E0"
+    ],
+    "confidence": "source-reviewed",
+    "example": "typedef struct Vec3f { float x, y, z; } Vec3f;\n\nextern Vec3f D_8020D1C0_5C90D0;\n\n/* Use the current gameplay camera projection convention. */\nVec3f read_camera_vector(void) {\n    return D_8020D1C0_5C90D0;\n}\n",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources."
+  },
+  "D_8020D1D0_5C90E0": {
+    "title": "Camera radius used for projection",
+    "summary": "Floating-point camera radius used by gameplay projection.",
+    "behavior": [
+      "Paired with the camera vector D_8020D1C0_5C90D0 when projecting world positions. Its read role is established; general camera-control behavior from writing it is not."
+    ],
+    "cautions": [
+      "Do not write this value as a substitute for the native camera state machine."
+    ],
+    "related": [
+      "D_8020D1C0_5C90D0"
+    ],
+    "confidence": "source-reviewed",
+    "example": "typedef struct Vec3f { float x, y, z; } Vec3f;\n\nextern Vec3f D_8020D1C0_5C90D0;\n\nextern float D_8020D1D0_5C90E0;\n\n/* Pair with D_8020D1C0_5C90D0 in the matching gameplay projector. */\nfloat read_camera_radius(void) {\n    return D_8020D1D0_5C90E0;\n}\n",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources."
+  },
+  "D_80167FC0_168BC0": {
+    "title": "Scene resource registry and arena cursor",
+    "summary": "Resident scene-file registry with a sentinel allocation cursor.",
+    "behavior": [
+      "An array of 48 records. Each record contains a 16-bit file ID, 16-bit padding and data pointer. The first record with file ID zero terminates the resident list; its data pointer gives the next free scene-arena destination.",
+      "Native loading updates the sentinel after each resource. Any additional scene allocation must preserve alignment, bounds and the cursor so later loads cannot overwrite it."
+    ],
+    "cautions": [
+      "Do not overwrite the sentinel cursor without checking bounds, alignment and all later allocations.",
+      "Model texture buffers need original RDRAM addresses below 0x80800000.",
+      "All registry-backed addresses are scene-lifetime resources."
+    ],
+    "related": [
+      "func_80013B14_14714",
+      "func_800141C4_14DC4"
+    ],
+    "confidence": "source-reviewed",
+    "example": "#define SCENE_RESOURCE_ENTRY_COUNT 48\ntypedef struct SceneResourceEntry {\n    unsigned short file_id, padding;\n    unsigned char *data;\n} SceneResourceEntry;\n\nextern SceneResourceEntry D_80167FC0_168BC0[SCENE_RESOURCE_ENTRY_COUNT];\n\n/* Inspect only after the native stage resource registry is initialized. */\nvoid *scene_arena_cursor(void) {\n    for (int i = 0; i < SCENE_RESOURCE_ENTRY_COUNT; ++i) {\n        if (D_80167FC0_168BC0[i].file_id == 0)\n            return D_80167FC0_168BC0[i].data;\n    }\n    return 0;\n}\n",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources."
+  },
+  "D_80203F34_5BFE44": {
+    "title": "Per-character action metadata tables",
+    "summary": "Per-character pointers to 0x1C-byte action metadata records.",
+    "behavior": [
+      "Character indices are Goemon=0, Ebisumaru=1, Sasuke=2 and Yae=3. Known fields include model command +0x00, animation speed scaled by 100 at +0x04, data range +0x0C/+0x10, auxiliary selector +0x14 and auxiliary resource table +0x18.",
+      "An action index selects a record within that character table. The documented action range is 0 through 0xE7. Validate the selected data range against its action-file length before binding it."
+    ],
+    "cautions": [
+      "These are immutable metadata tables. Do not mutate shared action data to customize one remote.",
+      "The numeric action limit and layout are specific to this game version."
+    ],
+    "related": [
+      "D_80204028_5BFF38",
+      "func_8001B5AC_1C1AC"
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern unsigned char *D_80203F34_5BFE44[];\n\n/* The gameplay overlay containing these tables must be resident. */\nconst unsigned char *character_action_record(unsigned int character,\n                                             unsigned int action) {\n    if (character >= 4u || action >= 0xE8u) return 0;\n    return D_80203F34_5BFE44[character] + action * 0x1C;\n}\n",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources."
+  },
+  "D_80203FF0_5BFF00": {
+    "title": "Initial auxiliary segment descriptors",
+    "summary": "Initial face/part segment descriptors for two auxiliary channels.",
+    "behavior": [
+      "Each channel uses two bytes. The second byte selects the object segment whose base is written at +0x38 + segment*8 when the action initial auxiliary resource is staged.",
+      "The first byte purpose is not established by the documented lookup."
+    ],
+    "cautions": [
+      "The first descriptor byte is not explained by the documented lookup; do not invent a meaning for it."
+    ],
+    "related": [
+      "D_80203FF8_5BFF08",
+      "func_800145B4_151B4"
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern unsigned char D_80203FF0_5BFF00[];\n\n/* The returned value still needs validation for the target object. */\nint initial_aux_segment(unsigned int channel) {\n    if (channel >= 2u) return -1;\n    return D_80203FF0_5BFF00[channel * 2 + 1];\n}\n",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources."
+  },
+  "D_80203FF8_5BFF08": {
+    "title": "Timed auxiliary segment descriptors",
+    "summary": "Timed face/part segment descriptors for two auxiliary channels.",
+    "behavior": [
+      "The low byte of each 16-bit descriptor selects the object segment to rebind when a timed auxiliary resource changes during an action.",
+      "The high byte meaning is not established here. Load the replacement buffer before rebinding its segment."
+    ],
+    "cautions": [
+      "The high byte is not consumed by this documented use and its meaning is unverified."
+    ],
+    "related": [
+      "D_80203FF0_5BFF00",
+      "func_800145B4_151B4"
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern unsigned short D_80203FF8_5BFF08[];\n\n/* Selects the segment to rebind after loading a timed auxiliary frame. */\nint timed_aux_segment(unsigned int channel) {\n    if (channel >= 2u) return -1;\n    return D_80203FF8_5BFF08[channel] & 0xFFu;\n}\n",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources."
+  },
+  "D_80204020_5BFF30": {
+    "title": "Broad character resource IDs",
+    "summary": "Four broad/clothed character resource file IDs.",
+    "behavior": [
+      "Index order is Goemon, Ebisumaru, Sasuke, Yae. Load the selected file into the scene registry, obtain its registered base and bind that base to segment 9 of a matching character display object.",
+      "Loading a render resource does not construct a playable character task."
+    ],
+    "cautions": [
+      "Treat this table as read-only; loading does not construct a playable character."
+    ],
+    "related": [
+      "D_80204028_5BFF38",
+      "func_80013B14_14714"
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern unsigned short D_80204020_5BFF30[];\n\nextern void *func_80013B14_14714(unsigned int file_id);\n\nextern void *func_800141C4_14DC4(unsigned int file_id);\n\n/* Call during stage resource loading with room in the native scene arena. */\nvoid *load_character_broad_file(unsigned int character) {\n    if (character >= 4u) return 0;\n    unsigned int file_id = D_80204020_5BFF30[character];\n    func_80013B14_14714(file_id);\n    void *base = func_800141C4_14DC4(file_id);\n    return base == (void *)0xFFFFFFFFu ? 0 : base;\n}\n",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources."
+  },
+  "D_80204028_5BFF38": {
+    "title": "Raw action-model file IDs",
+    "summary": "Four file IDs for raw playable-character action-model data.",
+    "behavior": [
+      "Index order is Goemon, Ebisumaru, Sasuke, Yae. The action metadata in D_80203F34_5BFE44 supplies ranges within the corresponding raw file.",
+      "The whole file may be cached and shared read-only. Per-instance appearance substitutions require private writable slices rather than modification of the shared cache."
+    ],
+    "cautions": [
+      "Only index 0..3. Action records must be range-checked against the cached file length."
+    ],
+    "related": [
+      "D_80203F34_5BFE44",
+      "D_80204020_5BFF30"
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern unsigned short D_80204028_5BFF38[];\n\nextern unsigned int func_80001D68_2968(unsigned int file_id);\n\nextern unsigned int func_80001D94_2994(unsigned int file_id);\n\n/* Return the raw ROM bounds; this does not load or allocate the file. */\nint character_action_rom_range(unsigned int character,\n                               unsigned int *start, unsigned int *end) {\n    if (character >= 4u || !start || !end) return 0;\n    unsigned int id = D_80204028_5BFF38[character];\n    *start = func_80001D68_2968(id);\n    *end = func_80001D94_2994(id);\n    return *end > *start;\n}\n",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources."
+  },
+  "D_80204048_5BFF58": {
+    "title": "Player appearance replacement tables",
+    "summary": "Table of native player-model display-pointer replacements.",
+    "behavior": [
+      "Known Goemon entries are index 1 for applying Sudden Impact hair pointers and index 2 for restoring the original pointers. Apply a table with func_8001C3E0_1CFE0.",
+      "Only those entries have an established purpose here; other indices should not be assigned guessed meanings."
+    ],
+    "cautions": [
+      "Only indices 1 and 2 have an established purpose in these sources.",
+      "The operation changes pointed-to model data; shared caches must remain pristine."
+    ],
+    "related": [
+      "func_8001C3E0_1CFE0"
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern void *D_80204048_5BFF58[];\n\nextern int func_8001C3E0_1CFE0(void *object, unsigned int model_ptr,\n                               const void *replacement_table);\n\n/* object must bind a private, writable Goemon action-model copy. */\nint apply_private_sudden_impact(void *object) {\n    if (!object) return 0;\n    return func_8001C3E0_1CFE0(object, 0, D_80204048_5BFF58[1]);\n}\n",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources."
+  },
+  "func_80035D8C_3698C": {
+    "title": "Pop an engine pool record",
+    "summary": "Pops one record from a kind-specific native free list.",
+    "behavior": [
+      "Returns null when the free list is empty. Otherwise removes the head, clears its next pointer and high-bit marker, increments D_8016DAD8[kind], and returns the record.",
+      "This low-level helper does not perform an allocation-limit check or attach the record to an owner. Higher-level task allocators supply those responsibilities."
+    ],
+    "cautions": [
+      "No capacity or kind bounds check is visible in this helper; caller must select a valid pool kind.",
+      "A successful raw allocation must be attached/released correctly or the pool record leaks."
+    ],
+    "related": [
+      "func_80035EEC_36AEC",
+      "func_80036448_37048",
+      "D_8016DAD8_16E6D8"
+    ],
+    "confidence": "decompiled",
+    "example": "extern void *func_80035D8C_3698C(short kind);\n\n/* Low-level allocator primitive only. Caller must attach the returned\n * record and release it through the native engine path. */\nvoid *take_kind2_pool_record(void) {\n    return func_80035D8C_3698C(2);\n}\n",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources.",
+    "parameters": [
+      {
+        "name": "kind",
+        "type": "short",
+        "description": "Native pool-record kind; display objects use kind 2."
+      }
+    ],
+    "returns": "Record pointer or null when that free list is empty."
+  },
+  "func_80035EEC_36AEC": {
+    "title": "Allocate task-owned pool records",
+    "summary": "Allocates a bounded chain of native records and appends them to a task.",
+    "behavior": [
+      "Uses count & 0xFF and checks the requested kind capacity minus its active count. Each record is obtained through func_80035D8C. Task+0x18 holds the list head and task+0x1C the tail.",
+      "The first allocated record is returned. A later allocation failure returns null even if earlier records have already been appended, so this is not an all-or-nothing transaction."
+    ],
+    "cautions": [
+      "Count is truncated to eight bits; 256 becomes zero.",
+      "A mid-loop failure returns null after earlier records have already been appended. It is not an all-or-nothing allocator.",
+      "Raising a limit alone does not create more free-list backing records."
+    ],
+    "related": [
+      "func_80035D8C_3698C",
+      "func_8000DBF0_E7F0",
+      "D_8006D350_6DF50"
+    ],
+    "confidence": "decompiled",
+    "example": "extern void *func_80035EEC_36AEC(void *task, short kind, unsigned int count);\n\n/* task must be a live native owner with an initialized record list. */\nvoid *allocate_task_display_record(void *task) {\n    if (!task) return 0;\n    return func_80035EEC_36AEC(task, 2, 1);\n}\n",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources.",
+    "parameters": [
+      {
+        "name": "task",
+        "type": "void *",
+        "description": "Valid owning task with native record-list fields."
+      },
+      {
+        "name": "kind",
+        "type": "short",
+        "description": "Native pool-record kind."
+      },
+      {
+        "name": "count",
+        "type": "unsigned int",
+        "description": "Requested record count; native code uses the low byte."
+      }
+    ],
+    "returns": "First allocated record; null for zero count, capacity failure or pool exhaustion."
+  },
+  "func_80036448_37048": {
+    "title": "Allocate a single kind-2 record",
+    "summary": "Allocates a single kind-2 model/display pool record.",
+    "behavior": [
+      "Increments D_8016DAB0 and updates its peak before checking capacity. If D_8006D320 is present, recycles one existing record from that owner; otherwise checks the kind-2 capacity against D_8016DADC.",
+      "Finally pops kind 2 through func_80035D8C. The returned bare record still requires appropriate initialization, attachment and eventual native release."
+    ],
+    "cautions": [
+      "This returns a bare pool record; it does not initialize a complete render object or attach it to your task.",
+      "Telemetry is incremented even when allocation fails, so it is not identical to the active kind-2 counter."
+    ],
+    "related": [
+      "func_80035D8C_3698C",
+      "func_80036058_36C58",
+      "D_8016DADC_16E6DC"
+    ],
+    "confidence": "decompiled",
+    "example": "extern void *func_80036448_37048(void);\n\n/* Low-level primitive: the caller still owns initialization/attachment. */\nvoid *allocate_single_display_record(void) {\n    return func_80036448_37048();\n}\n",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources.",
+    "returns": "Kind-2 record pointer or null on failure."
+  },
+  "func_80036058_36C58": {
+    "title": "Recycle records from an owner list",
+    "summary": "Removes and releases records from a native owner list.",
+    "behavior": [
+      "Uses owner+0x18 as the record head, advances the chain, clears owner+0x1C when empty and releases the removed record. The count argument is narrowed to a byte.",
+      "The single kind-2 allocator uses this to recycle one record from its optional owner before reusing the native free list."
+    ],
+    "cautions": [
+      "This removes existing engine-owned records; do not call it on an unrelated task or arbitrary memory.",
+      "The integer result can contain a removed record address and is not documented as a simple boolean; the current allocator ignores it."
+    ],
+    "related": [
+      "func_80036448_37048",
+      "D_8006D320_6DF20"
+    ],
+    "confidence": "decompiled",
+    "example": "extern void *D_8006D320_6DF20;\n\nextern int func_80036058_36C58(void *list, int count);\n\n/* This deliberately releases an existing record. Use only inside the\n * verified native allocator/recycling path, not an arbitrary frame hook. */\nvoid recycle_one_overflow_record(void) {\n    if (D_8006D320_6DF20)\n        (void)func_80036058_36C58(D_8006D320_6DF20, 1);\n}\n",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources.",
+    "parameters": [
+      {
+        "name": "list",
+        "type": "void *",
+        "description": "Native owner/list object whose records can be recycled."
+      },
+      {
+        "name": "count",
+        "type": "int",
+        "description": "Number of records to release; low eight bits used by native routine."
+      }
+    ],
+    "returns": "Native integer/address result; zero is used for empty/short-list paths. Do not dereference a released record."
+  },
+  "D_8016DAD8_16E6D8": {
+    "title": "Per-kind active pool counters",
+    "summary": "Signed 16-bit active-allocation counters indexed by native pool kind.",
+    "behavior": [
+      "Incremented by the low-level free-list pop and maintained by native release paths. Task-chain allocation compares each active count to the corresponding D_8006D350 capacity."
+    ],
+    "cautions": [
+      "Treat engine counters as read-only outside a verified allocator patch; release paths depend on consistency."
+    ],
+    "related": [
+      "D_8006D350_6DF50",
+      "func_80035EEC_36AEC"
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern short D_8016DAD8_16E6D8[];\n\nshort active_display_records(void) {\n    return D_8016DAD8_16E6D8[2];\n}\n",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources."
+  },
+  "D_8016DADC_16E6DC": {
+    "title": "Active kind-2 pool count",
+    "summary": "Active kind-2 display/model allocation count.",
+    "behavior": [
+      "This address aliases element 2 of D_8016DAD8_16E6D8. The single-record allocator compares it with the kind-2 capacity before taking another free record."
+    ],
+    "cautions": [
+      "Treat engine counters as read-only outside a verified allocator patch; release paths depend on consistency."
+    ],
+    "related": [
+      "D_8016DAD8_16E6D8",
+      "func_80036448_37048"
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern unsigned short D_8006D350_6DF50[];\n\nextern short D_8016DADC_16E6DC;\n\nint remaining_display_allowance(void) {\n    return (int)D_8006D350_6DF50[2] - D_8016DADC_16E6DC;\n}\n",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources."
+  },
+  "D_8006D350_6DF50": {
+    "title": "Per-kind pool capacity table",
+    "summary": "Unsigned 16-bit allocation limits indexed by native pool kind.",
+    "behavior": [
+      "The chain allocator subtracts active counts from this table to decide whether a request fits. Element 2 controls model/display records.",
+      "Changing a numeric limit does not create backing records or expand related actor-owner capacity. Engine initialization can restore the table; any capacity customization must account for the complete pool lifecycle."
+    ],
+    "cautions": [
+      "Treat engine counters as read-only outside a verified allocator patch; release paths depend on consistency."
+    ],
+    "related": [
+      "D_8016DAD8_16E6D8",
+      "func_80035EEC_36AEC"
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern unsigned short D_8006D350_6DF50[];\n\nunsigned short display_record_limit(void) {\n    return D_8006D350_6DF50[2];\n}\n",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources."
+  },
+  "D_8006D320_6DF20": {
+    "title": "Optional record recycling owner",
+    "summary": "Optional native owner whose records may be recycled before a kind-2 allocation.",
+    "behavior": [
+      "When non-null, func_80036448 asks func_80036058 to release one record from this owner before popping from the normal kind-2 free list. Do not treat it as an arbitrary heap pointer."
+    ],
+    "cautions": [
+      "Treat engine counters as read-only outside a verified allocator patch; release paths depend on consistency."
+    ],
+    "related": [
+      "func_80036448_37048",
+      "func_80036058_36C58"
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern void *D_8006D320_6DF20;\n\nint has_display_recycling_owner(void) {\n    return D_8006D320_6DF20 != 0;\n}\n",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources."
+  },
+  "D_8016DAB0_16E6B0": {
+    "title": "Single-allocation telemetry counter",
+    "summary": "Unsigned 16-bit telemetry counter for single kind-2 allocation requests.",
+    "behavior": [
+      "Incremented before capacity checks and failures in func_80036448. It is therefore distinct from the active record count D_8016DADC. Its broader reset interval is not established here."
+    ],
+    "cautions": [
+      "Treat engine counters as read-only outside a verified allocator patch; release paths depend on consistency."
+    ],
+    "related": [
+      "D_8016DAB2_16E6B2",
+      "D_8016DADC_16E6DC"
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern unsigned short D_8016DAB0_16E6B0;\n\nunsigned short display_allocation_telemetry(void) {\n    return D_8016DAB0_16E6B0;\n}\n",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources."
+  },
+  "D_8016DAB2_16E6B2": {
+    "title": "Peak single-allocation telemetry",
+    "summary": "Unsigned 16-bit peak of the single-allocation telemetry counter.",
+    "behavior": [
+      "Raised when the incremented D_8016DAB0 exceeds the current peak. This telemetry is not a memory-capacity value or a substitute for active-allocation counters."
+    ],
+    "cautions": [
+      "Treat engine counters as read-only outside a verified allocator patch; release paths depend on consistency."
+    ],
+    "related": [
+      "D_8016DAB0_16E6B0"
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern unsigned short D_8016DAB2_16E6B2;\n\nunsigned short peak_display_allocation_telemetry(void) {\n    return D_8016DAB2_16E6B2;\n}\n",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources."
+  },
+  "D_8015C608_15D208": {
+    "title": "Packed save flags and item data base",
+    "summary": "Save-data reference base containing packed flags and structured fields.",
+    "behavior": [
+      "The fresh-save initializer clears 0x304 bytes beginning here, seeds game defaults and copies the block to backup memory. An event flag ID n selects byte n>>3 and bit n&7.",
+      "Known 32-bit fields include recruited characters at +0x94,+0x98,+0x9C,+0xA0 and weapon levels at +0xA4 through +0xB0. The spawn room is a 16-bit field at +0x204, followed by rotation/coordinate fields from +0x208 through +0x210. Maximum health is referenced at -0x28 in adjacent runtime storage.",
+      "Use each field correct width. Changing persistent progression does not automatically update an existing actor, boss state machine or active doorway."
+    ],
+    "cautions": [
+      "Offsets before the array are adjacent native storage, not elements of a C array declared here; native callers deliberately use address arithmetic.",
+      "Flag changes can affect scripts and save progression without updating live actors. Use native actor transitions for bosses and active doors.",
+      "Use the correct field width: recruitment/items are 32-bit, spawn coordinates are 16-bit, flags are packed bits."
+    ],
+    "related": [
+      "func_8000B640_C240",
+      "func_8000B5D0_C1D0",
+      "func_800240DC_24CDC",
+      "D_8015C5D8_15D1D8"
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern unsigned char D_8015C608_15D208[];\n\nint character_is_recruited(unsigned int character) {\n    if (character >= 4) return 0;\n    const signed int *field = (const signed int *)(\n        D_8015C608_15D208 + 0x94 + character * 4);\n    return *field != 0;\n}",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources."
+  },
+  "D_8015C5D8_15D1D8": {
+    "title": "Runtime save/control mirror",
+    "summary": "Native runtime save/control mirror.",
+    "behavior": [
+      "func_8000B5D0 copies 0x30 bytes of prepared control state here and marks its first word active. Element 1 is current character; word at +0x2C is the dirty flag set by the native character cycler.",
+      "The current-character word aliases address 0x8015C5DC. Updating that word alone does not execute the live character-swap state transition."
+    ],
+    "cautions": [
+      "Current character at +4 aliases the direct-address 0x8015C5DC global.",
+      "Writing only the mirror does not perform the live player state transition."
+    ],
+    "related": [
+      "func_801DD5C0_5994D0",
+      "func_801DD50C_59941C",
+      "func_8000B5D0_C1D0"
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern unsigned int D_8015C5D8_15D1D8[];\n\nunsigned int selected_character_id(void) {\n    return D_8015C5D8_15D1D8[1] & 0xFFu;\n}\n",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources."
+  },
+  "func_801DD5C0_5994D0": {
+    "title": "Apply a live player character swap",
+    "summary": "Applies a playable-character swap to the live player task.",
+    "behavior": [
+      "Writes the selected character to task+0x60 and global 0x8015C5DC, updates the linked player state at task+0x5C, clears movement/action fields, marks character-change state, and sets action byte +0xCC to 0xBA.",
+      "Installs the native character-change callback. This mutates the authoritative live player and global character state; visual-only characters should use independent render tasks instead."
+    ],
+    "cautions": [
+      "Use only on the actual live player and an enabled/recruited character.",
+      "This changes global player state. It is inappropriate for spawning another visual player model."
+    ],
+    "related": [
+      "func_801DD50C_59941C",
+      "D_8015C5D8_15D1D8",
+      "D_801FC604_5B8514"
+    ],
+    "confidence": "decompiled",
+    "example": "extern unsigned int D_8015C5D8_15D1D8[];\n\nextern void func_801DD5C0_5994D0(void *arg0, unsigned char value);\n\nvoid change_player_character(void *player_task, unsigned char character) {\n    if (!player_task || character >= 4) return;\n    D_8015C5D8_15D1D8[1] = character;\n    D_8015C5D8_15D1D8[0x2C / 4] = 1;\n    func_801DD5C0_5994D0(player_task, character);\n}",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources.",
+    "parameters": [
+      {
+        "name": "arg0",
+        "type": "void *",
+        "description": "Live player task."
+      },
+      {
+        "name": "value",
+        "type": "unsigned char",
+        "description": "Character ID: Goemon=0, Ebisumaru=1, Sasuke=2, Yae=3."
+      }
+    ],
+    "returns": "No return value."
+  },
+  "func_801DD50C_59941C": {
+    "title": "Cycle the live player character",
+    "summary": "Searches recruited characters and performs a native player character cycle.",
+    "behavior": [
+      "Starts with current character+1 and checks recruitment words beginning at save+0x94. Candidates greater than 3 are reset to zero by the native search. It makes a bounded search and keeps the current character when no candidate is found.",
+      "On selection, writes task+0x60 and global current character, marks the control mirror dirty, then invokes func_801DD5C0. The native search wrapping should not be replaced conceptually with a modulo loop: those are different implementations."
+    ],
+    "cautions": [
+      "The native search resets out-of-range candidates to zero; do not assume a replacement modulo search has identical behavior.",
+      "Only call on the actual live player task; selection changes global character state."
+    ],
+    "related": [
+      "func_801DD5C0_5994D0",
+      "D_8015C608_15D208"
+    ],
+    "confidence": "decompiled",
+    "example": "extern int func_801DD50C_59941C(void *arg0);\n\nint cycle_character(void *player_task) {\n    if (!player_task) return 1;\n    return func_801DD50C_59941C(player_task);\n}",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources.",
+    "parameters": [
+      {
+        "name": "arg0",
+        "type": "void *",
+        "description": "Live player task."
+      }
+    ],
+    "returns": "0 after selecting a character, 1 when the bounded native search found none."
+  },
+  "func_8000B640_C240": {
+    "title": "Initialize a fresh save",
+    "summary": "Initializes native save memory for a new adventure.",
+    "behavior": [
+      "Clears 0x304 bytes at D_8015C608, seeds default control/stat/item/recruitment fields, chooses room 0x1D1 (Goemon house), writes its initial spawn values and mirrors the block into backup storage.",
+      "A return hook can adjust validated new-adventure defaults before later activation/mirroring. Calling this routine on an existing live save resets that in-memory progress."
+    ],
+    "cautions": [
+      "Calling the initializer resets save memory; do not use it to edit an already loaded adventure."
+    ],
+    "related": [
+      "D_8015C608_15D208",
+      "func_8000B5D0_C1D0"
+    ],
+    "confidence": "decompiled",
+    "example": "extern void func_8000B640_C240(void);\n\n#include \"modding.h\"\n\nRECOMP_HOOK_RETURN(\"func_8000B640_C240\")\nvoid after_fresh_save(void) {\n    /* Apply selected new-game defaults before save mirroring. */\n}",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources.",
+    "returns": "No return value in the established declaration."
+  },
+  "func_8000B5D0_C1D0": {
+    "title": "Activate and mirror initialized save state",
+    "summary": "Activates prepared save state and copies its runtime/backup mirrors.",
+    "behavior": [
+      "Clears a system field, marks native state at 0x8015C698, copies 0x30 bytes from 0x8015C66C to D_8015C5D8, mirrors 0x304 bytes from D_8015C608 to backup storage, and sets the runtime first word to one.",
+      "This is an in-memory start/load operation, not a request to write a save to disk."
+    ],
+    "cautions": [
+      "Run in the native start/load sequence after initialization; this is not a disk-save API."
+    ],
+    "related": [
+      "func_8000B640_C240",
+      "D_8015C5D8_15D1D8"
+    ],
+    "confidence": "decompiled",
+    "example": "extern void func_8000B5D0_C1D0(void);\n\n#include \"modding.h\"\n\nRECOMP_HOOK_RETURN(\"func_8000B5D0_C1D0\")\nvoid after_save_activation(void) {\n    /* Apply settings that require a loaded, mirrored save. */\n}",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources.",
+    "returns": "No return value in the established declaration."
+  },
+  "func_80003478_4078": {
+    "title": "Initialize gameplay control/UI state",
+    "summary": "Advances and resets gameplay control/UI substate.",
+    "behavior": [
+      "Increments the byte at g_system+0x3ADDE, clears +0x3ADDF, then calls the substate reset helper with zero.",
+      "It is one component of the native gameplay transition setup. Scene destination, save activation and render-buffer preparation are separate responsibilities."
+    ],
+    "cautions": [
+      "This is one step of a larger transition sequence; it does not load a scene or initialize a save by itself."
+    ],
+    "related": [
+      "func_8000383C_443C",
+      "func_8000B364_BF64"
+    ],
+    "confidence": "decompiled",
+    "example": "extern void func_80003478_4078(void);\n\nextern void func_8000383C_443C(void);\n\n/* Requires the native start/load preparation described above.\n * This helper is one step of that sequence, not a complete launch API. */\nvoid finish_prepared_scene_ui(void) {\n    /* During a prepared native scene transition: */\n    func_8000383C_443C();\n    func_80003478_4078();\n}\n",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources.",
+    "returns": "No return value in the established declaration."
+  },
+  "func_80004240_4E40": {
+    "title": "Clear native text/UI slots",
+    "summary": "Clears the native text/UI slot state for transition setup.",
+    "behavior": [
+      "Identified as clearing sixteen small native text/UI slots beginning at g_system+0x3B168 before the next scene builds its interface.",
+      "This concerns the game own UI state. It is not an API for external UI contexts or custom document elements."
+    ],
+    "cautions": [
+      "This concerns native UI slots, not the independent recompui context/resource API."
+    ],
+    "related": [
+      "func_8000B364_BF64"
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern void func_80004240_4E40(void);\n\nextern void func_8000B364_BF64(void);\n\n/* Requires the native start/load preparation described above.\n * This helper is one step of that sequence, not a complete launch API. */\nvoid begin_prepared_scene_ui(void) {\n    /* During a prepared scene transition: */\n    func_80004240_4E40();\n    func_8000B364_BF64();\n}\n",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources.",
+    "returns": "No return value in the established declaration."
+  },
+  "func_8000B364_BF64": {
+    "title": "Prepare destination scene loading",
+    "summary": "Prepares loading of the configured destination scene.",
+    "behavior": [
+      "Copies destination stage into active scene fields, calculates region/substage, begins scene-load bookkeeping and resets transition counters.",
+      "Supply a valid destination before invoking it. Follow the native transition sequence, including render reset and control/UI initialization; this helper alone is not a complete warp."
+    ],
+    "cautions": [
+      "Changing only current room or calling this with stale destination fields can load inconsistent state."
+    ],
+    "related": [
+      "func_8000607C_6C7C",
+      "func_8000383C_443C"
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern void func_80003478_4078(void);\n\nextern void func_8000383C_443C(void);\n\nextern void func_8000B364_BF64(void);\n\n/* Requires the native start/load preparation described above.\n * This helper is one step of that sequence, not a complete launch API. */\nvoid prepare_destination_scene(void) {\n    /* First prepare a valid native destination and save spawn fields. */\n    func_8000B364_BF64();\n    func_8000383C_443C();\n    func_80003478_4078();\n}\n",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources.",
+    "returns": "No return value in the established declaration."
+  },
+  "func_8000383C_443C": {
+    "title": "Reset render and texture buffers",
+    "summary": "Resets render/texture state for the next scene.",
+    "behavior": [
+      "Runs the broader render initialization path and clears graphics/texture buffers used by the following scene.",
+      "This belongs in scene transition setup before gameplay control/UI initialization. Invoking it from ordinary object rendering would reset shared scene graphics state."
+    ],
+    "cautions": [
+      "Do not invoke from ordinary object rendering; it resets scene-level graphics state."
+    ],
+    "related": [
+      "func_80003478_4078",
+      "func_8000B364_BF64"
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern void func_80003478_4078(void);\n\nextern void func_8000383C_443C(void);\n\n/* Requires the native start/load preparation described above.\n * This helper is one step of that sequence, not a complete launch API. */\nvoid reset_prepared_scene_rendering(void) {\n    /* During scene setup, before gameplay control initialization: */\n    func_8000383C_443C();\n    func_80003478_4078();\n}\n",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources.",
+    "returns": "No return value in the established declaration."
+  },
+  "func_801CD890_660740": {
+    "title": "Native gameplay/load scheduler callback",
+    "summary": "Gameplay/load callback used by the native file-select scheduler handoff.",
+    "behavior": [
+      "Install this callback with func_8003521C only after completing native save and scene preparation. The callback address is used by the original start/load flow.",
+      "Function boundaries around this overlay are imperfect in the recovered analysis. The pointer handoff is established, but the full implementation and direct-call argument ABI are not."
+    ],
+    "cautions": [
+      "Use the complete symbol including ROM suffix; overlays can reuse RAM addresses.",
+      "Do not treat the void(void) declaration used to name the callback as a verified full scheduler ABI for manual direct calls."
+    ],
+    "related": [
+      "func_8003521C_35E1C",
+      "func_80003728_4328"
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern void func_8003521C_35E1C(void *func_ptr);\n\nextern void func_801CD890_660740(void);\n\n/* Requires the native start/load preparation described above.\n * This helper is one step of that sequence, not a complete launch API. */\nvoid handoff_prepared_start_task(void) {\n    /* After completing native start/load preparation: */\n    func_8003521C_35E1C(func_801CD890_660740);\n}\n",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources.",
+    "returns": "No return value in the established declaration."
+  },
+  "func_8000607C_6C7C": {
+    "title": "Set the engine destination",
+    "summary": "Writes the engine destination room, transform and related loading fields.",
+    "behavior": [
+      "Records room/stage, player coordinates, camera rotation, player rotation and two additional loading fields for the scene loader.",
+      "Destination fields and saved spawn configuration must agree before the system begins the transition. This writer prepares state; it does not execute all steps of a warp."
+    ],
+    "cautions": [
+      "This queues destination state; it does not alone execute a complete warp.",
+      "field90/field91 names in the recovered call pattern are unresolved; the documented call pattern passes zero rather than assigning unsupported meanings."
+    ],
+    "related": [
+      "D_8006B780_6C380",
+      "func_8000B364_BF64",
+      "func_80003728_4328"
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern void func_8000607C_6C7C(unsigned short room, short x, short y, short z,\n                               short camera_rot, short player_rot,\n                               short field90, int field91);\n\n/* Caller must also update save spawn fields before switching system steps. */\nvoid set_prepared_destination(unsigned short room, short x, short y, short z,\n                              short camera_rotation, short player_rotation) {\n    func_8000607C_6C7C(room, x, y, z, camera_rotation, player_rotation, 0, 0);\n}\n",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources.",
+    "parameters": [
+      {
+        "name": "room",
+        "type": "unsigned short",
+        "description": "Destination room/stage identifier."
+      },
+      {
+        "name": "x, y, z",
+        "type": "short",
+        "description": "Destination player coordinates."
+      },
+      {
+        "name": "camera_rot, player_rot",
+        "type": "short",
+        "description": "Native signed-angle rotations."
+      },
+      {
+        "name": "field90",
+        "type": "short",
+        "description": "Additional load field; the documented start sequence uses zero."
+      },
+      {
+        "name": "field91",
+        "type": "int",
+        "description": "Additional load field; the documented start sequence uses zero."
+      }
+    ],
+    "returns": "No return value."
+  },
+  "func_8003521C_35E1C": {
+    "title": "Set the active scheduler callback",
+    "summary": "Replaces the active native task scheduler callback.",
+    "behavior": [
+      "Stores the supplied code pointer in the active task callback slot at +0x0C. The scheduler executes it as part of the subsequent native task flow.",
+      "A valid active task context and a resident engine-compatible callback are required. Setting the pointer does not immediately invoke the callback."
+    ],
+    "cautions": [
+      "Requires a valid active native task context.",
+      "Provide an engine-compatible callback that remains resident in the relevant overlay."
+    ],
+    "related": [
+      "func_801CD890_660740",
+      "func_80003728_4328"
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern void func_8003521C_35E1C(void *func_ptr);\n\nextern void func_801CD890_660740(void);\n\n/* Requires the native start/load preparation described above.\n * This helper is one step of that sequence, not a complete launch API. */\nvoid install_prepared_gameplay_callback(void) {\n    /* In the native start task after scene preparation: */\n    func_8003521C_35E1C(func_801CD890_660740);\n}\n",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources.",
+    "parameters": [
+      {
+        "name": "func_ptr",
+        "type": "void *",
+        "description": "Code pointer for the native scheduler callback."
+      }
+    ],
+    "returns": "No return value."
+  },
+  "func_80003728_4328": {
+    "title": "Switch the system execution step",
+    "summary": "Switches the native system execution step and resets transition substate.",
+    "behavior": [
+      "Writes g_system stepw, clears stepw_end, marks the transition and resets its substate.",
+      "The numeric step selects a state-machine branch, not a room. Step 12 is the documented warp path, but requires prior save, destination, render and control initialization."
+    ],
+    "cautions": [
+      "Step numbers are state-machine selectors, not arbitrary room IDs.",
+      "Jumping to a step without its expected prior initialization can leave invalid render or game state."
+    ],
+    "related": [
+      "func_80002040_2C40",
+      "func_8000607C_6C7C"
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern void func_80003728_4328(unsigned char step);\n\n/* Requires the native start/load preparation described above.\n * This helper is one step of that sequence, not a complete launch API. */\nvoid enter_prepared_warp_step(void) {\n    /* Only after native save/destination/render setup is complete: */\n    func_80003728_4328(12);\n}\n",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources.",
+    "parameters": [
+      {
+        "name": "step",
+        "type": "unsigned char",
+        "description": "Native system-step index; the documented warp path uses 12."
+      }
+    ],
+    "returns": "No return value."
+  },
+  "func_8000B2A0_BEA0": {
+    "title": "Consume saved spawn configuration",
+    "summary": "Copies saved spawn configuration into native destination state.",
+    "behavior": [
+      "Copies the saved room at base+0x204, player rotation at +0x208, three coordinate shorts at +0x20A/+0x20C/+0x20E and camera rotation at +0x210 into system destination fields.",
+      "Also runs region/substage and load bookkeeping helpers and prepares transition counters. An entry hook is the boundary for updating validated save spawn fields immediately before this copy."
+    ],
+    "cautions": [
+      "Avoid launching or resetting a save recursively from this hook."
+    ],
+    "related": [
+      "D_8015C608_15D208",
+      "func_8000B5D0_C1D0"
+    ],
+    "confidence": "decompiled",
+    "example": "#include \"modding.h\"\n\nRECOMP_HOOK(\"func_8000B2A0_BEA0\")\nvoid before_spawn_consumption(void) {\n    /* Reapply already-validated save spawn settings here. */\n}",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources."
+  },
+  "D_8006B780_6C380": {
+    "title": "Room default start transform table",
+    "summary": "Room-indexed table of default start positions and rotations.",
+    "behavior": [
+      "Each entry consists of five signed shorts: position x,y,z, camera rotation and player rotation. An entry begins at room*5.",
+      "Validate a room ID against known entries before indexing. The unsized extern declaration does not itself provide table bounds."
+    ],
+    "cautions": [
+      "Validate the room against known game entries before indexing; the extern declaration has no length."
+    ],
+    "related": [
+      "func_8000607C_6C7C"
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern signed short D_8006B780_6C380[];\n\n/* Caller must validate room against this game's known room table. */\nint default_room_rotations(unsigned int room, short *camera, short *player) {\n    if (!camera || !player) return 0;\n    const signed short *start = &D_8006B780_6C380[room * 5];\n    *camera = start[3];\n    *player = start[4];\n    return 1;\n}\n",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources."
+  },
+  "D_8015C5C8_15D1C8": {
+    "title": "Runtime g_system pointer",
+    "summary": "Pointer to the active native system-state structure.",
+    "behavior": [
+      "Used by system-step dispatch and scene-loading functions. The byte-pointer declaration allows access to selected recovered offsets, including the prepared destination at +0x3AFE0.",
+      "Some native paths reference static system storage directly. Do not assume an offset-based partial declaration describes the complete structure."
+    ],
+    "cautions": [
+      "The byte-pointer declaration is partial typing, not proof that the whole system layout is known.",
+      "Use named structure definitions when available; offset writes must match the exact game version."
+    ],
+    "related": [
+      "D_800BCCC0_BD8C0",
+      "func_80003728_4328"
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern unsigned char *D_8015C5C8_15D1C8;\n\nint read_runtime_destination(short *room) {\n    unsigned char *system = D_8015C5C8_15D1C8;\n    if (!system || !room) return 0;\n    *room = *(short *)(system + 0x3AFE0);\n    return 1;\n}\n",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources."
+  },
+  "D_800BCCC0_BD8C0": {
+    "title": "Static g_system storage",
+    "summary": "Static storage for native system state.",
+    "behavior": [
+      "Contains system execution, scene destination, UI and related fields. Both this direct storage and the runtime pointer D_8015C5C8 occur in native paths.",
+      "Treat the block as an opaque large structure unless a field layout is established. The unsized byte-array declaration is not permission to clear or copy an arbitrary length."
+    ],
+    "cautions": [
+      "Do not copy or clear this entire opaque block based on the unsized extern declaration."
+    ],
+    "related": [
+      "D_8015C5C8_15D1C8",
+      "func_8000607C_6C7C"
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern unsigned char D_800BCCC0_BD8C0[];\n\n/* Read only while the native system structure is initialized. */\nshort read_static_destination(void) {\n    return *(short *)(D_800BCCC0_BD8C0 + 0x3AFE0);\n}\n",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources."
+  },
+  "func_80034EF8_35AF8": {
+    "title": "Destroy a specified engine task",
+    "summary": "Runs native teardown and removal for a specified task handle.",
+    "behavior": [
+      "Forwards the supplied task through native teardown helpers. Use it for an exactly identified owned task, then clear every retained handle referencing that task.",
+      "Task removal does not substitute for boss damage, reaction, reward or completion callbacks. Those require the encounter own state-machine path."
+    ],
+    "cautions": [
+      "Only destroy a validated task that this owner controls. Shared render pointers and trackers become stale immediately.",
+      "Do not use generic destruction to simulate boss victory: damage, animation, reward and terminal callbacks still need to run."
+    ],
+    "related": [
+      "func_80034E08_35A08",
+      "func_08001464_70B4A4"
+    ],
+    "confidence": "decompiled",
+    "example": "extern void func_80034EF8_35AF8(void *actor);\n\n/* Only for a verified child this caller owns, at a safe native boundary.\n * Any other actor trackers referencing this child must also be cleared. */\nvoid destroy_owned_child(void **owned_child) {\n    if (!owned_child || !*owned_child) return;\n    func_80034EF8_35AF8(*owned_child);\n    *owned_child = 0;\n}\n",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources.",
+    "parameters": [
+      {
+        "name": "actor",
+        "type": "void *",
+        "description": "Engine task handle to tear down."
+      }
+    ],
+    "returns": "No return value."
+  },
+  "func_80218350_5D3820": {
+    "title": "Process actor damage and hit reactions",
+    "summary": "Consumes actor hit state, changes health and selects hit/death behavior.",
+    "behavior": [
+      "Status bit 0x00040000 at actor+0x68 enables a fast one-point health subtraction at byte +0x8D without the usual attacker pointer. The normal path checks actor flags, hit bit 0x80, attacker data and damage type.",
+      "Nonzero health sets status bit 0 and may install/invoke the actor-specific +0x90 callback. Zero health enters generic death. The inner routine does not clear the synthetic pending-damage bit the same way the outer func_80218E7C wrapper does.",
+      "Some bosses use generic health only as a damage carrier. Dharmanyo separately consumes lives at +0xD1, while Tsurami uses its custom remaining-health callback."
+    ],
+    "cautions": [
+      "Generic HP zero is not a universal boss-completion signal. Tsurami and Dharmanyo require their custom remaining-HP callbacks.",
+      "The inner routine does not clear pending bit 0x40000 like the outer func_80218E7C wrapper; synthetic direct-call inputs must not persist across frames.",
+      "The entry-hook actor argument is established; a full direct-call return ABI is not specified here."
+    ],
+    "related": [
+      "func_80218E7C_5D434C",
+      "func_08003F84_6CC194",
+      "func_0800432C_6CC53C"
+    ],
+    "confidence": "decompiled",
+    "example": "#include \"modding.h\"\n\nRECOMP_HOOK(\"func_80218350_5D3820\")\nvoid inspect_actor_damage(void *actor) {\n    if (!actor) return;\n    unsigned char health = ((unsigned char *)actor)[0x8D];\n    unsigned int status = *(unsigned int *)((char *)actor + 0x68);\n    /* Observe the exact actor and encounter; do not damage every caller. */\n    (void)health; (void)status;\n}",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources."
+  },
+  "func_80218E7C_5D434C": {
+    "title": "Run the common actor update pipeline",
+    "summary": "Executes the common actor processing and damage pipeline.",
+    "behavior": [
+      "Runs its main helper chain when actor+0x18 has a display object. The chain includes func_80218350 and later clears status bit 0x40000. A final common helper runs afterward.",
+      "This routine applies to many actor types and includes gameplay side effects. Do not replay it merely to advance animation or inject damage without validating the exact actor state."
+    ],
+    "cautions": [
+      "This global routine also runs for unrelated actors. Never inject damage without exact actor and room validation.",
+      "Do not replay this routine solely to advance visual animation; it includes gameplay damage and other common state processing."
+    ],
+    "related": [
+      "func_80218350_5D3820",
+      "func_80218F30_5D4400",
+      "func_0800A228_6BD4C8"
+    ],
+    "confidence": "decompiled",
+    "example": "#include \"modding.h\"\n\nRECOMP_HOOK(\"func_80218E7C_5D434C\")\nvoid before_common_actor_update(void *actor) {\n    if (!actor) return;\n    /* Match a tracked live encounter before modifying actor state. */\n}",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources."
+  },
+  "func_80218F30_5D4400": {
+    "title": "Finalize an actor update and process removal",
+    "summary": "Finalizes actor processing and consumes native remove-pending state.",
+    "behavior": [
+      "Invokes the common actor updater, clears actor+0x34/+0x38 references, then tests status bit 0x2 at +0x68. A pending removal enters native task cleanup and related room-instance bookkeeping.",
+      "A targeted entry hook can mark a validated actor before the removal check. The original routine must retain ownership of cleanup. On return the actor may already have been removed."
+    ],
+    "cautions": [
+      "A save bit alone does not refresh an existing collectible actor.",
+      "Do not apply this pattern to Miracle items or bosses: they require their own cutscene/defeat lifecycles.",
+      "An actor can be freed by this routine; a return hook must not blindly dereference the old pointer."
+    ],
+    "related": [
+      "func_80218E7C_5D434C",
+      "func_80034EF8_35AF8"
+    ],
+    "confidence": "decompiled",
+    "example": "/* Call from an entry hook for func_80218F30 only after the exact matching\n * same-room external pickup event has been consumed. Let native cleanup run. */\nvoid mark_matching_collectible(void *actor, int matched_pickup) {\n    if (!actor || !matched_pickup) return;\n    unsigned short id = *(unsigned short *)((char *)actor + 0x5C);\n    if (id != 0x86 && id != 0x87 && id != 0x88 && id != 0x89 && id != 0x193)\n        return;\n    *(unsigned int *)((char *)actor + 0x68) |= 2u;\n}\n",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources."
+  },
+  "func_80219CA0_5D5170": {
+    "title": "Select an actor owner list with capacity checks",
+    "summary": "Chooses an actor owner list while checking native manager capacity.",
+    "behavior": [
+      "Checks total actor limits, records the selected category, chooses the corresponding manager list and counts existing members for capped categories. Category 0x0D returns the caller-supplied task.",
+      "Returns an owner/list for subsequent task creation. It does not allocate the new actor itself."
+    ],
+    "cautions": [
+      "This selects a list; it does not allocate the enemy itself.",
+      "The function has shared actor-manager side effects. Preserve native spawning order and validate actor IDs before table access."
+    ],
+    "related": [
+      "func_8003555C_3615C",
+      "D_802297D6_5E4CA6"
+    ],
+    "confidence": "decompiled",
+    "example": "extern unsigned char D_802297D6_5E4CA6[];\n\nextern int *func_80219CA0_5D5170(int *task, unsigned char actor_type);\n\n/* actor_id must come from a validated, eligible native actor definition. */\nint *owner_for_actor_id(unsigned short actor_id) {\n    unsigned char type = D_802297D6_5E4CA6[actor_id + 0x80D];\n    return func_80219CA0_5D5170(0, type);\n}\n",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources.",
+    "parameters": [
+      {
+        "name": "task",
+        "type": "int *",
+        "description": "Fallback/current task used for category 0x0D; room-spawn caller supplies null."
+      },
+      {
+        "name": "actor_type",
+        "type": "unsigned char",
+        "description": "Native actor category from actor metadata."
+      }
+    ],
+    "returns": "Native owner/list pointer, or null when capacity/selection disallows spawning."
+  },
+  "func_8003555C_3615C": {
+    "title": "Create a task and initialize its render state",
+    "summary": "Allocates a native actor task and initializes its kind-2 render state.",
+    "behavior": [
+      "Calls the native task allocator with owner, entry, kind 2 and model ID. Then forwards remaining transform/render arguments to an initialization helper and returns the task handle.",
+      "Room actors subsequently use func_80218A54 to apply their instance definition and placement. The example demonstrates this first construction step; allocation alone does not finish actor initialization."
+    ],
+    "cautions": [
+      "Several arguments retain unresolved source names; do not infer that the argument named flags is a generic bitmask just from its name.",
+      "The imported signature uses int for x/y/z. Preserve that exact ABI until validated; a similar display-object API uses floats.",
+      "A task allocation alone does not perform room actor initialization."
+    ],
+    "related": [
+      "func_80219CA0_5D5170",
+      "func_80218A54_5D3F24",
+      "D_802287BC_5E3C8C"
+    ],
+    "confidence": "decompiled",
+    "example": "extern void *D_802287BC_5E3C8C[];\n\nextern unsigned char D_802297D6_5E4CA6[];\n\nextern float D_80239AFC_5F4FCC;\n\nextern int func_8003555C_3615C(int *owner, void *entry, int arg2, int flags,\n                               int x, int y, int z, short pitch, short yaw, short roll,\n                               float scale_x, float scale_y, float scale_z,\n                               short arg13, short arg14, short model_id);\n\nextern int *func_80219CA0_5D5170(int *task, unsigned char actor_type);\n\n/* Use during native spawning for a validated eligible actor ID. The\n * returned task still requires func_80218A54 room-instance initialization. */\nint create_enemy_task(unsigned short actor_id) {\n    unsigned char type = D_802297D6_5E4CA6[actor_id + 0x80D];\n    short model_id = *(short *)&D_802297D6_5E4CA6[actor_id * 2];\n    int *owner = func_80219CA0_5D5170(0, type);\n    if (!owner) return 0;\n    float scale = D_80239AFC_5F4FCC;\n    return func_8003555C_3615C(\n        owner, D_802287BC_5E3C8C[actor_id], 0, 0xC006D920,\n        0, 0, 0, 0, 0, 0, scale, scale, scale, 0, 0, model_id);\n}\n",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources.",
+    "parameters": [
+      {
+        "name": "owner",
+        "type": "int *",
+        "description": "Native actor owner/list."
+      },
+      {
+        "name": "entry",
+        "type": "void *",
+        "description": "Actor table entry/callback."
+      },
+      {
+        "name": "arg2",
+        "type": "int",
+        "description": "Unresolved setup field; room-spawn caller passes zero."
+      },
+      {
+        "name": "flags",
+        "type": "int",
+        "description": "Unresolved render/context field; room-spawn caller passes 0xC006D920."
+      },
+      {
+        "name": "x, y, z",
+        "type": "int",
+        "description": "Initial transform fields as established by the imported declaration; room-spawn caller uses zero."
+      },
+      {
+        "name": "pitch, yaw, roll",
+        "type": "short",
+        "description": "Initial rotation fields."
+      },
+      {
+        "name": "scale_x, scale_y, scale_z",
+        "type": "float",
+        "description": "Initial model scales."
+      },
+      {
+        "name": "arg13, arg14",
+        "type": "short",
+        "description": "Additional unresolved setup fields; room-spawn caller passes zero."
+      },
+      {
+        "name": "model_id",
+        "type": "short",
+        "description": "Model identifier read from actor metadata."
+      }
+    ],
+    "returns": "32-bit actor/task handle as int, zero on allocation failure."
+  },
+  "func_80218A54_5D3F24": {
+    "title": "Initialize an actor from a room instance",
+    "summary": "Initializes an allocated actor from a room instance and definition.",
+    "behavior": [
+      "Resolves instance->definition using the active actor-data file, updates D_8015CDE0, copies actor ID into +0x5C/+0x5E and applies the instance transform to the task display object.",
+      "Copies definition payload into +0xD0/+0xD4/+0xD8, initializes actor state, and installs native update/finalizer callbacks. It requires a valid allocated display object and resident actor-data resources.",
+      "Calling this initializer from a hook on itself requires a recursion guard. The shared definition pointer can change during nested initialization."
+    ],
+    "cautions": [
+      "Requires a valid allocated actor with a display object and resident actor-data wave. Native segmented definition resolution can fault when resources are absent.",
+      "Its global definition context changes during initialization. Do not retain it as a per-enemy stable pointer without validating the scene.",
+      "Calling from its own hook requires a recursion guard. The example assumes duplicate and duplicate_instance were prepared by the recovered call pattern spawning pattern."
+    ],
+    "related": [
+      "func_8003555C_3615C",
+      "D_8015CDDC",
+      "D_8015CDE0",
+      "func_80218F30_5D4400"
+    ],
+    "confidence": "decompiled",
+    "example": "typedef struct ActorVec3s { short x, y, z; } ActorVec3s;\ntypedef struct ActorInstance {\n    ActorVec3s position, rotation;\n    void *definition;\n    unsigned char is_spawned, unk_11, unk_12, unk_13;\n} ActorInstance;\n\nextern void func_80218A54_5D3F24(int actor, ActorInstance *instance);\n\n/* This helper must run in the native spawn context after the caller has\n * allocated a task with a display object and validated resident actor data.\n * Its hook must also observe this guard before attempting more duplication. */\nstatic int initializing_duplicate;\nvoid initialize_duplicate_actor(int duplicate, ActorInstance *copy) {\n    if (!duplicate || !copy || initializing_duplicate) return;\n    initializing_duplicate = 1;\n    func_80218A54_5D3F24(duplicate, copy);\n    initializing_duplicate = 0;\n}\n",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources.",
+    "parameters": [
+      {
+        "name": "actor",
+        "type": "int",
+        "description": "Allocated native actor/task handle."
+      },
+      {
+        "name": "instance",
+        "type": "ActorInstance *",
+        "description": "Room placement and definition record; this typedef is a partial native layout."
+      }
+    ],
+    "returns": "No return value."
+  },
+  "D_8015CDDC": {
+    "title": "Current actor spawn instance",
+    "summary": "Pointer to the room actor instance exposed by the current spawn operation.",
+    "behavior": [
+      "Can be compared with the func_80218A54 instance argument to establish that a callback belongs to the current room-spawn context.",
+      "It is shared transient context, not a permanent pointer identifying every spawned actor."
+    ],
+    "cautions": [
+      "This is native scene/overlay state. Validate actor IDs and resource lifetime; do not assume an unsized extern provides bounds."
+    ],
+    "related": [
+      "D_8015CDE0",
+      "func_80218A54_5D3F24"
+    ],
+    "confidence": "source-reviewed",
+    "example": "typedef struct ActorVec3s { short x, y, z; } ActorVec3s;\ntypedef struct ActorInstance {\n    ActorVec3s position, rotation;\n    void *definition;\n    unsigned char is_spawned, unk_11, unk_12, unk_13;\n} ActorInstance;\n\ntypedef struct ActorDefinition {\n    unsigned short actor_id, params;\n    unsigned int data[3];\n} ActorDefinition;\n\nextern ActorInstance *D_8015CDDC;\n\nextern ActorDefinition *D_8015CDE0;\n\nint is_current_room_spawn(ActorInstance *instance) {\n    return instance && D_8015CDDC == instance && D_8015CDE0 != 0;\n}\n",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources."
+  },
+  "D_8015CDE0": {
+    "title": "Current actor definition context",
+    "summary": "Pointer to the actor definition for the current native spawn context.",
+    "behavior": [
+      "The partial definition layout begins with 16-bit actor ID and parameters, followed by three 32-bit payload words. Native initialization resolves the instance definition and updates this shared pointer.",
+      "Do not retain it as stable per-actor state across nested spawns or stage teardown."
+    ],
+    "cautions": [
+      "This is native scene/overlay state. Validate actor IDs and resource lifetime; do not assume an unsized extern provides bounds."
+    ],
+    "related": [
+      "D_8015CDDC",
+      "func_80218A54_5D3F24"
+    ],
+    "confidence": "source-reviewed",
+    "example": "typedef struct ActorDefinition {\n    unsigned short actor_id, params;\n    unsigned int data[3];\n} ActorDefinition;\n\nextern ActorDefinition *D_8015CDE0;\n\n/* Only meaningful during the current validated native spawn operation. */\nint current_spawn_actor_id(void) {\n    return D_8015CDE0 ? D_8015CDE0->actor_id : -1;\n}\n",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources."
+  },
+  "D_802287BC_5E3C8C": {
+    "title": "Actor entry/callback table",
+    "summary": "Native actor entry table indexed by actor ID.",
+    "behavior": [
+      "An entry supplies the actor callback/entry value passed to func_8003555C during task creation.",
+      "The table is exposed as void pointers; a fuller entry layout or callable function prototype is not established by that lookup alone."
+    ],
+    "cautions": [
+      "This is native scene/overlay state. Validate actor IDs and resource lifetime; do not assume an unsized extern provides bounds."
+    ],
+    "related": [
+      "func_8003555C_3615C",
+      "D_802297D6_5E4CA6"
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern void *D_802287BC_5E3C8C[];\n\n/* Caller must supply a validated native actor ID; table bounds are not\n * recovered by the unsized extern declaration. */\nvoid *actor_entry(unsigned short actor_id) {\n    return D_802287BC_5E3C8C[actor_id];\n}\n",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources."
+  },
+  "D_802297D6_5E4CA6": {
+    "title": "Actor model and category metadata",
+    "summary": "Packed actor model-ID and owner-category tables.",
+    "behavior": [
+      "The model ID is read as a signed 16-bit value at byte actor_id*2. The owner category is an unsigned byte at actor_id+0x80D.",
+      "Validate actor IDs before either lookup. The byte-array declaration combines recovered packed table regions; it does not describe their complete bounds."
+    ],
+    "cautions": [
+      "This is native scene/overlay state. Validate actor IDs and resource lifetime; do not assume an unsized extern provides bounds."
+    ],
+    "related": [
+      "func_80219CA0_5D5170",
+      "func_8003555C_3615C"
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern unsigned char D_802297D6_5E4CA6[];\n\n/* actor_id must be valid for the game's native metadata tables. */\nint read_actor_metadata(unsigned short actor_id, short *model,\n                        unsigned char *category) {\n    if (!model || !category) return 0;\n    *model = *(short *)&D_802297D6_5E4CA6[actor_id * 2];\n    *category = D_802297D6_5E4CA6[actor_id + 0x80D];\n    return 1;\n}\n",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources."
+  },
+  "D_80239AFC_5F4FCC": {
+    "title": "Default actor spawn scale",
+    "summary": "Shared floating-point scale used by native actor construction.",
+    "behavior": [
+      "Passed as x,y,z scale to func_8003555C when constructing a room actor before instance-specific initialization.",
+      "The demonstrated read role is established. A broader configuration/ownership role for writes is not."
+    ],
+    "cautions": [
+      "This is native scene/overlay state. Validate actor IDs and resource lifetime; do not assume an unsized extern provides bounds."
+    ],
+    "related": [
+      "func_8003555C_3615C"
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern float D_80239AFC_5F4FCC;\n\n/* The gameplay actor overlay must be resident. */\nfloat default_actor_scale(void) {\n    return D_80239AFC_5F4FCC;\n}\n",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources."
+  },
+  "func_08000AA8_6F3F88": {
+    "title": "Initialize a locked doorway",
+    "summary": "Initializes a native locked doorway and its optional padlock child.",
+    "behavior": [
+      "The initializer checks persistent lock state when constructing the door. A previously unlocked door can be initialized without creating a padlock child.",
+      "An entry hook can coordinate state that must be visible before construction. Do not start a live child-removal animation if no child was created to signal completion."
+    ],
+    "cautions": [
+      "Do not force the live child-removal state if the padlock was never spawned: no child exists to signal completion.",
+      "The hook signature shows the captured actor and ignored second argument; it is not a complete verified native return ABI."
+    ],
+    "related": [
+      "func_08001020_6F4500",
+      "func_800240DC_24CDC"
+    ],
+    "confidence": "source-reviewed",
+    "example": "#include \"modding.h\"\n\nRECOMP_HOOK(\"func_08000AA8_6F3F88\")\nvoid inspect_door_initialization(void *actor, void *unused) {\n    (void)unused;\n    if (!actor) return;\n    unsigned short lock_flag = *(unsigned short *)((char *)actor + 0xD4);\n    /* Match a queued same-room unlock before native initialization. */\n    (void)lock_flag;\n}",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources."
+  },
+  "func_08001020_6F4500": {
+    "title": "Update a live locked doorway",
+    "summary": "Updates native doorway interaction and padlock-removal state.",
+    "behavior": [
+      "The door stores its lock flag at +0xD4, interaction latch at +0xDA and state word at +0xEC. State bit 0x1 requests unlocking, 0x2 marks unlocked completion and 0x4 belongs to interaction state.",
+      "After key/save accounting is complete, an active padlock can be asked to run its native disappearance by clearing the interaction latch/bit and setting the unlocking bit. Keep the original parent callback so child completion and normal doorway interaction retain their native flow."
+    ],
+    "cautions": [
+      "The lock save bit and key accounting must already be applied exactly once before the live animation.",
+      "Leave the parent callback intact so the update does not pull the local player through the doorway.",
+      "Only use this layout for the native door actor matched by this callback."
+    ],
+    "related": [
+      "func_08000AA8_6F3F88"
+    ],
+    "confidence": "source-reviewed",
+    "example": "#include \"modding.h\"\n#include \"recomputils.h\"\n\nextern unsigned short D_800C7AB2;\nextern unsigned char D_8015C608_15D208[];\n\nstatic unsigned short observed_room;\nstatic unsigned short observed_lock = 0xFFFFu;\nstatic unsigned int previous_state = 0xFFFFFFFFu;\n\n/* Select a known room and its exact native LOCK flag before observing. */\nvoid observe_door(unsigned short room, unsigned short lock_flag) {\n    observed_room = room;\n    observed_lock = lock_flag;\n    previous_state = 0xFFFFFFFFu;\n}\n\nRECOMP_HOOK(\"func_08001020_6F4500\")\nvoid before_locked_door_update(void *actor, void *unused) {\n    (void)unused;\n    if (!actor || observed_lock >= 0x1800u ||\n        D_800C7AB2 != observed_room)\n        return;\n\n    /* This adjacent runtime field is positive while a save is loaded. */\n    if (*(const signed int *)(D_8015C608_15D208 - 0x28) <= 0)\n        return;\n\n    /* This callback identifies the door class; room and lock flag identify\n     * the selected door. Retain no actor pointer beyond its native update. */\n    unsigned short lock_flag =\n        *(const unsigned short *)((const char *)actor + 0xD4);\n    if (lock_flag != observed_lock) return;\n\n    unsigned int state =\n        *(const unsigned int *)((const char *)actor + 0xEC);\n    if (state != previous_state) {\n        recomp_printf(\"Door lock 0x%X: unlocking=%u unlocked=%u\\n\",\n                      (unsigned int)lock_flag, state & 1u, (state >> 1) & 1u);\n        previous_state = state;\n    }\n    /* The original native callback continues with interaction/animation. */\n}\n",
+    "exampleExplanation": "Registers an entry hook using the observed two-pointer callback arguments. After observe_door selects a known room and lock flag, it logs state changes only for that initialized door while a save is loaded. The original native callback retains control of interaction, padlock animation and cleanup."
+  },
+  "func_0800A228_6BD4C8": {
+    "title": "Evaluate Congo health and death transition",
+    "summary": "Evaluates Congo/Tsurami root health and enters appropriate transition handling.",
+    "behavior": [
+      "Congo zero-health handling schedules func_08007D24 as its victory callback. Tsurami roots can also pass through this helper, so identifying Congo requires its entity ID 0x323 at actor+0x5E.",
+      "This boundary can run during actor setup before the first main combat update. Capture only the health-bearing root and wait for initialized state before interpreting it."
+    ],
+    "cautions": [
+      "A visual component is not authoritative boss health. Validate the actor ID and current encounter.",
+      "Example shows the recovered call pattern hook boundary, not a full recovered native function prototype."
+    ],
+    "related": [
+      "func_08007D24_6BAFC4",
+      "func_80218E7C_5D434C"
+    ],
+    "confidence": "source-reviewed",
+    "example": "#include \"modding.h\"\n\nRECOMP_HOOK(\"func_0800A228_6BD4C8\")\nvoid observe_0800a228(void *actor) {\n    if (!actor) return;\n    unsigned short entity = *(unsigned short *)((char *)actor + 0x5E);\n    if (entity != 0x323u) return;\n    unsigned char health = ((unsigned char *)actor)[0x8D];\n    (void)health;\n}",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources."
+  },
+  "func_08007D24_6BAFC4": {
+    "title": "Congo native victory callback",
+    "summary": "Congo native victory callback scheduled after its zero-health branch.",
+    "behavior": [
+      "Marks the transition into the official victory/reward sequence. It occurs later than generic damage reaching zero health.",
+      "Observe this boundary when an operation must wait for native victory handling. Calling it manually does not reproduce all prior combat and teardown steps."
+    ],
+    "cautions": [
+      "Do not call this callback manually to bypass Congo damage and teardown.",
+      "Example shows the recovered call pattern hook boundary, not a full recovered native function prototype."
+    ],
+    "related": [
+      "func_0800A228_6BD4C8"
+    ],
+    "confidence": "source-reviewed",
+    "example": "#include \"modding.h\"\n\nRECOMP_HOOK(\"func_08007D24_6BAFC4\")\nvoid observe_08007d24(void *actor) {\n    if (!actor) return;\n    /* Match actor to the tracked Congo root.\n       Native victory is now reaching its callback. */\n}",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources."
+  },
+  "func_080017F4_6B4A94": {
+    "title": "Initialize the Tsurami health root",
+    "summary": "Initializes the health-bearing Tsurami root and installs its combat update.",
+    "behavior": [
+      "Its invocation identifies a fresh root instance even if the engine reused a task address from an earlier encounter.",
+      "Health may not yet be initialized at entry. The authoritative initialized update is func_08000388; nearby entity 0xCB actors can be visual components."
+    ],
+    "cautions": [
+      "A reused pointer and unchanged room do not by themselves prove the old encounter is still alive.",
+      "Example shows the recovered call pattern hook boundary, not a full recovered native function prototype."
+    ],
+    "related": [
+      "func_08000388_6B3628"
+    ],
+    "confidence": "source-reviewed",
+    "example": "#include \"modding.h\"\n\nRECOMP_HOOK(\"func_080017F4_6B4A94\")\nvoid observe_080017f4(void *actor) {\n    if (!actor) return;\n    /* Record this setup event as a new encounter.\n       Wait for the root update before reading initialized health. */\n}",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources."
+  },
+  "func_08000388_6B3628": {
+    "title": "Update the Tsurami health root",
+    "summary": "Runs the authoritative Tsurami health-root update.",
+    "behavior": [
+      "This root owns health at +0x8D but does not initialize the usual entity field at +0x5E. Establish identity from its initializer/callback path rather than assigning visual child ID 0xCB to it.",
+      "Tsurami reaches its lethal custom callback at one remaining HP. A generic HP-zero path bypasses that custom transition and is not equivalent to native victory."
+    ],
+    "cautions": [
+      "Do not validate this root with the usual entity ID 0xCB: that ID belongs to visual components.",
+      "Example shows the recovered call pattern hook boundary, not a full recovered native function prototype."
+    ],
+    "related": [
+      "func_080017F4_6B4A94",
+      "func_08002FFC_6B629C"
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern void func_08000388_6B3628(void *task, void *object);\n\n#include \"modding.h\"\n\nRECOMP_HOOK(\"func_08000388_6B3628\")\nvoid observe_08000388(void *actor) {\n    if (!actor) return;\n    unsigned char root_health = ((unsigned char *)actor)[0x8D];\n    (void)root_health;\n}",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources."
+  },
+  "func_08002FFC_6B629C": {
+    "title": "Enter the Tsurami native death state",
+    "summary": "Enters Tsurami native death state through its custom hit callback.",
+    "behavior": [
+      "Reached when the health-root callback accepts the lethal remaining-health condition. This is the onset of death handling, before destruction and teardown have completed.",
+      "Use func_08003A00 as the later terminal boundary when an operation depends on completed destruction."
+    ],
+    "cautions": [
+      "Death entry is earlier than completed destruction; reward/progression should wait for the terminal callback.",
+      "Example shows the recovered call pattern hook boundary, not a full recovered native function prototype."
+    ],
+    "related": [
+      "func_08000388_6B3628",
+      "func_08003A00_6B6CA0"
+    ],
+    "confidence": "source-reviewed",
+    "example": "#include \"modding.h\"\n\nRECOMP_HOOK(\"func_08002FFC_6B629C\")\nvoid observe_08002ffc(void *actor) {\n    if (!actor) return;\n    /* Match the tracked Tsurami root and room.\n       Record the encounter defeat once. */\n}",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources."
+  },
+  "func_08003A00_6B6CA0": {
+    "title": "Finish Tsurami destruction",
+    "summary": "Finishes Tsurami destruction and tears down its root task.",
+    "behavior": [
+      "Scheduled after native destruction flag 0x1C1 and the post-destruction wait.",
+      "The actor can be removed by the original callback. Invalidate retained handles rather than dereferencing the root blindly afterward."
+    ],
+    "cautions": [
+      "The original callback destroys the root; retained handles must be invalidated.",
+      "Example shows the recovered call pattern hook boundary, not a full recovered native function prototype."
+    ],
+    "related": [
+      "func_08002FFC_6B629C"
+    ],
+    "confidence": "source-reviewed",
+    "example": "#include \"modding.h\"\n\nRECOMP_HOOK(\"func_08003A00_6B6CA0\")\nvoid observe_08003a00(void *actor) {\n    if (!actor) return;\n    /* Match the tracked root before native teardown.\n       This is the completion boundary for dependent progression. */\n}",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources."
+  },
+  "func_08003E64_6CC074": {
+    "title": "Initialize the Dharmanyo boss controller",
+    "summary": "Initializes the actual Dharmanyo boss controller with twelve lives.",
+    "behavior": [
+      "The boss controller is entity 0xCC and its lives byte is +0xD1. Ordinary entity 0x132 is a separate bouncing Darumanyo enemy.",
+      "Treat initializer entry as fresh encounter evidence; wait for the following initialized combat update before reading authoritative lives."
+    ],
+    "cautions": [
+      "Use entity 0xCC for this boss; ordinary enemy 0x132 has a different role.",
+      "Example shows the recovered call pattern hook boundary, not a full recovered native function prototype."
+    ],
+    "related": [
+      "func_08003F84_6CC194"
+    ],
+    "confidence": "source-reviewed",
+    "example": "#include \"modding.h\"\n\nRECOMP_HOOK(\"func_08003E64_6CC074\")\nvoid observe_08003e64(void *actor) {\n    if (!actor) return;\n    /* Capture the controller setup event.\n       Wait for the first initialized combat update before reading lives. */\n}",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources."
+  },
+  "func_08003F84_6CC194": {
+    "title": "Update the Dharmanyo boss controller",
+    "summary": "Updates Dharmanyo combat using a separate boss lives counter.",
+    "behavior": [
+      "The controller resets generic actor health +0x8D to ten during normal updates. Real remaining lives occupy byte +0xD1.",
+      "It calls inner damage routine func_80218350 directly. Generic health carries hit processing; the later boss-specific callback consumes a real life."
+    ],
+    "cautions": [
+      "Generic actor HP is a damage carrier, not the boss remaining-lives value.",
+      "Example shows the recovered call pattern hook boundary, not a full recovered native function prototype."
+    ],
+    "related": [
+      "func_08003E64_6CC074",
+      "func_80218350_5D3820",
+      "func_0800432C_6CC53C"
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern void func_08003F84_6CC194(void *task, void *object);\n\n#include \"modding.h\"\n\nRECOMP_HOOK(\"func_08003F84_6CC194\")\nvoid observe_08003f84(void *actor) {\n    if (!actor) return;\n    unsigned char remaining_lives = ((unsigned char *)actor)[0xD1];\n    (void)remaining_lives;\n}",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources."
+  },
+  "func_0800432C_6CC53C": {
+    "title": "Consume a Dharmanyo life",
+    "summary": "Consumes one Dharmanyo boss life during native hit handling.",
+    "behavior": [
+      "At entry, hit timer +0xD6 equal to zero and lives +0xD1 equal to one identify the final-life condition. The original callback decrements to zero and starts the destruction chain.",
+      "Not every invocation is a final defeat. After last-life onset, a separate post-fight controller still owns gauge/fade and terminal cleanup."
+    ],
+    "cautions": [
+      "Do not equate every hit callback with final defeat; validate lives and hit timer.",
+      "Example shows the recovered call pattern hook boundary, not a full recovered native function prototype."
+    ],
+    "related": [
+      "func_08003F84_6CC194",
+      "func_0800636C_6CE57C"
+    ],
+    "confidence": "source-reviewed",
+    "example": "#include \"modding.h\"\n\nRECOMP_HOOK(\"func_0800432C_6CC53C\")\nvoid observe_0800432c(void *actor) {\n    if (!actor) return;\n    unsigned short timer = *(unsigned short *)((char *)actor + 0xD6);\n    unsigned char lives = ((unsigned char *)actor)[0xD1];\n    if (timer == 0 && lives == 1) {\n        /* Last-life callback is beginning. */\n    }\n}",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources."
+  },
+  "func_0800636C_6CE57C": {
+    "title": "Update Dharmanyo post-fight controller",
+    "summary": "Updates the Dharmanyo post-fight gauge/fade controller.",
+    "behavior": [
+      "Polls destruction flag 0x16B and eventually schedules the final wait followed by func_080066E0.",
+      "This controller is distinct from the health-bearing combat actor. Track its own instance for terminal completion observation."
+    ],
+    "cautions": [
+      "The terminal controller can have a different address from the health-bearing boss.",
+      "Example shows the recovered call pattern hook boundary, not a full recovered native function prototype."
+    ],
+    "related": [
+      "func_0800432C_6CC53C",
+      "func_080066E0_6CE8F0"
+    ],
+    "confidence": "source-reviewed",
+    "example": "#include \"modding.h\"\n\nRECOMP_HOOK(\"func_0800636C_6CE57C\")\nvoid observe_0800636c(void *actor) {\n    if (!actor) return;\n    /* This is the post-fight controller, not the combat actor.\n       Track it only for the current defeat sequence. */\n}",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources."
+  },
+  "func_080066E0_6CE8F0": {
+    "title": "Finish Dharmanyo post-fight teardown",
+    "summary": "Completes Dharmanyo post-fight teardown after the final wait.",
+    "behavior": [
+      "The terminal callback sets internal completion flag 0x16D and tears down the fight.",
+      "This is a stronger completion boundary than lives zero or a reward bit. Validate the post-fight controller instance rather than assuming it shares the combat actor address."
+    ],
+    "cautions": [
+      "Completion is tied to this terminal callback, not just lives zero or a reward bit.",
+      "Example shows the recovered call pattern hook boundary, not a full recovered native function prototype."
+    ],
+    "related": [
+      "func_0800636C_6CE57C"
+    ],
+    "confidence": "source-reviewed",
+    "example": "#include \"modding.h\"\n\nRECOMP_HOOK(\"func_080066E0_6CE8F0\")\nvoid observe_080066e0(void *actor) {\n    if (!actor) return;\n    /* Match the tracked post-fight controller and room.\n       Record completion before native cleanup completes. */\n}",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources."
+  },
+  "func_08001464_70B4A4": {
+    "title": "Update Benkei bridge encounter topology",
+    "summary": "Controls Benkei bridge encounter topology and interaction children.",
+    "behavior": [
+      "Controller data is reached through actor+0xD0. Its phase is data+0x08 and owned child is data+0x2C. Flag 0x069 selects post-fight topology; dialogue completion flag 0x033 alone does not fully describe the encounter layout.",
+      "Phase 2 is the idle entrance-trigger topology. In an already completed encounter with no active fight flag 0x07A, a specifically owned idle child can be rebuilt by clearing that child and returning the controller to phase zero. Event/fight phases 3 and later must finish their own state-machine paths."
+    ],
+    "cautions": [
+      "Phases 3 and later are event/fight states and must finish through their own native paths.",
+      "Do not delete all Benkei actors to refresh dialogue; only the verified controller-owned idle child is eligible.",
+      "Example shows the recovered call pattern hook boundary, not a full recovered native function prototype."
+    ],
+    "related": [
+      "func_08000B98_70ABD8",
+      "func_80034EF8_35AF8"
+    ],
+    "confidence": "source-reviewed",
+    "example": "#include \"modding.h\"\n\nRECOMP_HOOK(\"func_08001464_70B4A4\")\nvoid observe_08001464(void *actor) {\n    if (!actor) return;\n    void *data = *(void **)((char *)actor + 0xD0);\n    if (!data) return;\n    unsigned char phase = ((unsigned char *)data)[0x08];\n    (void)phase;\n}",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources."
+  },
+  "func_08000B98_70ABD8": {
+    "title": "Update Benkei scripted combat",
+    "summary": "Runs Benkei initialization, scripted combat and fall-animation states.",
+    "behavior": [
+      "Benkei uses signed lives byte +0xD3, AI state +0xD0 and command byte +0xD2. Combat states 2,5,6 consume status hit bit 0x80. This differs from common actor health at +0x8D.",
+      "State zero performs initialization. Entity 0x1C0 also exists as an idle NPC, so a live fight requires encounter-state validation, including active fight flag 0x07A. Lives zero begins the subsequent native fall/reward flow."
+    ],
+    "cautions": [
+      "The actor also exists as an idle NPC; health/lives alone do not prove a fight is active.",
+      "Do not drive Benkei through common +0x8D health or generic HP-zero death.",
+      "Example shows the recovered call pattern hook boundary, not a full recovered native function prototype."
+    ],
+    "related": [
+      "func_08001464_70B4A4"
+    ],
+    "confidence": "source-reviewed",
+    "example": "#include \"modding.h\"\n\nRECOMP_HOOK(\"func_08000B98_70ABD8\")\nvoid observe_08000b98(void *actor) {\n    if (!actor) return;\n    unsigned char state = ((unsigned char *)actor)[0xD0];\n    if (state == 0) return; /* Still initializing. */\n    signed char lives = *(signed char *)((char *)actor + 0xD3);\n    (void)lives;\n}",
+    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources."
+  }
+}

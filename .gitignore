@@ -1,0 +1,8 @@
+_site/
+build/
+.docusaurus/
+__pycache__/
+*.pyc
+.DS_Store
+artifacts/
+node_modules/
