@@ -1,0 +1,1103 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-04T22:34:01.837687+00:00",
+  "scope": "Internal evidence for native runtime values. Public tables contain no source project references. Original ROM and decompressed binaries are intentionally not committed.",
+  "coverage": {
+    "symbols": 29,
+    "tables": 40,
+    "rows": 235,
+    "knownActorNames": 57,
+    "selectedActorTableEntries": 10,
+    "continuousOrOpaqueOnly": [
+      "D_8016DAB0_16E6B0",
+      "D_8016DAB2_16E6B2",
+      "D_8020CBF0_5C8B00",
+      "D_8020D1C0_5C90D0",
+      "D_8020D1D0_5C90E0"
+    ]
+  },
+  "sourceCheckouts": {
+    "mnsg-extra-options": {
+      "commit": "8ff1ff2a3f4de42679ea5cb0b6b021a830140ed2",
+      "dirty": false
+    },
+    "mnsg-recomp-example": {
+      "commit": "caa88eea1021a8ee9eb4edeb1c6d56ed64d79a2d",
+      "dirty": true
+    }
+  },
+  "sources": [
+    {
+      "id": "characters",
+      "project": "mnsg-recomp-example",
+      "path": "src/anchor_actors.c",
+      "line": 32,
+      "endLine": 51,
+      "sha256": "3fd7c8bc2b690bf36a63bef05d50fa1c5ab3713f57582fc5c7892989312167e3",
+      "note": "Native character IDs and player structure fields used by current C readers."
+    },
+    {
+      "id": "player-readers",
+      "project": "mnsg-recomp-example",
+      "path": "src/anchor_actors.c",
+      "line": 532,
+      "endLine": 645,
+      "sha256": "3fd7c8bc2b690bf36a63bef05d50fa1c5ab3713f57582fc5c7892989312167e3",
+      "note": "Player task action and render-object fields; work+0x84 exact-one Sudden Impact and work+0x86 nonzero small-form tests."
+    },
+    {
+      "id": "character-setter",
+      "project": "mnsg-recomp-example",
+      "path": "src/global_patches/character_cycler.c",
+      "line": 7,
+      "endLine": 19,
+      "sha256": "bb2cccfeeec3bfe223c1b5f8b91ef746df1ce519ab1513f3795cf626f48cc687",
+      "note": "Runtime mirror words and documented native character setter effects; verified selected task fields independently in Ghidra."
+    },
+    {
+      "id": "character-writes",
+      "project": "mnsg-recomp-example",
+      "path": "src/global_patches/character_cycler.c",
+      "line": 58,
+      "endLine": 98,
+      "sha256": "bb2cccfeeec3bfe223c1b5f8b91ef746df1ce519ab1513f3795cf626f48cc687",
+      "note": "Runtime character word index1 and dirty marker index11 writes; uint8 task+0x60."
+    },
+    {
+      "id": "runtime-activation",
+      "project": "mnsg-recomp-example",
+      "path": "src/ui/startup_race_ui.c",
+      "line": 25,
+      "endLine": 39,
+      "sha256": "ce8ac2125abdd14e1a2a8ff70f4da0ec034bd379b686632caf895284c627e3d3",
+      "note": "Native save activation copies 0x30 bytes to runtime mirror and marks its first word1."
+    },
+    {
+      "id": "start-gate",
+      "project": "mnsg-recomp-example",
+      "path": "src/ui/startup_race_ui.c",
+      "line": 495,
+      "endLine": 517,
+      "sha256": "ce8ac2125abdd14e1a2a8ff70f4da0ec034bd379b686632caf895284c627e3d3",
+      "note": "Native step7 startup uses full-system+0x3AE16 gate; clearing it when entering gameplay."
+    },
+    {
+      "id": "system-layout",
+      "project": "mnsg-recomp-example",
+      "path": "mnsg/include/common.h",
+      "line": 790,
+      "endLine": 832,
+      "sha256": "96fb2f7e4fc56b191cf6affb16bd3476a39dab16dad25c1bb2da1e6d207f261c",
+      "note": "SYS_W struct field widths and offsets, including uint8 retraces_per_game_step and signed16 game_loops_count."
+    },
+    {
+      "id": "resource-layout",
+      "project": "mnsg-recomp-example",
+      "path": "src/anchor_player_models.c",
+      "line": 121,
+      "endLine": 204,
+      "sha256": "36884a26c24fc501008aa5c83ff1df4366c5705d12ad42734050f9575630fa07",
+      "note": "Scene-resource registry and native action metadata/auxiliary descriptors/resource arrays/replacement roles."
+    },
+    {
+      "id": "actions",
+      "project": "mnsg-recomp-example",
+      "path": "src/anchor_player_models.c",
+      "line": 41,
+      "endLine": 58,
+      "sha256": "36884a26c24fc501008aa5c83ff1df4366c5705d12ad42734050f9575630fa07",
+      "note": "Selected native action constants and native clothed-object mode2."
+    },
+    {
+      "id": "range-reader",
+      "project": "mnsg-recomp-example",
+      "path": "src/anchor_player_models.c",
+      "line": 397,
+      "endLine": 428,
+      "sha256": "36884a26c24fc501008aa5c83ff1df4366c5705d12ad42734050f9575630fa07",
+      "note": "Action record model range reader; zero-end native meaning independently verified at801DC70C."
+    },
+    {
+      "id": "object-scale",
+      "project": "mnsg-recomp-example",
+      "path": "src/anchor_player_models.c",
+      "line": 541,
+      "endLine": 559,
+      "sha256": "36884a26c24fc501008aa5c83ff1df4366c5705d12ad42734050f9575630fa07",
+      "note": "Object scale float offsets1C/20/24."
+    },
+    {
+      "id": "object-mode",
+      "project": "mnsg-recomp-example",
+      "path": "src/anchor_player_models.c",
+      "line": 690,
+      "endLine": 704,
+      "sha256": "36884a26c24fc501008aa5c83ff1df4366c5705d12ad42734050f9575630fa07",
+      "note": "Native FUN_801CC30C object+05 mode2 evidence copied in source comment."
+    },
+    {
+      "id": "aux-readers",
+      "project": "mnsg-recomp-example",
+      "path": "src/anchor_player_models.c",
+      "line": 790,
+      "endLine": 889,
+      "sha256": "36884a26c24fc501008aa5c83ff1df4366c5705d12ad42734050f9575630fa07",
+      "note": "Auxiliary8-byte rows and initial/timed channel binding. Native special values independently verified in801DB1D4/801DC87C."
+    },
+    {
+      "id": "object-binding",
+      "project": "mnsg-recomp-example",
+      "path": "src/anchor_player_models.c",
+      "line": 922,
+      "endLine": 978,
+      "sha256": "36884a26c24fc501008aa5c83ff1df4366c5705d12ad42734050f9575630fa07",
+      "note": "Resource segment slots, model-command field and action speed hundredths conversion."
+    },
+    {
+      "id": "actor-structs",
+      "project": "mnsg-extra-options",
+      "path": "src/enemy_multiplier.c",
+      "line": 7,
+      "endLine": 45,
+      "sha256": "420f2c65de0c974a5217f06e118c7979a441f01600a4fd8202ea06076fd28486",
+      "note": "Instance and definition layouts; native actor entry and metadata imports."
+    },
+    {
+      "id": "actor-names",
+      "project": "mnsg-extra-options",
+      "path": "src/enemy_multiplier.c",
+      "line": 83,
+      "endLine": 149,
+      "sha256": "420f2c65de0c974a5217f06e118c7979a441f01600a4fd8202ea06076fd28486",
+      "note": "Descriptive actor-ID labels, excluding two explicitly unknown entries. Labels are recovered names from source comments rather than a complete formal native enum."
+    },
+    {
+      "id": "actor-spawn",
+      "project": "mnsg-extra-options",
+      "path": "src/enemy_multiplier.c",
+      "line": 220,
+      "endLine": 262,
+      "sha256": "420f2c65de0c974a5217f06e118c7979a441f01600a4fd8202ea06076fd28486",
+      "note": "ActorID-indexed callback, signed16 model table and byte category table at+80D; stage scale input."
+    },
+    {
+      "id": "dharumanyo-id",
+      "project": "mnsg-extra-options",
+      "path": "src/hyper_dharumanyo.c",
+      "line": 39,
+      "endLine": 46,
+      "sha256": "3911ba31476e1e6a00935d0d141cfdda670102def039c2cb40d16e6df93e304c",
+      "note": "Actor0xCC identified as Dharumanyo; file31 linkage agrees with extracted model value31."
+    },
+    {
+      "id": "task-impact-layout",
+      "project": "mnsg-extra-options",
+      "path": "src/hyper_enemies.c",
+      "line": 8,
+      "endLine": 64,
+      "sha256": "b916caaf61e7d12233ac48c1dddbc483d249f0739bbb70a0bf19d79485f8fc9b",
+      "note": "Shared task callback/status/identity offsets and Impact health+60, pause+2C0, boss task+1D8/modeltask+1E0."
+    },
+    {
+      "id": "tsurami-gate",
+      "project": "mnsg-extra-options",
+      "path": "src/hyper_tsurami.c",
+      "line": 259,
+      "endLine": 283,
+      "sha256": "c3aebdb774429a2c6bd7ad5fac87689a281ce935793ecd59f62b548ddfa7a3c0",
+      "note": "Private post-update body tests !D_8015C5E4, preserving zero/nonzero semantics rather than signed health>0."
+    },
+    {
+      "id": "inventory-D_8006D320_6DF20",
+      "project": "mnsg-recomp-example",
+      "path": "src/global_patches/anchor_remote_model_pool.c",
+      "line": 152,
+      "endLine": 161,
+      "sha256": "90a62ea5de7eac8e573306e3d07b5637bbeb0beb1d2ba6d320b87df204e6ceaa",
+      "note": "Current-source reference identified by committed symbol inventory; table is intentionally limited to established representation or native allocator roles."
+    },
+    {
+      "id": "inventory-D_8006D350_6DF50",
+      "project": "mnsg-recomp-example",
+      "path": "src/global_patches/anchor_remote_model_pool.c",
+      "line": 56,
+      "endLine": 65,
+      "sha256": "90a62ea5de7eac8e573306e3d07b5637bbeb0beb1d2ba6d320b87df204e6ceaa",
+      "note": "Current-source reference identified by committed symbol inventory; table is intentionally limited to established representation or native allocator roles."
+    },
+    {
+      "id": "inventory-D_8016DAB0_16E6B0",
+      "project": "mnsg-recomp-example",
+      "path": "src/global_patches/anchor_remote_model_pool.c",
+      "line": 145,
+      "endLine": 154,
+      "sha256": "90a62ea5de7eac8e573306e3d07b5637bbeb0beb1d2ba6d320b87df204e6ceaa",
+      "note": "Current-source reference identified by committed symbol inventory; table is intentionally limited to established representation or native allocator roles."
+    },
+    {
+      "id": "inventory-D_8016DAB2_16E6B2",
+      "project": "mnsg-recomp-example",
+      "path": "src/global_patches/anchor_remote_model_pool.c",
+      "line": 147,
+      "endLine": 156,
+      "sha256": "90a62ea5de7eac8e573306e3d07b5637bbeb0beb1d2ba6d320b87df204e6ceaa",
+      "note": "Current-source reference identified by committed symbol inventory; table is intentionally limited to established representation or native allocator roles."
+    },
+    {
+      "id": "inventory-D_8016DAD8_16E6D8",
+      "project": "mnsg-recomp-example",
+      "path": "src/global_patches/anchor_remote_model_pool.c",
+      "line": 103,
+      "endLine": 112,
+      "sha256": "90a62ea5de7eac8e573306e3d07b5637bbeb0beb1d2ba6d320b87df204e6ceaa",
+      "note": "Current-source reference identified by committed symbol inventory; table is intentionally limited to established representation or native allocator roles."
+    },
+    {
+      "id": "inventory-D_8016DADC_16E6DC",
+      "project": "mnsg-recomp-example",
+      "path": "src/global_patches/anchor_remote_model_pool.c",
+      "line": 156,
+      "endLine": 165,
+      "sha256": "90a62ea5de7eac8e573306e3d07b5637bbeb0beb1d2ba6d320b87df204e6ceaa",
+      "note": "Current-source reference identified by committed symbol inventory; table is intentionally limited to established representation or native allocator roles."
+    },
+    {
+      "id": "inventory-D_8020CBF0_5C8B00",
+      "project": "mnsg-extra-options",
+      "path": "src/loose_ryo_on_hit.c",
+      "line": 124,
+      "endLine": 133,
+      "sha256": "5a582d9f093be6cb49ef08460ab087910ca9b338c9c9610296182a534def31f7",
+      "note": "Current-source reference identified by committed symbol inventory; table is intentionally limited to established representation or native allocator roles."
+    },
+    {
+      "id": "inventory-D_8020D1C0_5C90D0",
+      "project": "mnsg-recomp-example",
+      "path": "src/anchor_actors.c",
+      "line": 741,
+      "endLine": 750,
+      "sha256": "3fd7c8bc2b690bf36a63bef05d50fa1c5ab3713f57582fc5c7892989312167e3",
+      "note": "Current-source reference identified by committed symbol inventory; table is intentionally limited to established representation or native allocator roles."
+    },
+    {
+      "id": "inventory-D_8020D1D0_5C90E0",
+      "project": "mnsg-recomp-example",
+      "path": "src/anchor_actors.c",
+      "line": 744,
+      "endLine": 753,
+      "sha256": "3fd7c8bc2b690bf36a63bef05d50fa1c5ab3713f57582fc5c7892989312167e3",
+      "note": "Current-source reference identified by committed symbol inventory; table is intentionally limited to established representation or native allocator roles."
+    }
+  ],
+  "nativeVerification": [
+    {
+      "address": "0x80004170",
+      "method": "live decompile and disassembly",
+      "established": [
+        "Full g_system base is0x8008CCC0, not0x800BCCC0.",
+        "Global pointer storage0x8015C5C8 receives full base."
+      ]
+    },
+    {
+      "address": "0x8000607C",
+      "method": "live decompile and disassembly",
+      "established": [
+        "Direct alias0x800BCCC0 is full base+0x30000.",
+        "Destination stage alias+AFE0/full+3AFE0; rotation+AFE2; XYZ+AFE4/+AFE6/+AFE8; camera+AFEA.",
+        "Warp arg7 halfword atalias+AE3A, arg8 wordat+AE3C, transitionmarkerbyte+AE29=1."
+      ]
+    },
+    {
+      "address": "0x80003728",
+      "method": "live decompile and native struct layout",
+      "established": [
+        "stepw is byte full+3ADD4; stepw_end byte+3ADD5 clears0; field+3ADCA byte becomes2."
+      ]
+    },
+    {
+      "address": "0x801DD5C0",
+      "method": "live decompile",
+      "established": [
+        "task+60 byte selectedcharacter; runtime8015C5DC word mirrorscharacter.",
+        "task+5C is playerworkpointer; work+69 byte becomes1; work+86 halfword clears0.",
+        "Task action+CC byte becomesBA."
+      ]
+    },
+    {
+      "address": "0x8020D848",
+      "method": "live decompile (actor_manager_spawn_actors)",
+      "established": [
+        "Actor instance definitionpointerNULL terminates list.",
+        "ActorID indexes callbacktable and signedmodeltable; byteowner category uses+80D.",
+        "Actor definition/instance globals are the currently visited records.",
+        "Stage scale scalar is passed uniformly for XYZ model scale."
+      ]
+    },
+    {
+      "address": "0x80218A54",
+      "method": "live decompile",
+      "established": [
+        "Definitiondatawords+04/+08/+0C copy to actor task+D0/+D4/+D8.",
+        "Native actor model modebyte+05 becomes2."
+      ]
+    },
+    {
+      "address": "0x80219CA0",
+      "method": "live decompile",
+      "established": [
+        "Ownercategory0..13 routes exactly as published; category13 returns suppliedowner.",
+        "Categories6/8/9/10/12 apply per-category caps; other listed categories route directly after global actor-cap checks.",
+        "Owner categories are unrelated to pool kinds."
+      ]
+    },
+    {
+      "address": "0x801DB060",
+      "method": "live decompile",
+      "established": [
+        "Two auxiliarychannels iterate.",
+        "Character/action selects28-byte metadata; pointer+18 is auxrowbase; worddescriptors80203FF8 supply channels."
+      ]
+    },
+    {
+      "address": "0x801DB1D4",
+      "method": "live decompile",
+      "established": [
+        "Aux row stride8, resourceIDword+0, thresholdbyte+4.",
+        "ResourceID0 skipsbind;0xFF resetscursor/accumulator and bindsfirstrow.",
+        "Threshold0 is not an unconditional native stopflag; advancement includes accumulatedthreshold/frameconditions."
+      ]
+    },
+    {
+      "address": "0x801DC87C",
+      "method": "live decompile",
+      "established": [
+        "Resource0 returnswithoutloading.",
+        "Low8bits of selector choose object+38+selector*8 slot."
+      ]
+    },
+    {
+      "address": "0x801DC70C",
+      "method": "live decompile",
+      "established": [
+        "Native starttag0x07000000; actionrecord+C start,+10 end.",
+        "End0 substitutes selectedrawactionfileend, thenDMAcopies range.",
+        "Selectedcharacter indexes80204028 halfwordfileIDs."
+      ]
+    }
+  ],
+  "romVerification": {
+    "originalSha256": "3e16df0d00d2c4c7d75af3ff40c57d5ae937adb7c2976e35292758e2450a6670",
+    "normalizedSha1": "df8083a54296b8c151917c5333e1c85f014a2a66",
+    "fileTableOffset": "0x57fd8",
+    "fileIdBase": 1,
+    "files": [
+      {
+        "fileId": 11,
+        "tableIndex": 10,
+        "compressed": true,
+        "rawRomOffset": "0x579c50",
+        "decompressedSize": 267264,
+        "sha256": "d5ad065ecf55538bf64e971fed1906d41f15eac02a57727187546d580e61ade7"
+      },
+      {
+        "fileId": 12,
+        "tableIndex": 11,
+        "compressed": true,
+        "rawRomOffset": "0x5a4e86",
+        "decompressedSize": 188624,
+        "sha256": "1fe5547a5899a34c0cb94c3ca56576d88509c4cff9f7682202627e0df0eddc4e"
+      }
+    ],
+    "reads": {
+      "actionPointers": {
+        "address": "0x80203f34",
+        "format": ">4I",
+        "values": [
+          2149568408,
+          2149575152,
+          2149582240,
+          2149589544
+        ]
+      },
+      "initialAux": {
+        "address": "0x80203ff0",
+        "format": ">4B",
+        "values": [
+          0,
+          3,
+          0,
+          4
+        ]
+      },
+      "timedAux": {
+        "address": "0x80203ff8",
+        "format": ">2H",
+        "values": [
+          3,
+          4
+        ]
+      },
+      "broadFiles": {
+        "address": "0x80204020",
+        "format": ">4H",
+        "values": [
+          288,
+          292,
+          296,
+          300
+        ]
+      },
+      "actionFiles": {
+        "address": "0x80204028",
+        "format": ">4H",
+        "values": [
+          291,
+          295,
+          299,
+          303
+        ]
+      },
+      "replacements": {
+        "address": "0x80204048",
+        "format": ">4I",
+        "values": [
+          0,
+          2149597232,
+          2149597244,
+          0
+        ]
+      },
+      "stageScale": {
+        "address": "0x80239afc",
+        "format": ">f",
+        "values": [
+          0.10000000149011612
+        ]
+      },
+      "poolCaps": {
+        "romAddress": "0x6df50",
+        "format": ">8H",
+        "values": [
+          0,
+          24,
+          192,
+          2,
+          64,
+          2,
+          0,
+          0
+        ]
+      }
+    },
+    "normalization": "Input begins37 80 40 12 (16-bit pair-swapped v64). Pair-swap every16-bit unit before big-endian reads. Normalized header80 37 12 40; normalized SHA1 matches checked-in config/usa/mnsg.sha1.",
+    "sourceProject": "mnsg-recomp-example",
+    "sourcePath": "mnsg/config/usa/baserom.z64",
+    "sha1Manifest": "mnsg/config/usa/mnsg.sha1",
+    "extraction": "Nisitenma-Ichigo entry table begins0x57FD8; native file IDs are one-based. Entry high bit indicates LZKN64 compression; low31 bits give ROM offset. Decode using existing mnsg/tools/rommy.py algorithm and installed lzkn64. Read scalars big-endian at virtualAddress-overlayBase. No ROM or decompressed binary is committed.",
+    "overlayBases": {
+      "11": "0x801CB460",
+      "12": "0x8020D2A0"
+    },
+    "actorTableReads": [
+      {
+        "actorId": 203,
+        "name": "Ghost Robot Tsurami",
+        "callback": 134223860,
+        "modelId": 29,
+        "category": 6
+      },
+      {
+        "actorId": 204,
+        "name": "Dharumanyo",
+        "callback": 134217728,
+        "modelId": 31,
+        "category": 6
+      },
+      {
+        "actorId": 250,
+        "name": "Robot Bee",
+        "callback": 134231556,
+        "modelId": 32,
+        "category": 6
+      },
+      {
+        "actorId": 256,
+        "name": "Blue Robot",
+        "callback": 134229080,
+        "modelId": 32,
+        "category": 6
+      },
+      {
+        "actorId": 261,
+        "name": "Flatfish",
+        "callback": 134217728,
+        "modelId": 36,
+        "category": 6
+      },
+      {
+        "actorId": 317,
+        "name": "Samurai",
+        "callback": 134223508,
+        "modelId": 36,
+        "category": 6
+      },
+      {
+        "actorId": 318,
+        "name": "Rose Robot",
+        "callback": 134231532,
+        "modelId": 37,
+        "category": 6
+      },
+      {
+        "actorId": 321,
+        "name": "Ninja",
+        "callback": 134223112,
+        "modelId": 37,
+        "category": 6
+      },
+      {
+        "actorId": 869,
+        "name": "Giant Spinning Top",
+        "callback": 134223900,
+        "modelId": 40,
+        "category": 3
+      },
+      {
+        "actorId": 1020,
+        "name": "Floor Flamethrower",
+        "callback": 134224276,
+        "modelId": 39,
+        "category": 0
+      }
+    ]
+  },
+  "crossEvidence": [
+    "data/value-evidence-save.json",
+    "data/value-evidence-rooms.json"
+  ],
+  "symbols": {
+    "D_8015C5D8_15D1D8": {
+      "tableIds": [
+        "character-values",
+        "runtime-fields"
+      ],
+      "sourceIds": [
+        "characters",
+        "character-setter",
+        "character-writes",
+        "runtime-activation"
+      ],
+      "nativeFunctions": [
+        "0x801DD5C0"
+      ],
+      "romReads": [],
+      "unknowns": [
+        "Full dirty/activation marker reset protocol; other runtime words not enumerated here."
+      ],
+      "notes": [
+        "Current health wordindex3 also exportedD_8015C5E4; signedhealthinterpretation from sibling save evidence."
+      ]
+    },
+    "D_8015C5C8_15D1C8": {
+      "tableIds": [
+        "system-fields",
+        "known-system-steps"
+      ],
+      "sourceIds": [
+        "system-layout",
+        "start-gate"
+      ],
+      "nativeFunctions": [
+        "0x80004170",
+        "0x8000607C",
+        "0x80003728"
+      ],
+      "romReads": [],
+      "unknowns": [
+        "System step values other than selected7/12.",
+        "Detailed meaning of warp args7/8.",
+        "Specific nonzero startupgatevalues."
+      ],
+      "notes": [
+        "CORRECTION: prior public docs treatedD_800BCCC0 asfullsystembase and used+3AFE0. It is interiorbase+30000; correct directoffset+AFE0. Parent corrected prose/examples and this dataset records pairedoffsets.",
+        "Unsigned16 counter reads and signed16 native struct view share identicalstorage; publishedtype followsSYS_W layout."
+      ]
+    },
+    "D_800BCCC0_BD8C0": {
+      "tableIds": [
+        "alias-fields"
+      ],
+      "sourceIds": [
+        "system-layout",
+        "start-gate"
+      ],
+      "nativeFunctions": [
+        "0x80004170",
+        "0x8000607C",
+        "0x80003728"
+      ],
+      "romReads": [],
+      "unknowns": [
+        "System step values other than selected7/12.",
+        "Detailed meaning of warp args7/8.",
+        "Specific nonzero startupgatevalues."
+      ],
+      "notes": [
+        "CORRECTION: prior public docs treatedD_800BCCC0 asfullsystembase and used+3AFE0. It is interiorbase+30000; correct directoffset+AFE0. Parent corrected prose/examples and this dataset records pairedoffsets.",
+        "Unsigned16 counter reads and signed16 native struct view share identicalstorage; publishedtype followsSYS_W layout."
+      ]
+    },
+    "D_8015C5E4": {
+      "tableIds": [
+        "current-health-values",
+        "gate-values"
+      ],
+      "sourceIds": [
+        "tsurami-gate"
+      ],
+      "nativeFunctions": [],
+      "romReads": [],
+      "unknowns": [
+        "Negativehealthvalues have no established intended gameplaymeaning even though nonzero gate permitsbody."
+      ],
+      "notes": [
+        "Saveowner/reviewer identifiedsymbolassavebase8015C608-24. See data/value-evidence-save.json for nativecurrenthealth, halfheartunits, newvalue10 and saveactivation mirroring.",
+        "This resolves prior reference prose that knew only the gate and called numeric health semanticsunknown."
+      ]
+    },
+    "D_8015CDDC": {
+      "tableIds": [
+        "instance-fields"
+      ],
+      "sourceIds": [
+        "actor-structs",
+        "actor-spawn"
+      ],
+      "nativeFunctions": [
+        "0x8020D848"
+      ],
+      "romReads": [],
+      "unknowns": [
+        "Instance+10 namedis_spawned in source but no verified0/1 stateenum, leftuninterpreted."
+      ],
+      "notes": []
+    },
+    "D_8015CDE0": {
+      "tableIds": [
+        "definition-fields",
+        "known-actor-ids"
+      ],
+      "sourceIds": [
+        "actor-structs",
+        "actor-names",
+        "dharumanyo-id"
+      ],
+      "nativeFunctions": [
+        "0x80218A54",
+        "0x8020D848"
+      ],
+      "romReads": [],
+      "unknowns": [
+        "Actor-specificparameter/datawordmeanings.",
+        "Unknown actorIDs191/362 omitted rather than inventlabels."
+      ],
+      "notes": [
+        "Actor descriptive names extractedfromcommentcatalog and cross-linkedwithtypedsourceactors; notclaimedcompleteofficialenum."
+      ]
+    },
+    "D_80167FC0_168BC0": {
+      "tableIds": [
+        "resource-entry-fields"
+      ],
+      "sourceIds": [
+        "resource-layout"
+      ],
+      "nativeFunctions": [],
+      "romReads": [],
+      "unknowns": [
+        "Recordpadding+02 notinterpreted."
+      ],
+      "notes": []
+    },
+    "D_8006D320_6DF20": {
+      "tableIds": [
+        "owner-values"
+      ],
+      "sourceIds": [
+        "inventory-D_8006D320_6DF20"
+      ],
+      "nativeFunctions": [],
+      "romReads": [],
+      "unknowns": [
+        "Counter reset interval / wider lifecycle is not expanded beyond established allocator contract."
+      ],
+      "notes": [
+        "Numeric counts/pointers are not assignedinventedenumvalues."
+      ]
+    },
+    "D_8006D350_6DF50": {
+      "tableIds": [
+        "initial-pool-capacities"
+      ],
+      "sourceIds": [
+        "inventory-D_8006D350_6DF50"
+      ],
+      "nativeFunctions": [],
+      "romReads": [
+        "poolCaps"
+      ],
+      "unknowns": [
+        "Other pool-kind recordtype names."
+      ],
+      "notes": [
+        "Numeric counts/pointers are not assignedinventedenumvalues."
+      ]
+    },
+    "D_8016DAB0_16E6B0": {
+      "tableIds": [
+        "counter-representation"
+      ],
+      "sourceIds": [
+        "inventory-D_8016DAB0_16E6B0"
+      ],
+      "nativeFunctions": [],
+      "romReads": [],
+      "unknowns": [
+        "Counter reset interval / wider lifecycle is not expanded beyond established allocator contract."
+      ],
+      "notes": [
+        "Numeric counts/pointers are not assignedinventedenumvalues."
+      ]
+    },
+    "D_8016DAB2_16E6B2": {
+      "tableIds": [
+        "counter-representation"
+      ],
+      "sourceIds": [
+        "inventory-D_8016DAB2_16E6B2"
+      ],
+      "nativeFunctions": [],
+      "romReads": [],
+      "unknowns": [
+        "Counter reset interval / wider lifecycle is not expanded beyond established allocator contract."
+      ],
+      "notes": [
+        "Numeric counts/pointers are not assignedinventedenumvalues."
+      ]
+    },
+    "D_8016DAD8_16E6D8": {
+      "tableIds": [
+        "pool-count-indices"
+      ],
+      "sourceIds": [
+        "inventory-D_8016DAD8_16E6D8"
+      ],
+      "nativeFunctions": [],
+      "romReads": [],
+      "unknowns": [
+        "Other pool-kind recordtype names."
+      ],
+      "notes": [
+        "Numeric counts/pointers are not assignedinventedenumvalues."
+      ]
+    },
+    "D_8016DADC_16E6DC": {
+      "tableIds": [
+        "count-values"
+      ],
+      "sourceIds": [
+        "inventory-D_8016DADC_16E6DC"
+      ],
+      "nativeFunctions": [],
+      "romReads": [],
+      "unknowns": [
+        "Counter reset interval / wider lifecycle is not expanded beyond established allocator contract."
+      ],
+      "notes": [
+        "Numeric counts/pointers are not assignedinventedenumvalues."
+      ]
+    },
+    "D_8016DAB4_16E6B4": {
+      "tableIds": [
+        "task-fields",
+        "task-bitmasks"
+      ],
+      "sourceIds": [
+        "task-impact-layout"
+      ],
+      "nativeFunctions": [],
+      "romReads": [],
+      "unknowns": [
+        "Actor-extensionfieldsareactor-dependent; playerlayoutisexplicitlydifferent."
+      ],
+      "notes": []
+    },
+    "D_801FC604_5B8514": {
+      "tableIds": [
+        "player-task-fields",
+        "known-player-actions",
+        "player-work-fields"
+      ],
+      "sourceIds": [
+        "characters",
+        "player-readers",
+        "character-writes",
+        "actions"
+      ],
+      "nativeFunctions": [
+        "0x801DD5C0"
+      ],
+      "romReads": [],
+      "unknowns": [
+        "Completeactionenum and allplayerworkfields.",
+        "Markerresetprotocols beyond explicitlyobservedwrites/tests."
+      ],
+      "notes": []
+    },
+    "D_801FC60C_5B851C": {
+      "tableIds": [
+        "object-fields"
+      ],
+      "sourceIds": [
+        "player-readers",
+        "object-scale",
+        "object-mode",
+        "object-binding"
+      ],
+      "nativeFunctions": [],
+      "romReads": [],
+      "unknowns": [
+        "Renderobject modesotherthan2 and allunusedfields."
+      ],
+      "notes": []
+    },
+    "D_80203F34_5BFE44": {
+      "tableIds": [
+        "character-action-tables",
+        "action-record-fields",
+        "auxiliary-row-fields"
+      ],
+      "sourceIds": [
+        "resource-layout",
+        "range-reader",
+        "aux-readers",
+        "object-binding"
+      ],
+      "nativeFunctions": [
+        "0x801DB060",
+        "0x801DB1D4",
+        "0x801DC70C"
+      ],
+      "romReads": [
+        "actionPointers"
+      ],
+      "unknowns": [
+        "Actionrecordgaps+06/+08 and remainingbytes.",
+        "Completeactionlistnotestablished."
+      ],
+      "notes": []
+    },
+    "D_80203FF0_5BFF00": {
+      "tableIds": [
+        "initial-descriptor-values"
+      ],
+      "sourceIds": [
+        "resource-layout",
+        "aux-readers"
+      ],
+      "nativeFunctions": [
+        "0x801DC87C"
+      ],
+      "romReads": [
+        "initialAux"
+      ],
+      "unknowns": [
+        "Firstbyteofeachpair purposeunknown; only firsttwochannelsinterpreted."
+      ],
+      "notes": []
+    },
+    "D_80203FF8_5BFF08": {
+      "tableIds": [
+        "timed-descriptor-values"
+      ],
+      "sourceIds": [
+        "resource-layout",
+        "aux-readers"
+      ],
+      "nativeFunctions": [
+        "0x801DB060",
+        "0x801DC87C"
+      ],
+      "romReads": [
+        "timedAux"
+      ],
+      "unknowns": [
+        "Descriptorupperbytepurposeunknown."
+      ],
+      "notes": []
+    },
+    "D_80204020_5BFF30": {
+      "tableIds": [
+        "known-resource-ids"
+      ],
+      "sourceIds": [
+        "resource-layout",
+        "object-binding"
+      ],
+      "nativeFunctions": [],
+      "romReads": [
+        "broadFiles"
+      ],
+      "unknowns": [],
+      "notes": []
+    },
+    "D_80204028_5BFF38": {
+      "tableIds": [
+        "known-resource-ids"
+      ],
+      "sourceIds": [
+        "resource-layout",
+        "range-reader"
+      ],
+      "nativeFunctions": [
+        "0x801DC70C"
+      ],
+      "romReads": [
+        "actionFiles"
+      ],
+      "unknowns": [],
+      "notes": []
+    },
+    "D_80204048_5BFF58": {
+      "tableIds": [
+        "known-replacement-tables"
+      ],
+      "sourceIds": [
+        "resource-layout",
+        "object-binding"
+      ],
+      "nativeFunctions": [],
+      "romReads": [
+        "replacements"
+      ],
+      "unknowns": [
+        "Onlyindices1/2 semanticspublished; surroundingnullentriesdonotimplyboundoradditionalmodes."
+      ],
+      "notes": []
+    },
+    "D_8020CBF0_5C8B00": {
+      "tableIds": [
+        "opaque-storage"
+      ],
+      "sourceIds": [
+        "inventory-D_8020CBF0_5C8B00"
+      ],
+      "nativeFunctions": [],
+      "romReads": [],
+      "unknowns": [
+        "Opaque soundbufferfields/size/valuesunknown."
+      ],
+      "notes": []
+    },
+    "D_8020D1C0_5C90D0": {
+      "tableIds": [
+        "vector-components"
+      ],
+      "sourceIds": [
+        "inventory-D_8020D1C0_5C90D0"
+      ],
+      "nativeFunctions": [],
+      "romReads": [],
+      "unknowns": [
+        "Continuousfloatvalues: nofixedpresets, safeuniversalrangeorvalueenumestablished."
+      ],
+      "notes": []
+    },
+    "D_8020D1D0_5C90E0": {
+      "tableIds": [
+        "radius-representation"
+      ],
+      "sourceIds": [
+        "inventory-D_8020D1D0_5C90E0"
+      ],
+      "nativeFunctions": [],
+      "romReads": [],
+      "unknowns": [
+        "Continuousfloatvalues: nofixedpresets, safeuniversalrangeorvalueenumestablished."
+      ],
+      "notes": []
+    },
+    "D_8020EED0_63A2B0": {
+      "tableIds": [
+        "impact-state-fields"
+      ],
+      "sourceIds": [
+        "task-impact-layout"
+      ],
+      "nativeFunctions": [],
+      "romReads": [],
+      "unknowns": [
+        "Remainingbattlefields and exactnonzeropausevalues."
+      ],
+      "notes": []
+    },
+    "D_802287BC_5E3C8C": {
+      "tableIds": [
+        "selected-actor-callbacks"
+      ],
+      "sourceIds": [
+        "actor-spawn",
+        "actor-names"
+      ],
+      "nativeFunctions": [
+        "0x8020D848"
+      ],
+      "romReads": [
+        "actorTableReads"
+      ],
+      "unknowns": [],
+      "notes": [
+        "Stored08000000-regioncallbackaddressesareoverlay-relative nativecodeaddresses; sharedaddressesacrossactorIDsrequirethecorrectresidentresource."
+      ]
+    },
+    "D_802297D6_5E4CA6": {
+      "tableIds": [
+        "metadata-layout",
+        "selected-actor-metadata",
+        "owner-category-values"
+      ],
+      "sourceIds": [
+        "actor-spawn"
+      ],
+      "nativeFunctions": [
+        "0x8020D848",
+        "0x80219CA0"
+      ],
+      "romReads": [
+        "actorTableReads"
+      ],
+      "unknowns": [
+        "Ownercategorieshavepointerroutingsemantics; descriptiveactorclassnamesnotguessed."
+      ],
+      "notes": []
+    },
+    "D_80239AFC_5F4FCC": {
+      "tableIds": [
+        "initial-scale"
+      ],
+      "sourceIds": [
+        "actor-spawn"
+      ],
+      "nativeFunctions": [
+        "0x8020D848"
+      ],
+      "romReads": [
+        "stageScale"
+      ],
+      "unknowns": [],
+      "notes": [
+        "Initialfloat nowverifiedexactbits3DCCCCCD (~0.1), resolvingpreviousprosevalueuncertainty."
+      ]
+    }
+  }
+}

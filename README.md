@@ -28,12 +28,15 @@ The Docusaurus output is `build/`, served under `/mnsg-documentation/`. `npm run
 - `docs/getting-started.md` and `docs/native-lifecycle.md`: introductory guides.
 - `docs/functions/` and `docs/variables/`: generated native API Markdown.
 - `data/reference-*.json`: public explanations and complete C usage examples.
+- `data/values-*.json`: reviewed raw-value mappings, field layouts, and decoded meanings for variable pages. Each symbol supplies `tables` with a stable `id`, `title`, `description`, `columns`, and `rows`. Label array indices, stored values, offsets, and flag masks explicitly. Include hexadecimal and decimal columns for known numeric identifiers.
 - `scripts/generate_docs.py`: merges public reference entries and symbol metadata.
 - `src/pages/`: homepage and searchable symbol explorer.
 - `src/theme/SearchBar/`: local navbar search.
 - `src/css/custom.css`: Docusaurus theme customization.
 
 Edit the public `reference-*.json` records to improve a generated page. Each record supplies `title`, `summary`, `behavior`, `example`, and optionally `declaration`, `parameters`, `returns`, `cautions`, `exampleExplanation`, `decompilation`, `decompilationNote`, and `related`. Examples should contain their declarations and a complete C helper or observation hook. Uncertain native behavior must remain explicit.
+
+Value tables appear on their variable pages and contribute their interpreted names to search. The generator rejects malformed rows, duplicate anchors, and mismatched hexadecimal/decimal values; site validation checks each rendered row and table anchor. Keep source locations, conflicts, and research decisions in `data/value-evidence-*.json`, which is excluded from public output.
 
 The public site intentionally has no project-specific sections, source excerpts, project names, or links to the source projects. The generator only publishes native API text and selected symbol metadata. Maintenance provenance is never copied into `static/` or `build/`. That research remains available in this public repository for review.
 

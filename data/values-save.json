@@ -1,0 +1,2468 @@
+{
+  "D_8015C608_15D208": {
+    "tables": [
+      {
+        "id": "save-flag-value-semantics",
+        "title": "Packed flag values",
+        "description": "A flag ID selects one bit: byte offset = ID >> 3; bit index = ID & 7; mask = 1 << bit. The logical state 0/1 is not the value of the whole byte. Only documented nonnegative IDs should be used: the native helpers mask the computed byte index with 0xFF rather than checking the valid save-field range.",
+        "columns": [
+          "Representation",
+          "Raw value",
+          "Meaning"
+        ],
+        "rows": [
+          [
+            "Normalized logical flag",
+            "`0`",
+            "Selected bit clear: named event/condition is not set."
+          ],
+          [
+            "Normalized logical flag",
+            "`1`",
+            "Selected bit set: named event/condition is set. Other bits in the byte are independent."
+          ],
+          [
+            "Native flag getter result",
+            "`0`",
+            "Selected mask was absent."
+          ],
+          [
+            "Native flag getter result",
+            "`1 << (ID & 7)`",
+            "Selected mask is present. This can be 1, 2, 4, 8, 16, 32, 64 or 128; normalize with != 0 when a boolean is needed."
+          ],
+          [
+            "Example: ID `0x033` (`51`)",
+            "Byte `0x06`, mask `0x08`",
+            "Benkei defeat/dialogue flag. The native getter returns 0 or 8, not necessarily 0 or 1."
+          ],
+          [
+            "Entire stored byte",
+            "`0x00` through `0xFF`",
+            "Up to eight independent flags coexist. Setting one flag must preserve all unrelated bits."
+          ]
+        ]
+      },
+      {
+        "id": "known-save-flags",
+        "title": "Known save flags",
+        "description": "Named event, collection and door-state bits. Descriptions identify the meaning of a set bit; they are not C enum names. Labels combine native callback behavior with known flag-access mappings; exact pickup-location labels are inferred where room actor data has not been verified. An event flag can record a milestone without completing the associated live actor state machine. IDs with conflicting meanings are separated below.",
+        "columns": [
+          "Flag ID (hex)",
+          "Flag ID (decimal)",
+          "Byte offset",
+          "Bit index",
+          "Mask",
+          "Meaning when set"
+        ],
+        "rows": [
+          [
+            "`0x000`",
+            "`0`",
+            "`0x00`",
+            "`0`",
+            "`0x01`",
+            "Received the Lord Super Pass"
+          ],
+          [
+            "`0x001`",
+            "`1`",
+            "`0x00`",
+            "`1`",
+            "`0x02`",
+            "Super Pass bridge guards have opened the gate"
+          ],
+          [
+            "`0x002`",
+            "`2`",
+            "`0x00`",
+            "`2`",
+            "`0x04`",
+            "Met the old man in South Oedo"
+          ],
+          [
+            "`0x007`",
+            "`7`",
+            "`0x00`",
+            "`7`",
+            "`0x80`",
+            "Spoke to Omitsu about the UFO"
+          ],
+          [
+            "`0x008`",
+            "`8`",
+            "`0x01`",
+            "`0`",
+            "`0x01`",
+            "Omitsu fan quest event completed"
+          ],
+          [
+            "`0x009`",
+            "`9`",
+            "`0x01`",
+            "`1`",
+            "`0x02`",
+            "Received the Map of Japan"
+          ],
+          [
+            "`0x00A`",
+            "`10`",
+            "`0x01`",
+            "`2`",
+            "`0x04`",
+            "Heard about the Zazen dwarf"
+          ],
+          [
+            "`0x00B`",
+            "`11`",
+            "`0x01`",
+            "`3`",
+            "`0x08`",
+            "Spoke to the Kompira priest"
+          ],
+          [
+            "`0x00D`",
+            "`13`",
+            "`0x01`",
+            "`5`",
+            "`0x20`",
+            "Received a Sasuke battery"
+          ],
+          [
+            "`0x00E`",
+            "`14`",
+            "`0x01`",
+            "`6`",
+            "`0x40`",
+            "Sasuke recruitment event completed"
+          ],
+          [
+            "`0x010`",
+            "`16`",
+            "`0x02`",
+            "`0`",
+            "`0x01`",
+            "Received Chain Pipe"
+          ],
+          [
+            "`0x011`",
+            "`17`",
+            "`0x02`",
+            "`1`",
+            "`0x02`",
+            "Mokubei weapon upgrades available"
+          ],
+          [
+            "`0x013`",
+            "`19`",
+            "`0x02`",
+            "`3`",
+            "`0x08`",
+            "Received Fire Ryo / Medal of Flames"
+          ],
+          [
+            "`0x014`",
+            "`20`",
+            "`0x02`",
+            "`4`",
+            "`0x10`",
+            "Freed Koryuta the dragon"
+          ],
+          [
+            "`0x015`",
+            "`21`",
+            "`0x02`",
+            "`5`",
+            "`0x20`",
+            "Met the ghost of the Wise Man"
+          ],
+          [
+            "`0x016`",
+            "`22`",
+            "`0x02`",
+            "`6`",
+            "`0x40`",
+            "Spoke to the witch without paying"
+          ],
+          [
+            "`0x017`",
+            "`23`",
+            "`0x02`",
+            "`7`",
+            "`0x80`",
+            "Kyushu disappeared"
+          ],
+          [
+            "`0x018`",
+            "`24`",
+            "`0x03`",
+            "`0`",
+            "`0x01`",
+            "Dharumanyo durable defeat/progression state"
+          ],
+          [
+            "`0x01A`",
+            "`26`",
+            "`0x03`",
+            "`2`",
+            "`0x04`",
+            "Gold-weapon upgrade event completed"
+          ],
+          [
+            "`0x01C`",
+            "`28`",
+            "`0x03`",
+            "`4`",
+            "`0x10`",
+            "Obtained Sudden Impact"
+          ],
+          [
+            "`0x01F`",
+            "`31`",
+            "`0x03`",
+            "`7`",
+            "`0x80`",
+            "Obtained Mermaid Magic"
+          ],
+          [
+            "`0x020`",
+            "`32`",
+            "`0x04`",
+            "`0`",
+            "`0x01`",
+            "Obtained Super Jump / Jetpack"
+          ],
+          [
+            "`0x022`",
+            "`34`",
+            "`0x04`",
+            "`2`",
+            "`0x04`",
+            "Looking for Kihachi favorite food"
+          ],
+          [
+            "`0x023`",
+            "`35`",
+            "`0x04`",
+            "`3`",
+            "`0x08`",
+            "Heard about Kihachi from Benkei"
+          ],
+          [
+            "`0x024`",
+            "`36`",
+            "`0x04`",
+            "`4`",
+            "`0x10`",
+            "Learned Kihachi favorite food"
+          ],
+          [
+            "`0x025`",
+            "`37`",
+            "`0x04`",
+            "`5`",
+            "`0x20`",
+            "Can discuss Benkei with Ushiwaka"
+          ],
+          [
+            "`0x027`",
+            "`39`",
+            "`0x04`",
+            "`7`",
+            "`0x80`",
+            "Obtained the training/jump-gym key quest flag"
+          ],
+          [
+            "`0x028`",
+            "`40`",
+            "`0x05`",
+            "`0`",
+            "`0x01`",
+            "Ushiwaka has gone to the Golden Temple"
+          ],
+          [
+            "`0x029`",
+            "`41`",
+            "`0x05`",
+            "`1`",
+            "`0x02`",
+            "Ushiwaka handed over Achilles Heel; advances reward dialogue"
+          ],
+          [
+            "`0x02A`",
+            "`42`",
+            "`0x05`",
+            "`2`",
+            "`0x04`",
+            "Ushiwaka is requesting red fish"
+          ],
+          [
+            "`0x02B`",
+            "`43`",
+            "`0x05`",
+            "`3`",
+            "`0x08`",
+            "Ushiwaka is requesting yellow fish"
+          ],
+          [
+            "`0x02C`",
+            "`44`",
+            "`0x05`",
+            "`4`",
+            "`0x10`",
+            "Ushiwaka is requesting blue fish"
+          ],
+          [
+            "`0x02D`",
+            "`45`",
+            "`0x05`",
+            "`5`",
+            "`0x20`",
+            "Ushiwaka identity-question event; precise question subject unresolved"
+          ],
+          [
+            "`0x031`",
+            "`49`",
+            "`0x06`",
+            "`1`",
+            "`0x02`",
+            "Obtained Mini Ebisumaru"
+          ],
+          [
+            "`0x032`",
+            "`50`",
+            "`0x06`",
+            "`2`",
+            "`0x04`",
+            "Thaisamba durable defeat/progression state"
+          ],
+          [
+            "`0x033`",
+            "`51`",
+            "`0x06`",
+            "`3`",
+            "`0x08`",
+            "Benkei durable defeat/dialogue state"
+          ],
+          [
+            "`0x034`",
+            "`52`",
+            "`0x06`",
+            "`4`",
+            "`0x10`",
+            "Met Benkei"
+          ],
+          [
+            "`0x035`",
+            "`53`",
+            "`0x06`",
+            "`5`",
+            "`0x20`",
+            "Obtained Miracle Snow event"
+          ],
+          [
+            "`0x037`",
+            "`55`",
+            "`0x06`",
+            "`7`",
+            "`0x80`",
+            "Kihachi will provide a favorite-food hint"
+          ],
+          [
+            "`0x038`",
+            "`56`",
+            "`0x07`",
+            "`0`",
+            "`0x01`",
+            "Kihachi provided the favorite-food hint"
+          ],
+          [
+            "`0x03A`",
+            "`58`",
+            "`0x07`",
+            "`2`",
+            "`0x04`",
+            "Yae recruitment event completed"
+          ],
+          [
+            "`0x03B`",
+            "`59`",
+            "`0x07`",
+            "`3`",
+            "`0x08`",
+            "Spoke to the priest son"
+          ],
+          [
+            "`0x03D`",
+            "`61`",
+            "`0x07`",
+            "`5`",
+            "`0x20`",
+            "Arrived at the Folkypoke tourist center"
+          ],
+          [
+            "`0x03F`",
+            "`63`",
+            "`0x07`",
+            "`7`",
+            "`0x80`",
+            "Heard about the Inaba Desert battery"
+          ],
+          [
+            "`0x040`",
+            "`64`",
+            "`0x08`",
+            "`0`",
+            "`0x01`",
+            "Tsurami durable defeat/progression state"
+          ],
+          [
+            "`0x04F`",
+            "`79`",
+            "`0x09`",
+            "`7`",
+            "`0x80`",
+            "Cannot catch more blue fish"
+          ],
+          [
+            "`0x050`",
+            "`80`",
+            "`0x0A`",
+            "`0`",
+            "`0x01`",
+            "Cannot catch more yellow fish"
+          ],
+          [
+            "`0x051`",
+            "`81`",
+            "`0x0A`",
+            "`1`",
+            "`0x02`",
+            "Cannot catch more red fish"
+          ],
+          [
+            "`0x052`",
+            "`82`",
+            "`0x0A`",
+            "`2`",
+            "`0x04`",
+            "Goemon tenements cousins event 1"
+          ],
+          [
+            "`0x053`",
+            "`83`",
+            "`0x0A`",
+            "`3`",
+            "`0x08`",
+            "Goemon tenements cousins event 2"
+          ],
+          [
+            "`0x054`",
+            "`84`",
+            "`0x0A`",
+            "`4`",
+            "`0x10`",
+            "Goemon tenements cousins event 3"
+          ],
+          [
+            "`0x055`",
+            "`85`",
+            "`0x0A`",
+            "`5`",
+            "`0x20`",
+            "Goemon tenements cousins event 4"
+          ],
+          [
+            "`0x056`",
+            "`86`",
+            "`0x0A`",
+            "`6`",
+            "`0x40`",
+            "Met the Zazen old woman before Dharumanyo"
+          ],
+          [
+            "`0x057`",
+            "`87`",
+            "`0x0A`",
+            "`7`",
+            "`0x80`",
+            "Met the Zazen old woman after Dharumanyo"
+          ],
+          [
+            "`0x058`",
+            "`88`",
+            "`0x0B`",
+            "`0`",
+            "`0x01`",
+            "Met the Zazen old woman both before and after"
+          ],
+          [
+            "`0x059`",
+            "`89`",
+            "`0x0B`",
+            "`1`",
+            "`0x02`",
+            "Received the Zazen old woman reward"
+          ],
+          [
+            "`0x063`",
+            "`99`",
+            "`0x0C`",
+            "`3`",
+            "`0x08`",
+            "Heard about the dragon problem"
+          ],
+          [
+            "`0x064`",
+            "`100`",
+            "`0x0C`",
+            "`4`",
+            "`0x10`",
+            "Received tourist-center gratitude"
+          ],
+          [
+            "`0x069`",
+            "`105`",
+            "`0x0D`",
+            "`1`",
+            "`0x02`",
+            "Benkei won / post-fight controller topology"
+          ],
+          [
+            "`0x06B`",
+            "`107`",
+            "`0x0D`",
+            "`3`",
+            "`0x08`",
+            "Went to outer space"
+          ],
+          [
+            "`0x06C`",
+            "`108`",
+            "`0x0D`",
+            "`4`",
+            "`0x10`",
+            "Going to outer space"
+          ],
+          [
+            "`0x06E`",
+            "`110`",
+            "`0x0D`",
+            "`6`",
+            "`0x40`",
+            "Spoke to Dancin Alnite"
+          ],
+          [
+            "`0x06F`",
+            "`111`",
+            "`0x0D`",
+            "`7`",
+            "`0x80`",
+            "Met Baron in Iga"
+          ],
+          [
+            "`0x070`",
+            "`112`",
+            "`0x0E`",
+            "`0`",
+            "`0x01`",
+            "Post-Dharumanyo story event 2"
+          ],
+          [
+            "`0x071`",
+            "`113`",
+            "`0x0E`",
+            "`1`",
+            "`0x02`",
+            "Post-Dharumanyo story event 3"
+          ],
+          [
+            "`0x072`",
+            "`114`",
+            "`0x0E`",
+            "`2`",
+            "`0x04`",
+            "Post-Dharumanyo story event 4"
+          ],
+          [
+            "`0x073`",
+            "`115`",
+            "`0x0E`",
+            "`3`",
+            "`0x08`",
+            "Post-Dharumanyo story event 1"
+          ],
+          [
+            "`0x074`",
+            "`116`",
+            "`0x0E`",
+            "`4`",
+            "`0x10`",
+            "Post-Tsurami story event"
+          ],
+          [
+            "`0x075`",
+            "`117`",
+            "`0x0E`",
+            "`5`",
+            "`0x20`",
+            "Gorgeous Stage cutscene event 2"
+          ],
+          [
+            "`0x076`",
+            "`118`",
+            "`0x0E`",
+            "`6`",
+            "`0x40`",
+            "Gorgeous Stage cutscene event 1"
+          ],
+          [
+            "`0x077`",
+            "`119`",
+            "`0x0E`",
+            "`7`",
+            "`0x80`",
+            "Sogen girl imitated Lily"
+          ],
+          [
+            "`0x078`",
+            "`120`",
+            "`0x0F`",
+            "`0`",
+            "`0x01`",
+            "Sogen girl imitated Dancin"
+          ],
+          [
+            "`0x07A`",
+            "`122`",
+            "`0x0F`",
+            "`2`",
+            "`0x04`",
+            "Benkei challenge is actively running"
+          ],
+          [
+            "`0x07C`",
+            "`124`",
+            "`0x0F`",
+            "`4`",
+            "`0x10`",
+            "Witch cutscene event 1"
+          ],
+          [
+            "`0x07F`",
+            "`127`",
+            "`0x0F`",
+            "`7`",
+            "`0x80`",
+            "Riding the dragon from Folkypoke"
+          ],
+          [
+            "`0x080`",
+            "`128`",
+            "`0x10`",
+            "`0`",
+            "`0x01`",
+            "Plasma told the player to resurrect Sasuke"
+          ],
+          [
+            "`0x098`",
+            "`152`",
+            "`0x13`",
+            "`0`",
+            "`0x01`",
+            "Tourist-center cutscene event"
+          ],
+          [
+            "`0x099`",
+            "`153`",
+            "`0x13`",
+            "`1`",
+            "`0x02`",
+            "Baron / Wise Man meeting event"
+          ],
+          [
+            "`0x09C`",
+            "`156`",
+            "`0x13`",
+            "`4`",
+            "`0x10`",
+            "Witch cutscene event 2"
+          ],
+          [
+            "`0x09D`",
+            "`157`",
+            "`0x13`",
+            "`5`",
+            "`0x20`",
+            "Witch cutscene event 3"
+          ],
+          [
+            "`0x09E`",
+            "`158`",
+            "`0x13`",
+            "`6`",
+            "`0x40`",
+            "Witch cutscene event 4"
+          ],
+          [
+            "`0x09F`",
+            "`159`",
+            "`0x13`",
+            "`7`",
+            "`0x80`",
+            "Witch cutscene event 5"
+          ],
+          [
+            "`0x0A0`",
+            "`160`",
+            "`0x14`",
+            "`0`",
+            "`0x01`",
+            "Witch cutscene event 6"
+          ],
+          [
+            "`0x0CA`",
+            "`202`",
+            "`0x19`",
+            "`2`",
+            "`0x04`",
+            "Silver Doll: Oedo Turtle collected"
+          ],
+          [
+            "`0x0CB`",
+            "`203`",
+            "`0x19`",
+            "`3`",
+            "`0x08`",
+            "Silver Doll: Oedo Silver Cat collected"
+          ],
+          [
+            "`0x0CC`",
+            "`204`",
+            "`0x19`",
+            "`4`",
+            "`0x10`",
+            "Silver Doll: Oedo Blocked collected"
+          ],
+          [
+            "`0x0CD`",
+            "`205`",
+            "`0x19`",
+            "`5`",
+            "`0x20`",
+            "Silver Doll: Oedo Elevator collected"
+          ],
+          [
+            "`0x0CE`",
+            "`206`",
+            "`0x19`",
+            "`6`",
+            "`0x40`",
+            "Silver Doll: Ghost Elevator collected"
+          ],
+          [
+            "`0x0CF`",
+            "`207`",
+            "`0x19`",
+            "`7`",
+            "`0x80`",
+            "Silver Doll: Ghost Crane collected"
+          ],
+          [
+            "`0x0D0`",
+            "`208`",
+            "`0x1A`",
+            "`0`",
+            "`0x01`",
+            "Silver Doll: Ghost Cannon collected"
+          ],
+          [
+            "`0x0D1`",
+            "`209`",
+            "`0x1A`",
+            "`1`",
+            "`0x02`",
+            "Silver Doll: Ghost Big Spike collected"
+          ],
+          [
+            "`0x0D2`",
+            "`210`",
+            "`0x1A`",
+            "`2`",
+            "`0x04`",
+            "Silver Doll: Festival Silver Cat collected"
+          ],
+          [
+            "`0x0D3`",
+            "`211`",
+            "`0x1A`",
+            "`3`",
+            "`0x08`",
+            "Silver Doll: Festival Ring collected"
+          ],
+          [
+            "`0x0D4`",
+            "`212`",
+            "`0x1A`",
+            "`4`",
+            "`0x10`",
+            "Silver Doll: Festival Ice Kunai collected"
+          ],
+          [
+            "`0x0D5`",
+            "`213`",
+            "`0x1A`",
+            "`5`",
+            "`0x20`",
+            "Silver Doll: Festival Fish Kit collected"
+          ],
+          [
+            "`0x0D6`",
+            "`214`",
+            "`0x1A`",
+            "`6`",
+            "`0x40`",
+            "Silver Doll: Musical Gold Fan collected"
+          ],
+          [
+            "`0x0D7`",
+            "`215`",
+            "`0x1A`",
+            "`7`",
+            "`0x80`",
+            "Silver Doll: Musical Multi Lock collected"
+          ],
+          [
+            "`0x0D8`",
+            "`216`",
+            "`0x1B`",
+            "`0`",
+            "`0x01`",
+            "Silver Doll: Musical Big Aqua collected"
+          ],
+          [
+            "`0x0D9`",
+            "`217`",
+            "`0x1B`",
+            "`1`",
+            "`0x02`",
+            "Silver Doll: Musical Descent collected"
+          ],
+          [
+            "`0x0DA`",
+            "`218`",
+            "`0x1B`",
+            "`2`",
+            "`0x04`",
+            "Silver Doll: Kai Highway collected"
+          ],
+          [
+            "`0x0DB`",
+            "`219`",
+            "`0x1B`",
+            "`3`",
+            "`0x08`",
+            "Silver Doll: Mt. Fuji collected"
+          ],
+          [
+            "`0x0DC`",
+            "`220`",
+            "`0x1B`",
+            "`4`",
+            "`0x10`",
+            "Silver Doll: Musashi collected"
+          ],
+          [
+            "`0x0DD`",
+            "`221`",
+            "`0x1B`",
+            "`5`",
+            "`0x20`",
+            "Silver Doll: Yamato Upper collected"
+          ],
+          [
+            "`0x0DE`",
+            "`222`",
+            "`0x1B`",
+            "`6`",
+            "`0x40`",
+            "Silver Doll: Yamato Lower collected"
+          ],
+          [
+            "`0x0DF`",
+            "`223`",
+            "`0x1B`",
+            "`7`",
+            "`0x80`",
+            "Silver Doll: Yamato Underwater collected"
+          ],
+          [
+            "`0x0E0`",
+            "`224`",
+            "`0x1C`",
+            "`0`",
+            "`0x01`",
+            "Silver Doll: Turtle Rock collected"
+          ],
+          [
+            "`0x0E1`",
+            "`225`",
+            "`0x1C`",
+            "`1`",
+            "`0x02`",
+            "Silver Doll: Kii Awaji collected"
+          ],
+          [
+            "`0x0E2`",
+            "`226`",
+            "`0x1C`",
+            "`2`",
+            "`0x04`",
+            "Silver Doll: Husband Wife Rocks collected"
+          ],
+          [
+            "`0x0E3`",
+            "`227`",
+            "`0x1C`",
+            "`3`",
+            "`0x08`",
+            "Silver Doll: Iga Vine collected"
+          ],
+          [
+            "`0x0E4`",
+            "`228`",
+            "`0x1C`",
+            "`4`",
+            "`0x10`",
+            "Silver Doll: Dogo Hot Springs collected"
+          ],
+          [
+            "`0x0E5`",
+            "`229`",
+            "`0x1C`",
+            "`5`",
+            "`0x20`",
+            "Silver Doll: Bizen collected"
+          ],
+          [
+            "`0x0E6`",
+            "`230`",
+            "`0x1C`",
+            "`6`",
+            "`0x40`",
+            "Silver Doll: Nagato Mini Ebisumaru collected"
+          ],
+          [
+            "`0x0E7`",
+            "`231`",
+            "`0x1C`",
+            "`7`",
+            "`0x80`",
+            "Silver Doll: Nagato Gate collected"
+          ],
+          [
+            "`0x0E8`",
+            "`232`",
+            "`0x1D`",
+            "`0`",
+            "`0x01`",
+            "Silver Doll: Inaba collected"
+          ],
+          [
+            "`0x0E9`",
+            "`233`",
+            "`0x1D`",
+            "`1`",
+            "`0x02`",
+            "Silver Doll: Japan Sea collected"
+          ],
+          [
+            "`0x0EA`",
+            "`234`",
+            "`0x1D`",
+            "`2`",
+            "`0x04`",
+            "Silver Doll: Northeast Tunnel collected"
+          ],
+          [
+            "`0x0EB`",
+            "`235`",
+            "`0x1D`",
+            "`3`",
+            "`0x08`",
+            "Silver Doll: Uzen Tunnel collected"
+          ],
+          [
+            "`0x0EC`",
+            "`236`",
+            "`0x1D`",
+            "`4`",
+            "`0x10`",
+            "Silver Doll: Oedo Bridge Musashi collected"
+          ],
+          [
+            "`0x0ED`",
+            "`237`",
+            "`0x1D`",
+            "`5`",
+            "`0x20`",
+            "Silver Doll: Oedo Path Castle collected"
+          ],
+          [
+            "`0x0EE`",
+            "`238`",
+            "`0x1D`",
+            "`6`",
+            "`0x40`",
+            "Silver Doll: Watering Hole collected"
+          ],
+          [
+            "`0x0EF`",
+            "`239`",
+            "`0x1D`",
+            "`7`",
+            "`0x80`",
+            "Silver Doll: Zazen Waterway collected"
+          ],
+          [
+            "`0x0F0`",
+            "`240`",
+            "`0x1E`",
+            "`0`",
+            "`0x01`",
+            "Silver Doll: Folkypoke East collected"
+          ],
+          [
+            "`0x0F1`",
+            "`241`",
+            "`0x1E`",
+            "`1`",
+            "`0x02`",
+            "Silver Doll: Festival Hidden collected"
+          ],
+          [
+            "`0x0F2`",
+            "`242`",
+            "`0x1E`",
+            "`2`",
+            "`0x04`",
+            "Gold Doll: Ghost Shogi Cannon collected"
+          ],
+          [
+            "`0x0F3`",
+            "`243`",
+            "`0x1E`",
+            "`3`",
+            "`0x08`",
+            "Gold Doll: Festival West Gold collected"
+          ],
+          [
+            "`0x0F4`",
+            "`244`",
+            "`0x1E`",
+            "`4`",
+            "`0x10`",
+            "Gold Doll: Musical 2 Gold Cat collected"
+          ],
+          [
+            "`0x0F5`",
+            "`245`",
+            "`0x1E`",
+            "`5`",
+            "`0x20`",
+            "Gold Doll: Bizen collected"
+          ],
+          [
+            "`0x0F6`",
+            "`246`",
+            "`0x1E`",
+            "`6`",
+            "`0x40`",
+            "Gold Doll: Waterfall Kegon collected"
+          ],
+          [
+            "`0x109`",
+            "`265`",
+            "`0x21`",
+            "`1`",
+            "`0x02`",
+            "Door unlocked: Silver Oedo Castle 1F Tile"
+          ],
+          [
+            "`0x10A`",
+            "`266`",
+            "`0x21`",
+            "`2`",
+            "`0x04`",
+            "Key pickup collected: Silver Oedo Castle 1F Tile"
+          ],
+          [
+            "`0x10B`",
+            "`267`",
+            "`0x21`",
+            "`3`",
+            "`0x08`",
+            "Door unlocked: Silver Oedo Castle 1F Turtle"
+          ],
+          [
+            "`0x10C`",
+            "`268`",
+            "`0x21`",
+            "`4`",
+            "`0x10`",
+            "Key pickup collected: Silver Oedo Castle 1F"
+          ],
+          [
+            "`0x10D`",
+            "`269`",
+            "`0x21`",
+            "`5`",
+            "`0x20`",
+            "Door unlocked: Gold Oedo Castle 1F Fork"
+          ],
+          [
+            "`0x10E`",
+            "`270`",
+            "`0x21`",
+            "`6`",
+            "`0x40`",
+            "Key pickup collected: Gold Oedo Castle 1F"
+          ],
+          [
+            "`0x10F`",
+            "`271`",
+            "`0x21`",
+            "`7`",
+            "`0x80`",
+            "Door unlocked: Silver Oedo Castle 1F Chain Pipe"
+          ],
+          [
+            "`0x110`",
+            "`272`",
+            "`0x22`",
+            "`0`",
+            "`0x01`",
+            "Key pickup collected: Silver Oedo Castle 1F Chain Pipe"
+          ],
+          [
+            "`0x111`",
+            "`273`",
+            "`0x22`",
+            "`1`",
+            "`0x02`",
+            "Door unlocked: Silver Oedo Castle 2F Crusher"
+          ],
+          [
+            "`0x112`",
+            "`274`",
+            "`0x22`",
+            "`2`",
+            "`0x04`",
+            "Key pickup collected: Silver Oedo Castle 2F Crusher"
+          ],
+          [
+            "`0x113`",
+            "`275`",
+            "`0x22`",
+            "`3`",
+            "`0x08`",
+            "Door unlocked: Silver Oedo Castle 2F Spike"
+          ],
+          [
+            "`0x114`",
+            "`276`",
+            "`0x22`",
+            "`4`",
+            "`0x10`",
+            "Key pickup collected: Silver Oedo Castle 2F"
+          ],
+          [
+            "`0x12D`",
+            "`301`",
+            "`0x25`",
+            "`5`",
+            "`0x20`",
+            "Congo later reward-spawn / cutscene state"
+          ],
+          [
+            "`0x15A`",
+            "`346`",
+            "`0x2B`",
+            "`2`",
+            "`0x04`",
+            "Crane power is on"
+          ],
+          [
+            "`0x16B`",
+            "`363`",
+            "`0x2D`",
+            "`3`",
+            "`0x08`",
+            "Dharumanyo native destruction milestone"
+          ],
+          [
+            "`0x16C`",
+            "`364`",
+            "`0x2D`",
+            "`4`",
+            "`0x10`",
+            "Dharumanyo combat is paused"
+          ],
+          [
+            "`0x16D`",
+            "`365`",
+            "`0x2D`",
+            "`5`",
+            "`0x20`",
+            "Dharumanyo terminal post-fight completion"
+          ],
+          [
+            "`0x16E`",
+            "`366`",
+            "`0x2D`",
+            "`6`",
+            "`0x40`",
+            "Key pickup collected: Gold Festival Temple Hot"
+          ],
+          [
+            "`0x16F`",
+            "`367`",
+            "`0x2D`",
+            "`7`",
+            "`0x80`",
+            "Door unlocked: Gold Festival Temple"
+          ],
+          [
+            "`0x170`",
+            "`368`",
+            "`0x2E`",
+            "`0`",
+            "`0x01`",
+            "Door unlocked: Silver Festival Temple Fork"
+          ],
+          [
+            "`0x171`",
+            "`369`",
+            "`0x2E`",
+            "`1`",
+            "`0x02`",
+            "Key pickup collected: Silver Festival Temple Ring"
+          ],
+          [
+            "`0x17A`",
+            "`378`",
+            "`0x2F`",
+            "`2`",
+            "`0x04`",
+            "Door unlocked: Silver Gourmet Submarine 2F Jetpack 2"
+          ],
+          [
+            "`0x17B`",
+            "`379`",
+            "`0x2F`",
+            "`3`",
+            "`0x08`",
+            "Key pickup collected: Silver Gourmet Submarine 2F Bazooka"
+          ],
+          [
+            "`0x17C`",
+            "`380`",
+            "`0x2F`",
+            "`4`",
+            "`0x10`",
+            "Door unlocked: Gold Gourmet Submarine 2F Jetpack 1"
+          ],
+          [
+            "`0x17D`",
+            "`381`",
+            "`0x2F`",
+            "`5`",
+            "`0x20`",
+            "Key pickup collected: Gold Gourmet Submarine 2F Jetpack"
+          ],
+          [
+            "`0x17E`",
+            "`382`",
+            "`0x2F`",
+            "`6`",
+            "`0x40`",
+            "Door unlocked: Silver Gourmet Submarine 2F Lava"
+          ],
+          [
+            "`0x17F`",
+            "`383`",
+            "`0x2F`",
+            "`7`",
+            "`0x80`",
+            "Key pickup collected: Silver Gourmet Submarine 2F Lava"
+          ],
+          [
+            "`0x180`",
+            "`384`",
+            "`0x30`",
+            "`0`",
+            "`0x01`",
+            "Door unlocked: Silver Gourmet Submarine 2F Underwater"
+          ],
+          [
+            "`0x181`",
+            "`385`",
+            "`0x30`",
+            "`1`",
+            "`0x02`",
+            "Key pickup collected: Silver Gourmet Submarine 2F Underwater"
+          ],
+          [
+            "`0x182`",
+            "`386`",
+            "`0x30`",
+            "`2`",
+            "`0x04`",
+            "Door unlocked: Silver Gourmet Submarine 3F Fox 2"
+          ],
+          [
+            "`0x183`",
+            "`387`",
+            "`0x30`",
+            "`3`",
+            "`0x08`",
+            "Key pickup collected: Silver Gourmet Submarine 3F Sword"
+          ],
+          [
+            "`0x184`",
+            "`388`",
+            "`0x30`",
+            "`4`",
+            "`0x10`",
+            "Door unlocked: Diamond Gourmet Submarine 3F Fox 1"
+          ],
+          [
+            "`0x185`",
+            "`389`",
+            "`0x30`",
+            "`5`",
+            "`0x20`",
+            "Key pickup collected: Diamond Gourmet Submarine 3F Invisible"
+          ],
+          [
+            "`0x186`",
+            "`390`",
+            "`0x30`",
+            "`6`",
+            "`0x40`",
+            "Door unlocked: Silver Gourmet Submarine 3F Tofu"
+          ],
+          [
+            "`0x187`",
+            "`391`",
+            "`0x30`",
+            "`7`",
+            "`0x80`",
+            "Key pickup collected: Silver Gourmet Submarine 3F Sushi"
+          ],
+          [
+            "`0x188`",
+            "`392`",
+            "`0x31`",
+            "`0`",
+            "`0x01`",
+            "Door unlocked: Gold Musical Castle 1 Entrance"
+          ],
+          [
+            "`0x18A`",
+            "`394`",
+            "`0x31`",
+            "`2`",
+            "`0x04`",
+            "Door unlocked: Silver Musical Castle 1 Tall"
+          ],
+          [
+            "`0x18D`",
+            "`397`",
+            "`0x31`",
+            "`5`",
+            "`0x20`",
+            "Door unlocked: Gold Musical Castle 1 Fan"
+          ],
+          [
+            "`0x18E`",
+            "`398`",
+            "`0x31`",
+            "`6`",
+            "`0x40`",
+            "Door unlocked: Gold Musical Castle 1 Multi 1"
+          ],
+          [
+            "`0x18F`",
+            "`399`",
+            "`0x31`",
+            "`7`",
+            "`0x80`",
+            "Key pickup collected: Gold Musical Castle 1 Mini"
+          ],
+          [
+            "`0x190`",
+            "`400`",
+            "`0x32`",
+            "`0`",
+            "`0x01`",
+            "Door unlocked: Diamond Musical Castle 1 Multi 2"
+          ],
+          [
+            "`0x192`",
+            "`402`",
+            "`0x32`",
+            "`2`",
+            "`0x04`",
+            "Door unlocked: Diamond Musical Castle 2 Entrance"
+          ],
+          [
+            "`0x196`",
+            "`406`",
+            "`0x32`",
+            "`6`",
+            "`0x40`",
+            "Door unlocked: Special Bizen"
+          ],
+          [
+            "`0x1A1`",
+            "`417`",
+            "`0x34`",
+            "`1`",
+            "`0x02`",
+            "Congo health-zero kill state"
+          ],
+          [
+            "`0x1AC`",
+            "`428`",
+            "`0x35`",
+            "`4`",
+            "`0x10`",
+            "Door unlocked: Silver Ghost Toys 1F Flower"
+          ],
+          [
+            "`0x1AE`",
+            "`430`",
+            "`0x35`",
+            "`6`",
+            "`0x40`",
+            "Door unlocked: Silver Ghost Toys 1F Shogi"
+          ],
+          [
+            "`0x1B0`",
+            "`432`",
+            "`0x36`",
+            "`0`",
+            "`0x01`",
+            "Door unlocked: Silver Ghost Toys 1F Spike Darumanyo"
+          ],
+          [
+            "`0x1B2`",
+            "`434`",
+            "`0x36`",
+            "`2`",
+            "`0x04`",
+            "Door unlocked: Silver Ghost Toys 1F 2F Elevator"
+          ],
+          [
+            "`0x1B4`",
+            "`436`",
+            "`0x36`",
+            "`4`",
+            "`0x10`",
+            "Door unlocked: Silver Ghost Toys 2F Big Spike 2"
+          ],
+          [
+            "`0x1B6`",
+            "`438`",
+            "`0x36`",
+            "`6`",
+            "`0x40`",
+            "Door unlocked: Gold Ghost Toys 2F Big Spike 1"
+          ],
+          [
+            "`0x1B8`",
+            "`440`",
+            "`0x37`",
+            "`0`",
+            "`0x01`",
+            "Door unlocked: Diamond Ghost Toys 2F"
+          ],
+          [
+            "`0x1B9`",
+            "`441`",
+            "`0x37`",
+            "`1`",
+            "`0x02`",
+            "Key pickup collected: Diamond Ghost Toys 2F Spike Cannon"
+          ],
+          [
+            "`0x1BA`",
+            "`442`",
+            "`0x37`",
+            "`2`",
+            "`0x04`",
+            "Door unlocked: Silver Ghost Toys 2F Billiards"
+          ],
+          [
+            "`0x1C1`",
+            "`449`",
+            "`0x38`",
+            "`1`",
+            "`0x02`",
+            "Tsurami native destruction milestone before root teardown"
+          ],
+          [
+            "`0x1C5`",
+            "`453`",
+            "`0x38`",
+            "`5`",
+            "`0x20`",
+            "Bought Dharma from Cat Eyes"
+          ],
+          [
+            "`0x1C6`",
+            "`454`",
+            "`0x38`",
+            "`6`",
+            "`0x40`",
+            "Bought Notice Board from Cat Eyes"
+          ],
+          [
+            "`0x1C7`",
+            "`455`",
+            "`0x38`",
+            "`7`",
+            "`0x80`",
+            "Bought Doll from Cat Eyes"
+          ]
+        ]
+      },
+      {
+        "id": "unresolved-save-flags",
+        "title": "Flag IDs with unresolved meanings",
+        "description": "These raw IDs are known to be accessed, but their event/location descriptions conflict. Their byte and mask calculations are established; no unsupported native purpose is assigned.",
+        "columns": [
+          "Flag ID (hex)",
+          "Flag ID (decimal)",
+          "Byte offset",
+          "Bit index",
+          "Mask",
+          "Meaning when set"
+        ],
+        "rows": [
+          [
+            "`0x189`",
+            "`393`",
+            "`0x31`",
+            "`1`",
+            "`0x02`",
+            "Native meaning unresolved; do not assume this ID denotes a key, reward, or door event."
+          ],
+          [
+            "`0x18B`",
+            "`395`",
+            "`0x31`",
+            "`3`",
+            "`0x08`",
+            "Native meaning unresolved; do not assume this ID denotes a key, reward, or door event."
+          ],
+          [
+            "`0x18C`",
+            "`396`",
+            "`0x31`",
+            "`4`",
+            "`0x10`",
+            "Native meaning unresolved; do not assume this ID denotes a key, reward, or door event."
+          ],
+          [
+            "`0x191`",
+            "`401`",
+            "`0x32`",
+            "`1`",
+            "`0x02`",
+            "Native meaning unresolved; do not assume this ID denotes a key, reward, or door event."
+          ],
+          [
+            "`0x193`",
+            "`403`",
+            "`0x32`",
+            "`3`",
+            "`0x08`",
+            "Native meaning unresolved; do not assume this ID denotes a key, reward, or door event."
+          ],
+          [
+            "`0x1AD`",
+            "`429`",
+            "`0x35`",
+            "`5`",
+            "`0x20`",
+            "Native meaning unresolved; do not assume this ID denotes a key, reward, or door event."
+          ],
+          [
+            "`0x1AF`",
+            "`431`",
+            "`0x35`",
+            "`7`",
+            "`0x80`",
+            "Native meaning unresolved; do not assume this ID denotes a key, reward, or door event."
+          ],
+          [
+            "`0x1B1`",
+            "`433`",
+            "`0x36`",
+            "`1`",
+            "`0x02`",
+            "Native meaning unresolved; do not assume this ID denotes a key, reward, or door event."
+          ],
+          [
+            "`0x1B3`",
+            "`435`",
+            "`0x36`",
+            "`3`",
+            "`0x08`",
+            "Native meaning unresolved; do not assume this ID denotes a key, reward, or door event."
+          ],
+          [
+            "`0x1B5`",
+            "`437`",
+            "`0x36`",
+            "`5`",
+            "`0x20`",
+            "Native meaning unresolved; do not assume this ID denotes a key, reward, or door event."
+          ],
+          [
+            "`0x1B7`",
+            "`439`",
+            "`0x36`",
+            "`7`",
+            "`0x80`",
+            "Native meaning unresolved; do not assume this ID denotes a key, reward, or door event."
+          ],
+          [
+            "`0x1BB`",
+            "`443`",
+            "`0x37`",
+            "`3`",
+            "`0x08`",
+            "Native meaning unresolved; do not assume this ID denotes a key, reward, or door event."
+          ]
+        ]
+      },
+      {
+        "id": "save-native-encounter-milestones",
+        "title": "Encounter flag distinctions",
+        "description": "Native death, reward, dialogue and controller milestones are separate bits. Observe the matching native callback before treating a persistent bit as proof that a living boss has finished its transition. All IDs use the same packed-bit calculation above.",
+        "columns": [
+          "Encounter",
+          "Flag ID",
+          "Milestone",
+          "Interpretation"
+        ],
+        "rows": [
+          [
+            "Congo",
+            "`0x1A1`",
+            "Health-zero kill state",
+            "Earlier than the native victory/reward callback."
+          ],
+          [
+            "Congo",
+            "`0x12D`",
+            "Later reward-spawn / cutscene state",
+            "Do not use it as a substitute for damage and victory handling."
+          ],
+          [
+            "Tsurami",
+            "`0x1C1`",
+            "Native destruction milestone",
+            "Root teardown follows destruction and a wait."
+          ],
+          [
+            "Tsurami",
+            "`0x040`",
+            "Durable progression state",
+            "Distinct from the live root health/death animation."
+          ],
+          [
+            "Dharumanyo",
+            "`0x16B`",
+            "Destruction milestone",
+            "Observed by the post-fight gauge/fade controller."
+          ],
+          [
+            "Dharumanyo",
+            "`0x16C`",
+            "Combat paused",
+            "A pause condition, not a completion flag."
+          ],
+          [
+            "Dharumanyo",
+            "`0x16D`",
+            "Terminal post-fight completion",
+            "Reached after the final native wait/teardown sequence."
+          ],
+          [
+            "Dharumanyo",
+            "`0x018`",
+            "Durable progression state",
+            "Distinct from its native lives counter and destruction milestones."
+          ],
+          [
+            "Benkei",
+            "`0x07A`",
+            "Challenge active",
+            "Needed to distinguish combat from the idle NPC."
+          ],
+          [
+            "Benkei",
+            "`0x034`",
+            "Already met Benkei",
+            "Meeting/dialogue prerequisite."
+          ],
+          [
+            "Benkei",
+            "`0x069`",
+            "Won / post-fight topology",
+            "Selects the post-fight bridge-controller layout."
+          ],
+          [
+            "Benkei",
+            "`0x033`",
+            "Durable defeat/dialogue state",
+            "Does not alone describe all controller topology or reward progress."
+          ]
+        ]
+      },
+      {
+        "id": "save-field-layout",
+        "title": "Structured save fields and adjacent runtime values",
+        "description": "Offsets are bytes relative to D_8015C608_15D208. These fields have explicit integer widths; they are not packed-flag IDs. Negative offsets refer to adjacent runtime/control storage before the save block. New-save values describe func_8000B640 initialization, not an instruction to reset a live adventure.",
+        "columns": [
+          "Byte offset (hex)",
+          "Byte offset (decimal)",
+          "Access type",
+          "Meaning",
+          "Raw values / units",
+          "New-save initialization"
+        ],
+        "rows": [
+          [
+            "`-0x28`",
+            "`-40`",
+            "`signed int`",
+            "Adjacent runtime maximum health",
+            "Positive health capacity; half-heart units. This address is before the cleared save block.",
+            "Not written by block clear; receives saved maximum through runtime mirroring."
+          ],
+          [
+            "`-0x24`",
+            "`-36`",
+            "`signed int`",
+            "Adjacent runtime current health word",
+            "Half-heart units; width is a word even when the low byte is used.",
+            "Receives saved current health through runtime mirroring."
+          ],
+          [
+            "`-0x21`",
+            "`-33`",
+            "`unsigned char`",
+            "Adjacent runtime current-health low byte",
+            "`0` = no health; positive values count half-hearts. Aliases the low byte of the word at `-0x24` on big-endian MIPS.",
+            "Derived from the current-health word, not an independent default."
+          ],
+          [
+            "`-0x20`",
+            "`-32`",
+            "`signed int`",
+            "Adjacent runtime Ryo",
+            "Active currency counter, distinct from its saved copy at `+0x74`.",
+            "Receives saved Ryo through runtime mirroring."
+          ],
+          [
+            "`-0x1C`",
+            "`-28`",
+            "`signed int`",
+            "Adjacent runtime remaining lives",
+            "Native death logic decrements this value; result `0` means no retry life remains.",
+            "Receives saved lives through runtime mirroring."
+          ],
+          [
+            "`0x064`",
+            "`100`",
+            "`unsigned int`",
+            "Saved active/start state",
+            "`0` = cleared; initializer writes `1`.",
+            "`1`"
+          ],
+          [
+            "`0x068`",
+            "`104`",
+            "`unsigned int`",
+            "Saved selected character",
+            "`0` Goemon; `1` Ebisumaru; `2` Sasuke; `3` Yae.",
+            "`0`"
+          ],
+          [
+            "`0x06C`",
+            "`108`",
+            "`signed int`",
+            "Saved maximum health",
+            "Half-heart units; native start value `10` represents five hearts.",
+            "`10` (`0x0A`)"
+          ],
+          [
+            "`0x070`",
+            "`112`",
+            "`signed int`",
+            "Saved current health",
+            "Half-heart units; mirrored runtime word has its low byte at base `-0x21`.",
+            "`10` (`0x0A`)"
+          ],
+          [
+            "`0x074`",
+            "`116`",
+            "`signed int`",
+            "Saved Ryo",
+            "Nonnegative currency count; full native range not established.",
+            "`100` (`0x64`)"
+          ],
+          [
+            "`0x078`",
+            "`120`",
+            "`signed int`",
+            "Saved remaining lives",
+            "Count copied into runtime life state.",
+            "`3`"
+          ],
+          [
+            "`0x094`",
+            "`148`",
+            "`signed int`",
+            "Goemon recruited",
+            "`0` = not recruited; `1` = recruited; native selection tests nonzero.",
+            "`1`"
+          ],
+          [
+            "`0x098`",
+            "`152`",
+            "`signed int`",
+            "Ebisumaru recruited",
+            "`0` = not recruited; `1` = recruited; native selection tests nonzero.",
+            "`1`"
+          ],
+          [
+            "`0x09C`",
+            "`156`",
+            "`signed int`",
+            "Sasuke recruited",
+            "`0` = not recruited; `1` = recruited; native selection tests nonzero.",
+            "`0`"
+          ],
+          [
+            "`0x0A0`",
+            "`160`",
+            "`signed int`",
+            "Yae recruited",
+            "`0` = not recruited; `1` = recruited; native selection tests nonzero.",
+            "`0`"
+          ],
+          [
+            "`0x0A4`",
+            "`164`",
+            "`signed int`",
+            "Goemon weapon tier",
+            "`0` = default/iron; `1` = silver; `2` = gold.",
+            "`0`"
+          ],
+          [
+            "`0x0A8`",
+            "`168`",
+            "`signed int`",
+            "Ebisumaru weapon tier",
+            "`0` = default/iron; `1` = silver; `2` = gold.",
+            "`0`"
+          ],
+          [
+            "`0x0AC`",
+            "`172`",
+            "`signed int`",
+            "Sasuke weapon tier",
+            "`0` = default/iron; `1` = silver; `2` = gold.",
+            "`0`"
+          ],
+          [
+            "`0x0B0`",
+            "`176`",
+            "`signed int`",
+            "Yae weapon tier",
+            "`0` = default/iron; `1` = silver; `2` = gold.",
+            "`0`"
+          ],
+          [
+            "`0x0B4`",
+            "`180`",
+            "`signed int`",
+            "Chain Pipe acquired",
+            "`0` = absent/unset; `1` = acquired/set. Additional nonzero states are not assigned here.",
+            "`0`"
+          ],
+          [
+            "`0x0B8`",
+            "`184`",
+            "`signed int`",
+            "Meat Hammer acquired",
+            "`0` = absent/unset; `1` = acquired/set. Additional nonzero states are not assigned here.",
+            "`0`"
+          ],
+          [
+            "`0x0BC`",
+            "`188`",
+            "`signed int`",
+            "Firecracker / bomb acquired",
+            "`0` = absent/unset; `1` = acquired/set. Additional nonzero states are not assigned here.",
+            "`0`"
+          ],
+          [
+            "`0x0C0`",
+            "`192`",
+            "`signed int`",
+            "Flute acquired",
+            "`0` = absent/unset; `1` = acquired/set. Additional nonzero states are not assigned here.",
+            "`0`"
+          ],
+          [
+            "`0x0C8`",
+            "`200`",
+            "`signed int`",
+            "Windup Camera acquired",
+            "`0` = absent/unset; `1` = acquired/set. Additional nonzero states are not assigned here.",
+            "`0`"
+          ],
+          [
+            "`0x0CC`",
+            "`204`",
+            "`signed int`",
+            "Ice Kunai acquired",
+            "`0` = absent/unset; `1` = acquired/set. Additional nonzero states are not assigned here.",
+            "`0`"
+          ],
+          [
+            "`0x0D0`",
+            "`208`",
+            "`signed int`",
+            "Bazooka acquired",
+            "`0` = absent/unset; `1` = acquired/set. Additional nonzero states are not assigned here.",
+            "`0`"
+          ],
+          [
+            "`0x0D4`",
+            "`212`",
+            "`signed int`",
+            "Fire Ryo / Medal of Flames acquired",
+            "`0` = absent/unset; `1` = acquired/set. Additional nonzero states are not assigned here.",
+            "`0`"
+          ],
+          [
+            "`0x0E4`",
+            "`228`",
+            "`signed int`",
+            "Sudden Impact ability acquired",
+            "`0` = absent/unset; `1` = acquired/set. Additional nonzero states are not assigned here.",
+            "`0`"
+          ],
+          [
+            "`0x0E8`",
+            "`232`",
+            "`signed int`",
+            "Mini Ebisumaru ability acquired",
+            "`0` = absent/unset; `1` = acquired/set. Additional nonzero states are not assigned here.",
+            "`0`"
+          ],
+          [
+            "`0x0EC`",
+            "`236`",
+            "`signed int`",
+            "Super Jump / Jetpack ability acquired",
+            "`0` = absent/unset; `1` = acquired/set. Additional nonzero states are not assigned here.",
+            "`0`"
+          ],
+          [
+            "`0x0F0`",
+            "`240`",
+            "`signed int`",
+            "Mermaid ability acquired",
+            "`0` = absent/unset; `1` = acquired/set. Additional nonzero states are not assigned here.",
+            "`0`"
+          ],
+          [
+            "`0x0F4`",
+            "`244`",
+            "`signed int`",
+            "Triton Shell acquired",
+            "`0` = absent/unset; `1` = acquired/set. Additional nonzero states are not assigned here.",
+            "`0`"
+          ],
+          [
+            "`0x0F8`",
+            "`248`",
+            "`signed int`",
+            "Super Pass item acquired",
+            "`0` = absent/unset; `1` = acquired/set. Additional nonzero states are not assigned here.",
+            "`0`"
+          ],
+          [
+            "`0x0FC`",
+            "`252`",
+            "`signed int`",
+            "Fortune-doll progress/traded count",
+            "Nonnegative count; full native range not established.",
+            "`0`"
+          ],
+          [
+            "`0x100`",
+            "`256`",
+            "`signed int`",
+            "Fortune-doll total",
+            "Nonnegative count; full native range not established.",
+            "`0`"
+          ],
+          [
+            "`0x104`",
+            "`260`",
+            "`signed int`",
+            "Achilles Heel item acquired",
+            "`0` = absent/unset; `1` = acquired/set. Additional nonzero states are not assigned here.",
+            "`0`"
+          ],
+          [
+            "`0x10C`",
+            "`268`",
+            "`signed int`",
+            "Quality Cucumber acquired",
+            "`0` = absent/unset; `1` = acquired/set. Additional nonzero states are not assigned here.",
+            "`0`"
+          ],
+          [
+            "`0x110`",
+            "`272`",
+            "`signed int`",
+            "Red fish count",
+            "Nonnegative count. Native quest target: `8`.",
+            "`0`"
+          ],
+          [
+            "`0x114`",
+            "`276`",
+            "`signed int`",
+            "Yellow fish count",
+            "Nonnegative count. Native quest target: `5`.",
+            "`0`"
+          ],
+          [
+            "`0x118`",
+            "`280`",
+            "`signed int`",
+            "Blue fish count",
+            "Nonnegative count. Native quest target: `3`.",
+            "`0`"
+          ],
+          [
+            "`0x204`",
+            "`516`",
+            "`unsigned short`",
+            "Saved destination room",
+            "Known room ID, not a boolean or flag ID.",
+            "`0x1D1` (`465`): Goemon house"
+          ],
+          [
+            "`0x208`",
+            "`520`",
+            "`signed short`",
+            "Saved player rotation",
+            "Native signed-angle value.",
+            "`0`"
+          ],
+          [
+            "`0x20A`",
+            "`522`",
+            "`signed short`",
+            "Saved spawn X",
+            "Signed native world coordinate.",
+            "`-2` (`0xFFFE`)"
+          ],
+          [
+            "`0x20C`",
+            "`524`",
+            "`signed short`",
+            "Saved spawn Y",
+            "Signed native world coordinate.",
+            "`-40` (`0xFFD8`)"
+          ],
+          [
+            "`0x20E`",
+            "`526`",
+            "`signed short`",
+            "Saved spawn Z",
+            "Signed native world coordinate.",
+            "`8`"
+          ],
+          [
+            "`0x210`",
+            "`528`",
+            "`signed short`",
+            "Saved camera rotation",
+            "Native signed-angle value.",
+            "`0`"
+          ],
+          [
+            "`0x250`",
+            "`592`",
+            "`signed int`",
+            "Miracle Star acquired",
+            "`0` = absent/unset; `1` = acquired/set. Additional nonzero states are not assigned here.",
+            "`0`"
+          ],
+          [
+            "`0x254`",
+            "`596`",
+            "`signed int`",
+            "Miracle Moon acquired",
+            "`0` = absent/unset; `1` = acquired/set. Additional nonzero states are not assigned here.",
+            "`0`"
+          ],
+          [
+            "`0x258`",
+            "`600`",
+            "`signed int`",
+            "Miracle Flower acquired",
+            "`0` = absent/unset; `1` = acquired/set. Additional nonzero states are not assigned here.",
+            "`0`"
+          ],
+          [
+            "`0x25C`",
+            "`604`",
+            "`signed int`",
+            "Miracle Snow acquired",
+            "`0` = absent/unset; `1` = acquired/set. Additional nonzero states are not assigned here.",
+            "`0`"
+          ],
+          [
+            "`0x260`",
+            "`608`",
+            "`signed int`",
+            "Sasuke recovery/profile progression",
+            "`0` is a valid profile state; the native reward flow increments it. Full stage-value enumeration unresolved.",
+            "`0`"
+          ],
+          [
+            "`0x268`",
+            "`616`",
+            "`signed int`",
+            "Map of Japan acquired",
+            "`0` = absent/unset; `1` = acquired/set. Additional nonzero states are not assigned here.",
+            "`0`"
+          ],
+          [
+            "`0x26C`",
+            "`620`",
+            "`signed int`",
+            "Mr. Elly Fant progress: Oedo Castle",
+            "`0` = no recorded progress; positive = collected/progress present. Complete numeric range unresolved.",
+            "`0`"
+          ],
+          [
+            "`0x270`",
+            "`624`",
+            "`signed int`",
+            "Mr. Elly Fant progress: Ghost Toys Castle",
+            "`0` = no recorded progress; positive = collected/progress present. Complete numeric range unresolved.",
+            "`0`"
+          ],
+          [
+            "`0x274`",
+            "`628`",
+            "`signed int`",
+            "Mr. Elly Fant progress: Festival Temple",
+            "`0` = no recorded progress; positive = collected/progress present. Complete numeric range unresolved.",
+            "`0`"
+          ],
+          [
+            "`0x278`",
+            "`632`",
+            "`signed int`",
+            "Mr. Elly Fant progress: Gourmet Submarine",
+            "`0` = no recorded progress; positive = collected/progress present. Complete numeric range unresolved.",
+            "`0`"
+          ],
+          [
+            "`0x27C`",
+            "`636`",
+            "`signed int`",
+            "Mr. Elly Fant progress: Musical Castle",
+            "`0` = no recorded progress; positive = collected/progress present. Complete numeric range unresolved.",
+            "`0`"
+          ],
+          [
+            "`0x280`",
+            "`640`",
+            "`signed int`",
+            "Mr. Arrow progress: Oedo Castle",
+            "`0` = no recorded progress; positive = collected/progress present. Complete numeric range unresolved.",
+            "`0`"
+          ],
+          [
+            "`0x284`",
+            "`644`",
+            "`signed int`",
+            "Mr. Arrow progress: Ghost Toys Castle",
+            "`0` = no recorded progress; positive = collected/progress present. Complete numeric range unresolved.",
+            "`0`"
+          ],
+          [
+            "`0x288`",
+            "`648`",
+            "`signed int`",
+            "Mr. Arrow progress: Festival Temple",
+            "`0` = no recorded progress; positive = collected/progress present. Complete numeric range unresolved.",
+            "`0`"
+          ],
+          [
+            "`0x28C`",
+            "`652`",
+            "`signed int`",
+            "Mr. Arrow progress: Gourmet Submarine",
+            "`0` = no recorded progress; positive = collected/progress present. Complete numeric range unresolved.",
+            "`0`"
+          ],
+          [
+            "`0x290`",
+            "`656`",
+            "`signed int`",
+            "Mr. Arrow progress: Musical Castle",
+            "`0` = no recorded progress; positive = collected/progress present. Complete numeric range unresolved.",
+            "`0`"
+          ]
+        ]
+      },
+      {
+        "id": "save-recruitment-values",
+        "title": "Recruited-character values",
+        "description": "Applies to the signed 32-bit words at +0x94 (Goemon), +0x98 (Ebisumaru), +0x9C (Sasuke), +0xA0 (Yae). These item fields are separate from recruitment event bits such as 0x00E and 0x03A.",
+        "columns": [
+          "Stored word",
+          "Meaning"
+        ],
+        "rows": [
+          [
+            "`0`",
+            "Not recruited / unavailable to native selection."
+          ],
+          [
+            "`1`",
+            "Canonical recruited value. Fresh saves initialize Goemon and Ebisumaru to this value."
+          ],
+          [
+            "Other nonzero values",
+            "The native selection check treats them as recruited. No additional character state is assigned to those values here."
+          ]
+        ]
+      },
+      {
+        "id": "save-weapon-tier-values",
+        "title": "Weapon-tier values",
+        "description": "Applies to signed 32-bit tier fields +0xA4 (Goemon), +0xA8 (Ebisumaru), +0xAC (Sasuke), +0xB0 (Yae). Flag 0x01A records the gold-upgrade event separately.",
+        "columns": [
+          "Stored word",
+          "Meaning"
+        ],
+        "rows": [
+          [
+            "`0`",
+            "Default / iron tier."
+          ],
+          [
+            "`1`",
+            "Silver tier."
+          ],
+          [
+            "`2`",
+            "Gold tier."
+          ],
+          [
+            "Other values",
+            "Native meaning not established; do not infer extra tiers."
+          ]
+        ]
+      },
+      {
+        "id": "save-fishing-quest-values",
+        "title": "Fishing quest values",
+        "description": "The quest-phase bit identifies the active request; the signed 32-bit counter contains fish quantity. The documented native scenario checks the target count, so count state and quest-phase state must both be interpreted.",
+        "columns": [
+          "Fish",
+          "Counter byte offset",
+          "Request flag ID",
+          "Native target count",
+          "Cannot-catch-more flag ID"
+        ],
+        "rows": [
+          [
+            "Blue",
+            "`0x118`",
+            "`0x02C`",
+            "`3`",
+            "`0x04F`"
+          ],
+          [
+            "Yellow",
+            "`0x114`",
+            "`0x02B`",
+            "`5`",
+            "`0x050`"
+          ],
+          [
+            "Red",
+            "`0x110`",
+            "`0x02A`",
+            "`8`",
+            "`0x051`"
+          ]
+        ]
+      },
+      {
+        "id": "save-unassigned-fields",
+        "title": "Fields without established native meanings",
+        "description": "The access offsets are known, but a native meaning is deliberately not assigned. The region beginning +0x2A4 is read by native map/display code as consecutive nonzero words ending at the first zero; an independent destination meaning for each slot is not established.",
+        "columns": [
+          "Byte offset (hex)",
+          "Byte offset (decimal)",
+          "Observed width",
+          "Meaning status",
+          "New-save initialization"
+        ],
+        "rows": [
+          [
+            "`0x090`",
+            "`144`",
+            "`unsigned int`",
+            "Native meaning unresolved; initializer writes one.",
+            "`1`"
+          ],
+          [
+            "`0x0C4`",
+            "`196`",
+            "`unsigned int`",
+            "Native meaning unresolved; initializer writes one.",
+            "`1`"
+          ],
+          [
+            "`0x108`",
+            "`264`",
+            "`signed int`",
+            "Native per-field meaning not established.",
+            "`0` after block clearing."
+          ],
+          [
+            "`0x206`",
+            "`518`",
+            "`unsigned char`",
+            "Native loading field; exact meaning unresolved.",
+            "`2`"
+          ],
+          [
+            "`0x2A4`",
+            "`676`",
+            "`signed int`",
+            "Native per-field meaning not established.",
+            "`0` after block clearing."
+          ],
+          [
+            "`0x2A8`",
+            "`680`",
+            "`signed int`",
+            "Native per-field meaning not established.",
+            "`0` after block clearing."
+          ],
+          [
+            "`0x2AC`",
+            "`684`",
+            "`signed int`",
+            "Native per-field meaning not established.",
+            "`0` after block clearing."
+          ],
+          [
+            "`0x2B0`",
+            "`688`",
+            "`signed int`",
+            "Native per-field meaning not established.",
+            "`0` after block clearing."
+          ],
+          [
+            "`0x2B4`",
+            "`692`",
+            "`signed int`",
+            "Native per-field meaning not established.",
+            "`0` after block clearing."
+          ],
+          [
+            "`0x2B8`",
+            "`696`",
+            "`signed int`",
+            "Native per-field meaning not established.",
+            "`0` after block clearing."
+          ],
+          [
+            "`0x2BC`",
+            "`700`",
+            "`signed int`",
+            "Native per-field meaning not established.",
+            "`0` after block clearing."
+          ],
+          [
+            "`0x2C0`",
+            "`704`",
+            "`signed int`",
+            "Native per-field meaning not established.",
+            "`0` after block clearing."
+          ],
+          [
+            "`0x2C4`",
+            "`708`",
+            "`signed int`",
+            "Native per-field meaning not established.",
+            "`0` after block clearing."
+          ],
+          [
+            "`0x2C8`",
+            "`712`",
+            "`signed int`",
+            "Native per-field meaning not established.",
+            "`0` after block clearing."
+          ],
+          [
+            "`0x2CC`",
+            "`716`",
+            "`signed int`",
+            "Native per-field meaning not established.",
+            "`0` after block clearing."
+          ],
+          [
+            "`0x2D0`",
+            "`720`",
+            "`signed int`",
+            "Native per-field meaning not established.",
+            "`0` after block clearing."
+          ],
+          [
+            "`0x2D4`",
+            "`724`",
+            "`signed int`",
+            "Native per-field meaning not established.",
+            "`0` after block clearing."
+          ]
+        ]
+      }
+    ]
+  }
+}

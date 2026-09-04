@@ -49,6 +49,13 @@ test('escaped underscores, partial addresses, multiple words, and type filters w
   assert.equal(headerHits('zzzz_no_native_symbol_zzzz').length, 0);
 });
 
+test('decoded room names are searchable in the header and symbol catalog', () => {
+  const room = api.find(s => s.name === 'D_800C7AB2');
+  assert.ok(room.values.includes('Bizen Bridge'));
+  assert.equal(headerHits('Bizen Bridge')[0].name, room.name);
+  assert.equal(catalogHits('Bizen Bridge', 'variable')[0].name, room.name);
+});
+
 test('catalog updates synchronize router location and preserve the Pages path', () => {
   const updateNode = selected(referenceAst, n => n.type === 'FunctionDeclaration' && n.id.name === 'update');
   const location = {pathname: '/mnsg-documentation/reference/', search: ''};

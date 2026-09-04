@@ -1215,7 +1215,7 @@
     "summary": "Pointer to the active native system-state structure.",
     "behavior": [
       "Used by system-step dispatch and scene-loading functions. The byte-pointer declaration allows access to selected recovered offsets, including the prepared destination at +0x3AFE0.",
-      "Some native paths reference static system storage directly. Do not assume an offset-based partial declaration describes the complete structure."
+      "Native initialization stores 0x8008CCC0 in this pointer. The static symbol D_800BCCC0_BD8C0 is an interior alias at system base +0x30000, so offsets relative to that alias are 0x30000 smaller than offsets relative to this full pointer."
     ],
     "cautions": [
       "The byte-pointer declaration is partial typing, not proof that the whole system layout is known.",
@@ -1230,22 +1230,25 @@
     "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources."
   },
   "D_800BCCC0_BD8C0": {
-    "title": "Static g_system storage",
-    "summary": "Static storage for native system state.",
+    "title": "System-state interior alias",
+    "summary": "Interior address in native system-state storage, used as a base for prepared scene-destination fields.",
     "behavior": [
-      "Contains system execution, scene destination, UI and related fields. Both this direct storage and the runtime pointer D_8015C5C8 occur in native paths.",
-      "Treat the block as an opaque large structure unless a field layout is established. The unsized byte-array declaration is not permission to clear or copy an arbitrary length."
+      "The system structure starts at 0x8008CCC0. D_800BCCC0_BD8C0 names the interior address at system base +0x30000; it is not the complete structure base stored in D_8015C5C8_15D1C8.",
+      "The prepared destination room is a 16-bit field at this symbol +0xAFE0. The same field is at +0x3AFE0 relative to the full system pointer. Native destination writing uses this interior address to reach the room, position and rotation fields.",
+      "Offsets must match the chosen base. Treat the remaining layout as partial; the unsized byte-array declaration does not establish the size of the surrounding structure."
     ],
     "cautions": [
+      "Do not apply full system-pointer offsets to this interior alias. Adding 0x3AFE0 here reads a different address; use 0xAFE0 for the prepared destination.",
       "Do not copy or clear this entire opaque block based on the unsized extern declaration."
     ],
     "related": [
       "D_8015C5C8_15D1C8",
-      "func_8000607C_6C7C"
+      "func_8000607C_6C7C",
+      "D_800C7AB2"
     ],
-    "confidence": "source-reviewed",
-    "example": "extern unsigned char D_800BCCC0_BD8C0[];\n\n/* Read only while the native system structure is initialized. */\nshort read_static_destination(void) {\n    return *(short *)(D_800BCCC0_BD8C0 + 0x3AFE0);\n}\n",
-    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources."
+    "confidence": "decompiled",
+    "example": "extern unsigned char D_800BCCC0_BD8C0[];\n\n/* Read only after the native system state has been initialized. */\nunsigned short read_static_destination(void)\n{\n    return *(volatile unsigned short *)(D_800BCCC0_BD8C0 + 0xAFE0);\n}\n",
+    "exampleExplanation": "Read the prepared destination room with an offset relative to this interior alias. The current room is a separate field exposed by D_800C7AB2."
   },
   "func_80034EF8_35AF8": {
     "title": "Destroy a specified engine task",

@@ -1,0 +1,1877 @@
+{
+  "D_8015C5D8_15D1D8": {
+    "tables": [
+      {
+        "id": "character-values",
+        "title": "Character values",
+        "description": "These values belong to the current-character word at array index 1 (byte offset +0x04). The word is an ID, not a character-unlock bitmask.",
+        "columns": [
+          "Raw value (hex)",
+          "Raw value (decimal)",
+          "Meaning"
+        ],
+        "rows": [
+          [
+            "`0x00`",
+            "`0`",
+            "Goemon"
+          ],
+          [
+            "`0x01`",
+            "`1`",
+            "Ebisumaru"
+          ],
+          [
+            "`0x02`",
+            "`2`",
+            "Sasuke"
+          ],
+          [
+            "`0x03`",
+            "`3`",
+            "Yae"
+          ]
+        ]
+      },
+      {
+        "id": "runtime-fields",
+        "title": "Runtime mirror fields",
+        "description": "The declaration is a 32-bit-word array. Multiply the array index by four to obtain a byte offset; the symbol itself is the storage base.",
+        "columns": [
+          "Array index",
+          "Byte offset",
+          "Storage type",
+          "Meaning"
+        ],
+        "rows": [
+          [
+            "`0`",
+            "`+0x00`",
+            "`uint32_t`",
+            "Activation marker: the native save-start path writes 1 after copying the 0x30-byte runtime block. Other values are not assigned an enum meaning here."
+          ],
+          [
+            "`1`",
+            "`+0x04`",
+            "`uint32_t`",
+            "Current character ID; see Character values above. This word also resides at native address 0x8015C5DC."
+          ],
+          [
+            "`3`",
+            "`+0x0C`",
+            "32-bit word, native signed health interpretation",
+            "Current health in half-heart units. Also exported as [D_8015C5E4](./D_8015C5E4.md); the unsigned array declaration does not change the underlying health field."
+          ],
+          [
+            "`11`",
+            "`+0x2C`",
+            "`uint32_t`",
+            "Character-change/dirty marker: the character-switch path writes 1. The complete reset protocol is not established here."
+          ]
+        ]
+      }
+    ]
+  },
+  "D_8015C5C8_15D1C8": {
+    "tables": [
+      {
+        "id": "system-fields",
+        "title": "System structure fields",
+        "description": "Dereference this pointer once, then use these offsets from the full system structure base (0x8008CCC0 in the US executable). D_800BCCC0_BD8C0 is an interior alias 0x30000 bytes farther into the same structure.",
+        "columns": [
+          "Offset",
+          "Storage type",
+          "Meaning"
+        ],
+        "rows": [
+          [
+            "`0x3ADCA`",
+            "`uint8_t`",
+            "Game-loop timing/control byte; the system-step setter writes 2."
+          ],
+          [
+            "`0x3ADCE`",
+            "`int16_t`",
+            "Game-loop/frame counter; a running numeric counter, not a state ID."
+          ],
+          [
+            "`0x3ADD4`",
+            "`uint8_t`",
+            "Main system step. Known entries are listed below."
+          ],
+          [
+            "`0x3ADD5`",
+            "`uint8_t`",
+            "Main-step completion/substate byte; the step setter clears it to 0."
+          ],
+          [
+            "`0x3AE16`",
+            "`int16_t`",
+            "Native start-sequence gate. Zero is the cleared value used for normal gameplay; nonzero values must retain their native sequence meaning."
+          ],
+          [
+            "`0x3AE29`",
+            "`uint8_t`",
+            "Destination-transition marker; the warp destination helper writes 1."
+          ],
+          [
+            "`0x3AE3A`",
+            "`uint16_t`",
+            "Seventh argument of the warp destination helper; individual values are not yet interpreted."
+          ],
+          [
+            "`0x3AE3C`",
+            "`uint32_t`",
+            "Eighth argument of the warp destination helper; individual values are not yet interpreted."
+          ],
+          [
+            "`0x3AFE0`",
+            "`uint16_t`",
+            "Destination room/stage ID. Use the room table on D_800C7AB2."
+          ],
+          [
+            "`0x3AFE2`",
+            "`int16_t`",
+            "Destination player rotation."
+          ],
+          [
+            "`0x3AFE4`",
+            "`int16_t`",
+            "Destination player X position."
+          ],
+          [
+            "`0x3AFE6`",
+            "`int16_t`",
+            "Destination player Y position."
+          ],
+          [
+            "`0x3AFE8`",
+            "`int16_t`",
+            "Destination player Z position."
+          ],
+          [
+            "`0x3AFEA`",
+            "`int16_t`",
+            "Destination camera rotation."
+          ]
+        ]
+      },
+      {
+        "id": "known-system-steps",
+        "title": "Known main-system steps",
+        "description": "These are selected established values of the byte at full-system offset +0x3ADD4. A step change depends on initialized native callbacks and related state; this is not a complete state-machine enum.",
+        "columns": [
+          "Raw value (hex)",
+          "Raw value (decimal)",
+          "Meaning"
+        ],
+        "rows": [
+          [
+            "`0x07`",
+            "`7`",
+            "Native start/title/demo sequence path."
+          ],
+          [
+            "`0x0C`",
+            "`12`",
+            "Scene load/warp sequence path."
+          ]
+        ]
+      }
+    ]
+  },
+  "D_800BCCC0_BD8C0": {
+    "tables": [
+      {
+        "id": "alias-fields",
+        "title": "Interior-alias field offsets",
+        "description": "This exported byte array begins at full-system offset +0x30000. Use the alias-relative offset in this table when indexing D_800BCCC0_BD8C0 directly; adding a full-pointer offset to this alias addresses the wrong memory.",
+        "columns": [
+          "Alias-relative offset",
+          "Full-system offset",
+          "Storage type",
+          "Meaning"
+        ],
+        "rows": [
+          [
+            "`0xADCA`",
+            "`0x3ADCA`",
+            "`uint8_t`",
+            "Game-loop timing/control byte; the system-step setter writes 2."
+          ],
+          [
+            "`0xADCE`",
+            "`0x3ADCE`",
+            "`int16_t`",
+            "Game-loop/frame counter; a running numeric counter, not a state ID."
+          ],
+          [
+            "`0xADD4`",
+            "`0x3ADD4`",
+            "`uint8_t`",
+            "Main system step. See [known main-system steps](./D_8015C5C8_15D1C8.md#known-system-steps)."
+          ],
+          [
+            "`0xADD5`",
+            "`0x3ADD5`",
+            "`uint8_t`",
+            "Main-step completion/substate byte; the step setter clears it to 0."
+          ],
+          [
+            "`0xAE16`",
+            "`0x3AE16`",
+            "`int16_t`",
+            "Native start-sequence gate. Zero is the cleared value used for normal gameplay; nonzero values must retain their native sequence meaning."
+          ],
+          [
+            "`0xAE29`",
+            "`0x3AE29`",
+            "`uint8_t`",
+            "Destination-transition marker; the warp destination helper writes 1."
+          ],
+          [
+            "`0xAE3A`",
+            "`0x3AE3A`",
+            "`uint16_t`",
+            "Seventh argument of the warp destination helper; individual values are not yet interpreted."
+          ],
+          [
+            "`0xAE3C`",
+            "`0x3AE3C`",
+            "`uint32_t`",
+            "Eighth argument of the warp destination helper; individual values are not yet interpreted."
+          ],
+          [
+            "`0xAFE0`",
+            "`0x3AFE0`",
+            "`uint16_t`",
+            "Destination room/stage ID. Use the room table on D_800C7AB2."
+          ],
+          [
+            "`0xAFE2`",
+            "`0x3AFE2`",
+            "`int16_t`",
+            "Destination player rotation."
+          ],
+          [
+            "`0xAFE4`",
+            "`0x3AFE4`",
+            "`int16_t`",
+            "Destination player X position."
+          ],
+          [
+            "`0xAFE6`",
+            "`0x3AFE6`",
+            "`int16_t`",
+            "Destination player Y position."
+          ],
+          [
+            "`0xAFE8`",
+            "`0x3AFE8`",
+            "`int16_t`",
+            "Destination player Z position."
+          ],
+          [
+            "`0xAFEA`",
+            "`0x3AFEA`",
+            "`int16_t`",
+            "Destination camera rotation."
+          ]
+        ]
+      }
+    ]
+  },
+  "D_8015C5E4": {
+    "tables": [
+      {
+        "id": "current-health-values",
+        "title": "Health units",
+        "description": "The native field is a signed 32-bit health count measured in half-hearts. These rows show the unit conversion; they are numeric quantities rather than distinct state-enum entries. Native new-save health is ten half-hearts and is copied into this runtime word during save activation.",
+        "columns": [
+          "Raw value (hex)",
+          "Raw value (decimal)",
+          "Meaning"
+        ],
+        "rows": [
+          [
+            "`0x00000000`",
+            "`0`",
+            "Zero health."
+          ],
+          [
+            "`0x00000001`",
+            "`1`",
+            "Half a heart."
+          ],
+          [
+            "`0x00000002`",
+            "`2`",
+            "One heart."
+          ],
+          [
+            "`0x0000000A`",
+            "`10`",
+            "Five hearts; native new-save current health after activation."
+          ]
+        ]
+      },
+      {
+        "id": "gate-values",
+        "title": "Current health and Tsurami gate",
+        "description": "This native current-health word is located at save-base offset -0x24; see the [save field layout](./D_8015C608_15D208.md#save-field-layout). Tsurami uses the word as a zero/nonzero gate before its private post-update body, rather than testing whether health is positive.",
+        "columns": [
+          "Stored value",
+          "Meaning"
+        ],
+        "rows": [
+          [
+            "`0x00000000` (`0`)",
+            "Current health is zero; skip the gated Tsurami private post-update body."
+          ],
+          [
+            "Nonzero 32-bit value",
+            "Current health is nonzero; the gate allows the private post-update body. The native test is != 0, not > 0, and other callback conditions still apply."
+          ]
+        ]
+      }
+    ]
+  },
+  "D_8015CDDC": {
+    "tables": [
+      {
+        "id": "instance-fields",
+        "title": "Actor instance fields",
+        "description": "Offsets are relative to the actor instance pointed to by this variable, not to the pointer storage. A null definition pointer terminates the instance list during native actor-manager traversal.",
+        "columns": [
+          "Offset",
+          "Storage type",
+          "Meaning"
+        ],
+        "rows": [
+          [
+            "`+0x00 / +0x02 / +0x04`",
+            "`int16_t` × 3",
+            "Spawn position X, Y and Z."
+          ],
+          [
+            "`+0x06 / +0x08 / +0x0A`",
+            "`int16_t` × 3",
+            "Spawn rotation: pitch, yaw and roll."
+          ],
+          [
+            "`+0x0C`",
+            "32-bit pointer",
+            "Actor definition record; zero terminates the native instance list."
+          ],
+          [
+            "`+0x10`",
+            "`uint8_t`",
+            "Spawn-state byte. A full raw-value interpretation is not established."
+          ]
+        ]
+      }
+    ]
+  },
+  "D_8015CDE0": {
+    "tables": [
+      {
+        "id": "definition-fields",
+        "title": "Actor definition fields",
+        "description": "Offsets are relative to the definition record pointed to by the variable. Parameters and the three data words are actor-specific.",
+        "columns": [
+          "Offset",
+          "Storage type",
+          "Meaning"
+        ],
+        "rows": [
+          [
+            "`+0x00`",
+            "`uint16_t`",
+            "Actor ID: indexes the entry-callback and actor metadata tables."
+          ],
+          [
+            "`+0x02`",
+            "`uint16_t`",
+            "Actor parameters."
+          ],
+          [
+            "`+0x04 / +0x08 / +0x0C`",
+            "`uint32_t` × 3",
+            "Three actor data words copied to task offsets +0xD0, +0xD4 and +0xD8 by the native initializer."
+          ]
+        ]
+      },
+      {
+        "id": "known-actor-ids",
+        "title": "Known actor IDs",
+        "description": "Selected actor IDs with established descriptive names. Names distinguish actor types and variants; they do not define the parameters or behavior of every instance.",
+        "columns": [
+          "Actor ID (hex)",
+          "Actor ID (decimal)",
+          "Actor"
+        ],
+        "rows": [
+          [
+            "`0x0CB`",
+            "`203`",
+            "Ghost Robot Tsurami"
+          ],
+          [
+            "`0x0CC`",
+            "`204`",
+            "Dharumanyo"
+          ],
+          [
+            "`0x0FA`",
+            "`250`",
+            "Robot Bee"
+          ],
+          [
+            "`0x0FB`",
+            "`251`",
+            "Pink Robot FB"
+          ],
+          [
+            "`0x0FC`",
+            "`252`",
+            "Pink Robot FC"
+          ],
+          [
+            "`0x0FD`",
+            "`253`",
+            "Green Robot FD"
+          ],
+          [
+            "`0x0FE`",
+            "`254`",
+            "Green Robot FE"
+          ],
+          [
+            "`0x0FF`",
+            "`255`",
+            "Big Swatting Robot"
+          ],
+          [
+            "`0x100`",
+            "`256`",
+            "Blue Robot"
+          ],
+          [
+            "`0x103`",
+            "`259`",
+            "Scarecrow Bot"
+          ],
+          [
+            "`0x104`",
+            "`260`",
+            "Can-can Legs"
+          ],
+          [
+            "`0x105`",
+            "`261`",
+            "Flatfish"
+          ],
+          [
+            "`0x106`",
+            "`262`",
+            "Helicopter Kite"
+          ],
+          [
+            "`0x107`",
+            "`263`",
+            "Bamboo Shooter"
+          ],
+          [
+            "`0x108`",
+            "`264`",
+            "Jet Robot"
+          ],
+          [
+            "`0x109`",
+            "`265`",
+            "Yellow Robot"
+          ],
+          [
+            "`0x10A`",
+            "`266`",
+            "Big Swatting Robot Red"
+          ],
+          [
+            "`0x10B`",
+            "`267`",
+            "Shrinking Robot"
+          ],
+          [
+            "`0x10C`",
+            "`268`",
+            "Sword Robot"
+          ],
+          [
+            "`0x110`",
+            "`272`",
+            "Pink Robot 110"
+          ],
+          [
+            "`0x12C`",
+            "`300`",
+            "Small Cannon"
+          ],
+          [
+            "`0x12D`",
+            "`301`",
+            "Flying Dragon Head"
+          ],
+          [
+            "`0x12E`",
+            "`302`",
+            "Seahorse"
+          ],
+          [
+            "`0x12F`",
+            "`303`",
+            "Spiny Sea Urchin"
+          ],
+          [
+            "`0x130`",
+            "`304`",
+            "Drum Robot"
+          ],
+          [
+            "`0x131`",
+            "`305`",
+            "Triangle Robot"
+          ],
+          [
+            "`0x133`",
+            "`307`",
+            "Paper Ghost"
+          ],
+          [
+            "`0x136`",
+            "`310`",
+            "Red Eye Fish"
+          ],
+          [
+            "`0x13A`",
+            "`314`",
+            "Tank"
+          ],
+          [
+            "`0x13B`",
+            "`315`",
+            "Spiny Sea Urchin (Kii-Awaji)"
+          ],
+          [
+            "`0x13C`",
+            "`316`",
+            "Giant Enemy Crab"
+          ],
+          [
+            "`0x13D`",
+            "`317`",
+            "Samurai"
+          ],
+          [
+            "`0x13E`",
+            "`318`",
+            "Rose Robot"
+          ],
+          [
+            "`0x13F`",
+            "`319`",
+            "Hammer Thrower"
+          ],
+          [
+            "`0x140`",
+            "`320`",
+            "Fire Stalker"
+          ],
+          [
+            "`0x141`",
+            "`321`",
+            "Ninja"
+          ],
+          [
+            "`0x144`",
+            "`324`",
+            "Burrowing Robot"
+          ],
+          [
+            "`0x145`",
+            "`325`",
+            "Kite"
+          ],
+          [
+            "`0x147`",
+            "`327`",
+            "Bomber Bird"
+          ],
+          [
+            "`0x148`",
+            "`328`",
+            "Water Snake"
+          ],
+          [
+            "`0x190`",
+            "`400`",
+            "Flying Tile"
+          ],
+          [
+            "`0x198`",
+            "`408`",
+            "Spike Chain"
+          ],
+          [
+            "`0x19A`",
+            "`410`",
+            "Falling Barrel"
+          ],
+          [
+            "`0x19D`",
+            "`413`",
+            "Slicer"
+          ],
+          [
+            "`0x1A6`",
+            "`422`",
+            "Fox Mask"
+          ],
+          [
+            "`0x1A9`",
+            "`425`",
+            "Falling Bomb Block"
+          ],
+          [
+            "`0x1AA`",
+            "`426`",
+            "Jump Rope"
+          ],
+          [
+            "`0x1B0`",
+            "`432`",
+            "Mind-Control Robot"
+          ],
+          [
+            "`0x1B6`",
+            "`438`",
+            "Robot Bee Spawner"
+          ],
+          [
+            "`0x2F6`",
+            "`758`",
+            "Chef"
+          ],
+          [
+            "`0x334`",
+            "`820`",
+            "Sushi Spawner"
+          ],
+          [
+            "`0x365`",
+            "`869`",
+            "Giant Spinning Top"
+          ],
+          [
+            "`0x3CA`",
+            "`970`",
+            "Spike Floor"
+          ],
+          [
+            "`0x3D1`",
+            "`977`",
+            "Floating Ingredients"
+          ],
+          [
+            "`0x3DA`",
+            "`986`",
+            "Boulder"
+          ],
+          [
+            "`0x3EF`",
+            "`1007`",
+            "Spiny Urchin Spawner"
+          ],
+          [
+            "`0x3FC`",
+            "`1020`",
+            "Floor Flamethrower"
+          ]
+        ]
+      }
+    ]
+  },
+  "D_80167FC0_168BC0": {
+    "tables": [
+      {
+        "id": "resource-entry-fields",
+        "title": "Resident resource entry fields",
+        "description": "The registry has 48 entries. Each N64 record occupies 8 bytes. Scan only until the first entry whose file ID is zero; its data pointer records the next free resident-arena position.",
+        "columns": [
+          "Offset",
+          "Storage type",
+          "Meaning"
+        ],
+        "rows": [
+          [
+            "`+0x00`",
+            "`uint16_t`",
+            "File ID. Zero terminates the occupied entries."
+          ],
+          [
+            "`+0x02`",
+            "2 bytes",
+            "Uninterpreted padding/field."
+          ],
+          [
+            "`+0x04`",
+            "32-bit pointer",
+            "Loaded data base for a nonzero file ID; next free arena position for the first zero-file-ID entry."
+          ]
+        ]
+      }
+    ]
+  },
+  "D_8006D320_6DF20": {
+    "tables": [
+      {
+        "id": "owner-values",
+        "title": "Recycling-owner values",
+        "description": "A non-null value must identify a valid native owner. Nullness alone does not establish ownership, record availability, or pointer lifetime.",
+        "columns": [
+          "Stored value",
+          "Meaning"
+        ],
+        "rows": [
+          [
+            "`NULL` (`0x00000000`)",
+            "No optional recycling owner; use the normal kind-2 allocation path."
+          ],
+          [
+            "Non-null native owner pointer",
+            "The single-allocation helper first asks this owner to release one record."
+          ]
+        ]
+      }
+    ]
+  },
+  "D_8006D350_6DF50": {
+    "tables": [
+      {
+        "id": "initial-pool-capacities",
+        "title": "Initial pool capacities",
+        "description": "These are the first eight 16-bit entries in the verified US image. The array index is the pool kind, while the stored value is a capacity. Initialization can change capacities. Only kind 2 has an established record-type name here.",
+        "columns": [
+          "Pool-kind index (hex)",
+          "Pool-kind index (decimal)",
+          "Stored capacity (hex)",
+          "Stored capacity (decimal)",
+          "Meaning"
+        ],
+        "rows": [
+          [
+            "`0x00`",
+            "`0`",
+            "`0x0000`",
+            "`0`",
+            "Pool capacity; the record-type name is not established."
+          ],
+          [
+            "`0x01`",
+            "`1`",
+            "`0x0018`",
+            "`24`",
+            "Pool capacity; the record-type name is not established."
+          ],
+          [
+            "`0x02`",
+            "`2`",
+            "`0x00C0`",
+            "`192`",
+            "Model/display record pool."
+          ],
+          [
+            "`0x03`",
+            "`3`",
+            "`0x0002`",
+            "`2`",
+            "Pool capacity; the record-type name is not established."
+          ],
+          [
+            "`0x04`",
+            "`4`",
+            "`0x0040`",
+            "`64`",
+            "Pool capacity; the record-type name is not established."
+          ],
+          [
+            "`0x05`",
+            "`5`",
+            "`0x0002`",
+            "`2`",
+            "Pool capacity; the record-type name is not established."
+          ],
+          [
+            "`0x06`",
+            "`6`",
+            "`0x0000`",
+            "`0`",
+            "Pool capacity; the record-type name is not established."
+          ],
+          [
+            "`0x07`",
+            "`7`",
+            "`0x0000`",
+            "`0`",
+            "Pool capacity; the record-type name is not established."
+          ]
+        ]
+      }
+    ]
+  },
+  "D_8016DAB0_16E6B0": {
+    "tables": [
+      {
+        "id": "counter-representation",
+        "title": "Counter representation",
+        "description": "Single kind-2 allocation-request telemetry. It increments before capacity checks, so requests can be counted even when allocation fails.",
+        "columns": [
+          "Storage type",
+          "Stored range",
+          "Interpretation"
+        ],
+        "rows": [
+          [
+            "`uint16_t`",
+            "`0x0000`–`0xFFFF` (`0`–`65535`)",
+            "Numeric counter, not an enum or bitmask. The broader reset interval is not established."
+          ]
+        ]
+      }
+    ]
+  },
+  "D_8016DAB2_16E6B2": {
+    "tables": [
+      {
+        "id": "counter-representation",
+        "title": "Counter representation",
+        "description": "Peak value maintained by the single kind-2 allocation path; it is telemetry rather than the current active record count.",
+        "columns": [
+          "Storage type",
+          "Stored range",
+          "Interpretation"
+        ],
+        "rows": [
+          [
+            "`uint16_t`",
+            "`0x0000`–`0xFFFF` (`0`–`65535`)",
+            "Numeric counter, not an enum or bitmask. The broader reset interval is not established."
+          ]
+        ]
+      }
+    ]
+  },
+  "D_8016DAD8_16E6D8": {
+    "tables": [
+      {
+        "id": "pool-count-indices",
+        "title": "Known pool-count index",
+        "description": "The array contains signed 16-bit active-allocation counts. Pool-kind indices must not be confused with the actor-owner categories in D_802297D6_5E4CA6.",
+        "columns": [
+          "Array index (hex)",
+          "Array index (decimal)",
+          "Meaning"
+        ],
+        "rows": [
+          [
+            "`0x02`",
+            "`2`",
+            "Active model/display records. This element is also exported as D_8016DADC_16E6DC."
+          ]
+        ]
+      }
+    ]
+  },
+  "D_8016DADC_16E6DC": {
+    "tables": [
+      {
+        "id": "count-values",
+        "title": "Active model/display count",
+        "description": "This signed 16-bit value aliases D_8016DAD8_16E6D8[2]. Compare it to the kind-2 capacity; it is not a flag or a telemetry request count.",
+        "columns": [
+          "Stored value",
+          "Meaning"
+        ],
+        "rows": [
+          [
+            "`0`",
+            "No active kind-2 records according to the native active-allocation counter."
+          ],
+          [
+            "Positive signed count",
+            "That many kind-2 records are active."
+          ],
+          [
+            "Negative signed value",
+            "Not a valid ordinary active count; no special negative state is established."
+          ]
+        ]
+      }
+    ]
+  },
+  "D_8016DAB4_16E6B4": {
+    "tables": [
+      {
+        "id": "task-fields",
+        "title": "Current task fields",
+        "description": "Offsets are relative to the current task pointer. The first callback/object fields belong to the shared task prefix. Actor-extension fields below apply to ordinary actor tasks; the playable-player task has a different +0x5C meaning.",
+        "columns": [
+          "Offset",
+          "Storage type",
+          "Meaning"
+        ],
+        "rows": [
+          [
+            "`+0x08`",
+            "32-bit callback slot",
+            "Pre/first callback slot."
+          ],
+          [
+            "`+0x0C`",
+            "32-bit callback slot",
+            "AI/update callback slot."
+          ],
+          [
+            "`+0x10`",
+            "32-bit callback slot",
+            "Post-update callback slot."
+          ],
+          [
+            "`+0x18`",
+            "32-bit pointer",
+            "Render/model object."
+          ],
+          [
+            "`+0x5C`",
+            "`uint16_t`",
+            "Ordinary actor ID. Do not use this interpretation for the player task."
+          ],
+          [
+            "`+0x5E`",
+            "`uint16_t`",
+            "Ordinary actor entity ID."
+          ],
+          [
+            "`+0x68`",
+            "`uint32_t`",
+            "Ordinary actor status bitfield."
+          ],
+          [
+            "`+0x74`",
+            "`uint8_t`",
+            "Ordinary actor generation/identity byte."
+          ],
+          [
+            "`+0x8D`",
+            "`uint8_t`",
+            "Health field for the actor types that use this layout."
+          ]
+        ]
+      },
+      {
+        "id": "task-bitmasks",
+        "title": "Known task masks",
+        "description": "These masks belong to fields of the pointed-to task. They are not flags stored in D_8016DAB4_16E6B4 itself.",
+        "columns": [
+          "Field",
+          "Mask (hex)",
+          "Mask (decimal)",
+          "Meaning when set"
+        ],
+        "rows": [
+          [
+            "Status word at `+0x68`",
+            "`0x00000002`",
+            "`2`",
+            "Removal is pending."
+          ],
+          [
+            "AI/post callback slot at `+0x0C` / `+0x10`",
+            "`0x00800000`",
+            "`8388608`",
+            "Callback is disabled. Preserve the native callback representation when changing this bit."
+          ]
+        ]
+      }
+    ]
+  },
+  "D_801FC604_5B8514": {
+    "tables": [
+      {
+        "id": "player-task-fields",
+        "title": "Player task fields",
+        "description": "Dereference the variable to obtain the player task. In this task type, +0x5C is a pointer to player work, rather than the ordinary actor-ID field.",
+        "columns": [
+          "Offset",
+          "Storage type",
+          "Meaning"
+        ],
+        "rows": [
+          [
+            "`+0x18`",
+            "32-bit pointer",
+            "Player render object."
+          ],
+          [
+            "`+0x5C`",
+            "32-bit pointer",
+            "Player work/state block."
+          ],
+          [
+            "`+0x60`",
+            "`uint8_t`",
+            "Selected character ID; see [`D_8015C5D8_15D1D8`](./D_8015C5D8_15D1D8.md#known-values)."
+          ],
+          [
+            "`+0xCC`",
+            "`uint8_t`",
+            "Current native player action."
+          ]
+        ]
+      },
+      {
+        "id": "known-player-actions",
+        "title": "Known player action values",
+        "description": "These are selected values of the action byte at player task +0xCC. Action semantics can depend on the selected character; this is not a complete native action list.",
+        "columns": [
+          "Raw value (hex)",
+          "Raw value (decimal)",
+          "Meaning"
+        ],
+        "rows": [
+          [
+            "`0x00`",
+            "`0`",
+            "Idle."
+          ],
+          [
+            "`0x8E`",
+            "`142`",
+            "Ebisumaru shrink action."
+          ],
+          [
+            "`0x8F`",
+            "`143`",
+            "Ebisumaru grow action."
+          ],
+          [
+            "`0xBA`",
+            "`186`",
+            "Character-change transition."
+          ]
+        ]
+      },
+      {
+        "id": "player-work-fields",
+        "title": "Player work fields",
+        "description": "First read the pointer at task +0x5C, then apply these work-relative offsets. These fields are not located directly in the task.",
+        "columns": [
+          "Offset",
+          "Storage type",
+          "Meaning"
+        ],
+        "rows": [
+          [
+            "`+0x69`",
+            "`uint8_t`",
+            "Character-change marker; the native character setter writes 1."
+          ],
+          [
+            "`+0x84`",
+            "`uint8_t`",
+            "Goemon Sudden Impact marker; the appearance reader recognizes exactly 1 as active. Other values are not established active states."
+          ],
+          [
+            "`+0x86`",
+            "`uint16_t`",
+            "Ebisumaru small-form marker: nonzero spans the shrink/small/grow interval; the native character-change path clears it to zero."
+          ]
+        ]
+      }
+    ]
+  },
+  "D_801FC60C_5B851C": {
+    "tables": [
+      {
+        "id": "object-fields",
+        "title": "Player render-object fields",
+        "description": "Offsets are relative to the pointed-to render object. Position, scale and animation frame are continuous values. Segment slots pair resource identifiers with resident data bases.",
+        "columns": [
+          "Offset",
+          "Storage type",
+          "Meaning"
+        ],
+        "rows": [
+          [
+            "`+0x05`",
+            "`uint8_t`",
+            "Render-object mode; value 2 selects the native clothed-character object mode. Other modes are not enumerated here."
+          ],
+          [
+            "`+0x08 / +0x0C / +0x10`",
+            "`float` × 3",
+            "Position X, Y and Z."
+          ],
+          [
+            "`+0x14 / +0x16 / +0x18`",
+            "`int16_t` × 3",
+            "Rotation: pitch, yaw and roll."
+          ],
+          [
+            "`+0x1C / +0x20 / +0x24`",
+            "`float` × 3",
+            "Scale X, Y and Z."
+          ],
+          [
+            "`+0x28`",
+            "`float`",
+            "Current animation frame."
+          ],
+          [
+            "`+0x2C`",
+            "32-bit pointer/value",
+            "Bound model command pointer."
+          ],
+          [
+            "`+0x30`",
+            "32-bit pointer/value",
+            "Native animation context."
+          ],
+          [
+            "`+0x34`",
+            "`uint16_t`",
+            "Segment-8 action file ID."
+          ],
+          [
+            "`+0x38`",
+            "32-bit pointer",
+            "Segment-8 action data base."
+          ],
+          [
+            "`+0x3C`",
+            "`uint16_t`",
+            "Segment-9 broad character file ID."
+          ],
+          [
+            "`+0x40`",
+            "32-bit pointer",
+            "Segment-9 broad character data base."
+          ],
+          [
+            "`+0x50 / +0x58`",
+            "32-bit pointer × 2",
+            "Auxiliary character-resource data bases selected by descriptor values 3 and 4."
+          ]
+        ]
+      }
+    ]
+  },
+  "D_80203F34_5BFE44": {
+    "tables": [
+      {
+        "id": "character-action-tables",
+        "title": "Character action-table pointers",
+        "description": "The outer array is indexed by character ID. The stored values below are the native US overlay addresses of each character’s action-record table; they are meaningful only while that overlay is resident.",
+        "columns": [
+          "Character index (hex)",
+          "Character index (decimal)",
+          "Character",
+          "Stored table pointer"
+        ],
+        "rows": [
+          [
+            "`0x00`",
+            "`0`",
+            "Goemon",
+            "`0x801FCF98`"
+          ],
+          [
+            "`0x01`",
+            "`1`",
+            "Ebisumaru",
+            "`0x801FE9F0`"
+          ],
+          [
+            "`0x02`",
+            "`2`",
+            "Sasuke",
+            "`0x802005A0`"
+          ],
+          [
+            "`0x03`",
+            "`3`",
+            "Yae",
+            "`0x80202228`"
+          ]
+        ]
+      },
+      {
+        "id": "action-record-fields",
+        "title": "Action metadata record",
+        "description": "Select a character table, then add action_id × 0x1C. The record is 28 bytes long. Only interpreted fields are listed; gaps must not be assumed unused.",
+        "columns": [
+          "Offset",
+          "Storage type",
+          "Meaning"
+        ],
+        "rows": [
+          [
+            "`+0x00`",
+            "`uint32_t`",
+            "Segmented model command address."
+          ],
+          [
+            "`+0x04`",
+            "`int16_t`",
+            "Animation step in hundredths: divide by 100.0 to obtain the frame increment."
+          ],
+          [
+            "`+0x0C`",
+            "`uint32_t`",
+            "Action model-data start address, using the 0x07 segment tag."
+          ],
+          [
+            "`+0x10`",
+            "`uint32_t`",
+            "Action model-data end address. Zero instructs the native action-range loader to use the end of the selected action file."
+          ],
+          [
+            "`+0x14`",
+            "`uint8_t`",
+            "Initial auxiliary row selected for the second auxiliary channel."
+          ],
+          [
+            "`+0x18`",
+            "32-bit pointer",
+            "Auxiliary-resource row table."
+          ]
+        ]
+      },
+      {
+        "id": "auxiliary-row-fields",
+        "title": "Auxiliary resource rows",
+        "description": "Each auxiliary row occupies 8 bytes. These are nested records reached through action metadata +0x18.",
+        "columns": [
+          "Offset",
+          "Storage type",
+          "Meaning"
+        ],
+        "rows": [
+          [
+            "`+0x00`",
+            "`uint32_t`",
+            "Resource ID. Zero means no resource bind; 0xFF is the timed-sequence loop marker."
+          ],
+          [
+            "`+0x04`",
+            "`uint8_t`",
+            "Animation-frame threshold component. Cursor advancement also depends on the accumulated threshold and frame-reset conditions; zero is not a universal stop flag."
+          ]
+        ]
+      }
+    ]
+  },
+  "D_80203FF0_5BFF00": {
+    "tables": [
+      {
+        "id": "initial-descriptor-values",
+        "title": "Initial auxiliary descriptors",
+        "description": "The established portion contains two byte pairs. The second byte selects an object base slot using +0x38 + selector × 8. The first byte of each pair is preserved as uninterpreted data.",
+        "columns": [
+          "Byte index",
+          "Channel / field",
+          "Stored value (hex)",
+          "Stored value (decimal)",
+          "Meaning"
+        ],
+        "rows": [
+          [
+            "`0`",
+            "Channel 0, first byte",
+            "`0x00`",
+            "`0`",
+            "Purpose not established."
+          ],
+          [
+            "`1`",
+            "Channel 0, selector",
+            "`0x03`",
+            "`3`",
+            "Object base slot +0x50."
+          ],
+          [
+            "`2`",
+            "Channel 1, first byte",
+            "`0x00`",
+            "`0`",
+            "Purpose not established."
+          ],
+          [
+            "`3`",
+            "Channel 1, selector",
+            "`0x04`",
+            "`4`",
+            "Object base slot +0x58."
+          ]
+        ]
+      }
+    ]
+  },
+  "D_80203FF8_5BFF08": {
+    "tables": [
+      {
+        "id": "timed-descriptor-values",
+        "title": "Timed auxiliary descriptors",
+        "description": "The array stores 16-bit descriptors. The low byte selects the object base slot using +0x38 + selector × 8; the meaning of the upper byte is not established.",
+        "columns": [
+          "Channel index",
+          "Stored descriptor (hex)",
+          "Stored descriptor (decimal)",
+          "Low-byte selector",
+          "Meaning"
+        ],
+        "rows": [
+          [
+            "`0`",
+            "`0x0003`",
+            "`3`",
+            "`3`",
+            "Object base slot +0x50; upper byte is zero."
+          ],
+          [
+            "`1`",
+            "`0x0004`",
+            "`4`",
+            "`4`",
+            "Object base slot +0x58; upper byte is zero."
+          ]
+        ]
+      }
+    ]
+  },
+  "D_80204020_5BFF30": {
+    "tables": [
+      {
+        "id": "known-resource-ids",
+        "title": "Broad character resource IDs",
+        "description": "The array index is a character ID (0–3). The stored 16-bit value is a native file ID, not an address or a character ID. These are the initial US overlay values.",
+        "columns": [
+          "Character index",
+          "Character",
+          "Stored file ID (hex)",
+          "Stored file ID (decimal)",
+          "Meaning"
+        ],
+        "rows": [
+          [
+            "`0`",
+            "Goemon",
+            "`0x120`",
+            "`288`",
+            "Broad clothed-character resource file."
+          ],
+          [
+            "`1`",
+            "Ebisumaru",
+            "`0x124`",
+            "`292`",
+            "Broad clothed-character resource file."
+          ],
+          [
+            "`2`",
+            "Sasuke",
+            "`0x128`",
+            "`296`",
+            "Broad clothed-character resource file."
+          ],
+          [
+            "`3`",
+            "Yae",
+            "`0x12C`",
+            "`300`",
+            "Broad clothed-character resource file."
+          ]
+        ]
+      }
+    ]
+  },
+  "D_80204028_5BFF38": {
+    "tables": [
+      {
+        "id": "known-resource-ids",
+        "title": "Action-model resource IDs",
+        "description": "The array index is a character ID (0–3). The stored 16-bit value is a native file ID, not an address or a character ID. These are the initial US overlay values.",
+        "columns": [
+          "Character index",
+          "Character",
+          "Stored file ID (hex)",
+          "Stored file ID (decimal)",
+          "Meaning"
+        ],
+        "rows": [
+          [
+            "`0`",
+            "Goemon",
+            "`0x123`",
+            "`291`",
+            "Raw action-model resource file."
+          ],
+          [
+            "`1`",
+            "Ebisumaru",
+            "`0x127`",
+            "`295`",
+            "Raw action-model resource file."
+          ],
+          [
+            "`2`",
+            "Sasuke",
+            "`0x12B`",
+            "`299`",
+            "Raw action-model resource file."
+          ],
+          [
+            "`3`",
+            "Yae",
+            "`0x12F`",
+            "`303`",
+            "Raw action-model resource file."
+          ]
+        ]
+      }
+    ]
+  },
+  "D_80204048_5BFF58": {
+    "tables": [
+      {
+        "id": "known-replacement-tables",
+        "title": "Known appearance replacement tables",
+        "description": "These are indices of a pointer array, not appearance-flag bits or character IDs. The pointed-to replacement data is overlay resident.",
+        "columns": [
+          "Array index (hex)",
+          "Array index (decimal)",
+          "Stored native pointer",
+          "Meaning"
+        ],
+        "rows": [
+          [
+            "`0x01`",
+            "`1`",
+            "`0x80204030`",
+            "Replace Goemon’s normal hair display pointers with Sudden Impact variants."
+          ],
+          [
+            "`0x02`",
+            "`2`",
+            "`0x8020403C`",
+            "Reverse the substitution and restore Goemon’s normal hair display pointers."
+          ]
+        ]
+      }
+    ]
+  },
+  "D_8020CBF0_5C8B00": {
+    "tables": [
+      {
+        "id": "opaque-storage",
+        "title": "Opaque sound-state storage",
+        "description": "No individual field, byte value, or complete structure size has been established for this buffer. It does not have a known value enum.",
+        "columns": [
+          "Representation",
+          "Interpretation"
+        ],
+        "rows": [
+          [
+            "Address of byte-array storage",
+            "Pass the base address unchanged to the native scene sound helper; individual bytes are not documented controls."
+          ]
+        ]
+      }
+    ]
+  },
+  "D_8020D1C0_5C90D0": {
+    "tables": [
+      {
+        "id": "vector-components",
+        "title": "Camera-vector components",
+        "description": "This is direct Vec3f storage, not a pointer variable. Values are continuous single-precision coordinates, not room or camera-mode IDs.",
+        "columns": [
+          "Offset",
+          "Storage type",
+          "Meaning"
+        ],
+        "rows": [
+          [
+            "`+0x00`",
+            "`float`",
+            "X component."
+          ],
+          [
+            "`+0x04`",
+            "`float`",
+            "Y component."
+          ],
+          [
+            "`+0x08`",
+            "`float`",
+            "Z component."
+          ]
+        ]
+      }
+    ]
+  },
+  "D_8020D1D0_5C90E0": {
+    "tables": [
+      {
+        "id": "radius-representation",
+        "title": "Camera-radius representation",
+        "description": "This symbol stores a continuous single-precision radius value. No fixed set of numeric presets or universal safe range is established.",
+        "columns": [
+          "Storage type",
+          "Interpretation"
+        ],
+        "rows": [
+          [
+            "IEEE-754 `float`",
+            "Camera radius/distance quantity. Read it as a float; the underlying 32-bit bit pattern is not an integer radius."
+          ]
+        ]
+      }
+    ]
+  },
+  "D_8020EED0_63A2B0": {
+    "tables": [
+      {
+        "id": "impact-state-fields",
+        "title": "Impact battle-state fields",
+        "description": "These offsets are relative to the live Impact battle-state pointer. The state is meaningful only during the corresponding battle mode.",
+        "columns": [
+          "Offset",
+          "Storage type",
+          "Meaning"
+        ],
+        "rows": [
+          [
+            "`+0x060`",
+            "`int32_t`",
+            "Boss health. The battle helper tests whether it is greater than zero."
+          ],
+          [
+            "`+0x1D8`",
+            "32-bit pointer",
+            "Boss task."
+          ],
+          [
+            "`+0x1E0`",
+            "32-bit pointer",
+            "Boss model task."
+          ],
+          [
+            "`+0x2C0`",
+            "`uint8_t`",
+            "Combat pause gate: zero means not paused by this gate; nonzero means paused."
+          ]
+        ]
+      }
+    ]
+  },
+  "D_802287BC_5E3C8C": {
+    "tables": [
+      {
+        "id": "selected-actor-callbacks",
+        "title": "Selected actor entry addresses",
+        "description": "The array index is an actor ID. These are stored entry addresses from the US actor table; 0x08000000-region addresses belong to dynamically loaded actor code and require the matching resident overlay. See [`D_8015CDE0`](./D_8015CDE0.md#known-actor-ids) for more actor IDs.",
+        "columns": [
+          "Actor ID (hex)",
+          "Actor ID (decimal)",
+          "Actor",
+          "Stored entry address"
+        ],
+        "rows": [
+          [
+            "`0x0CB`",
+            "`203`",
+            "Ghost Robot Tsurami",
+            "`0x080017F4`"
+          ],
+          [
+            "`0x0CC`",
+            "`204`",
+            "Dharumanyo",
+            "`0x08000000`"
+          ],
+          [
+            "`0x0FA`",
+            "`250`",
+            "Robot Bee",
+            "`0x08003604`"
+          ],
+          [
+            "`0x100`",
+            "`256`",
+            "Blue Robot",
+            "`0x08002C58`"
+          ],
+          [
+            "`0x105`",
+            "`261`",
+            "Flatfish",
+            "`0x08000000`"
+          ],
+          [
+            "`0x13D`",
+            "`317`",
+            "Samurai",
+            "`0x08001694`"
+          ],
+          [
+            "`0x13E`",
+            "`318`",
+            "Rose Robot",
+            "`0x080035EC`"
+          ],
+          [
+            "`0x141`",
+            "`321`",
+            "Ninja",
+            "`0x08001508`"
+          ],
+          [
+            "`0x365`",
+            "`869`",
+            "Giant Spinning Top",
+            "`0x0800181C`"
+          ],
+          [
+            "`0x3FC`",
+            "`1020`",
+            "Floor Flamethrower",
+            "`0x08001994`"
+          ]
+        ]
+      }
+    ]
+  },
+  "D_802297D6_5E4CA6": {
+    "tables": [
+      {
+        "id": "metadata-layout",
+        "title": "Actor metadata lookup layout",
+        "description": "The symbol covers two packed tables with different element widths. Use an actor ID, not a pool-kind index.",
+        "columns": [
+          "Lookup",
+          "Storage type",
+          "Meaning"
+        ],
+        "rows": [
+          [
+            "`base + actor_id * 2`",
+            "`int16_t`",
+            "Actor model/resource selection value."
+          ],
+          [
+            "`base + 0x80D + actor_id`",
+            "`uint8_t`",
+            "Native actor-owner category passed to func_80219CA0_5D5170."
+          ]
+        ]
+      },
+      {
+        "id": "selected-actor-metadata",
+        "title": "Selected actor metadata values",
+        "description": "These stored values are read from the verified US table. Model IDs and owner categories are different numeric domains from the actor ID used to index the table.",
+        "columns": [
+          "Actor ID (hex)",
+          "Actor ID (decimal)",
+          "Actor",
+          "Stored model ID",
+          "Stored owner category"
+        ],
+        "rows": [
+          [
+            "`0x0CB`",
+            "`203`",
+            "Ghost Robot Tsurami",
+            "`0x001D` (29)",
+            "`0x06` (6)"
+          ],
+          [
+            "`0x0CC`",
+            "`204`",
+            "Dharumanyo",
+            "`0x001F` (31)",
+            "`0x06` (6)"
+          ],
+          [
+            "`0x0FA`",
+            "`250`",
+            "Robot Bee",
+            "`0x0020` (32)",
+            "`0x06` (6)"
+          ],
+          [
+            "`0x100`",
+            "`256`",
+            "Blue Robot",
+            "`0x0020` (32)",
+            "`0x06` (6)"
+          ],
+          [
+            "`0x105`",
+            "`261`",
+            "Flatfish",
+            "`0x0024` (36)",
+            "`0x06` (6)"
+          ],
+          [
+            "`0x13D`",
+            "`317`",
+            "Samurai",
+            "`0x0024` (36)",
+            "`0x06` (6)"
+          ],
+          [
+            "`0x13E`",
+            "`318`",
+            "Rose Robot",
+            "`0x0025` (37)",
+            "`0x06` (6)"
+          ],
+          [
+            "`0x141`",
+            "`321`",
+            "Ninja",
+            "`0x0025` (37)",
+            "`0x06` (6)"
+          ],
+          [
+            "`0x365`",
+            "`869`",
+            "Giant Spinning Top",
+            "`0x0028` (40)",
+            "`0x03` (3)"
+          ],
+          [
+            "`0x3FC`",
+            "`1020`",
+            "Floor Flamethrower",
+            "`0x0027` (39)",
+            "`0x00` (0)"
+          ]
+        ]
+      },
+      {
+        "id": "owner-category-values",
+        "title": "Owner category values",
+        "description": "Native categories select owner pointers and sometimes an additional per-category cap. The function first applies its overall actor-cap checks. Owner-pointer locations below contain pointers; the addresses are not owner tasks themselves. Category labels beyond this routing behavior are not established.",
+        "columns": [
+          "Raw value (hex)",
+          "Raw value (decimal)",
+          "Meaning"
+        ],
+        "rows": [
+          [
+            "`0x00`",
+            "`0`",
+            "Owner pointer stored at `0x8015CCBC`."
+          ],
+          [
+            "`0x01`",
+            "`1`",
+            "Owner pointer stored at `0x8015CCD0`."
+          ],
+          [
+            "`0x02`",
+            "`2`",
+            "Owner pointer stored at `0x8015CCCC`."
+          ],
+          [
+            "`0x03`",
+            "`3`",
+            "Owner pointer stored at `0x8015CCC0`."
+          ],
+          [
+            "`0x04`",
+            "`4`",
+            "Owner pointer stored at `0x8015CCC8`."
+          ],
+          [
+            "`0x05`",
+            "`5`",
+            "Owner pointer stored at `0x8015CCDC`."
+          ],
+          [
+            "`0x06`",
+            "`6`",
+            "Owner pointer stored at `0x8015CCD4`. Applies the category cap stored at `0x8015CCE8`."
+          ],
+          [
+            "`0x07`",
+            "`7`",
+            "Owner pointer stored at `0x8015CCD8`."
+          ],
+          [
+            "`0x08`",
+            "`8`",
+            "Owner pointer stored at `0x8015CCBC`. Applies the category cap stored at `0x8015CCE0`."
+          ],
+          [
+            "`0x09`",
+            "`9`",
+            "Owner pointer stored at `0x8015CCD0`. Applies the category cap stored at `0x8015CCF0`."
+          ],
+          [
+            "`0x0A`",
+            "`10`",
+            "Owner pointer stored at `0x8015CCD0`. Applies the category cap stored at `0x8015CCE4`."
+          ],
+          [
+            "`0x0B`",
+            "`11`",
+            "Owner pointer stored at `0x8015CCC4`."
+          ],
+          [
+            "`0x0C`",
+            "`12`",
+            "Owner pointer stored at `0x8015CCD4`. Applies the category cap stored at `0x8015CCEC`."
+          ],
+          [
+            "`0x0D`",
+            "`13`",
+            "Use the caller-supplied owner task."
+          ]
+        ]
+      }
+    ]
+  },
+  "D_80239AFC_5F4FCC": {
+    "tables": [
+      {
+        "id": "initial-scale",
+        "title": "Initial stage scale",
+        "description": "This is a continuous IEEE-754 single-precision scale, not an enum. The value below is the initial scalar in the verified US stage overlay; running game state can change writable data.",
+        "columns": [
+          "Stored IEEE-754 bits",
+          "Parsed float",
+          "Meaning"
+        ],
+        "rows": [
+          [
+            "`0x3DCCCCCD`",
+            "`0.10000000149011612` (approximately `0.1f`)",
+            "Uniform X/Y/Z scale passed by the native actor manager when creating ordinary actor model objects."
+          ]
+        ]
+      }
+    ]
+  }
+}

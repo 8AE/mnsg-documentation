@@ -23,6 +23,18 @@ extern short D_8016DADC_16E6DC;
 
 This address aliases element 2 of D_8016DAD8_16E6D8. The single-record allocator compares it with the kind-2 capacity before taking another free record.
 
+## Known values
+
+### Active model/display count {#count-values}
+
+This signed 16-bit value aliases D_8016DAD8_16E6D8[2]. Compare it to the kind-2 capacity; it is not a flag or a telemetry request count.
+
+| Stored value | Meaning |
+| --- | --- |
+| `0` | No active kind-2 records according to the native active-allocation counter. |
+| Positive signed count | That many kind-2 records are active. |
+| Negative signed value | Not a valid ordinary active count; no special negative state is established. |
+
 ## Usage example
 
 ```c

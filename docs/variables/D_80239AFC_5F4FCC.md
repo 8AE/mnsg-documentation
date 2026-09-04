@@ -29,6 +29,16 @@ Passed as x,y,z scale to func_8003555C when constructing a room actor before ins
 
 The demonstrated read role is established. A broader configuration/ownership role for writes is not.
 
+## Known values
+
+### Initial stage scale {#initial-scale}
+
+This is a continuous IEEE-754 single-precision scale, not an enum. The value below is the initial scalar in the verified US stage overlay; running game state can change writable data.
+
+| Stored IEEE-754 bits | Parsed float | Meaning |
+| --- | --- | --- |
+| `0x3DCCCCCD` | `0.10000000149011612` (approximately `0.1f`) | Uniform X/Y/Z scale passed by the native actor manager when creating ordinary actor model objects. |
+
 ## Usage example
 
 ```c

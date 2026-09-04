@@ -81,6 +81,24 @@ class ValidatorTests(unittest.TestCase):
         self.assertIn("flag < 2048 && flag > 0", page.body)
         self.assertEqual(page.code_blocks, 1)
 
+    def test_decoded_table_rows_preserve_values_and_links(self):
+        page = validator.Page('<main><article><table><tr><th>Raw</th><th>Meaning</th></tr><tr><td><code>0x016</code></td><td><a href="#room">Congo</a> fight</td></tr></table></article></main>')
+        self.assertIn(('0x016', 'Congo fight'), page.table_rows)
+        self.assertEqual(validator.plain_table_cell('[Congo](#room) fight'), 'Congo fight')
+        self.assertEqual(validator.plain_table_cell('`mask \\| 1`'), 'mask | 1')
+
+    def test_value_validation_rejects_wrong_headers_misplaced_rows_and_stale_search(self):
+        record = {'tables': [{'id':'room-values', 'title':'Room values', 'description':'Known rooms.', 'columns':['Raw','Meaning'], 'rows':[['`0x016`','Congo fight']]}]}
+        html = '<main><article><h3 id="room-values">Room values</h3><table><tr><th>Raw</th><th>Meaning</th></tr><tr><td><code>0x016</code></td><td>Congo fight</td></tr></table></article></main>'
+        self.assertEqual(validator.value_table_errors('room',record,validator.Page(html)), [])
+        wrong_headers = html.replace('<th>Raw</th><th>Meaning</th>', '<th>Meaning</th><th>Raw</th>')
+        misplaced_row = html.replace('<tr><td>', '</table><h3 id="other">Other</h3><table><tr><td>')
+        for bad in (wrong_headers, misplaced_row):
+            self.assertTrue(validator.value_table_errors('room',record,validator.Page(bad)))
+        correct_index = {'values':'Room values Known rooms. Raw Meaning 0x016 Congo fight'}
+        self.assertEqual(validator.value_search_errors('room',record,correct_index), [])
+        self.assertTrue(validator.value_search_errors('room',record,{'values':'x'}))
+
     def test_standalone_native_output_rejects_published_research_files(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

@@ -29,6 +29,19 @@ Can be compared with the func_80218A54 instance argument to establish that a cal
 
 It is shared transient context, not a permanent pointer identifying every spawned actor.
 
+## Known values
+
+### Actor instance fields {#instance-fields}
+
+Offsets are relative to the actor instance pointed to by this variable, not to the pointer storage. A null definition pointer terminates the instance list during native actor-manager traversal.
+
+| Offset | Storage type | Meaning |
+| --- | --- | --- |
+| `+0x00 / +0x02 / +0x04` | `int16_t` × 3 | Spawn position X, Y and Z. |
+| `+0x06 / +0x08 / +0x0A` | `int16_t` × 3 | Spawn rotation: pitch, yaw and roll. |
+| `+0x0C` | 32-bit pointer | Actor definition record; zero terminates the native instance list. |
+| `+0x10` | `uint8_t` | Spawn-state byte. A full raw-value interpretation is not established. |
+
 ## Usage example
 
 ```c

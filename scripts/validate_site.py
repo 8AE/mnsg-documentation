@@ -32,13 +32,26 @@ class Page(HTMLParser):
         self.ids, self.duplicate_ids, self.links = set(), [], []
         self.search_inputs = []
         self.main_text, self.article_text, self.headings = [], [], []
+        self.table_rows, self._row, self._cell = [], None, None
+        self.tables_by_heading, self._heading, self._table, self._header_row = {}, None, None, False
         self.code_blocks, self.stack = 0, []
         self.feed(content)
         self.close()
 
     def handle_starttag(self, tag, pairs):
         attrs = dict(pairs)
+        if tag == 'tr':
+            self._row = []
+            self._header_row = False
+        if tag in {'td', 'th'}:
+            self._cell = []
+            self._header_row = self._header_row or tag == 'th'
         identity = attrs.get("id")
+        if tag in {'h2','h3'}:
+            self._heading = identity
+        if tag == 'table':
+            self._table = {'headers': [], 'rows': []}
+            self.tables_by_heading.setdefault(self._heading, []).append(self._table)
         if tag == "input" and attrs.get("name") == "q":
             self.search_inputs.append(attrs)
         if identity:
@@ -54,6 +67,16 @@ class Page(HTMLParser):
             self.stack.append({"tag": tag, "attrs": attrs})
 
     def handle_endtag(self, tag):
+        if tag in {'td','th'} and self._cell is not None and self._row is not None:
+            self._row.append(''.join(self._cell))
+            self._cell = None
+        if tag == 'tr' and self._row is not None:
+            self.table_rows.append(tuple(self._row))
+            if self._table is not None:
+                self._table['headers' if self._header_row else 'rows'].append(tuple(self._row))
+            self._row = None
+        if tag == 'table':
+            self._table = None
         for i in range(len(self.stack) - 1, -1, -1):
             if self.stack[i]["tag"] == tag:
                 del self.stack[i:]
@@ -63,6 +86,8 @@ class Page(HTMLParser):
         tags = {node["tag"] for node in self.stack}
         if "script" in tags or "style" in tags:
             return
+        if self._cell is not None:
+            self._cell.append(text)
         if "main" in tags:
             self.main_text.append(text)
         if "article" in tags:
@@ -147,6 +172,40 @@ def validate_links(site: Path, pages: dict[Path, Page], base_path=BASE_PATH):
 def markdown_body(content):
     return re.sub(r"\A---\s*\n.*?\n---\s*\n", "", content, count=1, flags=re.S)
 
+def plain_table_cell(value):
+    value = re.sub(r'\[([^\]]+)\]\([^)]*\)', r'\1', value)
+    return ' '.join(value.replace('`','').replace('\\|','|').split())
+
+def value_table_errors(name, record, page):
+    errors = []
+    for table in record.get('tables', []):
+        label = f'{name}/{table["id"]}'
+        if table['id'] not in page.ids:
+            errors.append(f'{label}: rendered value table anchor is missing.')
+        matches = page.tables_by_heading.get(table['id'], [])
+        if len(matches) != 1:
+            errors.append(f'{label}: expected exactly one table under its heading.')
+            continue
+        rendered = matches[0]
+        normalize = lambda rows: [tuple(' '.join(cell.split()) for cell in row) for row in rows]
+        expected_headers = [tuple(plain_table_cell(c) for c in table['columns'])]
+        expected_rows = [tuple(plain_table_cell(c) for c in row) for row in table['rows']]
+        if normalize(rendered['headers']) != expected_headers:
+            errors.append(f'{label}: rendered value-table column headers differ.')
+        if normalize(rendered['rows']) != expected_rows:
+            errors.append(f'{label}: rendered value rows differ or are out of order.')
+    return errors
+
+def value_search_errors(name, record, entry):
+    parts = []
+    for table in record['tables']:
+        parts.extend([table['title'], table['description'], *table['columns']])
+        parts.extend(cell for row in table['rows'] for cell in row)
+    expected = ' '.join(parts).replace('`', '')
+    if entry.get('values') != expected:
+        return [f'{name}: search index differs from reviewed value interpretations.']
+    return []
+
 
 def search_entries(site):
     candidates = [site / "api-index.json", site / "search-index.json", site / "symbols.json"]
@@ -177,6 +236,9 @@ def validate_site(site: Path, data_dir: Path | None = None, docs_dir: Path | Non
     if len(symbols) != len(inventory["symbols"]):
         errors.append("Inventory contains duplicate native symbol names.")
     names = set(symbols)
+    value_records = {}
+    for path in sorted(data_dir.glob('values-*.json')):
+        value_records.update(json.loads(path.read_text()))
     expected_routes = {(Path("functions" if symbol["kind"] == "function" else "variables") / name / "index.html") for name, symbol in symbols.items()}
     actual_routes = {path.relative_to(site) for group in ("functions", "variables") for path in (site / group).glob("*/index.html")}
     if actual_routes != expected_routes:
@@ -216,6 +278,7 @@ def validate_site(site: Path, data_dir: Path | None = None, docs_dir: Path | Non
                 errors.append(f"{name}: rendered native page contains no C code block.")
             if len(page.body.strip()) < 150:
                 errors.append(f"{name}: rendered native page lacks behavioral documentation.")
+            errors.extend(value_table_errors(name, value_records.get(name, {}), page))
     # Inspect every authored public page, including guides and catalog landing pages.
     for document in docs_dir.rglob("*.md"):
         if document.relative_to(docs_dir) not in expected_docs:
@@ -231,7 +294,7 @@ def validate_site(site: Path, data_dir: Path | None = None, docs_dir: Path | Non
         if not path.is_file():
             continue
         relative = path.relative_to(site)
-        if relative.parts[0] in {"sources", "coverage", "projects", "data"} or path.name in {"inventory.json", "source-snapshots.json", "build-report.json", "coverage.html"} or re.match(r"annotations-.*\.json$", path.name):
+        if relative.parts[0] in {"sources", "coverage", "projects", "data"} or path.name in {"inventory.json", "source-snapshots.json", "build-report.json", "coverage.html"} or re.match(r"(?:annotations|value-evidence)-.*\.json$", path.name):
             leaked.append(str(relative))
     if leaked:
         errors.append(f"Internal research/provenance files were published: {', '.join(sorted(leaked))}")
@@ -256,6 +319,8 @@ def validate_site(site: Path, data_dir: Path | None = None, docs_dir: Path | Non
                 errors.append(f"{name}: search kind differs from native inventory.")
             if not entry.get("title") or not entry.get("summary"):
                 errors.append(f"{name}: search entry lacks a native description.")
+            if name in value_records:
+                errors.extend(value_search_errors(name, value_records[name], entry))
             route = entry.get("route", entry.get("url", entry.get("path")))
             if not route:
                 errors.append(f"{name}: search entry lacks a native route.")
@@ -269,6 +334,9 @@ def validate_site(site: Path, data_dir: Path | None = None, docs_dir: Path | Non
     return {"ok": not errors, "htmlPages": len(pages), "checkedInternalLinks": checked,
             "symbols": len(names), "functionPages": sum(s["kind"] == "function" for s in symbols.values()),
             "variablePages": sum(s["kind"] == "variable" for s in symbols.values()),
+            "variablesWithValues": len(value_records),
+            "valueTables": sum(len(record['tables']) for record in value_records.values()),
+            "valueRows": sum(len(table['rows']) for record in value_records.values() for table in record['tables']),
             "searchEntries": len(entries), "publicSourceFiles": len(leaked), "errors": errors}
 
 

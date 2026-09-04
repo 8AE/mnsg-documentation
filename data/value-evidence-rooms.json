@@ -1,0 +1,5121 @@
+{
+  "scope": "Room/scene names, raw IDs and the room-start table index layout only. Public output is values-rooms.json; this evidence file is not public page content.",
+  "sourceRevisions": {
+    "mnsg-custom-fish": "91df8ee35e61ba7b2ab5751b959aad2ca2b2c963",
+    "mnsg-enable-boss-rush": "73f7a09e9ccee312aa33f093bac7bd539ede8b60",
+    "mnsg-extra-options": "8ff1ff2a3f4de42679ea5cb0b6b021a830140ed2",
+    "mnsg-recomp-example": "caa88eea1021a8ee9eb4edeb1c6d56ed64d79a2d",
+    "mnsg-team-up": "725bf954fb46297d2d0e0208d762ecd21856517a"
+  },
+  "sourceFiles": [
+    {
+      "project": "mnsg-recomp-example",
+      "path": "py/anchor_mnsg.py",
+      "sha256": "9d44c77a04f7bf003dc036e5783c7552d8c98857eda31ba1df844c87b5be7b86"
+    },
+    {
+      "project": "mnsg-recomp-example",
+      "path": "src/ui/startup_race_ui.c",
+      "sha256": "ce8ac2125abdd14e1a2a8ff70f4da0ec034bd379b686632caf895284c627e3d3"
+    },
+    {
+      "project": "mnsg-extra-options",
+      "path": "src/hyper_congo.c",
+      "sha256": "af4c456b1de28d636523d2ab903fb7ee38743b6581a1065ec344f1f5be1937e4"
+    },
+    {
+      "project": "mnsg-extra-options",
+      "path": "src/hyper_dharumanyo.c",
+      "sha256": "3911ba31476e1e6a00935d0d141cfdda670102def039c2cb40d16e6df93e304c"
+    },
+    {
+      "project": "mnsg-extra-options",
+      "path": "src/hyper_tsurami.c",
+      "sha256": "c3aebdb774429a2c6bd7ad5fac87689a281ce935793ecd59f62b548ddfa7a3c0"
+    },
+    {
+      "project": "mnsg-extra-options",
+      "path": "src/hyper_koryuta_flight.c",
+      "sha256": "376a84faba04a7b7b5b3c98a79d2bfdf08c76d4c003d703c5511ec9e9f6c1d37"
+    },
+    {
+      "project": "mnsg-extra-options",
+      "path": "src/hyper_enemies.c",
+      "sha256": "b916caaf61e7d12233ac48c1dddbc483d249f0739bbb70a0bf19d79485f8fc9b"
+    },
+    {
+      "project": "mnsg-recomp-example",
+      "path": "src/race_goemon_house_unlock.c",
+      "sha256": "d0712fea772c095a76b1cf2d820d1c5e8097f6e7790d39afc52a3bf8f8ac4236"
+    },
+    {
+      "project": "mnsg-recomp-example",
+      "path": "src/boss_sync.c",
+      "sha256": "c9bd4cb3a43370b0074f18d41edf009531d202c1e51ce0cb8880bcfd14ee742b"
+    },
+    {
+      "project": "mnsg-extra-options",
+      "path": "tests/hyper_congo_test.c",
+      "sha256": "93633f20b9f6a321350441c054c24c1b98dcc444256365027772d9ee951fc8b5"
+    },
+    {
+      "project": "mnsg-recomp-example",
+      "path": "src/ui/debug.c",
+      "sha256": "b406a5bae9d9fc6c24d408323c2c28c9a59aec41af845fa9c658308ed98ee069"
+    },
+    {
+      "project": "mnsg-recomp-example",
+      "path": "docs/game-extern-symbols.md",
+      "sha256": "461673cb61b8e69deffe2de3bce4fc935752a2ac2d15ac958db0f01b7d051f0a"
+    },
+    {
+      "project": "mnsg-enable-boss-rush",
+      "path": "docs/impact-boss-rush.md",
+      "sha256": "7ee575abb7f45a2d67eac57b2773aeb01df0e850ef082624fafed5cc92245348"
+    }
+  ],
+  "counts": {
+    "baseAreaMapping": 200,
+    "specificLocationCatalog": 76,
+    "exactRoomRefinements": 7,
+    "uniquePublicRoomIds": 201,
+    "areaOnlyPublicRows": 115,
+    "publicSymbols": 2,
+    "publicTables": 3
+  },
+  "rooms": {
+    "0x0000": {
+      "raw": 0,
+      "rawHex": "0x0000",
+      "candidates": [
+        {
+          "name": "Oedo Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 342,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Oedo Castle",
+      "publicName": "Oedo Castle (specific room name unknown)"
+    },
+    "0x0002": {
+      "raw": 2,
+      "rawHex": "0x0002",
+      "candidates": [
+        {
+          "name": "Oedo Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 342,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Oedo Castle",
+      "publicName": "Oedo Castle (specific room name unknown)"
+    },
+    "0x0003": {
+      "raw": 3,
+      "rawHex": "0x0003",
+      "candidates": [
+        {
+          "name": "Oedo Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 342,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Oedo Castle",
+      "publicName": "Oedo Castle (specific room name unknown)"
+    },
+    "0x0004": {
+      "raw": 4,
+      "rawHex": "0x0004",
+      "candidates": [
+        {
+          "name": "Oedo Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 342,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Oedo Castle",
+      "publicName": "Oedo Castle (specific room name unknown)"
+    },
+    "0x0005": {
+      "raw": 5,
+      "rawHex": "0x0005",
+      "candidates": [
+        {
+          "name": "Oedo Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 342,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Oedo Castle",
+      "publicName": "Oedo Castle (specific room name unknown)"
+    },
+    "0x0006": {
+      "raw": 6,
+      "rawHex": "0x0006",
+      "candidates": [
+        {
+          "name": "Oedo Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 342,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Oedo Castle",
+      "publicName": "Oedo Castle (specific room name unknown)"
+    },
+    "0x0007": {
+      "raw": 7,
+      "rawHex": "0x0007",
+      "candidates": [
+        {
+          "name": "Oedo Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 342,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Oedo Castle",
+      "publicName": "Oedo Castle (specific room name unknown)"
+    },
+    "0x0008": {
+      "raw": 8,
+      "rawHex": "0x0008",
+      "candidates": [
+        {
+          "name": "Oedo Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 342,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Oedo Castle",
+      "publicName": "Oedo Castle (specific room name unknown)"
+    },
+    "0x0009": {
+      "raw": 9,
+      "rawHex": "0x0009",
+      "candidates": [
+        {
+          "name": "Oedo Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 342,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Oedo Castle",
+      "publicName": "Oedo Castle (specific room name unknown)"
+    },
+    "0x000A": {
+      "raw": 10,
+      "rawHex": "0x000A",
+      "candidates": [
+        {
+          "name": "Oedo Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 342,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Oedo Castle",
+      "publicName": "Oedo Castle (specific room name unknown)"
+    },
+    "0x000B": {
+      "raw": 11,
+      "rawHex": "0x000B",
+      "candidates": [
+        {
+          "name": "Oedo Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 342,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Oedo Castle",
+      "publicName": "Oedo Castle (specific room name unknown)"
+    },
+    "0x000C": {
+      "raw": 12,
+      "rawHex": "0x000C",
+      "candidates": [
+        {
+          "name": "Oedo Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 342,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Oedo Castle",
+      "publicName": "Oedo Castle (specific room name unknown)"
+    },
+    "0x000D": {
+      "raw": 13,
+      "rawHex": "0x000D",
+      "candidates": [
+        {
+          "name": "Oedo Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 342,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Oedo Castle",
+      "publicName": "Oedo Castle (specific room name unknown)"
+    },
+    "0x000E": {
+      "raw": 14,
+      "rawHex": "0x000E",
+      "candidates": [
+        {
+          "name": "Oedo Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 342,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Oedo Castle",
+      "publicName": "Oedo Castle (specific room name unknown)"
+    },
+    "0x000F": {
+      "raw": 15,
+      "rawHex": "0x000F",
+      "candidates": [
+        {
+          "name": "Oedo Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 342,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Oedo Castle",
+      "publicName": "Oedo Castle (specific room name unknown)"
+    },
+    "0x0010": {
+      "raw": 16,
+      "rawHex": "0x0010",
+      "candidates": [
+        {
+          "name": "Oedo Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 342,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Oedo Castle",
+      "publicName": "Oedo Castle (specific room name unknown)"
+    },
+    "0x0011": {
+      "raw": 17,
+      "rawHex": "0x0011",
+      "candidates": [
+        {
+          "name": "Oedo Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 342,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Oedo Castle",
+      "publicName": "Oedo Castle (specific room name unknown)"
+    },
+    "0x0012": {
+      "raw": 18,
+      "rawHex": "0x0012",
+      "candidates": [
+        {
+          "name": "Oedo Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 342,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Oedo Castle",
+      "publicName": "Oedo Castle (specific room name unknown)"
+    },
+    "0x0014": {
+      "raw": 20,
+      "rawHex": "0x0014",
+      "candidates": [
+        {
+          "name": "Oedo Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 342,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Oedo Castle",
+      "publicName": "Oedo Castle (specific room name unknown)"
+    },
+    "0x0015": {
+      "raw": 21,
+      "rawHex": "0x0015",
+      "candidates": [
+        {
+          "name": "Oedo Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 342,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Oedo Castle",
+      "publicName": "Oedo Castle (specific room name unknown)"
+    },
+    "0x0016": {
+      "raw": 22,
+      "rawHex": "0x0016",
+      "candidates": [
+        {
+          "name": "Oedo Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 342,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Oedo Castle — Congo battle",
+          "scope": "native-room-check",
+          "evidence": {
+            "project": "mnsg-extra-options",
+            "path": "src/hyper_congo.c",
+            "line": 177,
+            "note": "Explicitly distinguishes actual Congo fight room 0x016 from preceding teleport destination 0x01A."
+          }
+        },
+        {
+          "name": "Congo actual fight",
+          "scope": "regression-context",
+          "evidence": {
+            "project": "mnsg-extra-options",
+            "path": "tests/hyper_congo_test.c",
+            "line": 969,
+            "note": "Regression documentation explicitly preserves the 0x016 / 0x01A distinction; this is supporting source context, not fresh runtime validation."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Oedo Castle — Congo battle",
+      "publicName": "Oedo Castle — Congo battle"
+    },
+    "0x001A": {
+      "raw": 26,
+      "rawHex": "0x001A",
+      "candidates": [
+        {
+          "name": "Oedo Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 342,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Oedo Castle — approach before Congo battle",
+          "scope": "native-room-check",
+          "evidence": {
+            "project": "mnsg-extra-options",
+            "path": "src/hyper_congo.c",
+            "line": 177,
+            "note": "Identified as preceding the actual fight; do not collapse it into room 0x016."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Oedo Castle — approach before Congo battle",
+      "publicName": "Oedo Castle — approach before Congo battle"
+    },
+    "0x0028": {
+      "raw": 40,
+      "rawHex": "0x0028",
+      "candidates": [
+        {
+          "name": "Oedo Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 342,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Oedo Castle",
+      "publicName": "Oedo Castle (specific room name unknown)"
+    },
+    "0x002F": {
+      "raw": 47,
+      "rawHex": "0x002F",
+      "candidates": [
+        {
+          "name": "Ghost Toys Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 347,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Ghost Toys Castle",
+      "publicName": "Ghost Toys Castle (specific room name unknown)"
+    },
+    "0x0030": {
+      "raw": 48,
+      "rawHex": "0x0030",
+      "candidates": [
+        {
+          "name": "Ghost Toys Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 347,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Ghost Toys Castle",
+      "publicName": "Ghost Toys Castle (specific room name unknown)"
+    },
+    "0x0031": {
+      "raw": 49,
+      "rawHex": "0x0031",
+      "candidates": [
+        {
+          "name": "Ghost Toys Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 347,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Ghost Toys Castle",
+      "publicName": "Ghost Toys Castle (specific room name unknown)"
+    },
+    "0x0032": {
+      "raw": 50,
+      "rawHex": "0x0032",
+      "candidates": [
+        {
+          "name": "Ghost Toys Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 347,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Ghost Toys Castle",
+      "publicName": "Ghost Toys Castle (specific room name unknown)"
+    },
+    "0x0033": {
+      "raw": 51,
+      "rawHex": "0x0033",
+      "candidates": [
+        {
+          "name": "Ghost Toys Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 347,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Ghost Toys Castle",
+      "publicName": "Ghost Toys Castle (specific room name unknown)"
+    },
+    "0x0034": {
+      "raw": 52,
+      "rawHex": "0x0034",
+      "candidates": [
+        {
+          "name": "Ghost Toys Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 347,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Ghost Toys Castle",
+      "publicName": "Ghost Toys Castle (specific room name unknown)"
+    },
+    "0x0035": {
+      "raw": 53,
+      "rawHex": "0x0035",
+      "candidates": [
+        {
+          "name": "Ghost Toys Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 347,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Ghost Toys Castle",
+      "publicName": "Ghost Toys Castle (specific room name unknown)"
+    },
+    "0x0036": {
+      "raw": 54,
+      "rawHex": "0x0036",
+      "candidates": [
+        {
+          "name": "Ghost Toys Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 347,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Ghost Toys Castle",
+      "publicName": "Ghost Toys Castle (specific room name unknown)"
+    },
+    "0x0039": {
+      "raw": 57,
+      "rawHex": "0x0039",
+      "candidates": [
+        {
+          "name": "Ghost Toys Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 347,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Ghost Toys Castle",
+      "publicName": "Ghost Toys Castle (specific room name unknown)"
+    },
+    "0x003A": {
+      "raw": 58,
+      "rawHex": "0x003A",
+      "candidates": [
+        {
+          "name": "Ghost Toys Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 347,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Ghost Toys Castle",
+      "publicName": "Ghost Toys Castle (specific room name unknown)"
+    },
+    "0x003B": {
+      "raw": 59,
+      "rawHex": "0x003B",
+      "candidates": [
+        {
+          "name": "Ghost Toys Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 347,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Ghost Toys Castle",
+      "publicName": "Ghost Toys Castle (specific room name unknown)"
+    },
+    "0x003C": {
+      "raw": 60,
+      "rawHex": "0x003C",
+      "candidates": [
+        {
+          "name": "Ghost Toys Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 347,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Ghost Toys Castle",
+      "publicName": "Ghost Toys Castle (specific room name unknown)"
+    },
+    "0x003E": {
+      "raw": 62,
+      "rawHex": "0x003E",
+      "candidates": [
+        {
+          "name": "Ghost Toys Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 347,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Ghost Toys Castle",
+      "publicName": "Ghost Toys Castle (specific room name unknown)"
+    },
+    "0x003F": {
+      "raw": 63,
+      "rawHex": "0x003F",
+      "candidates": [
+        {
+          "name": "Ghost Toys Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 347,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Ghost Toys Castle",
+      "publicName": "Ghost Toys Castle (specific room name unknown)"
+    },
+    "0x0040": {
+      "raw": 64,
+      "rawHex": "0x0040",
+      "candidates": [
+        {
+          "name": "Ghost Toys Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 347,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Ghost Toys Castle",
+      "publicName": "Ghost Toys Castle (specific room name unknown)"
+    },
+    "0x0041": {
+      "raw": 65,
+      "rawHex": "0x0041",
+      "candidates": [
+        {
+          "name": "Ghost Toys Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 347,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Ghost Toys Castle",
+      "publicName": "Ghost Toys Castle (specific room name unknown)"
+    },
+    "0x0042": {
+      "raw": 66,
+      "rawHex": "0x0042",
+      "candidates": [
+        {
+          "name": "Ghost Toys Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 347,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Ghost Toys Castle",
+      "publicName": "Ghost Toys Castle (specific room name unknown)"
+    },
+    "0x0043": {
+      "raw": 67,
+      "rawHex": "0x0043",
+      "candidates": [
+        {
+          "name": "Ghost Toys Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 347,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Ghost Toys Castle",
+      "publicName": "Ghost Toys Castle (specific room name unknown)"
+    },
+    "0x0044": {
+      "raw": 68,
+      "rawHex": "0x0044",
+      "candidates": [
+        {
+          "name": "Ghost Toys Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 347,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Ghost Toys Castle",
+      "publicName": "Ghost Toys Castle (specific room name unknown)"
+    },
+    "0x0045": {
+      "raw": 69,
+      "rawHex": "0x0045",
+      "candidates": [
+        {
+          "name": "Ghost Toys Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 347,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Ghost Toys Castle",
+      "publicName": "Ghost Toys Castle (specific room name unknown)"
+    },
+    "0x0046": {
+      "raw": 70,
+      "rawHex": "0x0046",
+      "candidates": [
+        {
+          "name": "Ghost Toys Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 347,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Ghost Toys Castle",
+      "publicName": "Ghost Toys Castle (specific room name unknown)"
+    },
+    "0x0049": {
+      "raw": 73,
+      "rawHex": "0x0049",
+      "candidates": [
+        {
+          "name": "Ghost Toys Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 347,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Ghost Toys Castle — Dharumanyo battle",
+          "scope": "native-room-check",
+          "evidence": {
+            "project": "mnsg-extra-options",
+            "path": "src/hyper_dharumanyo.c",
+            "line": 43,
+            "note": "ROOM_DARUMANYO constant checked against the native current-room variable."
+          }
+        },
+        {
+          "name": "Dharumanyo battle",
+          "scope": "native-room-check",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/boss_sync.c",
+            "line": 76,
+            "note": "DARUMANYO_ROOM agrees with the exact boss-room constant."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Ghost Toys Castle — Dharumanyo battle",
+      "publicName": "Ghost Toys Castle — Dharumanyo battle"
+    },
+    "0x005A": {
+      "raw": 90,
+      "rawHex": "0x005A",
+      "candidates": [
+        {
+          "name": "Festival Temple Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 352,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Festival Temple Castle",
+      "publicName": "Festival Temple Castle (specific room name unknown)"
+    },
+    "0x005B": {
+      "raw": 91,
+      "rawHex": "0x005B",
+      "candidates": [
+        {
+          "name": "Festival Temple Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 352,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Festival Temple Castle",
+      "publicName": "Festival Temple Castle (specific room name unknown)"
+    },
+    "0x005C": {
+      "raw": 92,
+      "rawHex": "0x005C",
+      "candidates": [
+        {
+          "name": "Festival Temple Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 352,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Festival Temple Castle",
+      "publicName": "Festival Temple Castle (specific room name unknown)"
+    },
+    "0x005D": {
+      "raw": 93,
+      "rawHex": "0x005D",
+      "candidates": [
+        {
+          "name": "Festival Temple Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 352,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Festival Temple Castle",
+      "publicName": "Festival Temple Castle (specific room name unknown)"
+    },
+    "0x005E": {
+      "raw": 94,
+      "rawHex": "0x005E",
+      "candidates": [
+        {
+          "name": "Festival Temple Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 352,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Festival Temple Castle",
+      "publicName": "Festival Temple Castle (specific room name unknown)"
+    },
+    "0x005F": {
+      "raw": 95,
+      "rawHex": "0x005F",
+      "candidates": [
+        {
+          "name": "Festival Temple Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 352,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Festival Temple Castle",
+      "publicName": "Festival Temple Castle (specific room name unknown)"
+    },
+    "0x0060": {
+      "raw": 96,
+      "rawHex": "0x0060",
+      "candidates": [
+        {
+          "name": "Festival Temple Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 352,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Festival Temple Castle",
+      "publicName": "Festival Temple Castle (specific room name unknown)"
+    },
+    "0x0061": {
+      "raw": 97,
+      "rawHex": "0x0061",
+      "candidates": [
+        {
+          "name": "Festival Temple Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 352,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Festival Temple Castle",
+      "publicName": "Festival Temple Castle (specific room name unknown)"
+    },
+    "0x0062": {
+      "raw": 98,
+      "rawHex": "0x0062",
+      "candidates": [
+        {
+          "name": "Festival Temple Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 352,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Festival Temple Castle",
+      "publicName": "Festival Temple Castle (specific room name unknown)"
+    },
+    "0x0063": {
+      "raw": 99,
+      "rawHex": "0x0063",
+      "candidates": [
+        {
+          "name": "Festival Temple Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 352,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Festival Temple Castle",
+      "publicName": "Festival Temple Castle (specific room name unknown)"
+    },
+    "0x0064": {
+      "raw": 100,
+      "rawHex": "0x0064",
+      "candidates": [
+        {
+          "name": "Festival Temple Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 352,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Festival Temple Castle",
+      "publicName": "Festival Temple Castle (specific room name unknown)"
+    },
+    "0x0065": {
+      "raw": 101,
+      "rawHex": "0x0065",
+      "candidates": [
+        {
+          "name": "Festival Temple Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 352,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Festival Temple Castle",
+      "publicName": "Festival Temple Castle (specific room name unknown)"
+    },
+    "0x0066": {
+      "raw": 102,
+      "rawHex": "0x0066",
+      "candidates": [
+        {
+          "name": "Festival Temple Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 352,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Festival Temple Castle",
+      "publicName": "Festival Temple Castle (specific room name unknown)"
+    },
+    "0x0067": {
+      "raw": 103,
+      "rawHex": "0x0067",
+      "candidates": [
+        {
+          "name": "Festival Temple Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 352,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Festival Temple Castle",
+      "publicName": "Festival Temple Castle (specific room name unknown)"
+    },
+    "0x0068": {
+      "raw": 104,
+      "rawHex": "0x0068",
+      "candidates": [
+        {
+          "name": "Festival Temple Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 352,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Festival Temple Castle",
+      "publicName": "Festival Temple Castle (specific room name unknown)"
+    },
+    "0x0069": {
+      "raw": 105,
+      "rawHex": "0x0069",
+      "candidates": [
+        {
+          "name": "Festival Temple Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 352,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Festival Temple Castle",
+      "publicName": "Festival Temple Castle (specific room name unknown)"
+    },
+    "0x006A": {
+      "raw": 106,
+      "rawHex": "0x006A",
+      "candidates": [
+        {
+          "name": "Festival Temple Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 352,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Festival Temple Castle",
+      "publicName": "Festival Temple Castle (specific room name unknown)"
+    },
+    "0x006B": {
+      "raw": 107,
+      "rawHex": "0x006B",
+      "candidates": [
+        {
+          "name": "Festival Temple Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 352,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Festival Temple Castle",
+      "publicName": "Festival Temple Castle (specific room name unknown)"
+    },
+    "0x006C": {
+      "raw": 108,
+      "rawHex": "0x006C",
+      "candidates": [
+        {
+          "name": "Festival Temple Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 352,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Festival Temple Castle",
+      "publicName": "Festival Temple Castle (specific room name unknown)"
+    },
+    "0x006D": {
+      "raw": 109,
+      "rawHex": "0x006D",
+      "candidates": [
+        {
+          "name": "Festival Temple Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 352,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Festival Temple Castle",
+      "publicName": "Festival Temple Castle (specific room name unknown)"
+    },
+    "0x006E": {
+      "raw": 110,
+      "rawHex": "0x006E",
+      "candidates": [
+        {
+          "name": "Festival Temple Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 352,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Festival Temple Castle",
+      "publicName": "Festival Temple Castle (specific room name unknown)"
+    },
+    "0x006F": {
+      "raw": 111,
+      "rawHex": "0x006F",
+      "candidates": [
+        {
+          "name": "Festival Temple Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 352,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Festival Temple Castle",
+      "publicName": "Festival Temple Castle (specific room name unknown)"
+    },
+    "0x0070": {
+      "raw": 112,
+      "rawHex": "0x0070",
+      "candidates": [
+        {
+          "name": "Festival Temple Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 352,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Festival Temple Castle",
+      "publicName": "Festival Temple Castle (specific room name unknown)"
+    },
+    "0x0071": {
+      "raw": 113,
+      "rawHex": "0x0071",
+      "candidates": [
+        {
+          "name": "Festival Temple Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 352,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Festival Temple Castle — Tsurami battle",
+          "scope": "native-room-check",
+          "evidence": {
+            "project": "mnsg-extra-options",
+            "path": "src/hyper_tsurami.c",
+            "line": 42,
+            "note": "ROOM_TSURAMI constant checked against the native current-room variable."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Festival Temple Castle — Tsurami battle",
+      "publicName": "Festival Temple Castle — Tsurami battle"
+    },
+    "0x0081": {
+      "raw": 129,
+      "rawHex": "0x0081",
+      "candidates": [
+        {
+          "name": "Gourmet Submarine",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 357,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Gourmet Submarine",
+      "publicName": "Gourmet Submarine (specific room name unknown)"
+    },
+    "0x0082": {
+      "raw": 130,
+      "rawHex": "0x0082",
+      "candidates": [
+        {
+          "name": "Gourmet Submarine",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 357,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Gourmet Submarine",
+      "publicName": "Gourmet Submarine (specific room name unknown)"
+    },
+    "0x0083": {
+      "raw": 131,
+      "rawHex": "0x0083",
+      "candidates": [
+        {
+          "name": "Gourmet Submarine",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 357,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Gourmet Submarine",
+      "publicName": "Gourmet Submarine (specific room name unknown)"
+    },
+    "0x0085": {
+      "raw": 133,
+      "rawHex": "0x0085",
+      "candidates": [
+        {
+          "name": "Gourmet Submarine",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 357,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Gourmet Submarine",
+      "publicName": "Gourmet Submarine (specific room name unknown)"
+    },
+    "0x0086": {
+      "raw": 134,
+      "rawHex": "0x0086",
+      "candidates": [
+        {
+          "name": "Gourmet Submarine",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 357,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Gourmet Submarine",
+      "publicName": "Gourmet Submarine (specific room name unknown)"
+    },
+    "0x0087": {
+      "raw": 135,
+      "rawHex": "0x0087",
+      "candidates": [
+        {
+          "name": "Gourmet Submarine",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 357,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Gourmet Submarine",
+      "publicName": "Gourmet Submarine (specific room name unknown)"
+    },
+    "0x0089": {
+      "raw": 137,
+      "rawHex": "0x0089",
+      "candidates": [
+        {
+          "name": "Gourmet Submarine",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 357,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Gourmet Submarine",
+      "publicName": "Gourmet Submarine (specific room name unknown)"
+    },
+    "0x008A": {
+      "raw": 138,
+      "rawHex": "0x008A",
+      "candidates": [
+        {
+          "name": "Gourmet Submarine",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 357,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Gourmet Submarine",
+      "publicName": "Gourmet Submarine (specific room name unknown)"
+    },
+    "0x008B": {
+      "raw": 139,
+      "rawHex": "0x008B",
+      "candidates": [
+        {
+          "name": "Gourmet Submarine",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 357,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Gourmet Submarine",
+      "publicName": "Gourmet Submarine (specific room name unknown)"
+    },
+    "0x008C": {
+      "raw": 140,
+      "rawHex": "0x008C",
+      "candidates": [
+        {
+          "name": "Gourmet Submarine",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 357,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Gourmet Submarine",
+      "publicName": "Gourmet Submarine (specific room name unknown)"
+    },
+    "0x008D": {
+      "raw": 141,
+      "rawHex": "0x008D",
+      "candidates": [
+        {
+          "name": "Gourmet Submarine",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 357,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Gourmet Submarine",
+      "publicName": "Gourmet Submarine (specific room name unknown)"
+    },
+    "0x008E": {
+      "raw": 142,
+      "rawHex": "0x008E",
+      "candidates": [
+        {
+          "name": "Gourmet Submarine",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 357,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Gourmet Submarine",
+      "publicName": "Gourmet Submarine (specific room name unknown)"
+    },
+    "0x0090": {
+      "raw": 144,
+      "rawHex": "0x0090",
+      "candidates": [
+        {
+          "name": "Gourmet Submarine",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 357,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Gourmet Submarine",
+      "publicName": "Gourmet Submarine (specific room name unknown)"
+    },
+    "0x0091": {
+      "raw": 145,
+      "rawHex": "0x0091",
+      "candidates": [
+        {
+          "name": "Gourmet Submarine",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 357,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Gourmet Submarine",
+      "publicName": "Gourmet Submarine (specific room name unknown)"
+    },
+    "0x0094": {
+      "raw": 148,
+      "rawHex": "0x0094",
+      "candidates": [
+        {
+          "name": "Gourmet Submarine",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 357,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Gourmet Submarine",
+      "publicName": "Gourmet Submarine (specific room name unknown)"
+    },
+    "0x0095": {
+      "raw": 149,
+      "rawHex": "0x0095",
+      "candidates": [
+        {
+          "name": "Gourmet Submarine",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 357,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Gourmet Submarine",
+      "publicName": "Gourmet Submarine (specific room name unknown)"
+    },
+    "0x0096": {
+      "raw": 150,
+      "rawHex": "0x0096",
+      "candidates": [
+        {
+          "name": "Gourmet Submarine",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 357,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Gourmet Submarine",
+      "publicName": "Gourmet Submarine (specific room name unknown)"
+    },
+    "0x0097": {
+      "raw": 151,
+      "rawHex": "0x0097",
+      "candidates": [
+        {
+          "name": "Gourmet Submarine",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 357,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Gourmet Submarine",
+      "publicName": "Gourmet Submarine (specific room name unknown)"
+    },
+    "0x0098": {
+      "raw": 152,
+      "rawHex": "0x0098",
+      "candidates": [
+        {
+          "name": "Gourmet Submarine",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 357,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Gourmet Submarine",
+      "publicName": "Gourmet Submarine (specific room name unknown)"
+    },
+    "0x0099": {
+      "raw": 153,
+      "rawHex": "0x0099",
+      "candidates": [
+        {
+          "name": "Gourmet Submarine",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 357,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Gourmet Submarine",
+      "publicName": "Gourmet Submarine (specific room name unknown)"
+    },
+    "0x009D": {
+      "raw": 157,
+      "rawHex": "0x009D",
+      "candidates": [
+        {
+          "name": "Gourmet Submarine",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 357,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Gourmet Submarine",
+      "publicName": "Gourmet Submarine (specific room name unknown)"
+    },
+    "0x00A8": {
+      "raw": 168,
+      "rawHex": "0x00A8",
+      "candidates": [
+        {
+          "name": "Gorgeous Music Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 363,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Gorgeous Music Castle",
+      "publicName": "Gorgeous Music Castle (specific room name unknown)"
+    },
+    "0x00A9": {
+      "raw": 169,
+      "rawHex": "0x00A9",
+      "candidates": [
+        {
+          "name": "Gorgeous Music Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 363,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Gorgeous Music Castle",
+      "publicName": "Gorgeous Music Castle (specific room name unknown)"
+    },
+    "0x00AA": {
+      "raw": 170,
+      "rawHex": "0x00AA",
+      "candidates": [
+        {
+          "name": "Gorgeous Music Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 363,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Gorgeous Music Castle",
+      "publicName": "Gorgeous Music Castle (specific room name unknown)"
+    },
+    "0x00AB": {
+      "raw": 171,
+      "rawHex": "0x00AB",
+      "candidates": [
+        {
+          "name": "Gorgeous Music Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 363,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Gorgeous Music Castle",
+      "publicName": "Gorgeous Music Castle (specific room name unknown)"
+    },
+    "0x00AC": {
+      "raw": 172,
+      "rawHex": "0x00AC",
+      "candidates": [
+        {
+          "name": "Gorgeous Music Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 363,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Gorgeous Music Castle",
+      "publicName": "Gorgeous Music Castle (specific room name unknown)"
+    },
+    "0x00AD": {
+      "raw": 173,
+      "rawHex": "0x00AD",
+      "candidates": [
+        {
+          "name": "Gorgeous Music Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 363,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Gorgeous Music Castle",
+      "publicName": "Gorgeous Music Castle (specific room name unknown)"
+    },
+    "0x00AE": {
+      "raw": 174,
+      "rawHex": "0x00AE",
+      "candidates": [
+        {
+          "name": "Gorgeous Music Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 363,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Gorgeous Music Castle",
+      "publicName": "Gorgeous Music Castle (specific room name unknown)"
+    },
+    "0x00AF": {
+      "raw": 175,
+      "rawHex": "0x00AF",
+      "candidates": [
+        {
+          "name": "Gorgeous Music Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 363,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Gorgeous Music Castle",
+      "publicName": "Gorgeous Music Castle (specific room name unknown)"
+    },
+    "0x00B0": {
+      "raw": 176,
+      "rawHex": "0x00B0",
+      "candidates": [
+        {
+          "name": "Gorgeous Music Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 363,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Gorgeous Music Castle",
+      "publicName": "Gorgeous Music Castle (specific room name unknown)"
+    },
+    "0x00B1": {
+      "raw": 177,
+      "rawHex": "0x00B1",
+      "candidates": [
+        {
+          "name": "Gorgeous Music Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 363,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Gorgeous Music Castle",
+      "publicName": "Gorgeous Music Castle (specific room name unknown)"
+    },
+    "0x00B2": {
+      "raw": 178,
+      "rawHex": "0x00B2",
+      "candidates": [
+        {
+          "name": "Gorgeous Music Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 363,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Gorgeous Music Castle",
+      "publicName": "Gorgeous Music Castle (specific room name unknown)"
+    },
+    "0x00B3": {
+      "raw": 179,
+      "rawHex": "0x00B3",
+      "candidates": [
+        {
+          "name": "Gorgeous Music Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 363,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Gorgeous Music Castle",
+      "publicName": "Gorgeous Music Castle (specific room name unknown)"
+    },
+    "0x00B4": {
+      "raw": 180,
+      "rawHex": "0x00B4",
+      "candidates": [
+        {
+          "name": "Gorgeous Music Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 363,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Gorgeous Music Castle",
+      "publicName": "Gorgeous Music Castle (specific room name unknown)"
+    },
+    "0x00B5": {
+      "raw": 181,
+      "rawHex": "0x00B5",
+      "candidates": [
+        {
+          "name": "Gorgeous Music Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 363,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Gorgeous Music Castle",
+      "publicName": "Gorgeous Music Castle (specific room name unknown)"
+    },
+    "0x00B6": {
+      "raw": 182,
+      "rawHex": "0x00B6",
+      "candidates": [
+        {
+          "name": "Gorgeous Music Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 363,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Gorgeous Music Castle",
+      "publicName": "Gorgeous Music Castle (specific room name unknown)"
+    },
+    "0x00B7": {
+      "raw": 183,
+      "rawHex": "0x00B7",
+      "candidates": [
+        {
+          "name": "Gorgeous Music Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 363,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Gorgeous Music Castle",
+      "publicName": "Gorgeous Music Castle (specific room name unknown)"
+    },
+    "0x00B8": {
+      "raw": 184,
+      "rawHex": "0x00B8",
+      "candidates": [
+        {
+          "name": "Gorgeous Music Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 363,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Gorgeous Music Castle",
+      "publicName": "Gorgeous Music Castle (specific room name unknown)"
+    },
+    "0x00B9": {
+      "raw": 185,
+      "rawHex": "0x00B9",
+      "candidates": [
+        {
+          "name": "Gorgeous Music Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 363,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Gorgeous Music Castle",
+      "publicName": "Gorgeous Music Castle (specific room name unknown)"
+    },
+    "0x00BA": {
+      "raw": 186,
+      "rawHex": "0x00BA",
+      "candidates": [
+        {
+          "name": "Gorgeous Music Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 363,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Gorgeous Music Castle",
+      "publicName": "Gorgeous Music Castle (specific room name unknown)"
+    },
+    "0x00BB": {
+      "raw": 187,
+      "rawHex": "0x00BB",
+      "candidates": [
+        {
+          "name": "Gorgeous Music Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 363,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Gorgeous Music Castle",
+      "publicName": "Gorgeous Music Castle (specific room name unknown)"
+    },
+    "0x00BC": {
+      "raw": 188,
+      "rawHex": "0x00BC",
+      "candidates": [
+        {
+          "name": "Gorgeous Music Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 363,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Gorgeous Music Castle",
+      "publicName": "Gorgeous Music Castle (specific room name unknown)"
+    },
+    "0x00BD": {
+      "raw": 189,
+      "rawHex": "0x00BD",
+      "candidates": [
+        {
+          "name": "Gorgeous Music Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 363,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Gorgeous Music Castle",
+      "publicName": "Gorgeous Music Castle (specific room name unknown)"
+    },
+    "0x00BE": {
+      "raw": 190,
+      "rawHex": "0x00BE",
+      "candidates": [
+        {
+          "name": "Gorgeous Music Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 363,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Gorgeous Music Castle",
+      "publicName": "Gorgeous Music Castle (specific room name unknown)"
+    },
+    "0x00BF": {
+      "raw": 191,
+      "rawHex": "0x00BF",
+      "candidates": [
+        {
+          "name": "Gorgeous Music Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 363,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Gorgeous Music Castle",
+      "publicName": "Gorgeous Music Castle (specific room name unknown)"
+    },
+    "0x00C0": {
+      "raw": 192,
+      "rawHex": "0x00C0",
+      "candidates": [
+        {
+          "name": "Gorgeous Music Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 363,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Gorgeous Music Castle",
+      "publicName": "Gorgeous Music Castle (specific room name unknown)"
+    },
+    "0x00C1": {
+      "raw": 193,
+      "rawHex": "0x00C1",
+      "candidates": [
+        {
+          "name": "Gorgeous Music Castle",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 363,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Gorgeous Music Castle",
+      "publicName": "Gorgeous Music Castle (specific room name unknown)"
+    },
+    "0x012C": {
+      "raw": 300,
+      "rawHex": "0x012C",
+      "candidates": [
+        {
+          "name": "Kai / Mt. Fuji",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 366,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Kai Highway",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 204,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Kai Highway",
+      "publicName": "Kai Highway"
+    },
+    "0x012D": {
+      "raw": 301,
+      "rawHex": "0x012D",
+      "candidates": [
+        {
+          "name": "Kai / Mt. Fuji",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 366,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Mt Fuji (Bottom)",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 205,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "editorialNormalization": {
+        "from": "Mt Fuji (Bottom)",
+        "to": "Mt. Fuji (bottom)"
+      },
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Mt. Fuji (bottom)",
+      "publicName": "Mt. Fuji (bottom)"
+    },
+    "0x012E": {
+      "raw": 302,
+      "rawHex": "0x012E",
+      "candidates": [
+        {
+          "name": "Kai / Mt. Fuji",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 366,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Mt Fuji Crater",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 206,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "editorialNormalization": {
+        "from": "Mt Fuji Crater",
+        "to": "Mt. Fuji crater"
+      },
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Mt. Fuji crater",
+      "publicName": "Mt. Fuji crater"
+    },
+    "0x012F": {
+      "raw": 303,
+      "rawHex": "0x012F",
+      "candidates": [
+        {
+          "name": "Kai / Mt. Fuji",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 366,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Mt Fuji (Peak)",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 207,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "editorialNormalization": {
+        "from": "Mt Fuji (Peak)",
+        "to": "Mt. Fuji (peak)"
+      },
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Mt. Fuji (peak)",
+      "publicName": "Mt. Fuji (peak)"
+    },
+    "0x0130": {
+      "raw": 304,
+      "rawHex": "0x0130",
+      "candidates": [
+        {
+          "name": "Musashi Beach",
+          "scope": "area-or-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 368,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Musashi Beach",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 179,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Musashi Beach",
+      "publicName": "Musashi Beach"
+    },
+    "0x0131": {
+      "raw": 305,
+      "rawHex": "0x0131",
+      "candidates": [
+        {
+          "name": "Musashi Tunnel",
+          "scope": "area-or-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 369,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Musashi Tunnel",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 180,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Musashi Tunnel",
+      "publicName": "Musashi Tunnel"
+    },
+    "0x0132": {
+      "raw": 306,
+      "rawHex": "0x0132",
+      "candidates": [
+        {
+          "name": "Iga",
+          "scope": "area-or-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 373,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Iga",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 183,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Iga",
+      "publicName": "Iga"
+    },
+    "0x0133": {
+      "raw": 307,
+      "rawHex": "0x0133",
+      "candidates": [
+        {
+          "name": "Yamato",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 376,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Yamato Shrine Exterior",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 209,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Yamato Shrine Exterior",
+      "publicName": "Yamato Shrine Exterior"
+    },
+    "0x0134": {
+      "raw": 308,
+      "rawHex": "0x0134",
+      "candidates": [
+        {
+          "name": "Yamato",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 376,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Yamato Shrine Interior",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 212,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Yamato Shrine Interior",
+      "publicName": "Yamato Shrine Interior"
+    },
+    "0x0135": {
+      "raw": 309,
+      "rawHex": "0x0135",
+      "candidates": [
+        {
+          "name": "Yamato",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 376,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Yamato",
+      "publicName": "Yamato (specific room name unknown)"
+    },
+    "0x0136": {
+      "raw": 310,
+      "rawHex": "0x0136",
+      "candidates": [
+        {
+          "name": "Yamato",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 376,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Yamato Bamboo Forest",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 210,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Yamato Bamboo Forest",
+      "publicName": "Yamato Bamboo Forest"
+    },
+    "0x0137": {
+      "raw": 311,
+      "rawHex": "0x0137",
+      "candidates": [
+        {
+          "name": "Yamato",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 376,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Turtle Stone",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 211,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Turtle Stone",
+      "publicName": "Turtle Stone"
+    },
+    "0x0138": {
+      "raw": 312,
+      "rawHex": "0x0138",
+      "candidates": [
+        {
+          "name": "Kii Awaji Island",
+          "scope": "area-or-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 377,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Kii Awaji Island",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 214,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Kii Awaji Island",
+      "publicName": "Kii Awaji Island"
+    },
+    "0x0139": {
+      "raw": 313,
+      "rawHex": "0x0139",
+      "candidates": [
+        {
+          "name": "Husband and Wife Rocks",
+          "scope": "area-or-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 378,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Husband and Wife Rocks",
+      "publicName": "Husband and Wife Rocks"
+    },
+    "0x013A": {
+      "raw": 314,
+      "rawHex": "0x013A",
+      "candidates": [
+        {
+          "name": "Tosa Fields",
+          "scope": "area-or-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 382,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Tosa Fields",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 199,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Tosa Fields",
+      "publicName": "Tosa Fields"
+    },
+    "0x013B": {
+      "raw": 315,
+      "rawHex": "0x013B",
+      "candidates": [
+        {
+          "name": "Tosa Bridge",
+          "scope": "area-or-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 383,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Tosa Bridge",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 200,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Tosa Bridge",
+      "publicName": "Tosa Bridge"
+    },
+    "0x013C": {
+      "raw": 316,
+      "rawHex": "0x013C",
+      "candidates": [
+        {
+          "name": "Kompira Mountain",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 386,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Kompira Mountain First Block",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 216,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Kompira Mountain First Block",
+      "publicName": "Kompira Mountain First Block"
+    },
+    "0x013D": {
+      "raw": 317,
+      "rawHex": "0x013D",
+      "candidates": [
+        {
+          "name": "Kompira Mountain",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 386,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Kompira Mountain Second Block",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 217,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Kompira Mountain Second Block",
+      "publicName": "Kompira Mountain Second Block"
+    },
+    "0x013E": {
+      "raw": 318,
+      "rawHex": "0x013E",
+      "candidates": [
+        {
+          "name": "Kompira Mountain",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 386,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Kompira Mountain Third Block",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 219,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Kompira Mountain Third Block",
+      "publicName": "Kompira Mountain Third Block"
+    },
+    "0x013F": {
+      "raw": 319,
+      "rawHex": "0x013F",
+      "candidates": [
+        {
+          "name": "Kompira Mountain",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 386,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Kompira Mountain Fourth Block",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 220,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Kompira Mountain Fourth Block",
+      "publicName": "Kompira Mountain Fourth Block"
+    },
+    "0x0140": {
+      "raw": 320,
+      "rawHex": "0x0140",
+      "candidates": [
+        {
+          "name": "Kompira Mountain",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 386,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Kompira Mountain Grounds",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 221,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Kompira Mountain Grounds",
+      "publicName": "Kompira Mountain Grounds"
+    },
+    "0x0141": {
+      "raw": 321,
+      "rawHex": "0x0141",
+      "candidates": [
+        {
+          "name": "Iyo Hills",
+          "scope": "area-or-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 389,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Iyo Hills",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 202,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Iyo Hills",
+      "publicName": "Iyo Hills"
+    },
+    "0x0142": {
+      "raw": 322,
+      "rawHex": "0x0142",
+      "candidates": [
+        {
+          "name": "Dogo Hotsprings",
+          "scope": "area-or-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 390,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Dogo Hotsprings",
+      "publicName": "Dogo Hotsprings"
+    },
+    "0x0143": {
+      "raw": 323,
+      "rawHex": "0x0143",
+      "candidates": [
+        {
+          "name": "Kurashiki",
+          "scope": "area-or-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 393,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Kurashiki",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 222,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Kurashiki",
+      "publicName": "Kurashiki"
+    },
+    "0x0144": {
+      "raw": 324,
+      "rawHex": "0x0144",
+      "candidates": [
+        {
+          "name": "Nagato",
+          "scope": "area-or-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 394,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Nagato",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 223,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Nagato",
+      "publicName": "Nagato"
+    },
+    "0x0145": {
+      "raw": 325,
+      "rawHex": "0x0145",
+      "candidates": [
+        {
+          "name": "Hagi",
+          "scope": "area-or-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 395,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Hagi",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 224,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Hagi",
+      "publicName": "Hagi"
+    },
+    "0x0146": {
+      "raw": 326,
+      "rawHex": "0x0146",
+      "candidates": [
+        {
+          "name": "Akiyoshidai",
+          "scope": "area-or-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 396,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Akiyoshidai",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 225,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Akiyoshidai",
+      "publicName": "Akiyoshidai"
+    },
+    "0x0147": {
+      "raw": 327,
+      "rawHex": "0x0147",
+      "candidates": [
+        {
+          "name": "Shuhodo",
+          "scope": "area-or-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 397,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Shuhodo",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 226,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Shuhodo",
+      "publicName": "Shuhodo"
+    },
+    "0x0148": {
+      "raw": 328,
+      "rawHex": "0x0148",
+      "candidates": [
+        {
+          "name": "Izumo",
+          "scope": "area-or-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 398,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Izumo",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 229,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Izumo",
+      "publicName": "Izumo"
+    },
+    "0x0149": {
+      "raw": 329,
+      "rawHex": "0x0149",
+      "candidates": [
+        {
+          "name": "Lake with a Large Tree",
+          "scope": "area-or-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 399,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Lake with a Large Tree",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 230,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Lake with a Large Tree",
+      "publicName": "Lake with a Large Tree"
+    },
+    "0x014A": {
+      "raw": 330,
+      "rawHex": "0x014A",
+      "candidates": [
+        {
+          "name": "Inaba",
+          "scope": "area-or-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 400,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Inaba Dune",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 231,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Inaba Dune",
+      "publicName": "Inaba Dune"
+    },
+    "0x014B": {
+      "raw": 331,
+      "rawHex": "0x014B",
+      "candidates": [
+        {
+          "name": "Mt. Fear",
+          "scope": "area-or-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 405,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Mt Fear",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 191,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "editorialNormalization": {
+        "from": "Mt Fear",
+        "to": "Mt. Fear"
+      },
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Mt. Fear",
+      "publicName": "Mt. Fear"
+    },
+    "0x014C": {
+      "raw": 332,
+      "rawHex": "0x014C",
+      "candidates": [
+        {
+          "name": "Ugo Stone Circle",
+          "scope": "area-or-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 406,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Ugo Stone Circle",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 193,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Ugo Stone Circle",
+      "publicName": "Ugo Stone Circle"
+    },
+    "0x014D": {
+      "raw": 333,
+      "rawHex": "0x014D",
+      "candidates": [
+        {
+          "name": "Shoreline",
+          "scope": "area-or-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 407,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Shoreline",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 192,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Shoreline",
+      "publicName": "Shoreline"
+    },
+    "0x014E": {
+      "raw": 334,
+      "rawHex": "0x014E",
+      "candidates": [
+        {
+          "name": "Underwater Japan Sea",
+          "scope": "area-or-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 408,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Underwater Japan Sea",
+      "publicName": "Underwater Japan Sea"
+    },
+    "0x014F": {
+      "raw": 335,
+      "rawHex": "0x014F",
+      "candidates": [
+        {
+          "name": "Tunnel to Northeast",
+          "scope": "area-or-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 370,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Tunnel to Northeast 1",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 181,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Tunnel to Northeast 1",
+      "publicName": "Tunnel to Northeast 1"
+    },
+    "0x0150": {
+      "raw": 336,
+      "rawHex": "0x0150",
+      "candidates": [
+        {
+          "name": "Tunnel to Northeast",
+          "scope": "area-or-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 371,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Tunnel to Northeast 2",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 182,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Tunnel to Northeast 2",
+      "publicName": "Tunnel to Northeast 2"
+    },
+    "0x0151": {
+      "raw": 337,
+      "rawHex": "0x0151",
+      "candidates": [
+        {
+          "name": "Mutsu Crossroads",
+          "scope": "area-or-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 409,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Mutsu Crossroads",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 184,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Mutsu Crossroads",
+      "publicName": "Mutsu Crossroads"
+    },
+    "0x0152": {
+      "raw": 338,
+      "rawHex": "0x0152",
+      "candidates": [
+        {
+          "name": "Uzen Tunnel",
+          "scope": "area-or-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 410,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Uzen Tunnel",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 185,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Uzen Tunnel",
+      "publicName": "Uzen Tunnel"
+    },
+    "0x0153": {
+      "raw": 339,
+      "rawHex": "0x0153",
+      "candidates": [
+        {
+          "name": "Gateway Viewpoint",
+          "scope": "area-or-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 401,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Gateway Viewpoint",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 227,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Gateway Viewpoint",
+      "publicName": "Gateway Viewpoint"
+    },
+    "0x0154": {
+      "raw": 340,
+      "rawHex": "0x0154",
+      "candidates": [
+        {
+          "name": "Waterfall of Kegon",
+          "scope": "area-or-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 411,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Waterfall of Kegon",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 186,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Waterfall of Kegon",
+      "publicName": "Waterfall of Kegon"
+    },
+    "0x0155": {
+      "raw": 341,
+      "rawHex": "0x0155",
+      "candidates": [
+        {
+          "name": "Koryuta's flight — airborne encounter",
+          "scope": "native-room-check",
+          "evidence": {
+            "project": "mnsg-extra-options",
+            "path": "src/hyper_koryuta_flight.c",
+            "line": 19,
+            "note": "KORYUTA_ROOM constant; file header identifies the flight encounter and enemy families."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Koryuta's flight — airborne encounter",
+      "publicName": "Koryuta's flight — airborne encounter"
+    },
+    "0x015E": {
+      "raw": 350,
+      "rawHex": "0x015E",
+      "candidates": [
+        {
+          "name": "Oedo Town",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 417,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Oedo Town Super Pass Bridge",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 159,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Oedo Town Super Pass Bridge",
+      "publicName": "Oedo Town Super Pass Bridge"
+    },
+    "0x015F": {
+      "raw": 351,
+      "rawHex": "0x015F",
+      "candidates": [
+        {
+          "name": "Oedo Town",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 417,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Oedo Town Shopping District",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 158,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Oedo Town Shopping District",
+      "publicName": "Oedo Town Shopping District"
+    },
+    "0x0160": {
+      "raw": 352,
+      "rawHex": "0x0160",
+      "candidates": [
+        {
+          "name": "Oedo Town",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 417,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Oedo Town Shrine Area",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 160,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Oedo Town Shrine Area",
+      "publicName": "Oedo Town Shrine Area"
+    },
+    "0x0161": {
+      "raw": 353,
+      "rawHex": "0x0161",
+      "candidates": [
+        {
+          "name": "Oedo Town",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 417,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Oedo Town Housing",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 157,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Oedo Town Housing",
+      "publicName": "Oedo Town Housing"
+    },
+    "0x0162": {
+      "raw": 354,
+      "rawHex": "0x0162",
+      "candidates": [
+        {
+          "name": "Oedo Town",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 417,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Oedo Town Nihon Bashi Bridge",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 161,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Oedo Town Nihon Bashi Bridge",
+      "publicName": "Oedo Town Nihon Bashi Bridge"
+    },
+    "0x0163": {
+      "raw": 355,
+      "rawHex": "0x0163",
+      "candidates": [
+        {
+          "name": "Oedo Town",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 417,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Oedo Town Outside Kai Highway",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 162,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Oedo Town Outside Kai Highway",
+      "publicName": "Oedo Town Outside Kai Highway"
+    },
+    "0x0164": {
+      "raw": 356,
+      "rawHex": "0x0164",
+      "candidates": [
+        {
+          "name": "Oedo Castle Exterior",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 420,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Oedo Castle Main Gate",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 163,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Oedo Castle Main Gate",
+      "publicName": "Oedo Castle Main Gate"
+    },
+    "0x0165": {
+      "raw": 357,
+      "rawHex": "0x0165",
+      "candidates": [
+        {
+          "name": "Oedo Castle Exterior",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 420,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Stairs to Oedo Castle",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 164,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Stairs to Oedo Castle",
+      "publicName": "Stairs to Oedo Castle"
+    },
+    "0x0166": {
+      "raw": 358,
+      "rawHex": "0x0166",
+      "candidates": [
+        {
+          "name": "Oedo Castle Exterior",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 420,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Oedo Castle Entrance",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 165,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Oedo Castle Entrance",
+      "publicName": "Oedo Castle Entrance"
+    },
+    "0x0167": {
+      "raw": 359,
+      "rawHex": "0x0167",
+      "candidates": [
+        {
+          "name": "Zazen Town",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 424,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Zazen Town Entrance",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 166,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Zazen Town Entrance",
+      "publicName": "Zazen Town Entrance"
+    },
+    "0x0168": {
+      "raw": 360,
+      "rawHex": "0x0168",
+      "candidates": [
+        {
+          "name": "Zazen Town",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 424,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Zazen Town Bridge",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 167,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Zazen Town Bridge",
+      "publicName": "Zazen Town Bridge"
+    },
+    "0x0169": {
+      "raw": 361,
+      "rawHex": "0x0169",
+      "candidates": [
+        {
+          "name": "Zazen Town",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 424,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Zazen Town Main Town",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 168,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Zazen Town Main Town",
+      "publicName": "Zazen Town Main Town"
+    },
+    "0x016A": {
+      "raw": 362,
+      "rawHex": "0x016A",
+      "candidates": [
+        {
+          "name": "Zazen Town",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 424,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Zazen Town Watering Hole",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 169,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Zazen Town Watering Hole",
+      "publicName": "Zazen Town Watering Hole"
+    },
+    "0x016B": {
+      "raw": 363,
+      "rawHex": "0x016B",
+      "candidates": [
+        {
+          "name": "Zazen Town",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 424,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Zazen Town Duck Creek Jump Area",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 177,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Zazen Town Duck Creek Jump Area",
+      "publicName": "Zazen Town Duck Creek Jump Area"
+    },
+    "0x016C": {
+      "raw": 364,
+      "rawHex": "0x016C",
+      "candidates": [
+        {
+          "name": "Zazen Town",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 424,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Zazen Town Back",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 170,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Zazen Town Back",
+      "publicName": "Zazen Town Back"
+    },
+    "0x016D": {
+      "raw": 365,
+      "rawHex": "0x016D",
+      "candidates": [
+        {
+          "name": "Zazen Town",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 424,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Zazen Town Golden Temple",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 171,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Zazen Town Golden Temple",
+      "publicName": "Zazen Town Golden Temple"
+    },
+    "0x016E": {
+      "raw": 366,
+      "rawHex": "0x016E",
+      "candidates": [
+        {
+          "name": "Zazen Town",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 424,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Zazen Town Bizen Bridge",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 178,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Zazen Town Bizen Bridge",
+      "publicName": "Zazen Town Bizen Bridge"
+    },
+    "0x016F": {
+      "raw": 367,
+      "rawHex": "0x016F",
+      "candidates": [
+        {
+          "name": "Zazen Town",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 424,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Zazen Town Mt Nyoigatake Sidewalk",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 172,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "editorialNormalization": {
+        "from": "Zazen Town Mt Nyoigatake Sidewalk",
+        "to": "Zazen Town — Mt. Nyoigatake sidewalk"
+      },
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Zazen Town — Mt. Nyoigatake sidewalk",
+      "publicName": "Zazen Town — Mt. Nyoigatake sidewalk"
+    },
+    "0x0170": {
+      "raw": 368,
+      "rawHex": "0x0170",
+      "candidates": [
+        {
+          "name": "Zazen Town",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 424,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Zazen Town Mt Nyoigatake Fire Shrine",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 173,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "editorialNormalization": {
+        "from": "Zazen Town Mt Nyoigatake Fire Shrine",
+        "to": "Zazen Town — Mt. Nyoigatake fire shrine"
+      },
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Zazen Town — Mt. Nyoigatake fire shrine",
+      "publicName": "Zazen Town — Mt. Nyoigatake fire shrine"
+    },
+    "0x0171": {
+      "raw": 369,
+      "rawHex": "0x0171",
+      "candidates": [
+        {
+          "name": "Zazen Town",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 424,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Zazen Town Benkei Bridge",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 176,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        },
+        {
+          "name": "Zazen Town — Benkei Bridge",
+          "scope": "native-room-check",
+          "evidence": {
+            "project": "mnsg-extra-options",
+            "path": "src/hyper_enemies.c",
+            "line": 85,
+            "note": "ROOM_BENKEI checked alongside battle flag and native entity identity; location catalog identifies Benkei Bridge."
+          }
+        },
+        {
+          "name": "Benkei battle",
+          "scope": "native-room-check",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/boss_sync.c",
+            "line": 77,
+            "note": "BENKEI_ROOM agrees with the bridge room constant."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Zazen Town — Benkei Bridge",
+      "publicName": "Zazen Town — Benkei Bridge"
+    },
+    "0x0172": {
+      "raw": 370,
+      "rawHex": "0x0172",
+      "candidates": [
+        {
+          "name": "Zazen Town",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 424,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Zazen Town Duck Creek Upstream",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 174,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Zazen Town Duck Creek Upstream",
+      "publicName": "Zazen Town Duck Creek Upstream"
+    },
+    "0x0173": {
+      "raw": 371,
+      "rawHex": "0x0173",
+      "candidates": [
+        {
+          "name": "Zazen Town",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 424,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Zazen Town Duck Creek Ushiwaka",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 175,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Zazen Town Duck Creek Ushiwaka",
+      "publicName": "Zazen Town Duck Creek Ushiwaka"
+    },
+    "0x0175": {
+      "raw": 373,
+      "rawHex": "0x0175",
+      "candidates": [
+        {
+          "name": "Folkypoke Village",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 427,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Folkypoke Village Hay Farm",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 195,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Folkypoke Village Hay Farm",
+      "publicName": "Folkypoke Village Hay Farm"
+    },
+    "0x0176": {
+      "raw": 374,
+      "rawHex": "0x0176",
+      "candidates": [
+        {
+          "name": "Folkypoke Village",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 427,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Folkypoke Village Housing",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 196,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Folkypoke Village Housing",
+      "publicName": "Folkypoke Village Housing"
+    },
+    "0x0177": {
+      "raw": 375,
+      "rawHex": "0x0177",
+      "candidates": [
+        {
+          "name": "Folkypoke Village",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 427,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Folkypoke Village Shopping District",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 197,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Folkypoke Village Shopping District",
+      "publicName": "Folkypoke Village Shopping District"
+    },
+    "0x0178": {
+      "raw": 376,
+      "rawHex": "0x0178",
+      "candidates": [
+        {
+          "name": "Folkypoke Village",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 427,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Folkypoke Village Entrance",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 194,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Folkypoke Village Entrance",
+      "publicName": "Folkypoke Village Entrance"
+    },
+    "0x0179": {
+      "raw": 377,
+      "rawHex": "0x0179",
+      "candidates": [
+        {
+          "name": "Festival Village",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 414,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Festival Village Entrance",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 187,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Festival Village Entrance",
+      "publicName": "Festival Village Entrance"
+    },
+    "0x017A": {
+      "raw": 378,
+      "rawHex": "0x017A",
+      "candidates": [
+        {
+          "name": "Festival Village",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 414,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Festival Village Shopping District",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 188,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Festival Village Shopping District",
+      "publicName": "Festival Village Shopping District"
+    },
+    "0x017B": {
+      "raw": 379,
+      "rawHex": "0x017B",
+      "candidates": [
+        {
+          "name": "Festival Village",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 414,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Festival Village Stage",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 189,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Festival Village Stage",
+      "publicName": "Festival Village Stage"
+    },
+    "0x017C": {
+      "raw": 380,
+      "rawHex": "0x017C",
+      "candidates": [
+        {
+          "name": "Festival Village",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 414,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Festival Village Rear",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 190,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Festival Village Rear",
+      "publicName": "Festival Village Rear"
+    },
+    "0x017D": {
+      "raw": 381,
+      "rawHex": "0x017D",
+      "candidates": [
+        {
+          "name": "Festival Village",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 414,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Festival Village",
+      "publicName": "Festival Village (specific room name unknown)"
+    },
+    "0x01B1": {
+      "raw": 433,
+      "rawHex": "0x01B1",
+      "candidates": [
+        {
+          "name": "Kai / Mt. Fuji",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 366,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Kai's Coffee Shop",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 203,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "editorialNormalization": {
+        "from": "Kai's Coffee Shop",
+        "to": "Kai Coffee Shop"
+      },
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Kai Coffee Shop",
+      "publicName": "Kai Coffee Shop"
+    },
+    "0x01B3": {
+      "raw": 435,
+      "rawHex": "0x01B3",
+      "candidates": [
+        {
+          "name": "Kii Coffee Shop",
+          "scope": "area-or-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 379,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Kii's Coffee Shop",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 213,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "editorialNormalization": {
+        "from": "Kii's Coffee Shop",
+        "to": "Kii Coffee Shop"
+      },
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Kii Coffee Shop",
+      "publicName": "Kii Coffee Shop"
+    },
+    "0x01B4": {
+      "raw": 436,
+      "rawHex": "0x01B4",
+      "candidates": [
+        {
+          "name": "Kompira Coffee Shop",
+          "scope": "area-or-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 387,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Kompiras Coffee Shop",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 218,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "editorialNormalization": {
+        "from": "Kompiras Coffee Shop",
+        "to": "Kompira Coffee Shop"
+      },
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Kompira Coffee Shop",
+      "publicName": "Kompira Coffee Shop"
+    },
+    "0x01B5": {
+      "raw": 437,
+      "rawHex": "0x01B5",
+      "candidates": [
+        {
+          "name": "Iyo Coffee Shop",
+          "scope": "area-or-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 391,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Iyo Coffee Shop",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 201,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Iyo Coffee Shop",
+      "publicName": "Iyo Coffee Shop"
+    },
+    "0x01B6": {
+      "raw": 438,
+      "rawHex": "0x01B6",
+      "candidates": [
+        {
+          "name": "Izumo Coffee Shop",
+          "scope": "area-or-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 402,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Izumo Coffee Shop",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 228,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Izumo Coffee Shop",
+      "publicName": "Izumo Coffee Shop"
+    },
+    "0x01B8": {
+      "raw": 440,
+      "rawHex": "0x01B8",
+      "candidates": [
+        {
+          "name": "Folkypoke Village",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 427,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Oedo Tourist Center - Awa Branch",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 198,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "editorialNormalization": {
+        "from": "Oedo Tourist Center - Awa Branch",
+        "to": "Oedo Tourist Center — Awa branch"
+      },
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Oedo Tourist Center — Awa branch",
+      "publicName": "Oedo Tourist Center — Awa branch"
+    },
+    "0x01B9": {
+      "raw": 441,
+      "rawHex": "0x01B9",
+      "candidates": [
+        {
+          "name": "Awaji Tourist Center",
+          "scope": "area-or-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 380,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Oedo Tourist Center - Awaji Island Branch",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 215,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "editorialNormalization": {
+        "from": "Oedo Tourist Center - Awaji Island Branch",
+        "to": "Oedo Tourist Center — Awaji Island branch"
+      },
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Oedo Tourist Center — Awaji Island branch",
+      "publicName": "Oedo Tourist Center — Awaji Island branch"
+    },
+    "0x01D1": {
+      "raw": 465,
+      "rawHex": "0x01D1",
+      "candidates": [
+        {
+          "name": "Oedo Town",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 417,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Goemon's House",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 156,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        },
+        {
+          "name": "Goemon's House",
+          "scope": "native-room-check",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/race_goemon_house_unlock.c",
+            "line": 17,
+            "note": "ROOM_GOEMON_HOUSE constant and native room-entry confirmation."
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Goemon's House",
+      "publicName": "Goemon's House"
+    },
+    "0x01D2": {
+      "raw": 466,
+      "rawHex": "0x01D2",
+      "candidates": [
+        {
+          "name": "Kai / Mt. Fuji",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 366,
+            "note": "Native room ID to area label mapping."
+          }
+        },
+        {
+          "name": "Mt Fuji Salesman Room",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "src/ui/startup_race_ui.c",
+            "line": 208,
+            "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
+          }
+        }
+      ],
+      "specific": true,
+      "editorialNormalization": {
+        "from": "Mt Fuji Salesman Room",
+        "to": "Mt. Fuji salesman room"
+      },
+      "resolution": "Use the more specific native room/location identification; retain broad-area candidates as context.",
+      "parsedName": "Mt. Fuji salesman room",
+      "publicName": "Mt. Fuji salesman room"
+    },
+    "0x01E0": {
+      "raw": 480,
+      "rawHex": "0x01E0",
+      "candidates": [
+        {
+          "name": "Oedo Town",
+          "scope": "area",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 417,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Oedo Town",
+      "publicName": "Oedo Town (specific room name unknown)"
+    },
+    "0x01E2": {
+      "raw": 482,
+      "rawHex": "0x01E2",
+      "candidates": [
+        {
+          "name": "Jump Challenge Training",
+          "scope": "area-or-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 403,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "Jump Challenge Training",
+      "publicName": "Jump Challenge Training"
+    },
+    "0x0226": {
+      "raw": 550,
+      "rawHex": "0x0226",
+      "candidates": [
+        {
+          "name": "World Map",
+          "scope": "area-or-location",
+          "evidence": {
+            "project": "mnsg-recomp-example",
+            "path": "py/anchor_mnsg.py",
+            "line": 429,
+            "note": "Native room ID to area label mapping."
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "parsedName": "World Map",
+      "publicName": "World Map"
+    }
+  },
+  "layoutEvidence": [
+    {
+      "project": "mnsg-recomp-example",
+      "path": "src/ui/debug.c",
+      "line": 74,
+      "note": "Signed-short declaration of the table."
+    },
+    {
+      "project": "mnsg-recomp-example",
+      "path": "src/ui/debug.c",
+      "line": 102,
+      "note": "Entry layout documents posX, posY, posZ, camRot, playerRot."
+    },
+    {
+      "project": "mnsg-recomp-example",
+      "path": "src/ui/debug.c",
+      "line": 320,
+      "note": "The index expression is room * 5."
+    },
+    {
+      "project": "mnsg-recomp-example",
+      "path": "src/ui/startup_race_ui.c",
+      "line": 20,
+      "note": "Independent matching five-short entry description."
+    },
+    {
+      "project": "mnsg-recomp-example",
+      "path": "src/ui/startup_race_ui.c",
+      "line": 472,
+      "note": "Independent room * 5 cast to matching entry struct."
+    },
+    {
+      "project": "mnsg-recomp-example",
+      "path": "docs/game-extern-symbols.md",
+      "line": 149,
+      "note": "Human-readable entry field order."
+    }
+  ],
+  "decisions": [
+    {
+      "subject": "0x0016 versus 0x001A",
+      "decision": "Keep separate entries: actual Congo battle and preceding approach. The broad Oedo Castle labels are compatible; no contradictory final name remains."
+    },
+    {
+      "subject": "Area groups versus specific locations",
+      "decision": "Prefer the exact location catalog or native room check. Preserve generic labels with an explicit unknown-chamber qualifier when no narrower name is established."
+    },
+    {
+      "subject": "0x0049 and 0x0071",
+      "decision": "Refine Ghost Toys Castle to Dharumanyo battle and Festival Temple Castle to Tsurami battle. Do not confuse similarly named ordinary actor IDs with room IDs."
+    },
+    {
+      "subject": "0x0171",
+      "decision": "Benkei combat and noncombat presence share Benkei Bridge. Room ID does not itself distinguish whether the fight is active."
+    },
+    {
+      "subject": "0x0260",
+      "decision": "Exclude from current-room list: only system destination-stage value for Impact boss rush is established.",
+      "evidence": {
+        "project": "mnsg-enable-boss-rush",
+        "path": "docs/impact-boss-rush.md",
+        "line": 56,
+        "note": "Native launch writes 0x260 to system destination_stage and enters step 0x0C."
+      }
+    },
+    {
+      "subject": "Coordinates in location catalog",
+      "decision": "Do not publish as D_8006B780 native values. The location catalog provides chosen coordinates while native table reads supply rotations; these are different sources of data."
+    },
+    {
+      "subject": "Save-spawn Y/Z macro names",
+      "decision": "Use the agreed entry struct order X,Y,Z,camera,player for D_8006B780. Differently named save-field macros in one caller do not redefine this table layout."
+    },
+    {
+      "subject": "Conflicting spellings",
+      "decision": "Normalize Mt./punctuation and possessive coffee-shop variants only. Retain geographical distinctions and source candidates in per-room records."
+    },
+    {
+      "subject": "Unrelated number domains",
+      "decision": "Exclude save flag IDs, actor/entity IDs, allocation categories, session room strings and mode destination values without a confirmed current-room mapping."
+    },
+    {
+      "subject": "0x01B8 broad area versus interior label",
+      "decision": "Publish the specific interior label Oedo Tourist Center - Awa branch rather than asserting the broad Folkypoke Village grouping is an exact room name. Both original candidates are retained for audit."
+    }
+  ],
+  "auditedCheckouts": [
+    {
+      "project": "mnsg-recomp-example",
+      "findings": "Broad Python room-name mapping, specific C room/location catalog, boss room constants, Goemon-house confirmation, room table declaration/layout/index expressions. Inspected source/include/docs and native config; no additional named current-room mapping was found outside those sources."
+    },
+    {
+      "project": "mnsg-extra-options",
+      "findings": "Exact Dharumanyo, Tsurami, Benkei, Koryuta flight constants; explicit Congo actual-fight/preceding-room distinction. Tests used as supporting source context only."
+    },
+    {
+      "project": "mnsg-custom-fish",
+      "findings": "Save/fish quest flags and counters, but no named native room ID mapping."
+    },
+    {
+      "project": "mnsg-team-up",
+      "findings": "Current-room transition checks with no named native room constants in source/docs."
+    },
+    {
+      "project": "mnsg-enable-boss-rush",
+      "findings": "Native Impact boss-rush destination 0x260 documented; not promoted to a current-room value."
+    }
+  ],
+  "limitations": [
+    "No new in-game room traversal was performed. Labels are supported by the audited source mappings and room checks.",
+    "Most dungeon chamber IDs have only area-level labels. Repeated names do not mean the IDs are interchangeable.",
+    "Unlisted room IDs remain undocumented, not necessarily invalid.",
+    "Native table values were not dumped; only the five-short layout and arithmetic are published.",
+    "The active Ghidra database returned no xrefs at 0x8006B780 in this pass; no database changes were made."
+  ]
+}

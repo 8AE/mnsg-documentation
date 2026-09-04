@@ -13,6 +13,10 @@ Use the search bar or the [symbol explorer](/reference). Exact names such as `fu
 - [Functions](functions/index.md) describe calls, return values, and native side effects.
 - [Variables](variables/index.md) describe storage, types, and valid access patterns.
 
+Variable pages include **Known values** tables where a mapping has been established. These show raw hexadecimal and decimal values alongside their meanings, or field offsets and types for structured storage. Table headings distinguish a stored value from an array index, flag ID, or bit mask. Unlisted values have no established interpretation in this reference.
+
+Start with [room IDs](variables/D_800C7AB2.md#known-values), [save flags and counters](variables/D_8015C608_15D208.md#known-values), or [character values](variables/D_8015C5D8_15D1D8.md#known-values). Known value names are also searchable.
+
 ## Understand the interface
 
 Each page explains what the symbol does, how it works, and how to use it from C. Examples include the required declarations. A native pointer or callback may require an already initialized actor, a loaded resource, or a particular game state; read the notes before using it.
