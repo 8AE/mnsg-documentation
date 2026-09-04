@@ -1,6 +1,6 @@
-# MNSG native API reference
+# Mystical Ninja Starring Goemon Recompiled
 
-A **Docusaurus 3** documentation website for native Mystical Ninja Starring Goemon functions and variables. The public site contains only API behavior, C interfaces, usage examples, and related native symbols.
+A **Docusaurus 3** mod development reference for native Mystical Ninja Starring Goemon Recompiled functions and variables. The public site documents API behavior, C interfaces, usage examples, and related native symbols. The game project is [Goemon64Recomp](https://github.com/klorfmorf/Goemon64Recomp).
 
 [Open the documentation](https://8ae.github.io/mnsg-documentation/)
 

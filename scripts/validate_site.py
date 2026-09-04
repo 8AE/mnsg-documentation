@@ -18,8 +18,9 @@ from urllib.parse import unquote, urlsplit
 ROOT = Path(__file__).resolve().parents[1]
 BASE_PATH = "/mnsg-documentation/"
 PROJECT_NAMES = ("mnsg-custom-fish", "mnsg-enable-boss-rush", "mnsg-extra-options", "mnsg-recomp-example", "mnsg-team-up", "mnsg-anchor")
-# Boss Rush alone describes an actual game feature and is deliberately allowed.
-FORBIDDEN_PROSE = re.compile(r"\b(?:" + "|".join(map(re.escape, PROJECT_NAMES)) + r"|extra[ _-]options|team[ _-]up|custom[ _-]fish|anchor|multiplayer|mods?)\b", re.I)
+# Boss Rush describes a native feature; the authorized phrase "mod development"
+# describes the reference audience. Other mod/project references remain blocked.
+FORBIDDEN_PROSE = re.compile(r"\b(?:" + "|".join(map(re.escape, PROJECT_NAMES)) + r"|extra[ _-]options|team[ _-]up|custom[ _-]fish|anchor|multiplayer|mod(?!\s+development\b)|mods)\b", re.I)
 FORBIDDEN_IDENTIFIERS = re.compile(r"\b(?:[a-zA-Z0-9]+_)*(?:extra_options|team_up|anchor)_[A-Za-z0-9_]*\b", re.I)
 FORBIDDEN_SECTIONS = re.compile(r"\b(?:examples from the mods|source evidence|all references|sources? [&and]+ coverage|scanned projects|project filter)\b", re.I)
 VOID_TAGS = {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr"}

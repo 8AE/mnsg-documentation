@@ -1,27 +1,77 @@
 import React from 'react';
 import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
+import useBaseUrl from '@docusaurus/useBaseUrl';
 import api from '../data/api-index.json';
 
-const features = [
-  {name:'func_800240DC_24CDC',title:'Read a game flag',type:'functions',icon:'ƒ',description:'Query progression and encounter state.'},
-  {name:'D_800C7AB2',title:'Get the current room',type:'variables',icon:'◈',description:'Understand room identity and transitions.'},
-  {name:'func_80002040_2C40',title:'Observe the system update',type:'functions',icon:'↪',description:'Work with the native system-step dispatcher.'},
+const lookups = [
+  {name: 'func_800240DC_24CDC', path: 'functions', purpose: 'Read a game flag', detail: 'Query progression and encounter state.'},
+  {name: 'D_800C7AB2', path: 'variables', purpose: 'Read the current room', detail: 'Check the room identifier and transition requirements.'},
+  {name: 'func_80002040_2C40', path: 'functions', purpose: 'Observe the system update', detail: 'Understand the native system-step dispatcher.'},
 ];
 
 export default function Home() {
-  const functionCount=api.filter(s=>s.kind==='function').length;
-  return <Layout title="Native API reference" description="Explore Mystical Ninja Starring Goemon's native functions and variables, with C interfaces and practical usage examples.">
-    <main className="home-container">
-      <div className="home-eyebrow">MYSTICAL NINJA STARRING GOEMON <span>US RECOMPILATION</span></div>
-      <section className="home-hero">
-        <div><h1>Know the game.<br/><span>Build on it.</span></h1><p>A practical reference to Goemon’s native API.<br/>Understand the functions, read the state, and write the C.</p><div className="hero-actions"><Link className="button button--primary button--lg" to="/reference">Explore the API <span aria-hidden="true">→</span></Link><Link className="home-secondary" to="/getting-started">Getting started ↗</Link></div></div>
-        <div className="home-art" aria-hidden="true"><div className="art-ring"/><div className="art-ring second"/><div className="art-symbol">{'{'}<span>忍</span>{'}'}</div><span className="art-address">0x80000400 · MIPS</span></div>
-      </section>
-      <div className="home-stats"><div><strong>{api.length}</strong><span>documented symbols</span></div><div><strong>{functionCount}</strong><span>native functions</span></div><div><strong>{api.length-functionCount}</strong><span>external variables</span></div><div><strong>C</strong><span>practical examples</span></div></div>
-      <div className="home-section-heading"><h2>A place to start</h2><span>From address to understanding</span></div>
-      <section className="home-feature-grid" aria-label="Featured API pages">{features.map(s=><Link key={s.name} className="home-feature" to={`/${s.type}/${s.name}`}><span className="feature-type">{s.icon}</span><span className="feature-arrow" aria-hidden="true">↗</span><h3>{s.title}</h3><code>{s.name}</code><p>{s.description}</p></Link>)}</section>
-      <section className="home-bottom"><div><span className="home-eyebrow">THE NATIVE INTERFACE</span><h2>A reference you can work with.</h2><p>Look up a symbol by name, address, or purpose. Each page explains its interface, behavior, and requirements, with C examples ready to adapt.</p></div><div className="home-topics"><Link to="/functions"><span>01</span><div><h3>Functions</h3><p>Calls, callbacks, parameters, and return values.</p></div><span>→</span></Link><Link to="/variables"><span>02</span><div><h3>Variables</h3><p>Game state, memory layout, and typed access.</p></div><span>→</span></Link><Link to="/native-lifecycle"><span>03</span><div><h3>Native lifecycle</h3><p>Room transitions, actors, and loaded resources.</p></div><span>→</span></Link></div></section>
-    </main>
-  </Layout>;
+  const referenceUrl = useBaseUrl('/reference/');
+  const functionCount = api.filter(symbol => symbol.kind === 'function').length;
+
+  return (
+    <Layout title="Mod development reference" description="Mod development documentation for Mystical Ninja Starring Goemon Recompiled: native functions, external variables, and C examples.">
+      <main className="home-container">
+        <header className="home-header">
+          <h1>Mystical Ninja Starring Goemon Recompiled</h1>
+          <p className="home-purpose">Mod development reference</p>
+          <p>Look up native functions and external variables for use in C. Each symbol page documents its interface, known behavior, usage requirements, and an example.</p>
+        </header>
+
+        <div className="home-layout">
+          <div className="home-main">
+            <section aria-labelledby="symbol-search-heading">
+              <h2 id="symbol-search-heading">Find a function or variable</h2>
+              <form className="home-search" action={referenceUrl} role="search" aria-label="Symbol lookup">
+                <label className="home-search-label" htmlFor="home-symbol-query">Symbol name, address, or description</label>
+                <div className="home-search-controls">
+                  <input id="home-symbol-query" name="q" type="search" placeholder="e.g. D_800C7AB2 or room" />
+                  <button className="button button--primary" type="submit">Search</button>
+                </div>
+              </form>
+              <p className="home-coverage">Currently documents <Link to="/functions">{functionCount} functions</Link> and <Link to="/variables">{api.length - functionCount} variables</Link> from the US game.</p>
+            </section>
+
+            <section className="home-lookups" aria-labelledby="common-lookups-heading">
+              <h2 id="common-lookups-heading">Common lookups</h2>
+              <table>
+                <thead><tr><th scope="col">Symbol</th><th scope="col">Use</th></tr></thead>
+                <tbody>{lookups.map(symbol => (
+                  <tr key={symbol.name}>
+                    <td><Link to={`/${symbol.path}/${symbol.name}`}><code>{symbol.name}</code></Link></td>
+                    <td><strong>{symbol.purpose}</strong><span>{symbol.detail}</span></td>
+                  </tr>
+                ))}</tbody>
+              </table>
+            </section>
+
+            <section className="home-project" aria-labelledby="game-project-heading">
+              <h2 id="game-project-heading">Game project</h2>
+              <p>For the recompilation project’s source code, releases, and setup instructions, see <a href="https://github.com/klorfmorf/Goemon64Recomp">Goemon64Recomp on GitHub</a>.</p>
+              <p className="home-project-note">This site is a separate reference for mod development.</p>
+            </section>
+          </div>
+
+          <aside className="home-navigation" aria-label="Documentation sections">
+            <h2>Reference</h2>
+            <ul>
+              <li><Link to="/reference">All symbols</Link><span>Search by name, address, or purpose.</span></li>
+              <li><Link to="/functions">Functions</Link><span>Declarations, parameters, and return values.</span></li>
+              <li><Link to="/variables">Variables</Link><span>Types, memory layout, and access.</span></li>
+            </ul>
+            <h2>Guides</h2>
+            <ul>
+              <li><Link to="/getting-started">Getting started</Link><span>Read declarations and use C examples.</span></li>
+              <li><Link to="/native-lifecycle">Native lifecycle</Link><span>Room transitions, actors, and loaded resources.</span></li>
+            </ul>
+          </aside>
+        </div>
+      </main>
+    </Layout>
+  );
 }

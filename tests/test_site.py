@@ -43,6 +43,29 @@ class ValidatorTests(unittest.TestCase):
         self.assertEqual(validator.public_content_errors('Enable the native Boss Rush menu item. Include "modding.h" for RECOMP_HOOK. This pointer is used by the actor scheduler.', "native page"), [])
         self.assertTrue(validator.public_content_errors("## Used by\n", "native page"))
 
+    def test_authorized_mod_development_phrase_keeps_project_bans(self):
+        for allowed in (
+            "Mystical Ninja Starring Goemon Recompiled: a practical API reference for mod development.",
+            "Mod Development", "Resources for mod\ndevelopment.",
+        ):
+            with self.subTest(allowed=allowed):
+                self.assertEqual(validator.public_content_errors(allowed, "home page"), [])
+        for forbidden in (
+            "the mod", "mods development", "mod developmental notes",
+            "mod development for Team Up", "mod development with s_anchor_state",
+            "mod development using mnsg-extra-options",
+        ):
+            with self.subTest(forbidden=forbidden):
+                self.assertTrue(validator.public_content_errors(forbidden, "home page"))
+
+    def test_upstream_recompilation_project_link_is_allowed(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            page = root / "index.html"
+            page.write_text('<a href="https://github.com/klorfmorf/Goemon64Recomp">Goemon64Recomp</a>')
+            errors, _ = validator.validate_links(root, {page: validator.Page(page.read_text())})
+            self.assertEqual(errors, [])
+
     def test_mod_repository_links_are_rejected(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
