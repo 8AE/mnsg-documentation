@@ -1,0 +1,28 @@
+{
+  "D_800C7A72_C8672": {
+    "tables": [
+      {
+        "id": "graphics-bank-values",
+        "title": "Graphics-bank indices",
+        "description": "Stored signed16 index. These are array indices, not frame-counter phases.",
+        "columns": [
+          "Raw value (hex)",
+          "Raw value (decimal)",
+          "Meaning"
+        ],
+        "rows": [
+          [
+            "`0x0000`",
+            "`0`",
+            "First bank at the full system base."
+          ],
+          [
+            "`0x0001`",
+            "`1`",
+            "Second bank at full system base +0x1D6D8."
+          ]
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,192 @@
+{
+  "func_801E936C_5A527C": {
+    "title": "Update an ordinary Goemon coin",
+    "summary": "Updates the existing player-owned coin task and its display object. The constructor records the real player at task +0x5C and initializes phase byte +0x60 and halfword timer +0x62 to zero.",
+    "declaration": "extern void func_801E936C_5A527C(void *task, void *object);",
+    "behavior": [
+      "Updates the existing player-owned coin task and its display object. The constructor records the real player at task +0x5C and initializes phase byte +0x60 and halfword timer +0x62 to zero.",
+      "Increments the halfword timer, advances position using task velocity +0x6C/+0x70/+0x74 and updates rotation. Native collision or a registered contact changes into an impact callback and increments phase; lifetime expiry requests manager removal with byte +0x65.",
+      "For an ordinary newly initialized coin, phase zero and timer zero identify entry to the first flight update. Inspect the return state before treating the result as a flight pose: an immediate collision may have changed phase."
+    ],
+    "example": "#include \"modding.h\"\n\nstatic void *updating_task;\nstatic unsigned char observed_phase;\n\nRECOMP_HOOK(\"func_801E936C_5A527C\")\nvoid observe_update_entry(void *task)\n{\n    updating_task = task;\n}\n\nRECOMP_HOOK_RETURN(\"func_801E936C_5A527C\")\nvoid observe_update_return(void)\n{\n    if (updating_task)\n        observed_phase = ((const unsigned char *)updating_task)[0x60];\n    updating_task = 0;\n}\n",
+    "exampleExplanation": "Read-only entry/return observation of the existing native update. Save the task argument at entry: a return hook cannot assume that the original argument registers survived the native call. Native task validity and ownership must still be checked before any subsequent operation.",
+    "cautions": [
+      "The routine updates an existing native actor and its complete work state. Do not call it as a generic spawner or use it on a display-only task.",
+      "The native manager processes removal requests after the update. Do not retain task or object addresses across destruction or storage reuse without checking their lifecycle.",
+      "The common update is reached through native variant callbacks. Preserve every native argument if directly calling the function; an observation hook may read only the first argument."
+    ],
+    "returns": "No return value.",
+    "confidence": "decompiled",
+    "related": [
+      "func_80034A10_35610",
+      "func_801E8E24_5A4D34",
+      "func_80035EEC_36AEC"
+    ]
+  },
+  "func_801EA0D8_5A5FE8": {
+    "title": "Update the charged Goemon coin",
+    "summary": "Updates the existing charged-coin display and native phase machine, including flight, contact, return and removal behavior.",
+    "declaration": "extern void func_801EA0D8_5A5FE8(void *task, void *object);",
+    "behavior": [
+      "Updates the existing charged-coin display and native phase machine, including flight, contact, return and removal behavior.",
+      "The native constructor initializes phase byte +0x60 and timer halfword +0x62 to zero. The first flight update begins with those values and can immediately change phase after a hit.",
+      "Task +0x5C is the owning player, +0x18 is the main display object, and +0x6C/+0x70/+0x74 are the native velocity fields. Additional owned records and attack descriptors must already exist."
+    ],
+    "example": "#include \"modding.h\"\n\nstatic void *updating_task;\nstatic unsigned char observed_phase;\n\nRECOMP_HOOK(\"func_801EA0D8_5A5FE8\")\nvoid observe_update_entry(void *task)\n{\n    updating_task = task;\n}\n\nRECOMP_HOOK_RETURN(\"func_801EA0D8_5A5FE8\")\nvoid observe_update_return(void)\n{\n    if (updating_task)\n        observed_phase = ((const unsigned char *)updating_task)[0x60];\n    updating_task = 0;\n}\n",
+    "exampleExplanation": "Read-only entry/return observation of the existing native update. Save the task argument at entry: a return hook cannot assume that the original argument registers survived the native call. Native task validity and ownership must still be checked before any subsequent operation.",
+    "cautions": [
+      "The routine updates an existing native actor and its complete work state. Do not call it as a generic spawner or use it on a display-only task.",
+      "The native manager processes removal requests after the update. Do not retain task or object addresses across destruction or storage reuse without checking their lifecycle.",
+      "The common update is reached through native variant callbacks. Preserve every native argument if directly calling the function; an observation hook may read only the first argument."
+    ],
+    "returns": "No return value.",
+    "confidence": "decompiled",
+    "related": [
+      "func_80034A10_35610",
+      "func_801E8E24_5A4D34",
+      "func_80035EEC_36AEC"
+    ]
+  },
+  "func_801EBAA8_5A79B8": {
+    "title": "Update the Ebisumaru camera effect",
+    "summary": "Common update body for native camera-effect variants. The offset vector, player animation frame threshold and initial pitch are supplied by the small variant callbacks.",
+    "declaration": "extern void func_801EBAA8_5A79B8(void *task, float x, float y, float z, float start_frame, unsigned short pitch);",
+    "behavior": [
+      "Common update body for native camera-effect variants. The offset vector, player animation frame threshold and initial pitch are supplied by the small variant callbacks.",
+      "Phase byte +0x60 starts at zero. While waiting for the required owner animation frame, the object pose is not yet initialized. Once the threshold is reached, the routine transforms the offset relative to the owner, sets rotations and advances phase to one.",
+      "Phase one fades the existing material alpha by 24 per update. Completion marks removal and advances phase again. The effect is stationary after its initial pose; unrelated task work fields must not be interpreted as projectile velocity.",
+      "The initializer checks the owner action and changes owner feedback and sound state. It is an update for a fully constructed task, not an independent visual constructor."
+    ],
+    "example": "#include \"modding.h\"\n\nstatic void *updating_task;\nstatic unsigned char observed_phase;\n\nRECOMP_HOOK(\"func_801EBAA8_5A79B8\")\nvoid observe_update_entry(void *task)\n{\n    updating_task = task;\n}\n\nRECOMP_HOOK_RETURN(\"func_801EBAA8_5A79B8\")\nvoid observe_update_return(void)\n{\n    if (updating_task)\n        observed_phase = ((const unsigned char *)updating_task)[0x60];\n    updating_task = 0;\n}\n",
+    "exampleExplanation": "Read-only entry/return observation of the existing native update. Save the task argument at entry: a return hook cannot assume that the original argument registers survived the native call. Native task validity and ownership must still be checked before any subsequent operation.",
+    "cautions": [
+      "The routine updates an existing native actor and its complete work state. Do not call it as a generic spawner or use it on a display-only task.",
+      "The native manager processes removal requests after the update. Do not retain task or object addresses across destruction or storage reuse without checking their lifecycle.",
+      "The common update is reached through native variant callbacks. Preserve every native argument if directly calling the function; an observation hook may read only the first argument."
+    ],
+    "returns": "No return value.",
+    "confidence": "decompiled",
+    "related": [
+      "func_80034A10_35610",
+      "func_801E8E24_5A4D34",
+      "func_80035EEC_36AEC"
+    ]
+  },
+  "func_801EBF48_5A7E58": {
+    "title": "Update the Sasuke thrown bomb",
+    "summary": "Common bomb update body. Variant callbacks supply the initial offset; the real player is already bound at task +0x5C and the display record chain at +0x18.",
+    "declaration": "extern void func_801EBF48_5A7E58(void *task, float x, float y, float z);",
+    "behavior": [
+      "Common bomb update body. Variant callbacks supply the initial offset; the real player is already bound at task +0x5C and the display record chain at +0x18.",
+      "Phase zero performs the first pose initialization, consumes ammunition, initializes the outgoing descriptor, sets velocity at +0x6C/+0x70/+0x74 and a 90-tick halfword lifetime at +0x62, then advances phase to one.",
+      "Phase one applies native gravity, moves the bomb and tests collision. Later phases initialize the impact model, expand it and fade its material. Removal is requested through task byte +0x65.",
+      "A phase-zero entry becomes a usable initial flight pose only after initialization returns in phase one. Calling this update on a display-only task would also mutate ammunition and native attack state."
+    ],
+    "example": "#include \"modding.h\"\n\nstatic void *updating_task;\nstatic unsigned char observed_phase;\n\nRECOMP_HOOK(\"func_801EBF48_5A7E58\")\nvoid observe_update_entry(void *task)\n{\n    updating_task = task;\n}\n\nRECOMP_HOOK_RETURN(\"func_801EBF48_5A7E58\")\nvoid observe_update_return(void)\n{\n    if (updating_task)\n        observed_phase = ((const unsigned char *)updating_task)[0x60];\n    updating_task = 0;\n}\n",
+    "exampleExplanation": "Read-only entry/return observation of the existing native update. Save the task argument at entry: a return hook cannot assume that the original argument registers survived the native call. Native task validity and ownership must still be checked before any subsequent operation.",
+    "cautions": [
+      "The routine updates an existing native actor and its complete work state. Do not call it as a generic spawner or use it on a display-only task.",
+      "The native manager processes removal requests after the update. Do not retain task or object addresses across destruction or storage reuse without checking their lifecycle.",
+      "The common update is reached through native variant callbacks. Preserve every native argument if directly calling the function; an observation hook may read only the first argument."
+    ],
+    "returns": "No return value.",
+    "confidence": "decompiled",
+    "related": [
+      "func_80034A10_35610",
+      "func_801E8E24_5A4D34",
+      "func_80035EEC_36AEC"
+    ]
+  },
+  "func_801EEDF8_5AAD08": {
+    "title": "Update Yae projectile flight and impact",
+    "summary": "Common updater for already constructed Yae projectile variants. Its second argument is passed through to the native movement helper: zero selects ordinary acceleration, while one permits native target acquisition and homing.",
+    "declaration": "extern void func_801EEDF8_5AAD08(void *task, int homing_mode);",
+    "behavior": [
+      "Common updater for already constructed Yae projectile variants. Its second argument is passed through to the native movement helper: zero selects ordinary acceleration, while one permits native target acquisition and homing.",
+      "The constructor initializes phase byte +0x60 to zero and halfword lifetime +0x62 to 90. This updater decrements lifetime before motion; phase zero with timer 90 identifies the initial flight update.",
+      "Collision changes phase to one and initializes model 0x19000420 from the Yae broad file at uniform scale 0.3. The impact texture sequence advances every three ticks and material alpha decreases by 24 per update.",
+      "Four native trail slots start at alpha 240, fade by 30 per update and increase uniform scale by 0.006. Impact completion uses the bound model animation length or exhaustion of the trail slots, then requests manager removal.",
+      "The routine obtains its display chain from task +0x18 and owner from +0x5C. Task allocation, multiple records, materials, texture cursors and contact state are constructor preconditions."
+    ],
+    "example": "#include \"modding.h\"\n\nstatic void *updating_task;\nstatic unsigned char observed_phase;\n\nRECOMP_HOOK(\"func_801EEDF8_5AAD08\")\nvoid observe_update_entry(void *task)\n{\n    updating_task = task;\n}\n\nRECOMP_HOOK_RETURN(\"func_801EEDF8_5AAD08\")\nvoid observe_update_return(void)\n{\n    if (updating_task)\n        observed_phase = ((const unsigned char *)updating_task)[0x60];\n    updating_task = 0;\n}\n",
+    "exampleExplanation": "Read-only entry/return observation of the existing native update. Save the task argument at entry: a return hook cannot assume that the original argument registers survived the native call. Native task validity and ownership must still be checked before any subsequent operation.",
+    "cautions": [
+      "The routine updates an existing native actor and its complete work state. Do not call it as a generic spawner or use it on a display-only task.",
+      "The native manager processes removal requests after the update. Do not retain task or object addresses across destruction or storage reuse without checking their lifecycle.",
+      "The common update is reached through native variant callbacks. Preserve every native argument if directly calling the function; an observation hook may read only the first argument."
+    ],
+    "returns": "No return value.",
+    "confidence": "decompiled",
+    "related": [
+      "func_80034A10_35610",
+      "func_801E8E24_5A4D34",
+      "func_80035EEC_36AEC"
+    ]
+  },
+  "func_801EFBDC_5ABAEC": {
+    "title": "Update the Sasuke kunai effect",
+    "summary": "Common updater for existing thrown/fired Sasuke weapon variants. The native wrapper supplies a trail-slot count and an unsigned 16-bit emission interval.",
+    "declaration": "extern void func_801EFBDC_5ABAEC(void *task, int trail_count, unsigned short trail_interval);",
+    "behavior": [
+      "Common updater for existing thrown/fired Sasuke weapon variants. The native wrapper supplies a trail-slot count and an unsigned 16-bit emission interval.",
+      "The constructor initializes phase byte +0x60 to zero and lifetime halfword +0x62 to 60. The updater decrements lifetime and advances the main object by task velocity +0x6C/+0x70/+0x74.",
+      "Contact or world collision changes phase to the native layered impact effect. Its two material layers advance animation and fade alpha by 12 per update before the manager removes the task.",
+      "Phase zero with timer 60 identifies entry to the first flight update. A returned phase change means the object is already in impact, rather than an initial flight pose."
+    ],
+    "example": "#include \"modding.h\"\n\nstatic void *updating_task;\nstatic unsigned char observed_phase;\n\nRECOMP_HOOK(\"func_801EFBDC_5ABAEC\")\nvoid observe_update_entry(void *task)\n{\n    updating_task = task;\n}\n\nRECOMP_HOOK_RETURN(\"func_801EFBDC_5ABAEC\")\nvoid observe_update_return(void)\n{\n    if (updating_task)\n        observed_phase = ((const unsigned char *)updating_task)[0x60];\n    updating_task = 0;\n}\n",
+    "exampleExplanation": "Read-only entry/return observation of the existing native update. Save the task argument at entry: a return hook cannot assume that the original argument registers survived the native call. Native task validity and ownership must still be checked before any subsequent operation.",
+    "cautions": [
+      "The routine updates an existing native actor and its complete work state. Do not call it as a generic spawner or use it on a display-only task.",
+      "The native manager processes removal requests after the update. Do not retain task or object addresses across destruction or storage reuse without checking their lifecycle.",
+      "The common update is reached through native variant callbacks. Preserve every native argument if directly calling the function; an observation hook may read only the first argument."
+    ],
+    "returns": "No return value.",
+    "confidence": "decompiled",
+    "related": [
+      "func_80034A10_35610",
+      "func_801E8E24_5A4D34",
+      "func_80035EEC_36AEC"
+    ]
+  },
+  "func_8001DB04_1E704": {
+    "title": "Orient native angles from a direction vector",
+    "summary": "Updates three packed native angle halfwords using a direction vector and orientation offsets.",
+    "declaration": "extern void func_8001DB04_1E704(unsigned short angles[3], const float direction[3], unsigned short rx, unsigned short ry, unsigned short rz);",
+    "behavior": [
+      "Reads three existing unsigned 16-bit angles at output offsets +0/+2/+4, computes a direction-based orientation with three native angle offsets, then writes the resulting halfwords. A kind-2 object uses this layout at +0x14/+0x16/+0x18.",
+      "The previous angle values are inputs to the final native angle adjustment; initialize the output rather than passing uninitialized storage. The supplied vector is read as three floats at offsets +0/+4/+8.",
+      "The angle arguments use their low 16 bits. Native projectile code calls this helper for moving model orientation and for the reversed direction of an impact. It does not allocate a task or register an attack."
+    ],
+    "parameters": [
+      {
+        "name": "angles",
+        "type": "unsigned short[3]",
+        "description": "Initialized packed input/output native angles."
+      },
+      {
+        "name": "direction",
+        "type": "const float[3]",
+        "description": "Finite, nonzero direction vector in native coordinate order."
+      },
+      {
+        "name": "rx, ry, rz",
+        "type": "unsigned short",
+        "description": "Native orientation offsets, each read at unsigned 16-bit width."
+      }
+    ],
+    "returns": "No return value.",
+    "example": "extern void func_8001DB04_1E704(unsigned short angles[3], const float direction[3], unsigned short rx, unsigned short ry, unsigned short rz);\n\nvoid orient_display_object(void *object, const float direction[3])\n{\n    if (!object || !direction) return;\n    /* Caller supplies a live object, initialized rotations and valid vector. */\n    unsigned short *angles = (unsigned short *)((unsigned char *)object + 0x14);\n    func_8001DB04_1E704(angles, direction, 0, 0, 0);\n}\n",
+    "exampleExplanation": "Uses the native packed object rotation fields and leaves task ownership, motion and combat state unchanged.",
+    "cautions": [
+      "This is an input/output rotation helper, not a function returning an angle or a three-float output vector.",
+      "Preserve signed display sentinels as their 16-bit bit patterns; do not widen the packed native fields to three integers.",
+      "The numerical behavior for invalid vectors or uninitialized output angles is not established by the inspected call sites."
+    ],
+    "related": [
+      "func_80033898_34498",
+      "func_8000DBF0_E7F0",
+      "D_801FC60C_5B851C"
+    ],
+    "confidence": "decompiled"
+  }
+}

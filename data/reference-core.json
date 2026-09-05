@@ -111,5 +111,36 @@
       "func_80002040_2C40",
       "D_8015C608_15D208"
     ]
+  },
+  "D_8015C5C8_15D1C8": {
+    "title": "System-state pointer, graphics banks and world clock",
+    "summary": "Pointer to the complete native system structure, including two graphics banks and gameplay state.",
+    "behavior": [
+      "A 16-bit world-frame counter is stored at structure +0x3ADCE. It can identify the native frame for effects and state that must advance once per world update.",
+      "Congo breath emission uses this counter modulo 15. The system step byte also chooses the handler dispatched by func_80002040_2C40.",
+      "Used by system-step dispatch and scene-loading functions. The byte-pointer declaration allows access to selected recovered offsets, including the prepared destination at +0x3AFE0.",
+      "Native initialization stores 0x8008CCC0 in this pointer. The static symbol D_800BCCC0_BD8C0 is an interior alias at system base +0x30000, so offsets relative to that alias are 0x30000 smaller than offsets relative to this full pointer.",
+      "The structure begins with two graphics-bank records of 0x1D6D8 bytes each. Each contains 10,640 Gfx commands, 540 64-byte matrices, four viewports and the remaining native workspace fields. The current bank index is D_800C7A72; the matrix array begins at bank +0x14C80."
+    ],
+    "cautions": [
+      "The symbol contains a pointer; it is not the first byte of the structure itself.",
+      "Changing the world clock affects every subsystem that reads it. Use a separate local counter when timing an independent effect.",
+      "The byte-pointer declaration is partial typing, not proof that the whole system layout is known.",
+      "Use named structure definitions when available; offset writes must match the exact game version.",
+      "The full structure pointer and the interior D_800BCCC0 alias have different offset origins. Graphics-bank indices and gameplay state offsets must use the full pointer."
+    ],
+    "related": [
+      "func_80002040_2C40",
+      "func_0800A04C_6BD2EC",
+      "D_800BCCC0_BD8C0",
+      "func_80003728_4328",
+      "D_800C7A72_C8672",
+      "D_8015C5CC_15D1CC",
+      "D_80168504_169104"
+    ],
+    "confidence": "source-reviewed",
+    "example": "extern unsigned char *D_8015C5C8_15D1C8;\n\nunsigned short world_frame(void)\n{\n    if (!D_8015C5C8_15D1C8) return 0;\n    return *(volatile unsigned short *)(D_8015C5C8_15D1C8 + 0x3ADCE);\n}\n",
+    "exampleExplanation": "The example shows the documented native data layout or call sequence. Use it only while the relevant game state and resources are valid.",
+    "declaration": "extern unsigned char *D_8015C5C8_15D1C8;"
   }
 }

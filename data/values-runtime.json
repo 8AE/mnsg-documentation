@@ -110,6 +110,16 @@
             "Native start-sequence gate. Zero is the cleared value used for normal gameplay; nonzero values must retain their native sequence meaning."
           ],
           [
+            "`0x3AE20`",
+            "`uint8_t`",
+            "Player control mask (D_800C7AE0). Either low bit in mask 0x03 suspends the native late player collision handlers."
+          ],
+          [
+            "`0x3AE23`",
+            "`uint8_t`",
+            "Scripted player input state (D_800C7AE3). The native move-toward and input-playback paths set it while supplying scripted input."
+          ],
+          [
             "`0x3AE29`",
             "`uint8_t`",
             "Destination-transition marker; the warp destination helper writes 1."
@@ -175,6 +185,48 @@
             "`0x0C`",
             "`12`",
             "Scene load/warp sequence path."
+          ]
+        ]
+      },
+      {
+        "id": "graphics-bank-layout",
+        "title": "Graphics-bank layout",
+        "description": "Offsets are relative to one bank, beginning at full system base + bank_index × 0x1D6D8. There are two banks; these fixed arrays are distinct from CPU task and display-record storage.",
+        "columns": [
+          "Bank-relative offset",
+          "Storage",
+          "Meaning"
+        ],
+        "rows": [
+          [
+            "`+0x00000`",
+            "`Gfx[10640]`, 8 bytes each",
+            "Native graphics-command array, total 0x14C80 bytes."
+          ],
+          [
+            "`+0x14C80`",
+            "`Mtx[540]`, 64 bytes each",
+            "Submitted fixed-point matrices, total 0x8700 bytes."
+          ],
+          [
+            "`+0x1D380`",
+            "`Vp[4]`, 16 bytes each",
+            "Four native viewports."
+          ],
+          [
+            "`+0x1D3C0`",
+            "`unsigned char[600]`",
+            "Additional native workspace; individual fields are not interpreted here."
+          ],
+          [
+            "`+0x1D618`",
+            "`unsigned char[128]`",
+            "Additional native workspace; individual fields are not interpreted here."
+          ],
+          [
+            "`+0x1D698`",
+            "`unsigned char[64]`",
+            "Final native workspace, ending at bank offset 0x1D6D8."
           ]
         ]
       }
@@ -1022,6 +1074,46 @@
             "Player render object."
           ],
           [
+            "`+0x30`",
+            "`uint8_t`",
+            "Contact flags: bit 0x01 accepts ordinary incoming hits, 0x02 enables outgoing attack scans, and 0x04 selects the native special incoming-hit filter."
+          ],
+          [
+            "`+0x34`",
+            "32-bit pointer",
+            "Victim task hit by this task during the native scan; nonzero stops further victim scanning."
+          ],
+          [
+            "`+0x38`",
+            "32-bit pointer",
+            "Incoming attacker task. Native collision-dependent callbacks consume this hit record."
+          ],
+          [
+            "`+0x3C`",
+            "`uint16_t`",
+            "Unscaled body radius copied from D_801FC660_5B8570 for the selected character. Native body contacts apply object scale X."
+          ],
+          [
+            "`+0x3E`",
+            "`uint16_t`",
+            "Unscaled body height copied from D_801FC668_5B8578 for the selected character. Native body contacts apply object scale Y."
+          ],
+          [
+            "`+0x44`",
+            "`uint8_t`",
+            "One-based sphere index recorded by an incoming native contact. This is not a health-damage amount."
+          ],
+          [
+            "`+0x48`",
+            "32-bit descriptor",
+            "Active outgoing attack descriptor. Zero disables attack volumes; 0xFFFFFFFF selects the fixed sphere fields."
+          ],
+          [
+            "`+0x4C`",
+            "`uint8_t`",
+            "Native outgoing attack kind used by victim filters and damage handling; separate from the sphere index."
+          ],
+          [
             "`+0x5C`",
             "32-bit pointer",
             "Player work/state block."
@@ -1035,6 +1127,11 @@
             "`+0xCC`",
             "`uint8_t`",
             "Current native player action."
+          ],
+          [
+            "`+0xD4`",
+            "`uint8_t`",
+            "Player damage invulnerability countdown. While nonzero, the updater applies D_800C7A78 parity to render-object +0x64; expiry restores visible rendering and ordinary incoming contact."
           ]
         ]
       },
@@ -1170,6 +1267,16 @@
             "`+0x50 / +0x58`",
             "32-bit pointer × 2",
             "Auxiliary character-resource data bases selected by descriptor values 3 and 4."
+          ],
+          [
+            "`+0x64`",
+            "`uint8_t`",
+            "Render flags: bit 0x01 suppresses kind-2 model drawing. Native hurt recovery alternates this bit by D_800C7A78 parity; collision and model/scale data remain intact."
+          ],
+          [
+            "`+0x65`",
+            "`int8_t`",
+            "Native clipping/visibility state. Drawing is suppressed only for negative values; both 0 and positive values are accepted. The kind-2 reset template initializes this byte to 1, while the generic display constructor clears it to 0."
           ]
         ]
       }

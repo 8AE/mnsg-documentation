@@ -81,7 +81,8 @@
     "summary": "Allocates and initializes a kind-2 model/display object beneath an engine task.",
     "behavior": [
       "Calls func_80035EEC_36AEC(task, 2, 1), then writes position at +0x08/+0x0C/+0x10, signed rotations at +0x14/+0x16/+0x18, scale at +0x1C/+0x20/+0x24, animation frame at +0x28, model command at +0x2C and animation context at +0x30.",
-      "Initializes file IDs at +0x34 and +0x3C and runs native segment binding. A zero model command starts hidden. For the clothed playable-character assets, render-mode byte +0x05 must be set explicitly to 2; this allocator does not initialize that byte."
+      "Initializes file IDs at +0x34 and +0x3C and runs native segment binding. A zero model command starts hidden. For the clothed playable-character assets, render-mode byte +0x05 must be set explicitly to 2; this allocator does not initialize that byte.",
+      "This higher-level constructor explicitly initializes display bytes +0x64 and +0x65 to zero. Other native constructors that allocate through func_80035EEC_36AEC can retain the kind-2 reset value +0x65 = 1, which is also visible."
     ],
     "cautions": [
       "Supply a valid task before calling: the native function reaches its allocator before its null-task branch.",
@@ -620,7 +621,9 @@
     "summary": "Pops one record from a kind-specific native free list.",
     "behavior": [
       "Returns null when the free list is empty. Otherwise removes the head, clears its next pointer and high-bit marker, increments D_8016DAD8[kind], and returns the record.",
-      "This low-level helper does not perform an allocation-limit check or attach the record to an owner. Higher-level task allocators supply those responsibilities."
+      "This low-level helper does not perform an allocation-limit check or attach the record to an owner. Higher-level task allocators supply those responsibilities.",
+      "The kind-2 reset template has byte +0x65 equal to 1. Allocation does not clear that field: it clears only the high-bit marker in kind byte +0x04. Native drawing accepts nonnegative +0x65; testing equality to zero incorrectly excludes ordinary visible records.",
+      "Kind-2 records occupy 0x98 bytes and are linked CPU-side state. Skeleton cache links use +0x74 for siblings, +0x78 for children, and +0x94 for the parent; these records are separate from graphics command and matrix buffers."
     ],
     "cautions": [
       "No capacity or kind bounds check is visible in this helper; caller must select a valid pool kind.",
@@ -687,11 +690,13 @@
     "summary": "Allocates a single kind-2 model/display pool record.",
     "behavior": [
       "Increments D_8016DAB0 and updates its peak before checking capacity. If D_8006D320 is present, recycles one existing record from that owner; otherwise checks the kind-2 capacity against D_8016DADC.",
-      "Finally pops kind 2 through func_80035D8C. The returned bare record still requires appropriate initialization, attachment and eventual native release."
+      "Finally pops kind 2 through func_80035D8C. The returned bare record still requires appropriate initialization, attachment and eventual native release.",
+      "Animated model drawing uses this allocator for cached root, child, and sibling records as well as visible display roots. A single character can therefore consume many kind-2 records."
     ],
     "cautions": [
       "This returns a bare pool record; it does not initialize a complete render object or attach it to your task.",
-      "Telemetry is incremented even when allocation fails, so it is not identical to the active kind-2 counter."
+      "Telemetry is incremented even when allocation fails, so it is not identical to the active kind-2 counter.",
+      "The native cache constructors func_80018B28_19728, func_80018F3C_19B3C, and func_8001904C_19C4C dereference a newly allocated record without first checking for null. Exhausting this shared pool during drawing can fault at a record field such as +0x94; checking only the initial display-object constructor is insufficient."
     ],
     "related": [
       "func_80035D8C_3698C",
@@ -774,10 +779,12 @@
     "summary": "Unsigned 16-bit allocation limits indexed by native pool kind.",
     "behavior": [
       "The chain allocator subtracts active counts from this table to decide whether a request fits. Element 2 controls model/display records.",
-      "Changing a numeric limit does not create backing records or expand related actor-owner capacity. Engine initialization can restore the table; any capacity customization must account for the complete pool lifecycle."
+      "Changing a numeric limit does not create backing records or expand related actor-owner capacity. Engine initialization can restore the table; any capacity customization must account for the complete pool lifecycle.",
+      "The native initialized kind-2 capacity is 192 records. These are shared by visible roots, effects, and lazily allocated animated-model cache nodes; the number is not a character count."
     ],
     "cautions": [
-      "Treat engine counters as read-only outside a verified allocator patch; release paths depend on consistency."
+      "Treat engine counters as read-only outside a verified allocator patch; release paths depend on consistency.",
+      "The capacity element is unsigned 16-bit, but its paired active counter is signed 16-bit. Capacity changes must preserve both counter representability and actual backing storage."
     ],
     "related": [
       "D_8016DAD8_16E6D8",

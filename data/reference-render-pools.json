@@ -1,0 +1,281 @@
+{
+  "func_8000A5C4_B1C4": {
+    "title": "Reset a kind-2 display record",
+    "summary": "Copies the native kind-2 reset template while preserving its free-list link.",
+    "declaration": "extern void func_8000A5C4_B1C4(void *record);",
+    "behavior": [
+      "Resets the 0x98-byte CPU display/model record from the native template and restores the original word at +0x00. This preserves a free-list next pointer while clearing pose, material, segment and cached-tree state.",
+      "The template sets byte +0x04 to 0x82 (retired kind 2), byte +0x05 to 5, and byte +0x65 to 1. Allocation clears the retirement bit; native visibility accepts a nonnegative signed +0x65."
+    ],
+    "example": "extern void func_8000A5C4_B1C4(void *record);\n\nvoid reset_detached_display_record(void *record) {\n    if (record) func_8000A5C4_B1C4(record);\n}",
+    "confidence": "decompiled",
+    "cautions": [
+      "Only reset a detached or newly provisioned record. Resetting a live tree node can orphan its children and owner links.",
+      "Storage must cover 0x98 bytes. Native model records have an 8-byte-aligned stride."
+    ]
+  },
+  "func_80035BF8_367F8": {
+    "title": "Reset the kind-2 free list",
+    "summary": "Rebuilds the stock kind-2 free list and resets its active count.",
+    "declaration": "extern void func_80035BF8_367F8(void);",
+    "behavior": [
+      "Links exactly 192 records of stride 0x98 in native system storage, terminates the final next pointer, and sets the signed 16-bit kind-2 active counter to zero.",
+      "This replaces the free head at D_8016DAC0[2]. It does not discover separately allocated storage and does not copy the record reset template; native template initialization is a separate operation."
+    ],
+    "example": "extern void func_80035BF8_367F8(void);\n\n#include \"modding.h\"\n\nRECOMP_HOOK_RETURN(\"func_80035BF8_367F8\")\nvoid after_kind2_list_reset(void) {\n    /* The stock free head and active count have been replaced. */\n}",
+    "confidence": "decompiled",
+    "cautions": [
+      "A lifecycle reset invalidates outstanding record ownership. It is not a routine way to free a live model."
+    ]
+  },
+  "func_8003488C_3548C": {
+    "title": "Initialize the native task lists",
+    "summary": "Initializes the root task and the stock task free list.",
+    "declaration": "typedef void (*NativeRootTaskUpdate)(void *task, void *object);\nextern void func_8003488C_3548C(NativeRootTaskUpdate root_update);",
+    "behavior": [
+      "Initializes the native root task and 79 free task records with a 0xF0-byte stride. Each record is cleared through func_80034A10.",
+      "Resets task-list bookkeeping, active task telemetry, the optional display overflow owner, and per-frame display allocation telemetry. Installs root_update as the root task callback.",
+      "The free-list head is the pointer at byte +0x08 of D_8006D328. Separately provisioned free records are not included by this initializer."
+    ],
+    "example": "typedef void (*NativeRootTaskUpdate)(void *task, void *object);\nextern void func_8003488C_3548C(NativeRootTaskUpdate root_update);\n\n#include \"modding.h\"\n\nRECOMP_HOOK_RETURN(\"func_8003488C_3548C\")\nvoid after_task_lists_initialized(void) {\n    /* Prior native task ownership has been invalidated. */\n}",
+    "confidence": "decompiled",
+    "cautions": [
+      "Use as an initialization boundary. Calling it on live tasks loses their list and resource ownership.",
+      "Task storage uses a 16-byte-aligned 0xF0 stride. The native active task count is unsigned 16-bit."
+    ]
+  },
+  "func_80034B58_35758": {
+    "title": "Allocate and link a child task",
+    "summary": "Pops a native task record and inserts it into an existing task list.",
+    "declaration": "typedef void (*NativeChildTaskUpdate)(void *task, void *object);\nextern void *func_80034B58_35758(void *parent, NativeChildTaskUpdate update, unsigned short flags);",
+    "behavior": [
+      "Returns null when the task free head is empty. Otherwise increments the unsigned 16-bit active count, pops a free record, and resets it through func_80034A10.",
+      "Inserts the task after the parent list word, assigns a backlink at +0x04, sets depth +0x20 to parent depth plus one, installs update at +0x0C and flags at +0x28, and captures native resource context.",
+      "The higher-level func_80034E08 additionally applies native depth-order placement after this allocation."
+    ],
+    "example": "typedef void (*NativeChildTaskUpdate)(void *task, void *object);\nextern void *func_80034B58_35758(void *parent, NativeChildTaskUpdate update, unsigned short flags);\n\nvoid *new_child(void *parent, NativeChildTaskUpdate update) {\n    if (!parent || !update) return 0;\n    return func_80034B58_35758(parent, update, 0);\n}",
+    "confidence": "decompiled",
+    "returns": "New linked task, or null when no free record is available.",
+    "cautions": [
+      "The parent must be a live native list owner. This function does not initialize an actor-specific work layout or allocate a display object."
+    ]
+  },
+  "func_80035DFC_369FC": {
+    "title": "Prepend display records to a task",
+    "summary": "Allocates and prepends a chain of records to a task display list.",
+    "declaration": "extern void *func_80035DFC_369FC(void *task, short kind, unsigned int count);",
+    "behavior": [
+      "Uses the low eight bits of count, compares the native per-kind capacity against the signed 16-bit active count, then pops records through func_80035D8C.",
+      "Prepends each record through task +0x18; initializes the tail at +0x1C only for an empty list. This differs from the appending allocator func_80035EEC.",
+      "The capacity table alone does not provide backing records. A failure during a multi-record operation can leave earlier records attached to the task."
+    ],
+    "example": "extern void *func_80035DFC_369FC(void *task, short kind, unsigned int count);\n\nvoid *prepend_one_display(void *task) {\n    return task ? func_80035DFC_369FC(task, 2, 1) : 0;\n}",
+    "confidence": "decompiled",
+    "returns": "First allocated record, or null when capacity/allocation fails.",
+    "cautions": [
+      "Only pass a valid native kind index and a live task. Caller-specific initialization is still required."
+    ]
+  },
+  "func_80018F3C_19B3C": {
+    "title": "Find or allocate a model child cache",
+    "summary": "Resolves a cached child record for one native model node.",
+    "declaration": "extern void *func_80018F3C_19B3C(const void *model_node, void *record);",
+    "behavior": [
+      "Reads the signed byte at model_node +0x04 as a relative node index with 0x18-byte stride, then derives the referenced model command key.",
+      "Searches the cache chain rooted at record +0x78. An existing match is retained or moved to the front; a missing match invokes native ancestor-cache reclamation and allocates a kind-2 record.",
+      "New nodes store a model key at +0x2C, sibling link at +0x74, child link at +0x78, and parent link at +0x94. Sibling nodes inherit the existing record parent; child nodes point to the existing record.",
+      "The stock implementation does not test the allocator result before writing +0x94. Exhausting the shared kind-2 pool can therefore crash inside native drawing."
+    ],
+    "example": "extern void *func_80018F3C_19B3C(const void *model_node, void *record);\n\n#include \"modding.h\"\n\nRECOMP_HOOK(\"func_80018F3C_19B3C\")\nvoid observe_model_child(const void *model_node, void *record) {\n    (void)model_node; (void)record;\n    /* Observe only while native rendering owns this context. */\n}",
+    "confidence": "decompiled",
+    "returns": "Existing or newly allocated cache record; stock allocation failure is unsafe.",
+    "cautions": [
+      "This is an internal render traversal operation, not a standalone model constructor.",
+      "Kind-2 capacity includes cached skeleton nodes as well as task-attached root display records."
+    ]
+  },
+  "func_8001904C_19C4C": {
+    "title": "Find or allocate a model sibling cache",
+    "summary": "Resolves a cached sibling record for one native model node.",
+    "declaration": "extern void *func_8001904C_19C4C(const void *model_node, void *record);",
+    "behavior": [
+      "Reads the signed byte at model_node +0x05 as a relative node index with 0x18-byte stride, then derives the referenced model command key.",
+      "Searches the cache chain rooted at record +0x74. An existing match is retained or moved to the front; a missing match invokes native ancestor-cache reclamation and allocates a kind-2 record.",
+      "New nodes store a model key at +0x2C, sibling link at +0x74, child link at +0x78, and parent link at +0x94. Sibling nodes inherit the existing record parent; child nodes point to the existing record.",
+      "The stock implementation does not test the allocator result before writing +0x94. Exhausting the shared kind-2 pool can therefore crash inside native drawing."
+    ],
+    "example": "extern void *func_8001904C_19C4C(const void *model_node, void *record);\n\n#include \"modding.h\"\n\nRECOMP_HOOK(\"func_8001904C_19C4C\")\nvoid observe_model_sibling(const void *model_node, void *record) {\n    (void)model_node; (void)record;\n    /* Observe only while native rendering owns this context. */\n}",
+    "confidence": "decompiled",
+    "returns": "Existing or newly allocated cache record; stock allocation failure is unsafe.",
+    "cautions": [
+      "This is an internal render traversal operation, not a standalone model constructor.",
+      "Kind-2 capacity includes cached skeleton nodes as well as task-attached root display records."
+    ]
+  },
+  "func_80018B28_19728": {
+    "title": "Render the root of a cached model tree",
+    "summary": "Sets up the root cache and traverses native child and sibling nodes.",
+    "declaration": "extern void func_80018B28_19728(const void *model_node, void *context_argument, void *cache_record);",
+    "behavior": [
+      "When cache_record is null, allocates a kind-2 root, sets its parent +0x94 to null, and stores it in the current render object at +0x78.",
+      "Writes the root model key at +0x2C, submits nonzero model geometry, and resolves child/sibling caches through func_80018F3C and func_8001904C before recursive rendering. Removes stale child/sibling caches when the corresponding model-node index is zero.",
+      "The second argument is saved but not consumed in the inspected implementation. The current object comes from D_801684A0.",
+      "The stock initial allocation is dereferenced without a null check. The apparent replacement branch at 80018B68 is unreachable: a boolean 0/1 value is ANDed with 0x8FFFFFFE."
+    ],
+    "example": "extern void func_80018B28_19728(const void *model_node, void *context_argument, void *cache_record);\n\n#include \"modding.h\"\n\nRECOMP_HOOK(\"func_80018B28_19728\")\nvoid observe_cached_model_root(const void *model_node, void *context, void *cache) {\n    (void)model_node; (void)context; (void)cache;\n}",
+    "confidence": "decompiled",
+    "cautions": [
+      "Requires a valid native render context and bound model segments. It is not safe to call from arbitrary gameplay code.",
+      "A null cache may require many subsequent child/sibling allocations; reserving one root record is insufficient."
+    ]
+  },
+  "func_80018CA0_198A0": {
+    "title": "Traverse cached model nodes",
+    "summary": "Recursively renders model node geometry and linked child/sibling branches.",
+    "declaration": "extern void func_80018CA0_198A0(const void *model_node, void *cache_record);",
+    "behavior": [
+      "Builds per-node transforms, resolves segmented nested model references, submits geometry and materials, and traverses relative +0x04/+0x05 node branches.",
+      "Traversal uses the native temporary matrix stack and final graphics-bank matrix/display-list cursors. Those graphics resources are distinct from CPU kind-2 cache records.",
+      "Native child/sibling cache lookup can allocate records during this render traversal."
+    ],
+    "example": "extern void func_80018CA0_198A0(const void *model_node, void *cache_record);\n\n#include \"modding.h\"\n\nRECOMP_HOOK(\"func_80018CA0_198A0\")\nvoid observe_model_branch(const void *node, void *cache) {\n    (void)node; (void)cache;\n}",
+    "confidence": "decompiled",
+    "cautions": [
+      "Requires native segment/material context, valid acyclic model data, and sufficient matrix/display-list storage. Increasing CPU record capacity does not increase graphics-bank capacity."
+    ]
+  },
+  "func_80019160_19D60": {
+    "title": "Reclaim a matching ancestor cache",
+    "summary": "Walks ancestor model caches looking for a matching recyclable subtree.",
+    "declaration": "extern int func_80019160_19D60(void *record, unsigned int model_command);",
+    "behavior": [
+      "Walks parent links at +0x94. For an ancestor with a sibling cache at +0x74, searches for model_command and frees a matching subtree through the native cache reclamation path.",
+      "The caller passes the complete cache command key, including its model-type tag. Child and sibling cache constructors invoke this before requesting a new record."
+    ],
+    "example": "extern int func_80019160_19D60(void *record, unsigned int model_command);\n\n#include \"modding.h\"\n\nRECOMP_HOOK(\"func_80019160_19D60\")\nvoid observe_cache_reclamation(void *record, unsigned int command) {\n    (void)record; (void)command;\n}",
+    "confidence": "decompiled",
+    "returns": "One when a matching cache was reclaimed, otherwise zero.",
+    "cautions": [
+      "record must be valid and nonnull. This mutates a live native cache tree and must run only in its renderer lifecycle."
+    ]
+  },
+  "func_80036388_36F88": {
+    "title": "Promote an existing child cache",
+    "summary": "Moves an existing cached model record to the front of its sibling chain.",
+    "declaration": "extern int func_80036388_36F88(void *parent, void *record);",
+    "behavior": [
+      "Searches the existing chain rooted at parent +0x78, unlinks record from its old position, and places it at the front. Per-record next-sibling links use +0x74.",
+      "No allocation or initialization occurs. The caller must have already found the requested record in this exact chain."
+    ],
+    "example": "extern int func_80036388_36F88(void *parent, void *record);\n\n#include \"modding.h\"\n\nRECOMP_HOOK(\"func_80036388_36F88\")\nvoid observe_cache_promotion(void *parent, void *record) {\n    (void)parent; (void)record;\n}",
+    "confidence": "decompiled",
+    "returns": "One on the successful native move, zero for explicitly rejected null inputs.",
+    "cautions": [
+      "Passing an unrelated record is unsafe: native traversal assumes membership and can dereference a null link."
+    ]
+  },
+  "func_800363F4_36FF4": {
+    "title": "Promote an existing sibling cache",
+    "summary": "Moves an existing cached model record to the front of its sibling chain.",
+    "declaration": "extern int func_800363F4_36FF4(void *parent, void *record);",
+    "behavior": [
+      "Searches the existing chain rooted at parent +0x74, unlinks record from its old position, and places it at the front. Per-record next-sibling links use +0x74.",
+      "No allocation or initialization occurs. The caller must have already found the requested record in this exact chain."
+    ],
+    "example": "extern int func_800363F4_36FF4(void *parent, void *record);\n\n#include \"modding.h\"\n\nRECOMP_HOOK(\"func_800363F4_36FF4\")\nvoid observe_cache_promotion(void *parent, void *record) {\n    (void)parent; (void)record;\n}",
+    "confidence": "decompiled",
+    "returns": "One on the successful native move, zero for explicitly rejected null inputs.",
+    "cautions": [
+      "Passing an unrelated record is unsafe: native traversal assumes membership and can dereference a null link."
+    ]
+  },
+  "func_8003674C_3734C": {
+    "title": "Release the cached child subtree",
+    "summary": "Detaches and releases one cached model subtree.",
+    "declaration": "extern int func_8003674C_3734C(void *record);",
+    "behavior": [
+      "Detaches the tree rooted at record +0x78 by clearing that link, recursively returns its descendant cache records through the native kind-2 free path, then releases the detached root.",
+      "Native recursive cleanup has an internal 32-entry traversal stack; it is not an unbounded generic tree destructor. Record reset preserves each newly installed free-list link."
+    ],
+    "example": "extern int func_8003674C_3734C(void *record);\n\nvoid release_detached_child_cache(void *record) {\n    if (record) (void)func_8003674C_3734C(record);\n}",
+    "confidence": "decompiled",
+    "returns": "One for an empty or successfully released subtree; zero if native recursive cleanup fails.",
+    "cautions": [
+      "record must remain live. Only release caches whose ownership and native lifecycle are known."
+    ]
+  },
+  "func_80036798_37398": {
+    "title": "Release the cached sibling subtree",
+    "summary": "Detaches and releases one cached model subtree.",
+    "declaration": "extern int func_80036798_37398(void *record);",
+    "behavior": [
+      "Detaches the tree rooted at record +0x74 by clearing that link, recursively returns its descendant cache records through the native kind-2 free path, then releases the detached root.",
+      "Native recursive cleanup has an internal 32-entry traversal stack; it is not an unbounded generic tree destructor. Record reset preserves each newly installed free-list link."
+    ],
+    "example": "extern int func_80036798_37398(void *record);\n\nvoid release_detached_sibling_cache(void *record) {\n    if (record) (void)func_80036798_37398(record);\n}",
+    "confidence": "decompiled",
+    "returns": "One for an empty or successfully released subtree; zero if native recursive cleanup fails.",
+    "cautions": [
+      "record must remain live. Only release caches whose ownership and native lifecycle are known."
+    ]
+  },
+  "func_800196F0_1A2F0": {
+    "title": "Submit model geometry in the current render context",
+    "summary": "Emits native segment, material, matrix and geometry commands.",
+    "declaration": "extern void func_800196F0_1A2F0(unsigned int model_command);",
+    "behavior": [
+      "Uses D_801684A0 segment bases and material context to append graphics commands. Context tag bits select direct material calls or an inline material-command copy.",
+      "Depending on native transform mode, may emit a matrix and geometry commands using current graphics-bank cursors. CPU model records are not the storage for those submitted matrices.",
+      "Generic inline material data can produce a variable number of commands. A fixed command budget requires a constrained verified material/model path."
+    ],
+    "example": "extern void func_800196F0_1A2F0(unsigned int model_command);\n\n#include \"modding.h\"\n\nRECOMP_HOOK(\"func_800196F0_1A2F0\")\nvoid observe_geometry_command(unsigned int command) {\n    (void)command;\n}",
+    "confidence": "decompiled",
+    "cautions": [
+      "Only call under the native renderer with bound segments and valid graphics cursors. Segmented command values are not arbitrary native pointers."
+    ]
+  },
+  "D_8016DAC0_16E6C0": {
+    "title": "Per-kind display free-list heads",
+    "summary": "Pointer table of free display records indexed by native kind.",
+    "declaration": "extern void *D_8016DAC0_16E6C0[];",
+    "behavior": [
+      "Each entry is a native 32-bit head pointer. Entry 2 is the kind-2 model/display free list at address 8016DAC8.",
+      "Free records link through their first word. The low seven bits of byte +0x04 identify the kind; bit7 marks the retired state and is cleared by allocation.",
+      "Kind-2 stock storage comprises 192 records of stride 0x98. Allocation/free updates the separate signed 16-bit active-counter table. Increasing a capacity scalar without provisioning this linked storage does not create records."
+    ],
+    "example": "extern void *D_8016DAC0_16E6C0[];\n\nvoid *kind2_free_head(void) {\n    return D_8016DAC0_16E6C0[2];\n}",
+    "confidence": "decompiled",
+    "cautions": [
+      "This is pointer storage, not a contiguous array of model records. Do not change a live free list without preserving reset/release semantics."
+    ]
+  },
+  "D_8006D328_6DF28": {
+    "title": "Native task-list state",
+    "summary": "Storage containing native active-list and free-list task pointers.",
+    "declaration": "extern unsigned char D_8006D328_6DF28[];",
+    "behavior": [
+      "The verified pointer words at offsets 0x00,0x04 and0x08 hold the root/list pointers and free head; unsigned 16-bit at 0x0C is the active task count.",
+      "Native initialization builds 79 free 0xF0-byte task records plus the separate root. The allocator resets popped tasks, sets their +0x04 backlinks, and the free path returns them to the same linked free head."
+    ],
+    "example": "extern unsigned char D_8006D328_6DF28[];\n\nvoid *native_task_free_head(void) {\n    return *(void **)(D_8006D328_6DF28 + 0x08);\n}",
+    "confidence": "decompiled",
+    "cautions": [
+      "This symbol names storage at the beginning of task-list state, not a task object. Pointer words are 32-bit in the native ABI.",
+      "Mutating list pointers without the native backlink/depth rules corrupts task traversal."
+    ]
+  },
+  "D_801684A0_1690A0": {
+    "title": "Current render-object context",
+    "summary": "Pointer to the object whose segments and material context are active during native drawing.",
+    "declaration": "extern void *D_801684A0_1690A0;",
+    "behavior": [
+      "Native model traversal temporarily changes this pointer while binding nested render context, then restores the previous object.",
+      "Root cache allocation attaches its cached tree at current_object +0x78. Geometry submission reads segment pairs starting at +0x34 and material/context at +0x30."
+    ],
+    "example": "extern void *D_801684A0_1690A0;\n\nvoid *current_native_render_object(void) {\n    return D_801684A0_1690A0;\n}",
+    "confidence": "decompiled",
+    "cautions": [
+      "Only meaningful at the corresponding renderer boundary. Do not retain it as an actor owner or replace it during unrelated gameplay code."
+    ]
+  }
+}

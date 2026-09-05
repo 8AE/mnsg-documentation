@@ -4,7 +4,7 @@ slug: "/functions"
 description: "Native functions for the US recompilation of Mystical Ninja Starring Goemon."
 ---
 
-135 functions with C interfaces, behavior, and usage examples. Use the search bar to look up an exact symbol, address, or purpose.
+171 functions with C interfaces, behavior, and usage examples. Use the search bar to look up an exact symbol, address, or purpose.
 
 | Symbol | Purpose |
 | --- | --- |
@@ -97,6 +97,7 @@ description: "Native functions for the US recompilation of Mystical Ninja Starri
 | [`func_8000383C_443C`](func_8000383C_443C.md) | Reset render and texture buffers |
 | [`func_80004240_4E40`](func_80004240_4E40.md) | Clear native text/UI slots |
 | [`func_8000607C_6C7C`](func_8000607C_6C7C.md) | Set the engine destination |
+| [`func_8000A5C4_B1C4`](func_8000A5C4_B1C4.md) | Reset a kind-2 display record |
 | [`func_8000B2A0_BEA0`](func_8000B2A0_BEA0.md) | Consume saved spawn configuration |
 | [`func_8000B364_BF64`](func_8000B364_BF64.md) | Prepare destination scene loading |
 | [`func_8000B5D0_C1D0`](func_8000B5D0_C1D0.md) | Activate and mirror initialized save state |
@@ -107,29 +108,64 @@ description: "Native functions for the US recompilation of Mystical Ninja Starri
 | [`func_800141C4_14DC4`](func_800141C4_14DC4.md) | Look up a loaded resource file |
 | [`func_800145B4_151B4`](func_800145B4_151B4.md) | Load an auxiliary resource into a buffer |
 | [`func_80014698_15298`](func_80014698_15298.md) | Query a resource ROM size and address |
+| [`func_80016950_17550`](func_80016950_17550.md) | Initialize the current graphics bank |
+| [`func_80016C44_17844`](func_80016C44_17844.md) | Draw one native display object |
+| [`func_80018B28_19728`](func_80018B28_19728.md) | Render the root of a cached model tree |
+| [`func_80018CA0_198A0`](func_80018CA0_198A0.md) | Traverse cached model nodes |
+| [`func_80018F3C_19B3C`](func_80018F3C_19B3C.md) | Find or allocate a model child cache |
+| [`func_8001904C_19C4C`](func_8001904C_19C4C.md) | Find or allocate a model sibling cache |
+| [`func_80019160_19D60`](func_80019160_19D60.md) | Reclaim a matching ancestor cache |
+| [`func_800196F0_1A2F0`](func_800196F0_1A2F0.md) | Submit model geometry in the current render context |
 | [`func_8001B5AC_1C1AC`](func_8001B5AC_1C1AC.md) | Read the bound model animation length |
 | [`func_8001C3E0_1CFE0`](func_8001C3E0_1CFE0.md) | Replace model display pointers |
+| [`func_8001DB04_1E704`](func_8001DB04_1E704.md) | Orient native angles from a direction vector |
 | [`func_80023E40_24A40`](func_80023E40_24A40.md) | Clear a transient event bit |
 | [`func_80024038_24C38`](func_80024038_24C38.md) | Set a game flag |
 | [`func_80024088_24C88`](func_80024088_24C88.md) | Clear a game flag |
 | [`func_800240DC_24CDC`](func_800240DC_24CDC.md) | Read a game flag |
+| [`func_8002C9D4_2D5D4`](func_8002C9D4_2D5D4.md) | Query nearest world collision along a ray |
+| [`func_8002EB10_2F710`](func_8002EB10_2F710.md) | Compute static level wall correction |
+| [`func_80030730_31330`](func_80030730_31330.md) | Compute registered dynamic wall correction |
+| [`func_80033024_33C24`](func_80033024_33C24.md) | Scan an attack-task subtree against a victim subtree |
+| [`func_80033404_34004`](func_80033404_34004.md) | Test the current native attack sphere |
+| [`func_80033898_34498`](func_80033898_34498.md) | Rotate a vector using native object angles |
+| [`func_8003488C_3548C`](func_8003488C_3548C.md) | Initialize the native task lists |
+| [`func_80034A10_35610`](func_80034A10_35610.md) | Reset native task storage |
+| [`func_80034B58_35758`](func_80034B58_35758.md) | Allocate and link a child task |
 | [`func_80034E08_35A08`](func_80034E08_35A08.md) | Create and insert an engine task |
 | [`func_80034ED4_35AD4`](func_80034ED4_35AD4.md) | Delete the current task |
 | [`func_80034EF8_35AF8`](func_80034EF8_35AF8.md) | Destroy a specified engine task |
 | [`func_8003521C_35E1C`](func_8003521C_35E1C.md) | Set the current task AI callback |
 | [`func_8003555C_3615C`](func_8003555C_3615C.md) | Allocate and configure a model task |
+| [`func_80035BF8_367F8`](func_80035BF8_367F8.md) | Reset the kind-2 free list |
 | [`func_80035D8C_3698C`](func_80035D8C_3698C.md) | Pop an engine pool record |
+| [`func_80035DFC_369FC`](func_80035DFC_369FC.md) | Prepend display records to a task |
 | [`func_80035EEC_36AEC`](func_80035EEC_36AEC.md) | Allocate task-owned pool records |
 | [`func_80036058_36C58`](func_80036058_36C58.md) | Recycle records from an owner list |
+| [`func_80036388_36F88`](func_80036388_36F88.md) | Promote an existing child cache |
+| [`func_800363F4_36FF4`](func_800363F4_36FF4.md) | Promote an existing sibling cache |
 | [`func_80036448_37048`](func_80036448_37048.md) | Allocate a single kind-2 record |
+| [`func_8003674C_3734C`](func_8003674C_3734C.md) | Release the cached child subtree |
+| [`func_80036798_37398`](func_80036798_37398.md) | Release the cached sibling subtree |
+| [`func_801CB824_587734`](func_801CB824_587734.md) | Run the playable-player pre-update |
+| [`func_801CBAF8_587A08`](func_801CBAF8_587A08.md) | Run the late player collision and transform update |
 | [`func_801CD890_660740`](func_801CD890_660740.md) | Native gameplay/load scheduler callback |
 | [`func_801D21B8_665068`](func_801D21B8_665068.md) | File-select options and boss-rush menu |
+| [`func_801D9E9C_595DAC`](func_801D9E9C_595DAC.md) | Process native player damage and contact reactions |
 | [`func_801DCCF0_598C00`](func_801DCCF0_598C00.md) | Adjust the player Ryo balance |
 | [`func_801DCD48_598C58`](func_801DCD48_598C58.md) | Adjust player health |
 | [`func_801DD50C_59941C`](func_801DD50C_59941C.md) | Cycle the live player character |
 | [`func_801DD5C0_5994D0`](func_801DD5C0_5994D0.md) | Apply a live player character swap |
+| [`func_801E8E24_5A4D34`](func_801E8E24_5A4D34.md) | Cancel eligible player-owned projectiles |
+| [`func_801E936C_5A527C`](func_801E936C_5A527C.md) | Update an ordinary Goemon coin |
+| [`func_801EA0D8_5A5FE8`](func_801EA0D8_5A5FE8.md) | Update the charged Goemon coin |
+| [`func_801EBAA8_5A79B8`](func_801EBAA8_5A79B8.md) | Update the Ebisumaru camera effect |
+| [`func_801EBF48_5A7E58`](func_801EBF48_5A7E58.md) | Update the Sasuke thrown bomb |
+| [`func_801EEDF8_5AAD08`](func_801EEDF8_5AAD08.md) | Update Yae projectile flight and impact |
 | [`func_801EF2E0_61A6C0`](func_801EF2E0_61A6C0.md) | Initialize the Thaisamba Impact boss task |
+| [`func_801EFBDC_5ABAEC`](func_801EFBDC_5ABAEC.md) | Update the Sasuke kunai effect |
 | [`func_801F6C4C_62202C`](func_801F6C4C_62202C.md) | Dispatch Thaisamba collision and damage |
+| [`func_801F77F4_5B3704`](func_801F77F4_5B3704.md) | Run scene contacts and player-state maintenance |
 | [`func_8020D6BC_5C8B8C`](func_8020D6BC_5C8B8C.md) | Load normal stage resources |
 | [`func_8021664C_5D1B1C`](func_8021664C_5D1B1C.md) | Select and restart an actor animation |
 | [`func_80216AB8_5D1F88`](func_80216AB8_5D1F88.md) | Advance actor model animation |

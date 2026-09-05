@@ -1,0 +1,118 @@
+{
+  "schemaVersion": 1,
+  "scope": "Native hurt-recovery render flag and projectile visual interfaces. No native binaries are included.",
+  "nativeEvidence": [
+    {
+      "symbols": [
+        "D_800C7A78",
+        "D_801FC604_5B8514",
+        "D_801FC60C_5B851C"
+      ],
+      "addresses": [
+        "0x801D9CE8",
+        "0x801D9D14",
+        "0x801D9D18",
+        "0x801D9D20",
+        "0x801D9D28",
+        "0x801D9D38",
+        "0x801D9D5C",
+        "0x8000098C",
+        "0x80000A5C",
+        "0x80000A68",
+        "0x80016C44",
+        "0x80016C50"
+      ],
+      "finding": "Ghidra decompilation plus MIPS disassembly: u8 player+d4 countdown; LHU nativecounter800C7A78 andparity1; SBobject+64 forrenderhide, decrementcountdownthenforcevisibleonzero. Frame-submit increments16bitcounter. Kind2renderer exitswhenobject+64bit0 is set. State-only appearance publishing uses recoveryactive, not oscillating visibility."
+    },
+    {
+      "symbols": [
+        "func_80034A10_35610"
+      ],
+      "addresses": [
+        "0x80034A10",
+        "0x80034B58"
+      ],
+      "finding": "Current Ghidra decompilation and symbol table: functionsizeA8, onepointerargreturnsinputpointer; clearslinks/callbacks/object/contact/commonwork.80034B58 popsfreepool, resets, thenwritesnewlinkage+callback. Resetentry hookcaninvalidateexternaltaskIDs before sameframeaddressreuse."
+    },
+    {
+      "symbols": [
+        "D_8020D220_5C9130"
+      ],
+      "addresses": [
+        "0x801DC630",
+        "0x801DC9C8",
+        "0x8020D220",
+        "0x8020D224"
+      ],
+      "finding": "Nativeinitializer writesonepointerentry at8020D220 thenstopsat8020D224, reserves0x18000bytes. Loader indexesplayertaskbyte90, loadsD80204020[character], comparesreturnedend<=base+18000. This is mutablecurrentcharacterstorage, not4immutablecharacterbuffers. DistinctsameVRAMoverlay symbolD8020D220_638600 mustnotbeconfused."
+    }
+  ],
+  "limitations": [
+    "Local deterministic flicker matches native cadence but does not synchronize counter parity between clients.",
+    "Visual tests verify flag/scale/model/collision preservation in a host fixture; not a live two-client rendering certification."
+  ],
+  "generatedAt": "2026-09-05T17:39:24+00:00",
+  "sourceFiles": [
+    {
+      "project": "mnsg-recomp-example",
+      "path": "src/anchor_player_models.c",
+      "sha256": "20f157b200359bc9f296134ec4f2456ce83c38f2a04a2089eb6b44776f86d251"
+    },
+    {
+      "project": "mnsg-recomp-example",
+      "path": "src/anchor_projectile_models.c",
+      "sha256": "0bb39270aa9958d774a19ea5661519e99f53685f598511686326d753c64707bc"
+    },
+    {
+      "project": "mnsg-recomp-example",
+      "path": "src/anchor_projectiles.c",
+      "sha256": "02ab77c947696994856a0c52e20cae236538cce73ca07273112f1589b303bd14"
+    }
+  ],
+  "inventoryReview": {
+    "adoptedNewSymbols": [
+      "D_800C7A78",
+      "D_8020D220_5C9130",
+      "func_80034A10_35610"
+    ],
+    "removedSymbols": [],
+    "fullPreviewNewSymbolCount": 240,
+    "fullPreviewRemovedSymbols": [],
+    "newSymbolUnresolvedMetadata": [],
+    "newSymbolUnresolvedHooks": [],
+    "newSymbolMetadataConflicts": [],
+    "newSymbolDeclarationDifferences": [],
+    "reason": "Adopt only task-relevant scanner records; for existing symbols refresh references/declarations from the same selected source files while preserving all other snapshots and names."
+  },
+  "compatibleDeclarationReview": {
+    "symbols": [
+      {
+        "symbol": "D_80167FC0_168BC0",
+        "variants": [
+          "extern ProjectileSceneResource D_80167FC0_168BC0[48];",
+          "extern SceneResourceEntry D_80167FC0_168BC0[SCENE_RESOURCE_ENTRY_COUNT];"
+        ]
+      },
+      {
+        "symbol": "func_80034E08_35A08",
+        "variants": [
+          "extern void *func_80034E08_35A08(void *parent, void (*update)(void *, void *),\n                                unsigned short flags);",
+          "extern void *func_80034E08_35A08(void *task_list, void (*update)(void *, void *),\n                                 unsigned short flags);"
+        ]
+      },
+      {
+        "symbol": "func_8000DBF0_E7F0",
+        "variants": [
+          "extern void *func_8000DBF0_E7F0(void *task, unsigned int model, unsigned int material,\n                              float x, float y, float z,\n                              short rx, short ry, short rz,\n                              float sx, float sy, float sz,\n                              short file8, short file9);",
+          "extern void *func_8000DBF0_E7F0(void *task, unsigned int model_ptr, unsigned int anim_ptr,\n                                float x, float y, float z,\n                                short rot_x, short rot_y, short rot_z,\n                                float scale_x, float scale_y, float scale_z,\n                                short seg8_file_id, short seg9_file_id);"
+        ]
+      }
+    ],
+    "finding": "Both SceneResourceEntry and ProjectileSceneResource are u16 file_id,u16 padding,unsigned char*data: 8-byte MIPS32 records. Task allocator callback/flag declarations and object constructor declarations retain identical argument order, widths and return types; parameter names differ. No new unresolved ABI discrepancy was accepted."
+  },
+  "sourceRevisions": {
+    "mnsg-recomp-example": "042a0de48490385d2f36b914760eb33056792c6c",
+    "mnsg-documentation": "04ae82b2114fc789ab21eba94773d2c1f0fbcdc3",
+    "Goemon64Recomp": "30775d247e912178d28fe46bf04d5d610ebc43da"
+  }
+}

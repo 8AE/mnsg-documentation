@@ -1,0 +1,173 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-05T15:49:53+00:00",
+  "scope": "Verified native player control-state bytes and nearest world-ray query. Evidence is excluded from website output; no native binaries are included.",
+  "sourceRevisions": {
+    "mnsg-recomp-example": "caa88eea1021a8ee9eb4edeb1c6d56ed64d79a2d",
+    "mnsg-documentation": "04ae82b2114fc789ab21eba94773d2c1f0fbcdc3"
+  },
+  "sourceFiles": [
+    {
+      "project": "mnsg-recomp-example",
+      "path": "src/anchor_collision_world.c",
+      "sha256": "d10177a88c4377322a28f6899a07f66595f2f1a2da8b8f26c0b17904da3eb4bb"
+    },
+    {
+      "project": "mnsg-recomp-example",
+      "path": "src/anchor_player_models.c",
+      "sha256": "d8afb6b09642d122acdbd5e606361aedd3356954b04ff17be978beb419837753"
+    },
+    {
+      "project": "mnsg-recomp-example",
+      "path": "src/utils/anchor_scripted_state.c",
+      "sha256": "5e06717b023127f58ae7e10ae96478d08ef993d2e8b2961ddcc0892749c27011"
+    }
+  ],
+  "inventoryReview": {
+    "adoptedNewSymbols": [
+      "D_801FC660_5B8570",
+      "D_801FC668_5B8578",
+      "func_801CBAF8_587A08"
+    ],
+    "removedSymbols": [],
+    "fullPreviewNewSymbolCount": 240,
+    "fullPreviewRemovedSymbols": [],
+    "reason": "The full preview includes unrelated sibling-project work. Adopted only exact scanner records and their source snapshots for the task symbols; preserved all existing inventoried symbols.",
+    "newSymbolUnresolvedMetadata": [],
+    "newSymbolUnresolvedHooks": [],
+    "newSymbolMetadataConflicts": [],
+    "newSymbolDeclarationDifferences": [],
+    "updatedExistingSource": "All existing symbol references/declarations from the changed anchor_player_models.c snapshot were refreshed together, preserving unrelated source references."
+  },
+  "nativeEvidence": [
+    {
+      "symbol": "D_800C7AE0",
+      "addresses": [
+        "0x801CBAF8",
+        "0x801CBB28",
+        "0x801CBB30",
+        "0x801CBB34"
+      ],
+      "finding": "MIPS lbu at absolute 0x800C7AE0, andi 3, nonzero branch bypasses calls 0x801CC4C0/0x801CD084/0x801CBBE8. Native common.h confirms full g_system base 0x8008CCC0 and u8 offset +0x3AE20."
+    },
+    {
+      "symbol": "D_800C7AE0",
+      "addresses": [
+        "0x801DCE10"
+      ],
+      "finding": "Native special-action input handler separately checks bit 4. The late collision handler does not use bit 4 as its bypass."
+    },
+    {
+      "symbol": "D_800C7AE3",
+      "addresses": [
+        "0x801CF770",
+        "0x801CF7BC",
+        "0x801CF7C8",
+        "0x801CF7CC",
+        "0x80223D40",
+        "0x80224324"
+      ],
+      "finding": "Move-toward helper loads byte at absolute 0x800C7AE3, ORs 1, stores byte, supplies synthetic stick magnitude/direction at player input offsets. Eocs creation sets byte=1; playback callback holds=1 until completion then clears byte=0 and selected player work input word before task deletion."
+    },
+    {
+      "symbol": "func_8002C9D4_2D5D4",
+      "addresses": [
+        "0x8002C9D4",
+        "0x8002CA5C",
+        "0x8002AA00",
+        "0x80032320",
+        "0x8002A750",
+        "0x801CF3A0"
+      ],
+      "finding": "Reviewed decompilation/disassembly: output pointer followed by seven floats; 0x48 byte output copy and same output pointer returned; static and mode-1 dynamic queries choose nearest squared distance. Downward wrapper establishes normalized direction (0,-1,0) and float distance. Native shadow positioning adds result displacement +0x18/+0x1C/+0x20 to ray origin; normal +0x24/+0x28/+0x2C; u16 hit +0x38=0x7FFF; float distance squared +0x3C; dynamic collision pointers +0x40/+0x44."
+    },
+    {
+      "symbol": "func_8002C9D4_2D5D4",
+      "addresses": [
+        "0x800323D4",
+        "0x800323D8",
+        "0x80032444",
+        "0x8003245C",
+        "0x800273E0"
+      ],
+      "finding": "Dynamic ray mode initializes nearest squared distance to float2000 via LUI0x44FA/MTC1f20 independently of requested range; candidate return is the XYZ hit-displacement squared norm from800273E0. Strict nearest comparison can omit dynamic hits beyondsqrt2000. Use normalized nonzero rays in short segments32."
+    },
+    {
+      "symbols": [
+        "D_801FC660_5B8570",
+        "D_801FC668_5B8578"
+      ],
+      "addresses": [
+        "0x801CC454",
+        "0x801CC474",
+        "0x801CC480",
+        "0x801CC484",
+        "0x801CC4B0",
+        "0x80033688"
+      ],
+      "finding": "Player constructor LHU reads charIndex*2 table entries,SH writes task+3C/+3E. Native body-contact helper reads both fields unsigned16 and multiplies radius by object scaleX and height by scaleY. This registers contact hits, not solid movement resolution.",
+      "scalarReads": {
+        "romAddresses": [
+          "0x5B8570",
+          "0x5B8578"
+        ],
+        "uint16BigEndianValues": [
+          [
+            50,
+            65,
+            40,
+            40
+          ],
+          [
+            200,
+            160,
+            140,
+            180
+          ]
+        ],
+        "sources": [
+          "/Users/ahmad/git/Goemon64Recomp/mnsg.us.decompressed.z64",
+          "/Users/ahmad/git/Goemon64Recomp/lib/mnsg/config/usa/baserom.decompressed.z64"
+        ],
+        "note": "Both local decompressed images returned these same eight halfwords; no binary content beyond the scalar values is included."
+      }
+    },
+    {
+      "symbol": "func_801CBAF8_587A08",
+      "addresses": [
+        "0x801CBAF8",
+        "0x801CBB04",
+        "0x801CBB28",
+        "0x801CBB34"
+      ],
+      "finding": "Native post callback takes task inA0 and savesA1 secondcallbackarg but doesnotuseit. Tests work+69 before helper801DABDC; &3 controlbits skip worldcollision/contactblock; transformmaintenance andcontactclear stillfollow. Entrypoint/return hooks bracket native processing."
+    },
+    {
+      "symbol": "func_80030730_31330",
+      "addresses": [
+        "0x80030730",
+        "0x800322A8",
+        "0x80032320"
+      ],
+      "finding": "Dynamic radial routine supplies radius+2 to800322A8; helper invokes80032320 mode1 with suppliedrange+2. Shared2000nearest-squareddistance caveat applies tolargeworldradiusspokes aswell."
+    }
+  ],
+  "wallCorrectionEvidence": {
+    "symbols": [
+      "func_8002EB10_2F710",
+      "func_80030730_31330"
+    ],
+    "addresses": [
+      "0x8002EB10",
+      "0x80030730",
+      "0x80030688",
+      "0x801D04F8"
+    ],
+    "finding": "Five floats after output pointer, low/high absolute Y.24 radial queries. Hit requires distance squared <= radius squared and normal.y <0.5; preserve nearest metadata; accumulates opposing X/Z corrections; output 72 bytes; hit+0x38 gates valid correction at +0x18/+0x20, deltaY+0x1C zero. Static uses8002AA00; dynamic uses800322A8."
+  },
+  "limitations": [
+    "No two-client native runtime validation was performed for these findings.",
+    "D_800C7AE3 is scoped to inspected native scripted-input paths; it does not claim every cinematic has this state.",
+    "Ray output fields +0x30..+0x37 and +0x3A..+0x3B remain opaque; a ray is not a swept volume."
+  ]
+}

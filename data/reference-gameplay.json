@@ -61,7 +61,7 @@
   },
   "D_8015C5E4": {
     "title": "Runtime current health and Tsurami update gate",
-    "summary": "The runtime current-health word, also tested by Tsurami’s root post-update callback.",
+    "summary": "The runtime current-health word, also tested by Tsurami\u2019s root post-update callback.",
     "behavior": [
       "This 32-bit word is the same storage as D_8015C608_15D208 - 0x24. The native save-start copy mirrors the saved current-health field into it; health uses half-heart units.",
       "Tsurami private post callback func_08000388_6B3628 skips its body when this value is zero. Its test is nonzero, not positive: every nonzero bit pattern allows that native processing path to proceed.",
@@ -329,13 +329,15 @@
     "title": "Adjust player health",
     "summary": "Applies a signed player-health adjustment, with negative byte deltas representing damage.",
     "behavior": [
-      "Applied damage paths use a negative signed byte; positive changes represent healing. An entry hook sees the health value before the original adjustment.",
-      "The complete native clamp, death and downstream reaction behavior is not reconstructed here. Use the native routine instead of replacing it with an assumed direct HP write."
+      "Sign-extends the argument as a signed byte. Negative values apply health loss; positive values heal. The routine updates the complete current-health word at 0x8015C5E4.",
+      "Negative adjustments clamp below zero. Positive adjustments clamp to the maximum health at 0x8015C5E0 and play the normal healing sound when health was below its maximum.",
+      "Health adjustment alone does not perform the complete hurt or death lifecycle. Those reactions belong to native player intake and subsequent player updates.",
+      "An entry hook sees health before the original adjustment, while a return hook observes the updated value."
     ],
     "cautions": [
       "A hook that reacts to negative deltas should distinguish an already-dead player and unloaded save state."
     ],
-    "confidence": "source-reviewed",
+    "confidence": "decompiled",
     "related": [
       "func_801DCCF0_598C00",
       "D_8015C608_15D208"
@@ -344,11 +346,13 @@
     "exampleExplanation": "Example of a separate currency side effect on negative HP adjustments. The original routine still applies health changes; adding a Ryo penalty is optional calling code, not the native health routine behavior.",
     "parameters": [
       {
-        "name": "hp_delta",
+        "name": "delta",
         "type": "signed char",
-        "description": "Negative for applied damage; nonnegative values are ignored by this penalty hook."
+        "description": "Signed health-unit delta; negative for damage and positive for healing."
       }
-    ]
+    ],
+    "declaration": "extern int func_801DCD48_598C58(signed char delta);",
+    "returns": "Returns 1 when the adjustment clamps, or healing is requested while already at maximum health; otherwise returns 0. This is not the amount of health changed."
   },
   "func_8020D6BC_5C8B8C": {
     "title": "Load normal stage resources",

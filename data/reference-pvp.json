@@ -1,0 +1,281 @@
+{
+  "func_80033024_33C24": {
+    "title": "Scan an attack-task subtree against a victim subtree",
+    "summary": "Decodes active native attack spheres and tests them against a selected victim-task group.",
+    "declaration": "extern void func_80033024_33C24(void *attackers, void *victims);",
+    "behavior": [
+      "Walks linked tasks beginning at attackers, stopping when a subsequent task priority at +0x20 is no greater than the starting priority. The links therefore delimit the native task subtree.",
+      "Requires a kind-2 render object at task +0x18, a nonzero attack descriptor at +0x48, an empty incoming contact pointer at +0x38, and outgoing collision bit 0x02 at byte +0x30.",
+      "Descriptor 0xFFFFFFFF selects a fixed sphere: unsigned radius at task +0x4E, signed Y/Z offsets at +0x50/+0x52, and zero X offset. Other descriptors resolve through the render object segment bindings and interpolate the sphere data using object animation frame +0x28.",
+      "Before each call to func_80033404_34004, writes local sphere X/Y/Z/radius to D_80168F80_169B80 through D_80168F8C_169B8C. One task can supply several spheres, and the scene coordinator can visit the same sphere again for another victim group."
+    ],
+    "example": "#include \"modding.h\"\n\nextern void *D_801FC600_5B8510;\nstatic int scanning_player_attacks;\n\nRECOMP_HOOK(\"func_80033024_33C24\")\nvoid observe_attack_group(void *attackers, void *victims)\n{\n    (void)victims;\n    scanning_player_attacks = D_801FC600_5B8510 &&\n                              attackers == D_801FC600_5B8510;\n}\n\nRECOMP_HOOK_RETURN(\"func_80033024_33C24\")\nvoid finish_attack_group(void)\n{\n    scanning_player_attacks = 0;\n}\n",
+    "cautions": [
+      "Both list pointers must describe initialized live native task groups. The implementation reads starting priority before its null check.",
+      "This is a stateful contact scan, not an isolated geometry query. Do not run it a second time merely to observe attacks.",
+      "A descriptor or action ID alone does not establish an active hit. Observe the decoded sphere at its native call boundary and avoid counting repeated victim-group scans as new attacks."
+    ],
+    "confidence": "decompiled",
+    "related": [
+      "func_80033404_34004",
+      "D_801FC600_5B8510"
+    ]
+  },
+  "func_80033404_34004": {
+    "title": "Test the current native attack sphere",
+    "summary": "Tests the sphere decoded by the attack-group scanner against eligible victim tasks.",
+    "declaration": "extern void func_80033404_34004(void *attacker_object, void *attacker_task, void *victims);",
+    "behavior": [
+      "At entry, four float scratch globals hold the current attacker-local X/Y/Z/radius. func_80033024_33C24 initializes them for both animated melee volumes and fixed projectile volumes.",
+      "The overlap path scales the offsets by object +0x1C/+0x20/+0x24, rotates them with func_80033898_34498 using the masked 10-bit rotations at +0x14/+0x16/+0x18, and adds world position at +0x08/+0x0C/+0x10. Attack radius is multiplied by object scale X.",
+      "Victim eligibility requires an appropriate incoming collision flag, a distinct kind-2 render object, no existing task +0x38 incoming hit, and nonzero body radius at +0x3C. Ordinary incoming bit 0x01 and special filtered incoming bit 0x04 are separate paths.",
+      "An overlap writes the victim task pointer to attacker +0x34, the attacker pointer to victim +0x38, and the current one-based sphere index to victim byte +0x44. The scan stops once attacker +0x34 is nonzero. This function does not itself subtract health.",
+      "The native body test uses radius at task +0x3C times object scale X and height at +0x3E times scale Y. For nonzero height it expands the X/Z radius by the attack sphere radius and checks the sphere against the body Y interval."
+    ],
+    "example": "#include \"modding.h\"\n\nextern float D_80168F80_169B80;\nextern float D_80168F84_169B84;\nextern float D_80168F88_169B88;\nextern float D_80168F8C_169B8C;\nstatic float copied_local_sphere[4];\n\nRECOMP_HOOK(\"func_80033404_34004\")\nvoid observe_decoded_sphere(void *object, void *attacker, void *victims)\n{\n    (void)object; (void)attacker; (void)victims;\n    copied_local_sphere[0] = D_80168F80_169B80;\n    copied_local_sphere[1] = D_80168F84_169B84;\n    copied_local_sphere[2] = D_80168F88_169B88;\n    copied_local_sphere[3] = D_80168F8C_169B8C;\n}\n",
+    "cautions": [
+      "The scratch sphere belongs to the current scan only. Copy it at entry; do not retain its contents as a later frame or another attacker state.",
+      "Adding arbitrary tasks to native victim lists consumes hit records and can alter projectile or enemy callbacks. A read-only observer should leave task +0x34/+0x38 untouched.",
+      "The victim pointer must be a live initialized list; its priority is read before a null check.",
+      "Radius zero should not be promoted to a damaging body-proximity event by an observer. Health, invulnerability, ownership and hit deduplication remain separate concerns."
+    ],
+    "confidence": "decompiled",
+    "related": [
+      "func_80033024_33C24",
+      "func_80033898_34498",
+      "D_80168F80_169B80",
+      "D_80168F8C_169B8C"
+    ]
+  },
+  "func_80033898_34498": {
+    "title": "Rotate a vector using native object angles",
+    "summary": "Applies the native three-axis rotation transform to caller-owned X/Y/Z floats.",
+    "declaration": "extern void func_80033898_34498(unsigned short rx, unsigned short ry, unsigned short rz, float *x, float *y, float *z);",
+    "behavior": [
+      "Receives three unsigned 16-bit angle values followed by three writable float pointers. The vector is updated in place; there is no return value.",
+      "Native contact code masks object rotation halfwords to 0x03FF before this call. A full turn spans 1024 angle units.",
+      "This helper rotates only. Callers separately apply component scale before rotation and translation afterward."
+    ],
+    "example": "extern void func_80033898_34498(unsigned short rx, unsigned short ry, unsigned short rz, float *x, float *y, float *z);\n\nvoid rotate_object_offset(const void *render_object, float *x, float *y, float *z)\n{\n    const unsigned char *object = render_object;\n    if (!object || !x || !y || !z) return;\n    func_80033898_34498(*(const unsigned short *)(object + 0x14) & 0x03FF,\n                       *(const unsigned short *)(object + 0x16) & 0x03FF,\n                       *(const unsigned short *)(object + 0x18) & 0x03FF, x, y, z);\n}\n",
+    "cautions": [
+      "The three float pointers must be valid writable storage. Do not pass task fields in place unless modifying that native state is intended.",
+      "This is the forward rotation used for attacker-local offsets. Victim-space conversion uses a different inverse helper."
+    ],
+    "confidence": "decompiled",
+    "related": [
+      "func_80033404_34004"
+    ]
+  },
+  "func_801F77F4_5B3704": {
+    "title": "Run scene contacts and player-state maintenance",
+    "summary": "Native scene callback that coordinates contact scans between task groups and performs additional scene-state checks.",
+    "declaration": "extern void func_801F77F4_5B3704(void *task, void *object);",
+    "behavior": [
+      "The native callback saves two scheduler arguments. Its inspected body obtains the task-group pointers from scene globals instead of using those arguments for contact selection.",
+      "After scene preparation, invokes func_80033024_33C24 for selected attacker/victim groups. While the player-manager pointer is live, four calls use D_801FC600_5B8510 as the outgoing attacker subtree.",
+      "Other pairs test actor and projectile groups against the playable-player group. The callback subsequently processes height, scene-exit and related state; it has effects beyond hit detection."
+    ],
+    "example": "#include \"modding.h\"\n\nstatic unsigned int observed_contact_frames;\n\nRECOMP_HOOK(\"func_801F77F4_5B3704\")\nvoid observe_contact_frame(void)\n{\n    ++observed_contact_frames;\n}\n",
+    "cautions": [
+      "Observe the normal scheduler invocation. Calling the callback again repeats stateful scene work.",
+      "The callback belongs to its native gameplay overlay and requires initialized scene managers. A hook that ignores the scheduler arguments may declare no parameters."
+    ],
+    "confidence": "decompiled",
+    "related": [
+      "func_80033024_33C24",
+      "D_801FC600_5B8510"
+    ]
+  },
+  "D_801FC600_5B8510": {
+    "title": "Player-manager task subtree root",
+    "summary": "Pointer to the native player-manager task used as the root of player contact scans.",
+    "declaration": "extern void *D_801FC600_5B8510;",
+    "behavior": [
+      "The scene contact coordinator passes this pointer as the root attacker or victim list. Linked tasks with greater priority belong to the scanned subtree.",
+      "This root is distinct from D_801FC604_5B8514, the current playable-player task. An outgoing player-group scan can include owned projectile children as well as the playable actor.",
+      "Inspected projectile constructors store the owning playable-player task at projectile +0x5C. For a playable task itself, +0x5C instead points to player work; those layouts must not be confused."
+    ],
+    "example": "extern void *D_801FC600_5B8510;\n\nint is_player_contact_group(const void *group)\n{\n    return D_801FC600_5B8510 && group == D_801FC600_5B8510;\n}\n",
+    "cautions": [
+      "Validate the current gameplay scene and task lifetime. A retained pointer is not a durable identity across scene transitions.",
+      "Group membership alone does not identify an individual attack owner; use the live playable task and verified projectile ownership fields when attribution matters."
+    ],
+    "confidence": "decompiled",
+    "related": [
+      "D_801FC604_5B8514",
+      "func_80033024_33C24"
+    ]
+  },
+  "D_80168F80_169B80": {
+    "title": "Current native attack sphere X offset",
+    "summary": "Float scratch storage for the current attack sphere x offset in attacker-local units.",
+    "declaration": "extern float D_80168F80_169B80;",
+    "behavior": [
+      "The native attack scanner writes this value immediately before func_80033404_34004 tests the decoded sphere. Animated descriptors use the render object animation frame; descriptor 0xFFFFFFFF supplies a fixed task sphere.",
+      "Scale the three local offsets by their respective object scales, rotate with the native object transform, then add object world position to obtain the sphere center.",
+      "This mutable scratch value is overwritten for every sphere and victim-group scan. It is not a persistent property of the current player."
+    ],
+    "example": "#include \"modding.h\"\n\nextern float D_80168F80_169B80;\nstatic float copied_sphere_value;\n\nRECOMP_HOOK(\"func_80033404_34004\")\nvoid copy_current_sphere_value(void)\n{\n    copied_sphere_value = D_80168F80_169B80;\n}\n",
+    "cautions": [
+      "Read at the native sphere-test entry boundary and copy the value before using it elsewhere.",
+      "The address holds one float, not a pointer or an enumerated flag."
+    ],
+    "confidence": "decompiled",
+    "related": [
+      "func_80033024_33C24",
+      "func_80033404_34004"
+    ]
+  },
+  "D_80168F84_169B84": {
+    "title": "Current native attack sphere Y offset",
+    "summary": "Float scratch storage for the current attack sphere y offset in attacker-local units.",
+    "declaration": "extern float D_80168F84_169B84;",
+    "behavior": [
+      "The native attack scanner writes this value immediately before func_80033404_34004 tests the decoded sphere. Animated descriptors use the render object animation frame; descriptor 0xFFFFFFFF supplies a fixed task sphere.",
+      "Scale the three local offsets by their respective object scales, rotate with the native object transform, then add object world position to obtain the sphere center.",
+      "This mutable scratch value is overwritten for every sphere and victim-group scan. It is not a persistent property of the current player."
+    ],
+    "example": "#include \"modding.h\"\n\nextern float D_80168F84_169B84;\nstatic float copied_sphere_value;\n\nRECOMP_HOOK(\"func_80033404_34004\")\nvoid copy_current_sphere_value(void)\n{\n    copied_sphere_value = D_80168F84_169B84;\n}\n",
+    "cautions": [
+      "Read at the native sphere-test entry boundary and copy the value before using it elsewhere.",
+      "The address holds one float, not a pointer or an enumerated flag."
+    ],
+    "confidence": "decompiled",
+    "related": [
+      "func_80033024_33C24",
+      "func_80033404_34004"
+    ]
+  },
+  "D_80168F88_169B88": {
+    "title": "Current native attack sphere Z offset",
+    "summary": "Float scratch storage for the current attack sphere z offset in attacker-local units.",
+    "declaration": "extern float D_80168F88_169B88;",
+    "behavior": [
+      "The native attack scanner writes this value immediately before func_80033404_34004 tests the decoded sphere. Animated descriptors use the render object animation frame; descriptor 0xFFFFFFFF supplies a fixed task sphere.",
+      "Scale the three local offsets by their respective object scales, rotate with the native object transform, then add object world position to obtain the sphere center.",
+      "This mutable scratch value is overwritten for every sphere and victim-group scan. It is not a persistent property of the current player."
+    ],
+    "example": "#include \"modding.h\"\n\nextern float D_80168F88_169B88;\nstatic float copied_sphere_value;\n\nRECOMP_HOOK(\"func_80033404_34004\")\nvoid copy_current_sphere_value(void)\n{\n    copied_sphere_value = D_80168F88_169B88;\n}\n",
+    "cautions": [
+      "Read at the native sphere-test entry boundary and copy the value before using it elsewhere.",
+      "The address holds one float, not a pointer or an enumerated flag."
+    ],
+    "confidence": "decompiled",
+    "related": [
+      "func_80033024_33C24",
+      "func_80033404_34004"
+    ]
+  },
+  "D_80168F8C_169B8C": {
+    "title": "Current native attack sphere radius",
+    "summary": "Float scratch storage for the current attack sphere radius in attacker-local units.",
+    "declaration": "extern float D_80168F8C_169B8C;",
+    "behavior": [
+      "The native attack scanner writes this value immediately before func_80033404_34004 tests the decoded sphere. Animated descriptors use the render object animation frame; descriptor 0xFFFFFFFF supplies a fixed task sphere.",
+      "Multiply by attacker object scale X to obtain world radius.",
+      "This mutable scratch value is overwritten for every sphere and victim-group scan. It is not a persistent property of the current player."
+    ],
+    "example": "#include \"modding.h\"\n\nextern float D_80168F8C_169B8C;\nstatic float copied_sphere_value;\n\nRECOMP_HOOK(\"func_80033404_34004\")\nvoid copy_current_sphere_value(void)\n{\n    copied_sphere_value = D_80168F8C_169B8C;\n}\n",
+    "cautions": [
+      "Read at the native sphere-test entry boundary and copy the value before using it elsewhere.",
+      "The address holds one float, not a pointer or an enumerated flag."
+    ],
+    "confidence": "decompiled",
+    "related": [
+      "func_80033024_33C24",
+      "func_80033404_34004"
+    ]
+  },
+  "func_801D9E9C_595DAC": {
+    "title": "Process native player damage and contact reactions",
+    "summary": "Handles death state, environmental hazards and the incoming native contact for a fully initialized playable player.",
+    "declaration": "extern int func_801D9E9C_595DAC(void *player);",
+    "behavior": [
+      "Checks zero health, floor hazards and crushing before consulting the attacker pointer at player task +0x38. A nonzero result therefore does not identify a particular contact or prove health was lost.",
+      "For an ordinary type-1 attacker, reads attacker +0x18 as an object pointer, byte +0x4C as hit kind and byte +0x6D as damage. The object world X/Y/Z at +0x08/+0x0C/+0x10 establish hurt direction. One damage unit is the ordinary half-heart baseline.",
+      "Routes ordinary hits through native armour, player action/context, health loss, hurt animation and direction handling. Sudden Impact vulnerability can double the health loss. An armour-blocked hit can start invulnerability even while the function returns zero.",
+      "The inspected type-1 paths do not retain their attacker descriptor. Type 2 is different: interaction paths can retain the attacker in player +0xE0. Do not generalize type-1 lifetime behavior to every hit kind.",
+      "The normal player pre-update calls func_801E8E24_5A4D34(player, 1) after a nonzero result to cancel eligible owned projectile tasks."
+    ],
+    "example": "#include \"modding.h\"\n\nstatic const void *observed_incoming_attacker;\n\nRECOMP_HOOK(\"func_801D9E9C_595DAC\")\nvoid observe_player_damage_intake(void *player)\n{\n    const unsigned char *task = player;\n    if (!task) return;\n    observed_incoming_attacker = *(void *const *)(task + 0x38);\n}\n",
+    "cautions": [
+      "Requires the real playable task, live work/object/projectile-list fields and initialized gameplay/save state. A standalone visual actor is not a valid receiver.",
+      "The routine does not reproduce all of its caller availability checks. Normal intake is gated by work +0x69, the control-state bytes and native contact/invulnerability state.",
+      "An observer must preserve existing native attacker records and environmental-hit priority. A second call can process state changes beyond the intended contact.",
+      "Return value is a native reaction/cleanup indicator, not a damage amount or a complete accepted-hit boolean. Compare health and recovery state when those distinctions matter."
+    ],
+    "confidence": "decompiled",
+    "related": [
+      "func_801CB824_587734",
+      "func_801E8E24_5A4D34",
+      "func_801DCD48_598C58",
+      "D_801FC604_5B8514"
+    ],
+    "returns": "Integer native reaction indicator. Nonzero triggers the normal caller's projectile cleanup; zero can still accompany armour absorption and newly started recovery."
+  },
+  "func_801E8E24_5A4D34": {
+    "title": "Cancel eligible player-owned projectiles",
+    "summary": "Marks selected projectiles in the playable player's owned task subtree for deferred removal.",
+    "declaration": "extern void func_801E8E24_5A4D34(void *player, unsigned char reason);",
+    "behavior": [
+      "Reads the owned-projectile manager through player task +0xDC, follows its task links, and examines tasks while their priority exceeds the playable player's priority.",
+      "Uses each child's type byte at +0x64 to select the native cancellation table. Eligible entries are marked with byte +0x65 = 1 and byte +0x66 = reason.",
+      "The owned-projectile manager processes these marks during its ordinary updates. The normal damage caller supplies reason 1 after a nonzero intake result."
+    ],
+    "example": "#include \"modding.h\"\n\nstatic unsigned char last_projectile_cancel_reason;\n\nRECOMP_HOOK(\"func_801E8E24_5A4D34\")\nvoid observe_projectile_cancellation(void *player, unsigned char reason)\n{\n    (void)player;\n    last_projectile_cancel_reason = reason;\n}\n",
+    "cautions": [
+      "The player and its +0xDC manager must be live and initialized; the native function does not perform these pointer checks.",
+      "This mutates selected owned projectile tasks. It is not a generic task destructor and does not cancel every projectile type."
+    ],
+    "confidence": "decompiled",
+    "related": [
+      "func_801D9E9C_595DAC",
+      "func_801CB824_587734"
+    ]
+  },
+  "func_801CB824_587734": {
+    "title": "Run the playable-player pre-update",
+    "summary": "Advances player animation and processes input, invulnerability, damage and action transitions before the player update callback.",
+    "declaration": "extern void func_801CB824_587734(void *player, void *render_object);",
+    "behavior": [
+      "Expects the scheduler's real playable task and its render object. Player work byte +0x69 gates the main body while character resources change.",
+      "Updates animation frame and input-derived state, then runs normal control and invulnerability maintenance when the low control bits permit it.",
+      "Calls func_801D9E9C_595DAC only when D_800C7AE2 and D_800C7AE3 are both zero and D_800C7AE0 equals 0 or 4. Calls func_801E8E24_5A4D34(player, 1) after a nonzero intake result.",
+      "An entry hook runs before these native updates. A return hook sees their resulting state; it cannot be treated as the same timing boundary."
+    ],
+    "example": "#include \"modding.h\"\n\nextern void *D_801FC604_5B8514;\nstatic unsigned char observed_invulnerability;\n\nRECOMP_HOOK(\"func_801CB824_587734\")\nvoid observe_player_before_update(void *player, void *object)\n{\n    (void)object;\n    if (player && player == D_801FC604_5B8514)\n        observed_invulnerability = ((unsigned char *)player)[0xD4];\n}\n",
+    "cautions": [
+      "Do not apply this playable callback to a remote visual object or call it twice to obtain a collision query.",
+      "Damage availability is narrower than the late collision callback's low-bit gate. Preserve the individual native byte checks instead of substituting a guessed action blacklist."
+    ],
+    "confidence": "decompiled",
+    "related": [
+      "func_801CBAF8_587A08",
+      "func_801D9E9C_595DAC",
+      "D_800C7AE0",
+      "D_800C7AE2",
+      "D_800C7AE3"
+    ]
+  },
+  "D_800C7AE2": {
+    "title": "Native player damage-intake blocking byte",
+    "summary": "A live control-state byte whose nonzero value blocks normal playable-player damage intake.",
+    "declaration": "extern unsigned char D_800C7AE2;",
+    "behavior": [
+      "Byte storage at g_system +0x3AE22. The exported symbol has no ROM suffix.",
+      "The native playable pre-update requires this byte to be zero before calling damage intake. It separately requires D_800C7AE3 to be zero and D_800C7AE0 to equal 0 or 4.",
+      "Other native paths also read and write this byte; the inspected damage gate does not establish a complete semantic enumeration for all of its values."
+    ],
+    "example": "extern unsigned char D_800C7AE0;\nextern unsigned char D_800C7AE2;\nextern unsigned char D_800C7AE3;\n\nint native_damage_control_gate_is_open(void)\n{\n    return D_800C7AE2 == 0 && D_800C7AE3 == 0 &&\n           (D_800C7AE0 == 0 || D_800C7AE0 == 4);\n}\n",
+    "cautions": [
+      "This reproduces only the native control-byte gate. It does not validate a player, save, contact, resource transition or invulnerability timer.",
+      "Do not replace the one-byte declaration with a word or a pointer."
+    ],
+    "confidence": "decompiled",
+    "related": [
+      "func_801CB824_587734",
+      "D_800C7AE0",
+      "D_800C7AE3"
+    ]
+  }
+}

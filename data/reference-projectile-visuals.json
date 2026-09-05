@@ -1,0 +1,71 @@
+{
+  "D_800C7A78": {
+    "title": "Native frame-submission counter",
+    "summary": "Unsigned 16-bit frame counter whose parity drives the native player hurt-recovery flicker.",
+    "declaration": "extern unsigned short D_800C7A78;",
+    "behavior": [
+      "A live unsigned 16-bit counter at g_system +0x3ADB8. The exact exported symbol has no ROM suffix.",
+      "The native frame-submission routine at 0x8000098C increments this counter when it submits a prepared frame. It wraps at the width of the stored halfword.",
+      "The player recovery updater reads this counter with LHU. While player task byte +0xD4 is nonzero, it writes object byte +0x64 = counter & 1: even parity is visible and odd parity hides rendering. When the timer reaches zero it forces the object visible.",
+      "The kind-2 model renderer checks object +0x64 bit 0 before drawing. That render flag does not remove the task, change its model or scale, or disable its collision body."
+    ],
+    "example": "extern unsigned short D_800C7A78;\n\n/* Call during the normal update of a live, caller-owned kind-2 object. */\nvoid apply_recovery_flicker(void *object, unsigned char recovery_active)\n{\n    unsigned char *bytes = object;\n    if (!bytes) return;\n    unsigned char hidden = recovery_active ? (D_800C7A78 & 1u) : 0;\n    bytes[0x64] = (unsigned char)((bytes[0x64] & 0xFEu) | hidden);\n}\n",
+    "exampleExplanation": "Updates only the native render-hide bit, preserving the remaining object state. The original player recovery updater also manages invulnerability and its countdown; this visual helper does not replace that gameplay behavior.",
+    "cautions": [
+      "This is a native frame counter, not elapsed seconds or a timestamp. Its phase is local to one running game.",
+      "Do not simulate flicker by deleting or unbinding an actor, setting its scale to zero, or disabling collision. Native flicker changes the render flag only.",
+      "Read the halfword at its exact width. A word access would include neighboring native state."
+    ],
+    "confidence": "decompiled",
+    "related": [
+      "D_801FC604_5B8514",
+      "D_801FC60C_5B851C"
+    ]
+  },
+  "func_80034A10_35610": {
+    "title": "Reset native task storage",
+    "summary": "Clears native task linkage, callback, object, contact and common work fields before storage is reused.",
+    "declaration": "extern void *func_80034A10_35610(void *task);",
+    "behavior": [
+      "Receives a task-storage pointer and returns the same pointer. Clears links at +0x00/+0x04, callbacks, primary and secondary object pointers, contact state and the common task work range.",
+      "The native allocator at 0x80034B58 calls this resetter after taking a task from the free pool and before writing its new linkage, priority and callback.",
+      "An entry hook can discard cached external identities associated with the task address before the new task lifetime begins. Address equality alone cannot distinguish old and newly allocated tasks."
+    ],
+    "example": "#include \"modding.h\"\n\nstatic void *observed_task;\n\nRECOMP_HOOK(\"func_80034A10_35610\")\nvoid forget_reset_task(void *task)\n{\n    if (observed_task == task) observed_task = 0;\n}\n",
+    "exampleExplanation": "The hook invalidates a caller-owned cached identity and leaves native reset/allocation behavior untouched.",
+    "cautions": [
+      "This is a storage resetter, not a safe destructor for a linked task. Calling it directly on a live actor erases pointers without performing its complete destruction lifecycle.",
+      "At an entry hook, fields still belong to the preceding storage state; they do not describe the new object that the allocator has not constructed yet.",
+      "The same task and object addresses can be reused within one frame. Use lifecycle observation when assigning a durable external identity."
+    ],
+    "returns": "The input task pointer.",
+    "confidence": "decompiled",
+    "related": [
+      "func_80034E08_35A08",
+      "func_80034EF8_35AF8"
+    ]
+  },
+  "D_8020D220_5C9130": {
+    "title": "Reusable player broad-resource buffer",
+    "summary": "Native pointer storage for the current player's reusable broad-character resource buffer.",
+    "declaration": "extern void *D_8020D220_5C9130[];",
+    "behavior": [
+      "The native resource initializer at 0x801DC630 reserves 0x18000 bytes from the scene resource arena and writes the buffer pointer at entry 0. The inspected initializer establishes only this one entry.",
+      "The character-resource loader at 0x801DC9C8 indexes this storage using the playable task's byte at +0x90, loads the broad file selected by D_80204020_5BFF30[character], and checks that its returned end pointer stays within the reserved 0x18000 bytes.",
+      "Player-owned visual constructors can bind this buffer as their broad-resource segment. It holds the currently loaded character data and can be overwritten during a character change."
+    ],
+    "example": "extern void *D_8020D220_5C9130[];\n\n/* Read only after native player resource initialization in the live scene. */\nconst unsigned char *current_player_broad_buffer(void)\n{\n    return D_8020D220_5C9130[0];\n}\n",
+    "exampleExplanation": "Returns the single buffer entry established by the inspected initializer. The pointer does not grant ownership of the resource arena.",
+    "cautions": [
+      "This is pointer storage, not the beginning of the character file itself. Dereference entry 0 to obtain the buffer.",
+      "Only index 0 is established by the inspected initialization. Do not infer a four-character array or independent buffers from native indexed syntax.",
+      "The address also appears in another overlay with a different ROM suffix. Preserve the complete _5C9130 symbol identity.",
+      "A cached pointer can remain numerically equal while its character contents change. Resolve its resource identity and lifecycle before retaining a visual reference."
+    ],
+    "confidence": "decompiled",
+    "related": [
+      "D_80204020_5BFF30",
+      "D_801FC604_5B8514"
+    ]
+  }
+}

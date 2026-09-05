@@ -1,0 +1,265 @@
+{
+  "D_800C7AE0": {
+    "title": "Player control and collision state",
+    "summary": "Native system byte whose low two bits suspend the normal player collision update.",
+    "declaration": "extern unsigned char D_800C7AE0;",
+    "behavior": [
+      "This byte occupies full system-structure offset +0x3AE20, at runtime address 0x800C7AE0. It is stored directly; it is not a pointer.",
+      "The late player update at 0x801CBAF8 tests (value & 3) before calling its world collision and contact handlers. Either low bit bypasses those handlers.",
+      "Bit 0x04 also suppresses selected player input actions, but does not by itself bypass the late collision handlers."
+    ],
+    "cautions": [
+      "The byte is a control mask, not a universal cutscene boolean. Script-driven movement can continue to use world collision while this low-bit mask is clear; inspect D_800C7AE3 for that separate state.",
+      "Read this state during a valid gameplay lifecycle. Do not clear native bits to force player collision during scripted sequences."
+    ],
+    "confidence": "decompiled",
+    "related": [
+      "D_800C7AE3",
+      "D_8015C5C8_15D1C8"
+    ],
+    "example": "extern unsigned char D_800C7AE0;\n\nint native_player_collision_is_suspended(void)\n{\n    return (D_800C7AE0 & 3u) != 0;\n}\n"
+  },
+  "D_800C7AE3": {
+    "title": "Scripted player input state",
+    "summary": "Native system byte held while scripted movement supplies player input.",
+    "declaration": "extern unsigned char D_800C7AE3;",
+    "behavior": [
+      "This byte occupies full system-structure offset +0x3AE23, at runtime address 0x800C7AE3. It is stored directly; it is not a pointer.",
+      "The player move-toward helper at 0x801CF770 sets bit 0 and supplies a synthetic stick magnitude and direction. Eocs player-input playback creation also sets the byte to 1.",
+      "The Eocs playback update at 0x80224324 holds the byte at 1 while playback is active, then clears it to 0, clears the selected player input word, reports completion, and deletes the playback task.",
+      "Scripted input can remain active while the normal native world-collision update runs. Check this state separately when an additional obstacle must not interfere with scripted player positioning."
+    ],
+    "cautions": [
+      "Nonzero indicates native scripted-input ownership in the inspected movement paths; it is not a catalog of every cinematic or camera sequence.",
+      "Leave writes and clearing to the native script lifecycle. Do not infer scripted input from an idle action or zero velocity."
+    ],
+    "confidence": "decompiled",
+    "related": [
+      "D_800C7AE0",
+      "D_8015C5C8_15D1C8"
+    ],
+    "example": "extern unsigned char D_800C7AE3;\n\nint scripted_player_input_is_active(void)\n{\n    return D_800C7AE3 != 0;\n}\n"
+  },
+  "func_8002C9D4_2D5D4": {
+    "title": "Query nearest world collision along a ray",
+    "summary": "Tests static and registered dynamic collision geometry and copies a 0x48-byte nearest-hit record to the caller.",
+    "declaration": "extern void *func_8002C9D4_2D5D4(\n    void *out, float x, float y, float z,\n    float dx, float dy, float dz, float max_distance);",
+    "parameters": [
+      {
+        "name": "out",
+        "type": "void *",
+        "description": "Writable, four-byte-aligned storage for the full 0x48-byte query record."
+      },
+      {
+        "name": "x, y, z",
+        "type": "float",
+        "description": "World-space ray origin."
+      },
+      {
+        "name": "dx, dy, dz",
+        "type": "float",
+        "description": "Nonzero normalized ray direction."
+      },
+      {
+        "name": "max_distance",
+        "type": "float",
+        "description": "Positive maximum distance to query."
+      }
+    ],
+    "returns": "Returns the out pointer. The returned pointer is not a hit indicator; read the unsigned 16-bit hit field at out +0x38, where 0x7FFF indicates a hit.",
+    "behavior": [
+      "The query considers static level collision and currently registered dynamic collision geometry, selecting the nearest hit by squared distance. It does not require a playable-player task.",
+      "The output begins with the six input floats at offsets +0x00 through +0x14. Hit displacement from the query origin is stored as three floats at +0x18/+0x1C/+0x20; the hit surface normal is at +0x24/+0x28/+0x2C.",
+      "The unsigned 16-bit hit field is at +0x38 and the float squared hit distance is at +0x3C. The two 32-bit pointer slots at +0x40/+0x44 identify dynamic collision object/task storage when supplied by that path.",
+      "Recover a world-space hit point by adding the displacement to the original query origin. Native caller 0x801CF3A0 uses that exact operation.",
+      "The dynamic ray path initializes its nearest squared-distance threshold to 2000.0 independently of max_distance. Dynamic hits at distances beyond approximately 44.72 world units can therefore be omitted even when max_distance is larger."
+    ],
+    "cautions": [
+      "For long casts that must include dynamic meshes, split the path into segments safely below sqrt(2000), such as 32 world units, and stop at the first hit. Normalize the nonzero direction before casting each segment. Increasing max_distance alone does not extend the dynamic nearest-hit threshold.",
+      "Run only while the scene collision data and native dynamic actor lists are loaded and valid. The query reads scene-owned mesh resources and is not safe to treat as an independent geometry library during loading or teardown.",
+      "The function copies 72 bytes even when there is no hit. Allocate the whole record, preserve its native layout, and check the hit field before using hit displacement, normal, distance or dynamic pointers.",
+      "Bytes +0x30 through +0x37 and +0x3A through +0x3B have not been fully decoded. Preserve them as opaque storage. Dynamic pointers are scene-owned; do not retain them across task deletion or room changes.",
+      "This is a ray query, not a full swept cylinder or body solver. A single ray does not establish clearance for a character-sized volume."
+    ],
+    "confidence": "decompiled",
+    "related": [
+      "D_800C7AE0",
+      "D_800C7AE3"
+    ],
+    "example": "#include <stdint.h>\n\ntypedef struct NativeWorldRayHit {\n    float origin[3];\n    float direction[3];\n    float displacement[3];\n    float normal[3];\n    uint8_t opaque_30[8];\n    uint16_t hit;\n    uint16_t opaque_3a;\n    float distance_squared;\n    void *dynamic_object;\n    void *dynamic_task;\n} NativeWorldRayHit;\n\n_Static_assert(sizeof(void *) == 4, \"Native pointers require MIPS32\");\n_Static_assert(sizeof(NativeWorldRayHit) == 0x48, \"Native query layout\");\n\nextern void *func_8002C9D4_2D5D4(\n    void *out, float x, float y, float z,\n    float dx, float dy, float dz, float max_distance);\n\n/* Call only in a valid loaded scene. */\nint query_nearby_ground(float x, float y, float z, float *ground_y)\n{\n    NativeWorldRayHit result = {0};\n    if (!ground_y) return 0;\n    func_8002C9D4_2D5D4(&result, x, y, z, 0.0f, -1.0f, 0.0f, 32.0f);\n    if (result.hit != 0x7FFFu) return 0;\n    *ground_y = y + result.displacement[1];\n    return 1;\n}\n",
+    "exampleExplanation": "The MIPS32 layout and hit check match the native record. The downward ray is limited to 32 world units so the dynamic nearest-hit threshold cannot hide a hit within this cast. Longer paths need multiple short casts in order."
+  },
+  "func_8002EB10_2F710": {
+    "title": "Compute static level wall correction",
+    "summary": "Computes horizontal wall separation at two heights against static level collision geometry.",
+    "declaration": "extern void *func_8002EB10_2F710(\n    void *out, float x, float low_y, float high_y, float z, float radius);",
+    "parameters": [
+      {
+        "name": "out",
+        "type": "void *",
+        "description": "Writable, four-byte-aligned storage for the complete 0x48-byte collision record."
+      },
+      {
+        "name": "x, z",
+        "type": "float",
+        "description": "World-space horizontal center of the body."
+      },
+      {
+        "name": "low_y, high_y",
+        "type": "float",
+        "description": "Two absolute world-space elevations at which to sample radial wall clearance."
+      },
+      {
+        "name": "radius",
+        "type": "float",
+        "description": "Positive horizontal clearance radius."
+      }
+    ],
+    "returns": "Returns the out pointer. Read the unsigned 16-bit hit field at out +0x38; 0x7FFF indicates a correction and 0 indicates none.",
+    "behavior": [
+      "Samples twelve horizontal directions at each of two elevations, for 24 radial collision queries against static level geometry. Each ray extends radius +2 world units.",
+      "Accepts hits whose squared distance is at most radius squared and whose surface-normal Y component is less than 0.5. It preserves nearest-hit metadata and accumulates horizontal corrections from opposing directions.",
+      "On a hit, floats at output +0x18 and +0x20 contain the X/Z correction to add to the queried center. The float at +0x1C is set to 0. These output fields are body corrections, unlike the point displacement returned by a single ray query.",
+      "The normal remains at +0x24/+0x28/+0x2C and the hit field at +0x38. The function copies the full 0x48-byte record to out."
+    ],
+    "cautions": [
+      "Only use while the active scene collision resources are loaded. Dynamic collision lists and pointers are native scene-owned state.",
+      "On a miss, only the hit state is established; other record contents can be uninitialized. Do not read or apply correction fields unless hit is 0x7FFF.",
+      "The query measures clearance at the supplied center and two elevations. It does not sweep the full path between previous and target positions, so fast movement still needs a path constraint."
+    ],
+    "confidence": "decompiled",
+    "related": [
+      "func_80030730_31330",
+      "func_8002C9D4_2D5D4"
+    ],
+    "example": "#include <stdint.h>\n\ntypedef struct NativeWallCorrection {\n    float query_prefix[6];\n    float delta[3];\n    float normal[3];\n    uint8_t opaque_30[8];\n    uint16_t hit;\n    uint16_t opaque_3a;\n    float distance_squared;\n    void *dynamic_object;\n    void *dynamic_task;\n} NativeWallCorrection;\n\n_Static_assert(sizeof(void *) == 4, \"Native pointers require MIPS32\");\n_Static_assert(sizeof(NativeWallCorrection) == 0x48, \"Native query layout\");\n\nextern void *func_8002EB10_2F710(\n    void *out, float x, float low_y, float high_y, float z, float radius);\n\n/* Call only with valid scene resources and caller-selected dimensions. */\nint correct_wall_position(float *x, float *z,\n                          float low_y, float high_y, float radius)\n{\n    NativeWallCorrection result = {0};\n    if (!x || !z || radius <= 0.0f) return 0;\n    func_8002EB10_2F710(&result, *x, low_y, high_y, *z, radius);\n    if (result.hit != 0x7FFFu) return 0;\n    *x += result.delta[0];\n    *z += result.delta[2];\n    return 1;\n}\n",
+    "exampleExplanation": "The example preserves the MIPS32 output size and checks the native hit field before applying the horizontal correction."
+  },
+  "func_80030730_31330": {
+    "title": "Compute registered dynamic wall correction",
+    "summary": "Computes horizontal wall separation at two heights against registered dynamic collision geometry.",
+    "declaration": "extern void *func_80030730_31330(\n    void *out, float x, float low_y, float high_y, float z, float radius);",
+    "parameters": [
+      {
+        "name": "out",
+        "type": "void *",
+        "description": "Writable, four-byte-aligned storage for the complete 0x48-byte collision record."
+      },
+      {
+        "name": "x, z",
+        "type": "float",
+        "description": "World-space horizontal center of the body."
+      },
+      {
+        "name": "low_y, high_y",
+        "type": "float",
+        "description": "Two absolute world-space elevations at which to sample radial wall clearance."
+      },
+      {
+        "name": "radius",
+        "type": "float",
+        "description": "Positive horizontal clearance radius."
+      }
+    ],
+    "returns": "Returns the out pointer. Read the unsigned 16-bit hit field at out +0x38; 0x7FFF indicates a correction and 0 indicates none.",
+    "behavior": [
+      "Samples twelve horizontal directions at each of two elevations, for 24 radial collision queries against registered dynamic geometry. It passes radius +2 to its ray helper, which adds another 2 world units before invoking the dynamic nearest-hit scan.",
+      "Accepts hits whose squared distance is at most radius squared and whose surface-normal Y component is less than 0.5. It preserves nearest-hit metadata and accumulates horizontal corrections from opposing directions.",
+      "On a hit, floats at output +0x18 and +0x20 contain the X/Z correction to add to the queried center. The float at +0x1C is set to 0. These output fields are body corrections, unlike the point displacement returned by a single ray query.",
+      "The normal remains at +0x24/+0x28/+0x2C and the hit field at +0x38. The function copies the full 0x48-byte record to out."
+    ],
+    "cautions": [
+      "Its dynamic ray helper uses the same nearest squared-distance threshold of 2000 as the combined world ray query. At large world-space radii, collision hits farther than approximately 44.72 units from a sample origin can be omitted; a larger radius alone does not remove that native limit.",
+      "Only use while the active scene collision resources are loaded. Dynamic collision lists and pointers are native scene-owned state.",
+      "On a miss, only the hit state is established; other record contents can be uninitialized. Do not read or apply correction fields unless hit is 0x7FFF.",
+      "The query measures clearance at the supplied center and two elevations. It does not sweep the full path between previous and target positions, so fast movement still needs a path constraint."
+    ],
+    "confidence": "decompiled",
+    "related": [
+      "func_8002EB10_2F710",
+      "func_8002C9D4_2D5D4"
+    ],
+    "example": "#include <stdint.h>\n\ntypedef struct NativeWallCorrection {\n    float query_prefix[6];\n    float delta[3];\n    float normal[3];\n    uint8_t opaque_30[8];\n    uint16_t hit;\n    uint16_t opaque_3a;\n    float distance_squared;\n    void *dynamic_object;\n    void *dynamic_task;\n} NativeWallCorrection;\n\n_Static_assert(sizeof(void *) == 4, \"Native pointers require MIPS32\");\n_Static_assert(sizeof(NativeWallCorrection) == 0x48, \"Native query layout\");\n\nextern void *func_80030730_31330(\n    void *out, float x, float low_y, float high_y, float z, float radius);\n\n/* Call only with valid scene resources and caller-selected dimensions. */\nint correct_wall_position(float *x, float *z,\n                          float low_y, float high_y, float radius)\n{\n    NativeWallCorrection result = {0};\n    if (!x || !z || radius <= 0.0f) return 0;\n    func_80030730_31330(&result, *x, low_y, high_y, *z, radius);\n    if (result.hit != 0x7FFFu) return 0;\n    *x += result.delta[0];\n    *z += result.delta[2];\n    return 1;\n}\n",
+    "exampleExplanation": "The example preserves the MIPS32 output size and checks the native hit field before applying the horizontal correction."
+  },
+  "D_801FC660_5B8570": {
+    "title": "Player body radius table",
+    "summary": "Four character-indexed native body radius values copied into the player task.",
+    "declaration": "extern unsigned short D_801FC660_5B8570[4];",
+    "behavior": [
+      "This is an array of four unsigned 16-bit values in gameplay overlay .file_11, indexed by the native character byte: 0 Goemon, 1 Ebisumaru, 2 Sasuke, 3 Yae.",
+      "The native player collision initializer at 0x801CC454 reads this array with an unsigned halfword load and writes the selected value into task +0x3C.",
+      "The native body-contact test at 0x80033688 multiplies the unsigned task value by render-object scale X before testing the body. These are unscaled dimensions, not world-space distances until the object scale is applied."
+    ],
+    "cautions": [
+      "Use only while the gameplay overlay is loaded, and bounds-check the character index.",
+      "This table configures native body-contact geometry. Assigning these dimensions to a task does not create a solid movement resolver or register a new actor by itself."
+    ],
+    "confidence": "decompiled",
+    "related": [
+      "D_801FC668_5B8578",
+      "D_801FC604_5B8514",
+      "D_801FC60C_5B851C"
+    ],
+    "example": "extern unsigned short D_801FC660_5B8570[4];\n\n/* Requires the gameplay overlay to be loaded. */\nfloat native_character_radius(unsigned int character, float scale_x)\n{\n    if (character >= 4u || scale_x <= 0.0f) return 0.0f;\n    return (float)D_801FC660_5B8570[character] * scale_x;\n}\n"
+  },
+  "D_801FC668_5B8578": {
+    "title": "Player body height table",
+    "summary": "Four character-indexed native body height values copied into the player task.",
+    "declaration": "extern unsigned short D_801FC668_5B8578[4];",
+    "behavior": [
+      "This is an array of four unsigned 16-bit values in gameplay overlay .file_11, indexed by the native character byte: 0 Goemon, 1 Ebisumaru, 2 Sasuke, 3 Yae.",
+      "The native player collision initializer at 0x801CC454 reads this array with an unsigned halfword load and writes the selected value into task +0x3E.",
+      "The native body-contact test at 0x80033688 multiplies the unsigned task value by render-object scale Y before testing the body. These are unscaled dimensions, not world-space distances until the object scale is applied."
+    ],
+    "cautions": [
+      "Use only while the gameplay overlay is loaded, and bounds-check the character index.",
+      "This table configures native body-contact geometry. Assigning these dimensions to a task does not create a solid movement resolver or register a new actor by itself."
+    ],
+    "confidence": "decompiled",
+    "related": [
+      "D_801FC660_5B8570",
+      "D_801FC604_5B8514",
+      "D_801FC60C_5B851C"
+    ],
+    "example": "extern unsigned short D_801FC668_5B8578[4];\n\n/* Requires the gameplay overlay to be loaded. */\nfloat native_character_height(unsigned int character, float scale_y)\n{\n    if (character >= 4u || scale_y <= 0.0f) return 0.0f;\n    return (float)D_801FC668_5B8578[character] * scale_y;\n}\n"
+  },
+  "func_801CBAF8_587A08": {
+    "title": "Run the late player collision and transform update",
+    "summary": "Native player post-update callback that runs collision, contact handling and final transform maintenance.",
+    "declaration": "extern void func_801CBAF8_587A08(void *player_task, void *render_object);",
+    "parameters": [
+      {
+        "name": "player_task",
+        "type": "void *",
+        "description": "Live, fully initialized playable-player task supplied by the native scheduler."
+      },
+      {
+        "name": "render_object",
+        "type": "void *",
+        "description": "Second native callback argument. The inspected implementation saves it but does not use it to drive its collision calls."
+      }
+    ],
+    "returns": "No return value.",
+    "behavior": [
+      "When player work +0x69 is zero, first runs the normal player update helper at 0x801DABDC.",
+      "If (D_800C7AE0 & 3) is zero, calls the native world collision handler, resolves a pending rotation value, updates collision-dependent movement state, and handles player contacts. Either low control bit skips this block.",
+      "After the gated block, refreshes the player transform and associated state, clears task +0x34/+0x38 contact pointers, and advances selected input-history fields.",
+      "A return hook observes position after the native collision block for this scheduler update, while an entry hook observes the proposed position before it."
+    ],
+    "cautions": [
+      "This is a playable-player callback. It expects initialized player work, animation, camera and contact state and must not be applied to a standalone visual actor.",
+      "The function has native stateful side effects even when its collision block is skipped. A second direct call does not provide an isolated collision query.",
+      "The low-bit gate does not cover every scripted movement path; D_800C7AE3 tracks separately supplied scripted player input."
+    ],
+    "confidence": "decompiled",
+    "related": [
+      "D_800C7AE0",
+      "D_800C7AE3",
+      "D_801FC604_5B8514",
+      "func_8002C9D4_2D5D4"
+    ],
+    "example": "#include \"modding.h\"\n\nextern void *D_801FC604_5B8514;\nstatic float observed_player_x;\n\nRECOMP_HOOK_RETURN(\"func_801CBAF8_587A08\")\nvoid observe_player_after_collision(void)\n{\n    const unsigned char *task = D_801FC604_5B8514;\n    if (!task) return;\n    const unsigned char *object = *(const unsigned char *const *)(task + 0x18);\n    if (!object) return;\n    observed_player_x = *(const float *)(object + 0x08);\n}\n",
+    "exampleExplanation": "The return hook reads the current player position after native processing. It leaves the original callback and its stateful behavior in control."
+  }
+}

@@ -1,0 +1,145 @@
+{
+  "func_80016950_17550": {
+    "title": "Initialize the current graphics bank",
+    "summary": "Resets the matrix cursor and lighting state for the selected native graphics bank.",
+    "declaration": "extern void func_80016950_17550(void);",
+    "behavior": [
+      "Selects one of the two graphics banks using the signed16 index D_800C7A72. Each bank starts at the full system pointer plus index × 0x1D6D8.",
+      "Sets D_80168504 to that bank’s matrix region and clears D_801684F8 and D_801684FC to zero.",
+      "This is the native bank-initialization boundary. Graphics submission toggles the selected bank; world-frame parity does not identify bank ownership when submission is skipped."
+    ],
+    "example": "extern void func_80016950_17550(void);\n\n#include \"modding.h\"\n\nRECOMP_HOOK_RETURN(\"func_80016950_17550\")\nvoid after_native_graphics_bank_init(void) {\n    /* Native cursors and lighting state now belong to the selected bank. */\n}",
+    "cautions": [
+      "Do not call this to reclaim buffers while rendering or submitted work still owns them.",
+      "Resetting a cursor does not enlarge either graphics command or matrix storage."
+    ],
+    "related": [
+      "D_800C7A72_C8672",
+      "D_8015C5C8_15D1C8",
+      "D_80168504_169104"
+    ],
+    "confidence": "decompiled"
+  },
+  "func_80016C44_17844": {
+    "title": "Draw one native display object",
+    "summary": "Applies object visibility and render context before dispatching model drawing.",
+    "declaration": "extern int func_80016C44_17844(void *object);",
+    "behavior": [
+      "Rejects an object when byte +0x64 has bit 0 set, signed byte +0x65 is negative, or the native visibility/culling checks reject it. A nonnegative +0x65, including the reset-template value 1, is accepted by this gate.",
+      "Binds the current object through D_801684A0 and dispatches the model command at +0x2C using the material/context word at +0x30 and segment bases beginning at +0x34.",
+      "For case-6 model commands whose low bit is zero, sets transform-mode byte D_8016852D to 1. Only this dispatcher writes that mode byte in the inspected executable. The nested skeleton traversal does not recursively call this dispatcher.",
+      "A case-6 header with bit 31 set reaches the cached model tree through its root pointer at header +0x08. Signed relative node indices at +0x04 and +0x05 use 24-byte nodes.",
+      "The native renderer advances command and matrix cursors without capacity checks. CPU model-cache capacity, final graphics-bank storage, and the 16-entry temporary transform stack are separate constraints."
+    ],
+    "example": "extern int func_80016C44_17844(void *object);\n\n#include \"modding.h\"\n\nRECOMP_HOOK(\"func_80016C44_17844\")\nvoid observe_display_object(void *object) {\n    (void)object;\n    /* Observe only; the caller owns the active rendering lifecycle. */\n}",
+    "cautions": [
+      "object must be a valid native display record with resident model and segment resources. Calling this from arbitrary gameplay code does not establish render context.",
+      "A general model or inline material list can require an unbounded number of commands. Any preflight bound must constrain the accepted model/material path and validate tree offsets, cycles and depth."
+    ],
+    "related": [
+      "D_801684A0_1690A0",
+      "D_8015C5CC_15D1CC",
+      "D_80168504_169104",
+      "func_80018B28_19728",
+      "func_80018CA0_198A0"
+    ],
+    "confidence": "decompiled",
+    "returns": "Zero when visibility or native culling rejects the object; one when the native object path is processed. This is not proof that a GPU submission has completed."
+  },
+  "D_800C7A72_C8672": {
+    "title": "Current native graphics-bank index",
+    "summary": "Signed16 selector for the two native graphics banks.",
+    "declaration": "extern short D_800C7A72_C8672;",
+    "behavior": [
+      "The verified bank values are 0 and 1. The full system structure contains the two 0x1D6D8-byte bank records consecutively at its beginning.",
+      "The frame-submission path toggles this index only when graphics are submitted. func_80016950 initializes the selected bank before its next use."
+    ],
+    "example": "extern short D_800C7A72_C8672;\n\nint current_graphics_bank(void) {\n    int bank = D_800C7A72_C8672;\n    return bank >= 0 && bank < 2 ? bank : -1;\n}",
+    "cautions": [
+      "This selector is distinct from the world-frame counter. Do not infer bank reuse from a frame counter or overwrite the selector while work is in flight."
+    ],
+    "related": [
+      "func_80016950_17550",
+      "D_8015C5C8_15D1C8"
+    ],
+    "confidence": "decompiled"
+  },
+  "D_8015C5CC_15D1CC": {
+    "title": "Current graphics-command cursor",
+    "summary": "Pointer to the next native 8-byte graphics command.",
+    "declaration": "extern unsigned int *D_8015C5CC_15D1CC;",
+    "behavior": [
+      "Native render writers append two 32-bit words per Gfx command and advance this pointer. A stock bank contains 10,640 commands at its beginning.",
+      "The pointer is live mutable cursor state; the bank base comes from the full system pointer and current bank index. The writers do not enforce the bank’s command-array bound.",
+      "Commands and every referenced matrix or data range must retain storage until the owning graphics bank is reusable. Redirecting CPU pointers alone does not make extended-heap addresses valid for RSP data."
+    ],
+    "example": "extern unsigned int *D_8015C5CC_15D1CC;\n\nunsigned int *native_graphics_cursor(void) {\n    return D_8015C5CC_15D1CC;\n}",
+    "cautions": [
+      "This is pointer storage, not a Gfx array symbol. Do not insert commands or redirect it without preserving renderer context, address encoding, capacity and submission lifetime."
+    ],
+    "related": [
+      "D_800C7A72_C8672",
+      "D_8015C5C8_15D1C8",
+      "D_80168504_169104"
+    ],
+    "confidence": "decompiled"
+  },
+  "D_80168504_169104": {
+    "title": "Current graphics-matrix cursor",
+    "summary": "Pointer to the next 64-byte fixed-point matrix submitted by native rendering.",
+    "declaration": "extern unsigned char *D_80168504_169104;",
+    "behavior": [
+      "func_80016950 resets this pointer to the selected bank’s matrix array at bank offset 0x14C80. The stock array contains 540 matrices of 64 bytes each.",
+      "Native transform writers advance this cursor without checking its end. Per-node billboard handling can consume three submitted matrices; root transforms and camera setup consume additional matrices.",
+      "This final fixed-point matrix storage is separate from kind-2 CPU model caches and the native temporary floating-point transform stack."
+    ],
+    "example": "extern unsigned char *D_80168504_169104;\n\nunsigned char *native_matrix_cursor(void) {\n    return D_80168504_169104;\n}",
+    "cautions": [
+      "A matrix pointer may be emitted into a display list. Its data must use an address accepted by the graphics path and remain unchanged until that bank is reusable.",
+      "Expanding CPU record storage or a capacity scalar does not expand the matrix array."
+    ],
+    "related": [
+      "func_80016950_17550",
+      "D_8015C5CC_15D1CC",
+      "D_8015C5C8_15D1C8"
+    ],
+    "confidence": "decompiled"
+  },
+  "D_801684F8_1690F8": {
+    "title": "Native lighting accumulation state",
+    "summary": "Signed32 lighting state used while preparing the current graphics bank.",
+    "declaration": "extern int D_801684F8_1690F8;",
+    "behavior": [
+      "func_80016950 resets this state to zero. Native lighting setup uses it while accumulating lighting work and marks it -1 after the pending state has been applied.",
+      "It participates in command emission alongside the separate active-light count D_801684FC. It is not a model count or a graphics-bank capacity."
+    ],
+    "example": "extern int D_801684F8_1690F8;\n\nint native_lighting_state(void) {\n    return D_801684F8_1690F8;\n}",
+    "cautions": [
+      "Only the reset and applied marker are established here. Other numeric values retain native accumulation semantics and are not a complete enum.",
+      "A custom command preflight must account for light emission; do not treat this state as an independent lighting override."
+    ],
+    "related": [
+      "func_80016950_17550",
+      "D_801684FC_1690FC"
+    ],
+    "confidence": "decompiled"
+  },
+  "D_801684FC_1690FC": {
+    "title": "Native active-light count",
+    "summary": "Signed32 active-light count consumed by native render setup.",
+    "declaration": "extern int D_801684FC_1690FC;",
+    "behavior": [
+      "func_80016950 resets this count to zero at graphics-bank initialization. Native lighting setup uses the active entries when emitting graphics commands.",
+      "This count contributes to graphics-command cost. It is separate from the accumulation/applied state in D_801684F8."
+    ],
+    "example": "extern int D_801684FC_1690FC;\n\nint native_active_light_count(void) {\n    return D_801684FC_1690FC;\n}",
+    "cautions": [
+      "Read under the corresponding rendering lifecycle. A custom renderer must validate the count against its verified lighting storage and command budget before using it."
+    ],
+    "related": [
+      "func_80016950_17550",
+      "D_801684F8_1690F8"
+    ],
+    "confidence": "decompiled"
+  }
+}

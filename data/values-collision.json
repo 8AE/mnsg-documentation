@@ -1,0 +1,126 @@
+{
+  "D_800C7AE0": {
+    "tables": [
+      {
+        "id": "control-masks",
+        "title": "Verified control masks",
+        "description": "Bit masks in the native unsigned control byte. These masks can be combined; the table is not a complete enum.",
+        "columns": [
+          "Mask (hex)",
+          "Mask (decimal)",
+          "Meaning"
+        ],
+        "rows": [
+          [
+            "`0x03`",
+            "`3`",
+            "Either low bit suspends the late player movement collision and contact handlers."
+          ],
+          [
+            "`0x04`",
+            "`4`",
+            "Suppresses selected player input actions; does not by itself suspend the late collision handlers."
+          ]
+        ]
+      }
+    ]
+  },
+  "D_800C7AE3": {
+    "tables": [
+      {
+        "id": "scripted-input-values",
+        "title": "Verified scripted input values",
+        "description": "Native move-toward sets bit 0; Eocs playback stores 1 during playback and clears the whole byte on completion. Other bit meanings are not established.",
+        "columns": [
+          "Raw value (hex)",
+          "Raw value (decimal)",
+          "Meaning"
+        ],
+        "rows": [
+          [
+            "`0x00`",
+            "`0`",
+            "Cleared scripted-input ownership after playback completion."
+          ],
+          [
+            "`0x01`",
+            "`1`",
+            "Scripted player-input ownership used by move-toward and playback paths."
+          ]
+        ]
+      }
+    ]
+  },
+  "D_801FC660_5B8570": {
+    "tables": [
+      {
+        "id": "character-body-radius",
+        "title": "Character body radius values",
+        "description": "Unscaled unsigned 16-bit dimensions in the native character order. Multiply by the corresponding render-object scale for world-space dimensions.",
+        "columns": [
+          "Character index",
+          "Character",
+          "Unscaled radius"
+        ],
+        "rows": [
+          [
+            "0",
+            "Goemon",
+            "50"
+          ],
+          [
+            "1",
+            "Ebisumaru",
+            "65"
+          ],
+          [
+            "2",
+            "Sasuke",
+            "40"
+          ],
+          [
+            "3",
+            "Yae",
+            "40"
+          ]
+        ]
+      }
+    ]
+  },
+  "D_801FC668_5B8578": {
+    "tables": [
+      {
+        "id": "character-body-height",
+        "title": "Character body height values",
+        "description": "Unscaled unsigned 16-bit dimensions in the native character order. Multiply by the corresponding render-object scale for world-space dimensions.",
+        "columns": [
+          "Character index",
+          "Character",
+          "Unscaled height"
+        ],
+        "rows": [
+          [
+            "0",
+            "Goemon",
+            "200"
+          ],
+          [
+            "1",
+            "Ebisumaru",
+            "160"
+          ],
+          [
+            "2",
+            "Sasuke",
+            "140"
+          ],
+          [
+            "3",
+            "Yae",
+            "180"
+          ]
+        ]
+      }
+    ]
+  }
+}

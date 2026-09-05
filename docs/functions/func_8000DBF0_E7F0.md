@@ -31,6 +31,8 @@ Calls func_80035EEC_36AEC(task, 2, 1), then writes position at +0x08/+0x0C/+0x10
 
 Initializes file IDs at +0x34 and +0x3C and runs native segment binding. A zero model command starts hidden. For the clothed playable-character assets, render-mode byte +0x05 must be set explicitly to 2; this allocator does not initialize that byte.
 
+This higher-level constructor explicitly initializes display bytes +0x64 and +0x65 to zero. Other native constructors that allocate through func_80035EEC_36AEC can retain the kind-2 reset value +0x65 = 1, which is also visible.
+
 ## Parameters
 
 | Parameter | Type | Description |

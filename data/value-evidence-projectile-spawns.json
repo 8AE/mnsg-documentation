@@ -1,0 +1,206 @@
+{
+  "schemaVersion": 1,
+  "scope": "USA native projectile update hook ABIs, first-update lifecycle and display visibility correction. No binaries are included.",
+  "nativeEvidence": [
+    {
+      "symbols": [
+        "func_801E936C_5A527C",
+        "func_801EA0D8_5A5FE8",
+        "func_801EBAA8_5A79B8",
+        "func_801EBF48_5A7E58",
+        "func_801EEDF8_5AAD08",
+        "func_801EFBDC_5ABAEC"
+      ],
+      "addresses": [
+        "0x801E936C",
+        "0x801EA0D8",
+        "0x801EBA14",
+        "0x801EBA5C",
+        "0x801EBAA8",
+        "0x801EBEAC",
+        "0x801EBEE0",
+        "0x801EBF14",
+        "0x801EBF48",
+        "0x801EED8C",
+        "0x801EEDF8",
+        "0x801EF364",
+        "0x801EFBB4",
+        "0x801EFBDC"
+      ],
+      "finding": "Ghidra decompilation and wrapper disassembly establish native task/object arguments, float offsets and thresholds, Yae homing mode forwarded in unchanged a1, and unsigned halfword trail interval. First-update timer predicates are 0 for coin/charged, 90 for Yae and 60 for kunai; delayed bomb/camera initializers enter phase 0 and produce pose at phase 1. Returned impact phases are excluded by capture regression tests."
+    },
+    {
+      "symbols": [
+        "func_8001DB04_1E704"
+      ],
+      "addresses": [
+        "0x8001DB04",
+        "0x8001DB3C",
+        "0x8001DB70",
+        "0x8001DB8C",
+        "0x8001DB98",
+        "0x8001DBAC",
+        "0x8001DBBC",
+        "0x8001DE48"
+      ],
+      "finding": "Five arguments; a0 points to three packed unsigned halfwords; a1 points to three floats; a2/a3/fifth stack slot are masked or loaded at unsigned16 width. Output old angles are read before native adjustment; void return. Full main symbol size 0x370 verified from current syms."
+    },
+    {
+      "symbols": [
+        "func_80035D8C_3698C",
+        "func_8000DBF0_E7F0",
+        "D_801FC60C_5B851C"
+      ],
+      "addresses": [
+        "0x8005B974",
+        "0x8000A5C4",
+        "0x80035DC8",
+        "0x80035DD4",
+        "0x80035DD8",
+        "0x80016C5C",
+        "0x80016C74",
+        "0x800362DC"
+      ],
+      "finding": "USA big-endian kind-2 template bytes at +64 are 00 01 00 00 and kind+4=82. Pool reset copies template; allocation clears +4&7f only. Native draw LB+65 then BGEZ accepts 0 and positive values. Exact-zero capture rejected ordinary visible projectiles. High bit 0x80 is set by task removal helper, not proven a normal live render phase."
+    },
+    {
+      "symbols": [
+        "func_801EEDF8_5AAD08"
+      ],
+      "addresses": [
+        "0x801EF1A0",
+        "0x801EF568",
+        "0x8020BEB8",
+        "0x8020BEBC",
+        "0x80204E30"
+      ],
+      "finding": "Native impact model 0x19000420, scale 0.3 from 0x3E99999A; trail scale delta 0.006 from 0x3BC49BA6. Impact alpha 255 fades by 24, trail alpha 240 fades by 30. Texture table has A007980,A008180,A013980,A014180,A014980,A015180,A015980,A016180 each 3 ticks, then a zero sentinel. Lifetime ends from native model frame count or trail exhaustion."
+    },
+    {
+      "symbols": [
+        "func_80035EEC_36AEC",
+        "func_8001B5AC_1C1AC"
+      ],
+      "addresses": [
+        "0x80035EEC",
+        "0x8001B5AC",
+        "0x80204DD0",
+        "0x80204D70",
+        "0x80204DA0",
+        "0x80204B78"
+      ],
+      "finding": "Native list allocation appends through task +0x1C while preserving an existing primary record at +0x18. Frame-count helper resolves the bound model header and returns its low eight bits, with only DAT_801684F0 resolver scratch written. Descriptor scalar review: kunai 0x80204DD0 selects model 0x49008220, direct material 0x8006D920, scale 0.16, mode 5; Yae 0x80204D70 selects model 0x4900A350, the same direct material, scale 0.1, mode 5; trail 0x80204DA0 selects model 0x490026B0, scale 0.03, mode 10. Material tag table 0x80204B78 is 0,0x10000000,0x20000000,0x30000000: Ebisumaru index 2 selects the A-tagged pointer. Native coin mode 2 persists through impact; bomb primary mode 7 and secondary mode 5 use an A-tagged material context, while Yae impact uses an E-tagged context. Reviewed by sibling native_collision against Ghidra and USA ROM scalar reads; no game binaries copied."
+    }
+  ],
+  "limitations": [
+    "Deterministic host fixtures and MIPS compilation do not establish live two-client rendering.",
+    "Zero or invalid direction behavior for func_8001DB04_1E704 was not established.",
+    "The former full-snapshot material arena failure was a possible all-drop guard but was not observed failing at runtime.",
+    "Current local simulation uses a fixed charged-coin return origin and one Yae trail without a target-dependent homing decision; these are implementation limits, not claims that the native actor has the same limits."
+  ],
+  "generatedAt": "2026-09-05T18:24:17+00:00",
+  "sourceFiles": [
+    {
+      "project": "mnsg-recomp-example",
+      "path": "src/anchor_projectile_models.c",
+      "sha256": "b6653f50d650d1574df5b556bc09dcf6374de32395beb41857167a9c7353ce73"
+    },
+    {
+      "project": "mnsg-recomp-example",
+      "path": "src/anchor_projectiles.c",
+      "sha256": "285f4db8d5c4bf9e524cf95fd2ab0934f6684f36bd5e70bf2ff33a29fad93fb8"
+    }
+  ],
+  "retainedHistoricalSymbols": [
+    {
+      "name": "D_8020D220_5C9130",
+      "reason": "Verified native reference already documented before this scoped source replacement; preserved rather than pruning prior dirty documentation. No current source reference remains.",
+      "previousReferences": [
+        {
+          "project": "mnsg-recomp-example",
+          "path": "src/anchor_projectile_models.c",
+          "line": 152,
+          "role": "declared",
+          "context": "\n#ifndef ANCHOR_PROJECTILE_MODELS_HOST_TEST\n#include \"anchor.h\"\n\nextern void *D_801FC604_5B8514;\nextern unsigned short D_800C7AB2;\nextern void *D_8020D220_5C9130[];\nextern unsigned short D_80204020_5BFF30[];\nextern void *func_800141C4_14DC4(unsigned int file_id);\nextern void *func_80013B14_14714(unsigned int file_id);\nextern void *func_80034E08_35A08(void *parent, void (*update)(void *, void *),\n                                unsigned short flags);\nextern void *func_8000DBF0_E7F0(void *task, unsigned int model, unsigned int material,\n                              float x, float y, float z,",
+          "contextStartLine": 146
+        },
+        {
+          "project": "mnsg-recomp-example",
+          "path": "src/anchor_projectile_models.c",
+          "line": 347,
+          "role": "referenced",
+          "context": "    if (!out || !rdram(task) || !rdram(object) || !rdram(owner) ||\n        owner_character < 0 || owner_character > 3 || model[4] != 2 ||\n        *(void **)((unsigned char *)task + 0x5c) != owner ||\n        owner[0x90] != 0)\n        return 0;\n    base = physical(word(object, 0x40));\n    if (base == physical((unsigned int)(unsigned long)D_8020D220_5C9130[0]))\n        family = owner_character;\n    else if (base == physical((unsigned int)(unsigned long)resident(0x80)))\n        family = 4;\n    else\n        return 0;\n    out->recipe = anchor_projectile_recipe_id(word(object, 0x2c), family);\n    texture = capture_texture(model);",
+          "contextStartLine": 341
+        }
+      ]
+    }
+  ],
+  "inventoryReview": {
+    "adoptedNewSymbols": [
+      "func_8001DB04_1E704",
+      "func_801E936C_5A527C",
+      "func_801EA0D8_5A5FE8",
+      "func_801EBAA8_5A79B8",
+      "func_801EBF48_5A7E58",
+      "func_801EEDF8_5AAD08",
+      "func_801EFBDC_5ABAEC"
+    ],
+    "removedSymbols": [],
+    "fullPreviewNewSymbolCount": 244,
+    "fullPreviewRemovedSymbols": [
+      "D_8020D220_5C9130"
+    ],
+    "newSymbolUnresolvedMetadata": [],
+    "newSymbolUnresolvedHooks": [],
+    "newSymbolMetadataConflicts": [],
+    "newSymbolDeclarationDifferences": [],
+    "reason": "Adopt only task-relevant scanner records; for existing symbols refresh references/declarations from the same selected source files while preserving all other snapshots and names."
+  },
+  "compatibleDeclarationReview": {
+    "symbols": [
+      {
+        "symbol": "D_80167FC0_168BC0",
+        "variants": [
+          "extern ProjectileSceneResource D_80167FC0_168BC0[48];",
+          "extern SceneResourceEntry D_80167FC0_168BC0[SCENE_RESOURCE_ENTRY_COUNT];"
+        ]
+      },
+      {
+        "symbol": "func_80034E08_35A08",
+        "variants": [
+          "extern void *func_80034E08_35A08(void *parent, void (*update)(void *, void *),\n                                unsigned short flags);",
+          "extern void *func_80034E08_35A08(void *task_list, void (*update)(void *, void *),\n                                 unsigned short flags);"
+        ]
+      },
+      {
+        "symbol": "func_8000DBF0_E7F0",
+        "variants": [
+          "extern void *func_8000DBF0_E7F0(void *task, unsigned int model, unsigned int material,\n                              float x, float y, float z,\n                              short rx, short ry, short rz,\n                              float sx, float sy, float sz,\n                              short file8, short file9);",
+          "extern void *func_8000DBF0_E7F0(void *task, unsigned int model_ptr, unsigned int anim_ptr,\n                                float x, float y, float z,\n                                short rot_x, short rot_y, short rot_z,\n                                float scale_x, float scale_y, float scale_z,\n                                short seg8_file_id, short seg9_file_id);"
+        ]
+      },
+      {
+        "symbol": "func_8001B5AC_1C1AC",
+        "variants": [
+          "extern float func_8001B5AC_1C1AC(void *model);",
+          "extern float func_8001B5AC_1C1AC(void *object);"
+        ]
+      }
+    ],
+    "finding": "Both SceneResourceEntry and ProjectileSceneResource are u16 file_id,u16 padding,unsigned char*data: 8-byte MIPS32 records. Task allocator callback/flag, object constructor, frame-count and ray-query declarations retain identical argument order, widths and return types; parameter names differ. No new unresolved ABI discrepancy was accepted."
+  },
+  "implementationEvidence": [
+    {
+      "path": "/Users/ahmad/git/mnsg-recomp-example/include/anchor_projectile_capture.h",
+      "sha256": "3d1c319daa4fc8815b5e3f2e864646bf5833bb6d724150760e109e941f93459f"
+    },
+    {
+      "path": "/Users/ahmad/git/mnsg-recomp-example/src/utils/anchor_projectile_capture.c",
+      "sha256": "f9e0f1acad507f6843bd9c089f921ae4f8227a0cc6313ecfa62c0885c8f18de4"
+    },
+    {
+      "path": "/Users/ahmad/git/mnsg-recomp-example/tests/test_projectile_capture.c",
+      "sha256": "b4182e0f974b28a19af05720c45eda00d07fcba467a10c2b3bb89c189fa7e0bd"
+    }
+  ]
+}

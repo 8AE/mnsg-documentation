@@ -1,0 +1,176 @@
+{
+  "schemaVersion": 1,
+  "scope": "Task-scoped native attack sphere observation, contact ownership and hit records; damage findings are appended separately.",
+  "nativeEvidence": [
+    {
+      "symbols": [
+        "func_80033024_33C24",
+        "func_80033404_34004"
+      ],
+      "addresses": [
+        "0x80033024",
+        "0x80033404",
+        "0x80033590",
+        "0x800334EC",
+        "0x80033688",
+        "0x80033BDC"
+      ],
+      "finding": "Decompilation/disassembly establish task subtree traversal, outgoing flag2, descriptor/frame interpolation, current sphere globals, four-pointer contact transform and reciprocal task+34/+38 writes with sphere-index byte+44. Both scan functions dereference the list priority before their null check."
+    },
+    {
+      "symbols": [
+        "func_80033898_34498"
+      ],
+      "addresses": [
+        "0x80033898",
+        "0x800338A8",
+        "0x800338C0",
+        "0x800338D0",
+        "0x800338E0",
+        "0x800338E4",
+        "0x800338F4",
+        "0x80033A14",
+        "0x80033A20",
+        "0x80033A28"
+      ],
+      "finding": "Three unsigned16 angles are read from a0/a1/a2 save slots; xptr=a3,y/zptr at stack+10/+14. Float vectors read and written through those pointers.80033688 masks all angles3ff and applies separate scale before rotation."
+    },
+    {
+      "symbols": [
+        "func_801F77F4_5B3704",
+        "D_801FC600_5B8510"
+      ],
+      "addresses": [
+        "0x801F77F4",
+        "0x801F7848",
+        "0x801F78C0",
+        "0x801F78D0",
+        "0x801F78E0",
+        "0x801F78F0"
+      ],
+      "finding": "Scene callback saves two scheduler args. Four native scans load a0 from absolute801FC600. Pointer is distinct from playable task801FC604. Other actor groups supply incoming attacks."
+    },
+    {
+      "symbols": [
+        "D_801FC604_5B8514"
+      ],
+      "addresses": [
+        "0x801CC454",
+        "0x801E3834",
+        "0x801E3AC0",
+        "0x801E4078",
+        "0x801E4260",
+        "0x801D9CE8"
+      ],
+      "finding": "Constructor clears outgoing descriptor48 and initializes flags3. Melee start selects48 from per-character attacktable; end/combos clear or replace descriptor and reset animation. Invulnerability timer d4 switches ordinary bit1 to filtered bit4 and restores bit1 when timer reacheszero."
+    },
+    {
+      "symbols": [
+        "D_801FC600_5B8510"
+      ],
+      "addresses": [
+        "0x801CB774",
+        "0x801CB77C",
+        "0x801E8F50",
+        "0x801E9AE0",
+        "0x801EE4AC",
+        "0x801EE228",
+        "0x801EFA18",
+        "0x801F05F4"
+      ],
+      "finding": "Player projectile manager stores playable task at+5c and is retained atplayer+dc. Constructors create childprojectiles under manager and store sameowner at+5c. EE228 writesflags/descriptor/kind/radius/offsets. E8F50 kinds1b/1f radius45; E9AE0 parent plus8 childrenkind15 radius30; EFA18/F05F4 kind1a radius50. No blanket claim that every magic effect uses these paths."
+    },
+    {
+      "symbols": [
+        "func_801D9E9C_595DAC",
+        "func_801E8E24_5A4D34"
+      ],
+      "addresses": [
+        "0x801D9E9C",
+        "0x801DA67C",
+        "0x801DA708",
+        "0x801DA758",
+        "0x801CF51C",
+        "0x801DA84C",
+        "0x801E8E24",
+        "0x801E3EBC",
+        "0x801E3134",
+        "0x801E3158"
+      ],
+      "finding": "Verified integer intake return and pointer parameter. Type1 reads attacker18object,4ckind,6ddamage and objectxyz8/c/10; type1 no retention whiletype2 storesplayer+e0. Armour and action-context paths can cause invulnerability without nonzero return. CleanupABI pointer/u8reason; childlistplayer+dc marks65=1/66reason bytype64table. Nativehurt clearsordinarybit1, recovery setsd4=60."
+    },
+    {
+      "symbols": [
+        "func_801CB824_587734",
+        "D_800C7AE2"
+      ],
+      "addresses": [
+        "0x801CB824",
+        "0x801CB9E8",
+        "0x801D9D74",
+        "0x801D9E28"
+      ],
+      "finding": "Native preupdate two-pointer ABI; work69 resource marker guard, intake bytegatesAE2=0/AE3=0/AE0==0||4, nonzerointake triggers E8E24(player,1). Early nativeintake handles floorcontact96/98 ids92/93 and crushing63 before incomingattacker."
+    },
+    {
+      "symbols": [
+        "func_801DCD48_598C58"
+      ],
+      "addresses": [
+        "0x801DCD48",
+        "0x8015C5E4",
+        "0x8015C5E0"
+      ],
+      "finding": "MIPS signedbyte extension argument, integer clampindicatorreturn, whole32bithealth loads/stores. Belowzero clamp, positive maxclamp and heal sound. Corrects prior source-reviewed uncertainty without adding a directHP-write example."
+    }
+  ],
+  "limitations": [
+    "No native two-client runtime certification; host tests cover copied sphere geometry and episode behavior only.",
+    "Public task offset meanings apply to the inspected task type; projectile +0x5C owner differs from playable +0x5C work.",
+    "No guessed action-ID attack windows or complete weapon-kind enumeration was introduced."
+  ],
+  "supportingSource": "mnsg-recomp-example/docs/remote-player-pvp-damage.md, native findings reviewed by the damage implementation agent and checked against current Ghidra decompilation.",
+  "generatedAt": "2026-09-05T16:35:12+00:00",
+  "sourceFiles": [
+    {
+      "project": "mnsg-recomp-example",
+      "path": "src/anchor_player_attack.c",
+      "sha256": "f60ff072545a2c36e796361f1537c9cde2cc79ef7f1f6c2e8b4518bbc800520e"
+    },
+    {
+      "project": "mnsg-recomp-example",
+      "path": "src/anchor_player_damage.c",
+      "sha256": "6f6a1d786674b33eb47c52462032f126ac5a1c2fbe2bc4040d8b2e625d4cad89"
+    },
+    {
+      "project": "mnsg-recomp-example",
+      "path": "src/anchor_player_models.c",
+      "sha256": "598db1913b5da0847afbeabfe38f5583f7a825372a86f656e7e1f6a573ccc658"
+    }
+  ],
+  "inventoryReview": {
+    "adoptedNewSymbols": [
+      "D_800C7AE2",
+      "D_80168F80_169B80",
+      "D_80168F84_169B84",
+      "D_80168F88_169B88",
+      "D_80168F8C_169B8C",
+      "D_801FC600_5B8510",
+      "func_80033024_33C24",
+      "func_80033404_34004",
+      "func_80033898_34498",
+      "func_801CB824_587734",
+      "func_801D9E9C_595DAC",
+      "func_801E8E24_5A4D34",
+      "func_801F77F4_5B3704"
+    ],
+    "removedSymbols": [],
+    "fullPreviewNewSymbolCount": 250,
+    "fullPreviewRemovedSymbols": [],
+    "newSymbolUnresolvedMetadata": [],
+    "newSymbolUnresolvedHooks": [],
+    "newSymbolMetadataConflicts": [],
+    "newSymbolDeclarationDifferences": [],
+    "reason": "Adopt only task-relevant scanner records; for existing symbols refresh references/declarations from the same selected source files while preserving all other snapshots and names."
+  }
+}
