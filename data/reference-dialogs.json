@@ -1,0 +1,383 @@
+{
+  "func_8003D468_3E068": {
+    "title": "Initialize or reset the scenario interpreter",
+    "summary": "Prepares the native scenario VM, resetting shared interpreter and dialog configuration.",
+    "declaration": "extern int func_8003D468_3E068(void *script, int file_id);",
+    "behavior": [
+      "The native scenario interpreter executes 32-bit instructions and follows pointers to 16-bit glyph/control streams. This initializer resets the VM input/configuration state and selects its scenario/resource context.",
+      "Calling with a null script and file_id -1 clears the program counter and resource context. It does not allocate a message window. The initializer also clears transient native flag 0x82; callers preserving an existing flag state must restore that state when their own interaction ends.",
+      "A private dialog must first verify that the scenario manager exists and no scenario or message window currently owns the shared interpreter. Reset the interpreter before allocating and configuring a new window, then publish a persistent instruction stream only after allocation succeeds.",
+      "The no-file reset selects controller source 3 (merged controllers), character -1, window slot 0 with origin (24,24), style 0 and animation 0, and typing mode 1. It does not free existing windows; callers must finish ownership-aware window cleanup separately."
+    ],
+    "example": "extern int func_8003D468_3E068(void *script, int file_id);\nextern unsigned int *D_80077858_78458;\nextern void *D_80077860_78460;\nextern void *D_80167C48_168848[3];\n\nint reset_idle_scenario(void)\n{\n    if (!D_80077860_78460 || D_80077858_78458 ||\n        D_80167C48_168848[0] || D_80167C48_168848[1] ||\n        D_80167C48_168848[2]) return 0;\n    return func_8003D468_3E068(0, -1) != 0;\n}\n",
+    "cautions": [
+      "This function mutates shared scenario state; it must not reset a conversation or replacement scenario owned by another native task.",
+      "A successful reset does not prove that a window was allocated or that the world is safe for interactive UI.",
+      "Keep instruction arrays, text streams and callback targets alive until the interpreter and closing animation finish.",
+      "Native callers may establish player control locks before calling this initializer. An entry hook cannot assume those bits still belong to the previous interaction; do not clear replacement locks during cleanup."
+    ],
+    "related": [
+      "D_80077858_78458",
+      "D_80077860_78460",
+      "func_8000C260_CE60"
+    ],
+    "confidence": "decompiled",
+    "exampleExplanation": "Complete C syntax using the reviewed 32-bit native interface. The engine owns these globals and resources; respect the stated lifecycle and ownership checks.",
+    "parameters": [
+      {
+        "name": "script",
+        "type": "void *",
+        "description": "Scenario instruction stream, or null for the established reset operation."
+      },
+      {
+        "name": "file_id",
+        "type": "int",
+        "description": "Scenario resource context; -1 is the established no-file/reset value."
+      }
+    ],
+    "returns": "Returns 0 when the scenario-manager pointer is null; otherwise returns 1 after resetting or starting the scenario."
+  },
+  "func_8000C260_CE60": {
+    "title": "Allocate and configure a native message window",
+    "summary": "Allocates one message-window slot and configures its position, style and animation.",
+    "declaration": "extern void func_8000C260_CE60(int slot, int x, int y, int target_x, int target_y, int style, int animation);",
+    "behavior": [
+      "Creates a 0x1818-byte native window allocation and stores its pointer in the selected entry of D_80167C48_168848. The three established slots are 0 through 2.",
+      "Style definitions come from the initialized table referenced by D_80167C54_168854. The ordinary US save sign uses slot 0, position and target (24,24), style 8 and animation 0.",
+      "The function has no success return. Inspect the selected window pointer after the call. Native choice parsing assumes the window exists and can dereference null if allocation failed."
+    ],
+    "example": "extern void *D_80167C48_168848[3];\nextern void *D_80167C54_168854;\nextern void func_8000C260_CE60(int slot, int x, int y, int target_x,\n                             int target_y, int style, int animation);\n\n/* The caller owns an idle, initialized native scenario and safe world state. */\nint create_message_window(void)\n{\n    if (!D_80167C54_168854 || D_80167C48_168848[0]) return 0;\n    func_8000C260_CE60(0, 24, 24, 24, 24, 8, 0);\n    return D_80167C48_168848[0] != 0;\n}\n",
+    "cautions": [
+      "Do not publish a text/choice instruction stream before checking window allocation.",
+      "Do not overwrite an occupied slot or assume a style table is resident merely because the main executable is loaded."
+    ],
+    "related": [
+      "D_80167C48_168848",
+      "D_80167C54_168854",
+      "func_8000C878_D478"
+    ],
+    "confidence": "decompiled",
+    "exampleExplanation": "Complete C syntax using the reviewed 32-bit native interface. The engine owns these globals and resources; respect the stated lifecycle and ownership checks.",
+    "parameters": [
+      {
+        "name": "slot",
+        "type": "int",
+        "description": "Validated native window slot, 0 through 2."
+      },
+      {
+        "name": "x, y",
+        "type": "int",
+        "description": "Initial native screen position."
+      },
+      {
+        "name": "target_x, target_y",
+        "type": "int",
+        "description": "Native target screen position."
+      },
+      {
+        "name": "style",
+        "type": "int",
+        "description": "Resident window-style table index. Style 8 is used by the ordinary save sign."
+      },
+      {
+        "name": "animation",
+        "type": "int",
+        "description": "Native animation/configuration argument. The established stationary dialog call uses 0."
+      }
+    ],
+    "returns": "No return value; a nonnull selected slot is the allocation-success check."
+  },
+  "func_8000C878_D478": {
+    "title": "Release a native message window",
+    "summary": "Releases the native allocation belonging to a message-window slot.",
+    "declaration": "extern void func_8000C878_D478(int slot);",
+    "behavior": [
+      "Releases the selected native window and clears its slot in D_80167C48_168848.",
+      "Use a validated slot and verify that its current pointer still belongs to the interaction being closed. A room change or replacement scenario can transfer shared dialog ownership.",
+      "This is window cleanup, not a complete scenario cancellation API. Interpreter state, pending callbacks and acquired player-control bits require their own ownership-aware completion."
+    ],
+    "example": "extern void *D_80167C48_168848[3];\nextern void func_8000C878_D478(int slot);\n\nvoid release_owned_window(void *owned_window)\n{\n    if (owned_window && D_80167C48_168848[0] == owned_window)\n        func_8000C878_D478(0);\n}\n",
+    "cautions": [
+      "Do not release a replacement scenario window simply because it occupies the same numeric slot."
+    ],
+    "related": [
+      "D_80167C48_168848",
+      "func_8000C260_CE60",
+      "D_80077858_78458"
+    ],
+    "confidence": "decompiled",
+    "exampleExplanation": "Complete C syntax using the reviewed 32-bit native interface. The engine owns these globals and resources; respect the stated lifecycle and ownership checks.",
+    "parameters": [
+      {
+        "name": "slot",
+        "type": "int",
+        "description": "Validated native window slot, 0 through 2."
+      }
+    ],
+    "returns": "No return value."
+  },
+  "func_8003E6C0_3F2C0": {
+    "title": "Parse the native scenario choice list",
+    "summary": "Converts scenario choice instructions into selectable native dialog records.",
+    "declaration": "extern unsigned int *func_8003E6C0_3F2C0(unsigned int *records);",
+    "behavior": [
+      "Invoked by scenario opcode 0x8011. The following instruction stream contains four-word records of text opcode 0x8010, label pointer, branch opcode 0x800A and branch pointer, terminated by opcode 0x8012.",
+      "Constructs five-word (20-byte) runtime records in D_801C7808_1C8408 and stores the selected-record pointer in D_801C7800_1C8400. The usual Yes/No order places Yes first and No second.",
+      "Returns a pointer to the 0x8012 instruction that terminates the definitions. A return hook is the boundary after the runtime records exist; selection changes made before parsing completes are overwritten by the parser."
+    ],
+    "example": "#include \"modding.h\"\nextern unsigned int D_801C7800_1C8400;\n\nstatic unsigned int s_observed_choice;\n\nRECOMP_HOOK_RETURN(\"func_8003E6C0_3F2C0\")\nvoid observe_parsed_choice(void)\n{\n    s_observed_choice = D_801C7800_1C8400;\n}\n",
+    "cautions": [
+      "The parser expects the scenario window to be allocated. Window allocation failure must be handled before publishing a choice script.",
+      "Only change the selection when the current interpreter and choice records still belong to the intended scenario.",
+      "Runtime storage has capacity for 10 choice records. The native parse loop does not enforce that bound; validate custom instruction streams before publishing them."
+    ],
+    "related": [
+      "D_801C7808_1C8408",
+      "D_801C7800_1C8400",
+      "D_80077858_78458"
+    ],
+    "confidence": "decompiled",
+    "exampleExplanation": "Complete C syntax using the reviewed 32-bit native interface. The engine owns these globals and resources; respect the stated lifecycle and ownership checks.",
+    "parameters": [
+      {
+        "name": "records",
+        "type": "unsigned int *",
+        "description": "First four-word text/branch choice definition, with a 0x8012 terminator after the last record."
+      }
+    ],
+    "returns": "Pointer to the 0x8012 sentinel in the scenario instruction stream."
+  },
+  "D_80077858_78458": {
+    "title": "Native scenario instruction pointer",
+    "summary": "Pointer to the next instruction in the shared native scenario VM.",
+    "declaration": "extern unsigned int *D_80077858_78458;",
+    "behavior": [
+      "A null pointer indicates no current instruction stream. The native VM advances this pointer through 32-bit instructions and follows text, callback and branch operands.",
+      "Text operands address 16-bit glyph/control streams, not C strings. The US font maps printable ASCII 0x20 through 0x7E to glyph indices 0 through 94 by subtracting 0x20.",
+      "Publishing a custom stream transfers execution to shared native interpreter state. Allocate its window first, hold every referenced array/callback for the full lifetime, and detect replacement ownership before cancellation or cleanup."
+    ],
+    "example": "extern unsigned int *D_80077858_78458;\n\nint native_scenario_running(void)\n{\n    return D_80077858_78458 != 0;\n}\n",
+    "cautions": [
+      "This is a pointer variable, not instruction storage or a byte offset.",
+      "Network or user text must be converted to bounded native glyphs. Never reinterpret arbitrary text bytes as 16-bit controls or 32-bit instructions."
+    ],
+    "related": [
+      "func_8003D468_3E068",
+      "func_8003E6C0_3F2C0",
+      "D_80077860_78460"
+    ],
+    "confidence": "decompiled",
+    "exampleExplanation": "Complete C syntax using the reviewed 32-bit native interface. The engine owns these globals and resources; respect the stated lifecycle and ownership checks."
+  },
+  "D_80077860_78460": {
+    "title": "Native scenario manager task pointer",
+    "summary": "Pointer to the native task that owns the shared scenario interpreter.",
+    "declaration": "extern void *D_80077860_78460;",
+    "behavior": [
+      "A live scenario manager is a prerequisite for opening an ordinary native dialog.",
+      "Remember the manager identity while an interaction is active. If the manager pointer changes, the old interaction must treat shared scenario/window ownership as replaced."
+    ],
+    "example": "extern void *D_80077860_78460;\n\nint same_scenario_manager(const void *expected)\n{\n    return expected && D_80077860_78460 == expected;\n}\n",
+    "cautions": [
+      "A nonnull manager alone does not establish that its interpreter and windows are idle or that the world is safe for input."
+    ],
+    "related": [
+      "D_80077858_78458",
+      "D_80167C48_168848"
+    ],
+    "confidence": "decompiled",
+    "exampleExplanation": "Complete C syntax using the reviewed 32-bit native interface. The engine owns these globals and resources; respect the stated lifecycle and ownership checks."
+  },
+  "D_80167C48_168848": {
+    "title": "Native message-window slots",
+    "summary": "Three pointers to native message-window allocations.",
+    "declaration": "extern void *D_80167C48_168848[3];",
+    "behavior": [
+      "Each array entry is a window pointer. The allocator stores its result here; cleanup clears the selected slot.",
+      "Check all three slots before claiming an idle shared dialog interface. Slot zero is used by the ordinary save-sign dialog.",
+      "The signed 16-bit animation state is at window +0x30. Opening uses states 1 through 3; closing uses states 5 and 6. A ready window and an absent window must be distinguished by checking the pointer.",
+      "Each window contains 120 native glyph records of 0x30 bytes, starting at window +0x198. The native allocator searches these records; bound a custom prompt and its labels to the available glyph capacity."
+    ],
+    "example": "extern void *D_80167C48_168848[3];\n\nint native_message_windows_idle(void)\n{\n    return !D_80167C48_168848[0] && !D_80167C48_168848[1] &&\n           !D_80167C48_168848[2];\n}\n",
+    "cautions": [
+      "The array contains pointers, not three contiguous 0x1818-byte windows.",
+      "Do not dereference a freed slot or consider a null pointer a successfully opened window."
+    ],
+    "related": [
+      "func_8000C260_CE60",
+      "func_8000C878_D478",
+      "D_80167C54_168854"
+    ],
+    "confidence": "decompiled",
+    "exampleExplanation": "Complete C syntax using the reviewed 32-bit native interface. The engine owns these globals and resources; respect the stated lifecycle and ownership checks."
+  },
+  "D_80167C54_168854": {
+    "title": "Native message-window style table pointer",
+    "summary": "Pointer to the initialized native message-window style definitions.",
+    "declaration": "extern void *D_80167C54_168854;",
+    "behavior": [
+      "Generic native setup initializes the table; opening a save sign first is not a prerequisite.",
+      "The US table at runtime 0x800627F0 uses records of 0x24 bytes. Style 8 supplies the ordinary save-sign background and palette with width 256 pixels and a height of nine 8-pixel strips, or 72 pixels."
+    ],
+    "example": "extern void *D_80167C54_168854;\n\nint native_window_styles_ready(void)\n{\n    return D_80167C54_168854 != 0;\n}\n",
+    "cautions": [
+      "The symbol stores a table pointer; it is not the first style record itself.",
+      "Keep native setup/teardown and style-index validity separate from window allocation success."
+    ],
+    "related": [
+      "func_8000C260_CE60",
+      "D_801C7768_1C8368"
+    ],
+    "confidence": "decompiled",
+    "exampleExplanation": "Complete C syntax using the reviewed 32-bit native interface. The engine owns these globals and resources; respect the stated lifecycle and ownership checks."
+  },
+  "D_801C7768_1C8368": {
+    "title": "Current scenario window style",
+    "summary": "Native integer selecting the scenario message-window style.",
+    "declaration": "extern int D_801C7768_1C8368;",
+    "behavior": [
+      "The scenario text-opening path reads this native 32-bit style index. The ordinary US save-sign dialog selects style 8.",
+      "The scenario initializer resets shared window configuration. Apply a private style only after initialization and while owning the current scenario."
+    ],
+    "example": "extern int D_801C7768_1C8368;\n\nint current_scenario_window_style(void)\n{\n    return D_801C7768_1C8368;\n}\n",
+    "cautions": [
+      "A style index is distinct from a window-slot index or a palette pointer."
+    ],
+    "related": [
+      "D_80167C54_168854",
+      "func_8003D468_3E068",
+      "func_8000C260_CE60"
+    ],
+    "confidence": "decompiled",
+    "exampleExplanation": "Complete C syntax using the reviewed 32-bit native interface. The engine owns these globals and resources; respect the stated lifecycle and ownership checks."
+  },
+  "D_801C7774_1C8374": {
+    "title": "Scenario typing-cancel continuation address",
+    "summary": "Native 32-bit continuation address used by B while typing or waiting for text.",
+    "declaration": "extern unsigned int D_801C7774_1C8374;",
+    "behavior": [
+      "Stores an instruction-stream address, not a choice index or Boolean result. During native typing/text-wait handling, B branches to a nonzero address in this field; zero invokes the general native cancel path.",
+      "The choice-list B path is separate: it resumes four words after the 0x8012 choice terminator. Provide an explicit safe branch at that continuation when creating a custom Yes/No script.",
+      "Keep the continuation inside a persistent instruction stream owned by the current scenario."
+    ],
+    "example": "extern unsigned int D_801C7774_1C8374;\n\nunsigned int scenario_fallback_address(void)\n{\n    return D_801C7774_1C8374;\n}\n",
+    "cautions": [
+      "Do not infer that all native cancel paths use this field; the choice B path has its own continuation rule."
+    ],
+    "related": [
+      "D_80077858_78458",
+      "func_8003E6C0_3F2C0"
+    ],
+    "confidence": "decompiled",
+    "exampleExplanation": "Complete C syntax using the reviewed 32-bit native interface. The engine owns these globals and resources; respect the stated lifecycle and ownership checks."
+  },
+  "D_801C7800_1C8400": {
+    "title": "Selected native choice-record address",
+    "summary": "Native 32-bit address of the currently selected scenario choice record.",
+    "declaration": "extern unsigned int D_801C7800_1C8400;",
+    "behavior": [
+      "Points into the five-word runtime choice-record table after the choice parser completes.",
+      "A two-choice Yes/No list uses the first record for Yes and the next record, five words later, for No. A private dialog can choose No initially after parsing to avoid accepting a held confirmation input."
+    ],
+    "example": "extern unsigned int D_801C7800_1C8400;\nextern unsigned int D_801C7808_1C8408[];\n\n/* Invoke after parsing a two-choice list owned by this interaction. */\nvoid select_second_choice(int owns_current_scenario, int has_two_choices)\n{\n    if (owns_current_scenario && has_two_choices)\n        D_801C7800_1C8400 = (unsigned int)&D_801C7808_1C8408[5];\n}\n",
+    "cautions": [
+      "The stored value is a native address, not 0 for Yes or 1 for No.",
+      "Do not select a record outside the parsed list or modify a replacement native conversation."
+    ],
+    "related": [
+      "D_801C7808_1C8408",
+      "func_8003E6C0_3F2C0"
+    ],
+    "confidence": "decompiled",
+    "exampleExplanation": "Complete C syntax using the reviewed 32-bit native interface. The engine owns these globals and resources; respect the stated lifecycle and ownership checks."
+  },
+  "D_801C7808_1C8408": {
+    "title": "Native parsed choice-record storage",
+    "summary": "Shared native storage for five-word scenario choice records.",
+    "declaration": "extern unsigned int D_801C7808_1C8408[];",
+    "behavior": [
+      "The choice parser converts each four-word script record into a five-word, 20-byte runtime record.",
+      "Selection points at a runtime record, while the branch continuation refers back to the scenario instruction stream. These are distinct layouts and addresses.",
+      "Native runtime storage holds at most 10 records. The parser does not bounds-check its input list, so custom scripts must not exceed this capacity."
+    ],
+    "example": "extern unsigned int D_801C7808_1C8408[];\n\nconst unsigned int *second_parsed_choice(int known_choice_count)\n{\n    if (known_choice_count < 2) return 0;\n    return &D_801C7808_1C8408[5];\n}\n",
+    "cautions": [
+      "Do not append records past the 10-record native capacity or treat the unsized extern as a dynamically growing array."
+    ],
+    "related": [
+      "D_801C7800_1C8400",
+      "func_8003E6C0_3F2C0"
+    ],
+    "confidence": "decompiled",
+    "exampleExplanation": "Complete C syntax using the reviewed 32-bit native interface. The engine owns these globals and resources; respect the stated lifecycle and ownership checks."
+  },
+  "D_801C7900_1C8500": {
+    "title": "Scenario controller-input source",
+    "summary": "Native integer selecting controller-one, controller-two or merged scenario input.",
+    "declaration": "extern int D_801C7900_1C8500;",
+    "behavior": [
+      "The scenario input sampler interprets 1 as controller one, 2 as controller two and 3 as merged input from both. This is an enumerated selector, not a general bitmask.",
+      "Zero and other values leave the previously sampled scenario input unchanged. Do not write zero expecting it to clear or disable input.",
+      "The scenario initializer selects source 3. Set source 1 after initialization when only controller one should respond."
+    ],
+    "example": "extern int D_801C7900_1C8500;\n\nint scenario_reads_controller_one(void)\n{\n    return D_801C7900_1C8500 == 1 || D_801C7900_1C8500 == 3;\n}\n",
+    "cautions": [
+      "Controller-input ownership is distinct from the player movement/control mask at D_800C7AE0."
+    ],
+    "related": [
+      "func_8003D468_3E068",
+      "D_800C7AE0"
+    ],
+    "confidence": "decompiled",
+    "exampleExplanation": "Complete C syntax using the reviewed 32-bit native interface. The engine owns these globals and resources; respect the stated lifecycle and ownership checks."
+  },
+  "D_800C7DB0_C89B0": {
+    "title": "Derived gameplay-controller records",
+    "summary": "Inline storage for four derived gameplay-controller records, separate from raw dialog input.",
+    "declaration": "extern unsigned char D_800C7DB0_C89B0[0x60];",
+    "confidence": "decompiled",
+    "behavior": [
+      "Inline native storage at full-system +0x3B0F0 contains four records of 0x18 bytes each. It is distinct from the raw controller input used by the scenario sampler.",
+      "The native gameplay-input copier fills these records from raw input only while both D_800C7AE2 and D_800C7AE3 are zero. Otherwise it decays the stick state and recomputes analog quantities without copying new buttons.",
+      "The scenario sampler reads raw controller input separately. Filtering the derived gameplay records after the native input-copy update can suppress player buttons/stick while leaving the native dialog responsive; it does not require changing raw input or holding a global player lock between updates."
+    ],
+    "cautions": [
+      "This symbol is inline storage, not a pointer variable.",
+      "Player-input and native scenario-input storage are separate. Clearing raw input would also make an interactive dialog unresponsive.",
+      "Acquire and release the associated control lock according to scenario ownership. Do not clear a lock installed by a replacement native scene."
+    ],
+    "related": [
+      "D_800C7AE2",
+      "D_800C7AE3",
+      "D_801C7900_1C8500"
+    ],
+    "example": "extern unsigned char D_800C7DB0_C89B0[0x60];\n\nunsigned short gameplay_buttons_held(unsigned int controller)\n{\n    if (controller >= 4) return 0;\n    const unsigned char *record = &D_800C7DB0_C89B0[controller * 0x18u];\n    return *(const unsigned short *)(record + 2);\n}\n",
+    "exampleExplanation": "The example validates the record index and reads its native held-button halfword. It does not modify raw input or player-control ownership."
+  },
+  "func_80004AF8_56F8": {
+    "title": "Update derived gameplay-controller input",
+    "summary": "Copies or decays native controller state into the derived gameplay input records.",
+    "confidence": "decompiled",
+    "behavior": [
+      "Updates the four 0x18-byte derived gameplay-controller records at D_800C7DB0_C89B0 from the native raw input records while both D_800C7AE2 and D_800C7AE3 are zero.",
+      "When either lock byte is nonzero, the function decays stick state and recomputes analog quantities without copying new buttons. Previously held/pressed values require explicit consideration; setting a lock is not equivalent to clearing the derived input.",
+      "A return hook observes or filters the completed derived sample. The scenario input sampler reads separate raw controller storage, so clearing derived gameplay buttons/stick at this boundary can leave native dialog input responsive.",
+      "Reads the native OS controller messages and updates raw input before completing the derived gameplay sample. Its return is a useful observation boundary after controller processing."
+    ],
+    "cautions": [
+      "Do not overwrite raw controller storage when the native scenario still needs to receive input.",
+      "If filtering a derived record, preserve its connected-status halfword and respect scenario/room ownership.",
+      "Calling this routine directly can block while waiting for an SI/controller message. Observe its normal native invocation instead of adding extra calls."
+    ],
+    "related": [
+      "D_800C7DB0_C89B0",
+      "D_800C7AE2",
+      "D_800C7AE3",
+      "D_801C7900_1C8500"
+    ],
+    "example": "#include \"modding.h\"\nextern unsigned char D_800C7DB0_C89B0[0x60];\n\nstatic unsigned short s_last_gameplay_buttons;\n\nRECOMP_HOOK_RETURN(\"func_80004AF8_56F8\")\nvoid observe_gameplay_input(void)\n{\n    s_last_gameplay_buttons = *(unsigned short *)(D_800C7DB0_C89B0 + 2);\n}\n",
+    "exampleExplanation": "The native return hook reads controller-one held buttons after the derived input update. It does not modify raw input or introduce global control ownership.",
+    "declaration": "extern void func_80004AF8_56F8(void);",
+    "returns": "No return value."
+  }
+}

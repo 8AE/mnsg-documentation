@@ -4,7 +4,7 @@ slug: "/functions"
 description: "Native functions for the US recompilation of Mystical Ninja Starring Goemon."
 ---
 
-171 functions with C interfaces, behavior, and usage examples. Use the search bar to look up an exact symbol, address, or purpose.
+178 functions with C interfaces, behavior, and usage examples. Use the search bar to look up an exact symbol, address, or purpose.
 
 | Symbol | Purpose |
 | --- | --- |
@@ -96,12 +96,15 @@ description: "Native functions for the US recompilation of Mystical Ninja Starri
 | [`func_80003728_4328`](func_80003728_4328.md) | Switch the system execution step |
 | [`func_8000383C_443C`](func_8000383C_443C.md) | Reset render and texture buffers |
 | [`func_80004240_4E40`](func_80004240_4E40.md) | Clear native text/UI slots |
+| [`func_80004AF8_56F8`](func_80004AF8_56F8.md) | Update derived gameplay-controller input |
 | [`func_8000607C_6C7C`](func_8000607C_6C7C.md) | Set the engine destination |
 | [`func_8000A5C4_B1C4`](func_8000A5C4_B1C4.md) | Reset a kind-2 display record |
 | [`func_8000B2A0_BEA0`](func_8000B2A0_BEA0.md) | Consume saved spawn configuration |
 | [`func_8000B364_BF64`](func_8000B364_BF64.md) | Prepare destination scene loading |
 | [`func_8000B5D0_C1D0`](func_8000B5D0_C1D0.md) | Activate and mirror initialized save state |
 | [`func_8000B640_C240`](func_8000B640_C240.md) | Initialize a fresh save |
+| [`func_8000C260_CE60`](func_8000C260_CE60.md) | Allocate and configure a native message window |
+| [`func_8000C878_D478`](func_8000C878_D478.md) | Release a native message window |
 | [`func_8000DBF0_E7F0`](func_8000DBF0_E7F0.md) | Attach a model/display object to a task |
 | [`func_8000F420_10020`](func_8000F420_10020.md) | Play a sound at an object position |
 | [`func_80013B14_14714`](func_80013B14_14714.md) | Load a file into the scene registry |
@@ -129,6 +132,7 @@ description: "Native functions for the US recompilation of Mystical Ninja Starri
 | [`func_80033024_33C24`](func_80033024_33C24.md) | Scan an attack-task subtree against a victim subtree |
 | [`func_80033404_34004`](func_80033404_34004.md) | Test the current native attack sphere |
 | [`func_80033898_34498`](func_80033898_34498.md) | Rotate a vector using native object angles |
+| [`func_80034734_35334`](func_80034734_35334.md) | Run the native task scheduler |
 | [`func_8003488C_3548C`](func_8003488C_3548C.md) | Initialize the native task lists |
 | [`func_80034A10_35610`](func_80034A10_35610.md) | Reset native task storage |
 | [`func_80034B58_35758`](func_80034B58_35758.md) | Allocate and link a child task |
@@ -147,6 +151,9 @@ description: "Native functions for the US recompilation of Mystical Ninja Starri
 | [`func_80036448_37048`](func_80036448_37048.md) | Allocate a single kind-2 record |
 | [`func_8003674C_3734C`](func_8003674C_3734C.md) | Release the cached child subtree |
 | [`func_80036798_37398`](func_80036798_37398.md) | Release the cached sibling subtree |
+| [`func_8003CFD0_3DBD0`](func_8003CFD0_3DBD0.md) | Advance the scenario manager |
+| [`func_8003D468_3E068`](func_8003D468_3E068.md) | Initialize or reset the scenario interpreter |
+| [`func_8003E6C0_3F2C0`](func_8003E6C0_3F2C0.md) | Parse the native scenario choice list |
 | [`func_801CB824_587734`](func_801CB824_587734.md) | Run the playable-player pre-update |
 | [`func_801CBAF8_587A08`](func_801CBAF8_587A08.md) | Run the late player collision and transform update |
 | [`func_801CD890_660740`](func_801CD890_660740.md) | Native gameplay/load scheduler callback |

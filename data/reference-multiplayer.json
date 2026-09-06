@@ -1026,8 +1026,9 @@
     "title": "Prepare destination scene loading",
     "summary": "Prepares loading of the configured destination scene.",
     "behavior": [
-      "Copies destination stage into active scene fields, calculates region/substage, begins scene-load bookkeeping and resets transition counters.",
-      "Supply a valid destination before invoking it. Follow the native transition sequence, including render reset and control/UI initialization; this helper alone is not a complete warp."
+      "Consumes the prepared destination stage, preserves the previous current room at full-system +0x3ADFC, and writes the new current room at +0x3ADF2. It calculates region/substage, begins scene-load bookkeeping and resets transition counters.",
+      "The ordinary main-step-12 handler invokes this function after its transition wait has completed, then resets rendering and switches to main step 13. This route uses the prepared destination and does not read the saved respawn transform.",
+      "Save-file loading has a distinct spawn-reading route. Do not require saved respawn fields to match every live warp; do not assign the current room early to bypass native scene preparation."
     ],
     "cautions": [
       "Changing only current room or calling this with stale destination fields can load inconsistent state."
@@ -1036,9 +1037,9 @@
       "func_8000607C_6C7C",
       "func_8000383C_443C"
     ],
-    "confidence": "source-reviewed",
-    "example": "extern void func_80003478_4078(void);\n\nextern void func_8000383C_443C(void);\n\nextern void func_8000B364_BF64(void);\n\n/* Requires the native start/load preparation described above.\n * This helper is one step of that sequence, not a complete launch API. */\nvoid prepare_destination_scene(void) {\n    /* First prepare a valid native destination and save spawn fields. */\n    func_8000B364_BF64();\n    func_8000383C_443C();\n    func_80003478_4078();\n}\n",
-    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources.",
+    "confidence": "decompiled",
+    "example": "#include \"modding.h\"\nextern unsigned short D_800C7AB2;\n\nstatic unsigned short s_last_prepared_room;\n\nRECOMP_HOOK_RETURN(\"func_8000B364_BF64\")\nvoid observe_prepared_scene(void)\n{\n    /* The native consumer has assigned the current room at this boundary. */\n    s_last_prepared_room = D_800C7AB2;\n}\n",
+    "exampleExplanation": "The return hook observes the room after native destination consumption without manually replaying individual scene-load steps. Player and stage resources may still be loading.",
     "returns": "No return value in the established declaration."
   },
   "func_8000383C_443C": {
@@ -1084,21 +1085,23 @@
     "title": "Set the engine destination",
     "summary": "Writes the engine destination room, transform and related loading fields.",
     "behavior": [
-      "Records room/stage, player coordinates, camera rotation, player rotation and two additional loading fields for the scene loader.",
-      "Destination fields and saved spawn configuration must agree before the system begins the transition. This writer prepares state; it does not execute all steps of a warp."
+      "Writes the destination room at full-system offset +0x3AFE0, player rotation at +0x3AFE2, X/Y/Z at +0x3AFE4/+0x3AFE6/+0x3AFE8 and camera rotation at +0x3AFEA. It also sets the destination-transition byte at +0x3AE29 to 1 and stores the seventh and eighth arguments at +0x3AE3A and +0x3AE3C.",
+      "This prepares a destination without immediately changing the current room. During an ordinary live world transition, main system step 12 later calls func_8000B364_BF64 to consume these fields, resets rendering, and enters world step 13.",
+      "The live step-12 route consumes the prepared destination directly; it does not read the saved respawn transform. Save-file loading has a separate spawn-reading route. Preserve saved respawn fields when requesting an ordinary live warp unless changing the saved return point is also intended."
     ],
     "cautions": [
       "This queues destination state; it does not alone execute a complete warp.",
-      "field90/field91 names in the recovered call pattern are unresolved; the documented call pattern passes zero rather than assigning unsupported meanings."
+      "field90/field91 names in the recovered call pattern are unresolved; the documented call pattern passes zero rather than assigning unsupported meanings.",
+      "Do not request a second warp while a native transition, pause, conversation or scripted movement owns the player. A loaded save and a live ordinary-world player are prerequisites for this call sequence."
     ],
     "related": [
       "D_8006B780_6C380",
       "func_8000B364_BF64",
       "func_80003728_4328"
     ],
-    "confidence": "source-reviewed",
-    "example": "extern void func_8000607C_6C7C(unsigned short room, short x, short y, short z,\n                               short camera_rot, short player_rot,\n                               short field90, int field91);\n\n/* Caller must also update save spawn fields before switching system steps. */\nvoid set_prepared_destination(unsigned short room, short x, short y, short z,\n                              short camera_rotation, short player_rotation) {\n    func_8000607C_6C7C(room, x, y, z, camera_rotation, player_rotation, 0, 0);\n}\n",
-    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources.",
+    "confidence": "decompiled",
+    "example": "extern short D_8006B780_6C380[];\nextern void func_8000607C_6C7C(unsigned short room, short x, short y, short z,\n                              short camera_rot, short player_rot,\n                              short field90, int field91);\nextern void func_80003728_4328(unsigned char step);\n\n/* Call only from a loaded ordinary world after all native dialogs, pause,\n * scripted movement and an existing transition have finished. */\nvoid request_congo_destination(void)\n{\n    const unsigned short room = 0x0016;\n    const short *start = &D_8006B780_6C380[room * 5u];\n    func_8000607C_6C7C(room, start[0], start[1], start[2],\n                     start[3], start[4], 0, 0);\n    func_80003728_4328(12);\n}\n",
+    "exampleExplanation": "The validated Congo room selects its native default transform. The existing world transition consumes the destination; this example does not alter saved respawn data or assign the current-room field early.",
     "parameters": [
       {
         "name": "room",
@@ -1159,8 +1162,9 @@
     "title": "Switch the system execution step",
     "summary": "Switches the native system execution step and resets transition substate.",
     "behavior": [
-      "Writes g_system stepw, clears stepw_end, marks the transition and resets its substate.",
-      "The numeric step selects a state-machine branch, not a room. Step 12 is the documented warp path, but requires prior save, destination, render and control initialization."
+      "Writes the main system step, clears its completion byte, marks the transition and resets its substate.",
+      "The numeric step selects a state-machine branch, not a room. Step 12 is the live destination/warp sequence; provide a valid prepared destination while ordinary gameplay is safe to leave. It eventually invokes destination preparation and render reset, then selects step 13.",
+      "Step 13 is the ordinary world dispatcher. Its separate substate byte at full-system +0x3ADDE selects stage setup (0), ordinary play/pause handling (1), or world teardown (2). Main step 3 uses another overlay and is not an ordinary gameplay readiness test."
     ],
     "cautions": [
       "Step numbers are state-machine selectors, not arbitrary room IDs.",
@@ -1170,9 +1174,9 @@
       "func_80002040_2C40",
       "func_8000607C_6C7C"
     ],
-    "confidence": "source-reviewed",
-    "example": "extern void func_80003728_4328(unsigned char step);\n\n/* Requires the native start/load preparation described above.\n * This helper is one step of that sequence, not a complete launch API. */\nvoid enter_prepared_warp_step(void) {\n    /* Only after native save/destination/render setup is complete: */\n    func_80003728_4328(12);\n}\n",
-    "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources.",
+    "confidence": "decompiled",
+    "example": "extern void func_80003728_4328(unsigned char step);\n\n/* The caller has prepared a valid destination and released native dialog,\n * pause and scripted-movement ownership in an already loaded live world. */\nvoid enter_prepared_warp_step(void)\n{\n    func_80003728_4328(12);\n}\n",
+    "exampleExplanation": "The native step controller performs the remaining transition. Preparing a live destination is separate from updating a save-file respawn point.",
     "parameters": [
       {
         "name": "step",

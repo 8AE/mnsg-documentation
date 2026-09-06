@@ -4,7 +4,7 @@ slug: "/variables"
 description: "Native variables for the US recompilation of Mystical Ninja Starring Goemon."
 ---
 
-52 variables with C interfaces, behavior, and usage examples. Use the search bar to look up an exact symbol, address, or purpose.
+62 variables with C interfaces, behavior, and usage examples. Use the search bar to look up an exact symbol, address, or purpose.
 
 Value tables decode established raw values and document known field layouts. Select **Tables** to jump to a variable’s mappings.
 
@@ -14,13 +14,16 @@ Value tables decode established raw values and document known field layouts. Sel
 | [`D_8006D320_6DF20`](D_8006D320_6DF20.md) | Optional record recycling owner | [Tables](D_8006D320_6DF20.md#known-values) |
 | [`D_8006D328_6DF28`](D_8006D328_6DF28.md) | Native task-list state | — |
 | [`D_8006D350_6DF50`](D_8006D350_6DF50.md) | Per-kind pool capacity table | [Tables](D_8006D350_6DF50.md#known-values) |
+| [`D_80077858_78458`](D_80077858_78458.md) | Native scenario instruction pointer | [Tables](D_80077858_78458.md#known-values) |
+| [`D_80077860_78460`](D_80077860_78460.md) | Native scenario manager task pointer | — |
 | [`D_800BCCC0_BD8C0`](D_800BCCC0_BD8C0.md) | System-state interior alias | [Tables](D_800BCCC0_BD8C0.md#known-values) |
 | [`D_800C7A72_C8672`](D_800C7A72_C8672.md) | Current native graphics-bank index | [Tables](D_800C7A72_C8672.md#known-values) |
 | [`D_800C7A78`](D_800C7A78.md) | Native frame-submission counter | — |
 | [`D_800C7AB2`](D_800C7AB2.md) | Current game room ID | [Tables](D_800C7AB2.md#known-values) |
 | [`D_800C7AE0`](D_800C7AE0.md) | Player control and collision state | [Tables](D_800C7AE0.md#known-values) |
-| [`D_800C7AE2`](D_800C7AE2.md) | Native player damage-intake blocking byte | — |
+| [`D_800C7AE2`](D_800C7AE2.md) | Native player input and damage lock byte | — |
 | [`D_800C7AE3`](D_800C7AE3.md) | Scripted player input state | [Tables](D_800C7AE3.md#known-values) |
+| [`D_800C7DB0_C89B0`](D_800C7DB0_C89B0.md) | Derived gameplay-controller records | [Tables](D_800C7DB0_C89B0.md#known-values) |
 | [`D_8015C5C8_15D1C8`](D_8015C5C8_15D1C8.md) | System-state pointer, graphics banks and world clock | [Tables](D_8015C5C8_15D1C8.md#known-values) |
 | [`D_8015C5CC_15D1CC`](D_8015C5CC_15D1CC.md) | Current graphics-command cursor | — |
 | [`D_8015C5D8_15D1D8`](D_8015C5D8_15D1D8.md) | Runtime save/control mirror | [Tables](D_8015C5D8_15D1D8.md#known-values) |
@@ -28,6 +31,8 @@ Value tables decode established raw values and document known field layouts. Sel
 | [`D_8015C608_15D208`](D_8015C608_15D208.md) | Save flags and persistent counters | [Tables](D_8015C608_15D208.md#known-values) |
 | [`D_8015CDDC`](D_8015CDDC.md) | Current room actor instance pointer | [Tables](D_8015CDDC.md#known-values) |
 | [`D_8015CDE0`](D_8015CDE0.md) | Current resolved actor definition pointer | [Tables](D_8015CDE0.md#known-values) |
+| [`D_80167C48_168848`](D_80167C48_168848.md) | Native message-window slots | [Tables](D_80167C48_168848.md#known-values) |
+| [`D_80167C54_168854`](D_80167C54_168854.md) | Native message-window style table pointer | — |
 | [`D_80167FC0_168BC0`](D_80167FC0_168BC0.md) | Scene resource registry and arena cursor | [Tables](D_80167FC0_168BC0.md#known-values) |
 | [`D_801684A0_1690A0`](D_801684A0_1690A0.md) | Current render-object context | — |
 | [`D_801684F8_1690F8`](D_801684F8_1690F8.md) | Native lighting accumulation state | — |
@@ -43,6 +48,11 @@ Value tables decode established raw values and document known field layouts. Sel
 | [`D_8016DAC0_16E6C0`](D_8016DAC0_16E6C0.md) | Per-kind display free-list heads | — |
 | [`D_8016DAD8_16E6D8`](D_8016DAD8_16E6D8.md) | Per-kind active pool counters | [Tables](D_8016DAD8_16E6D8.md#known-values) |
 | [`D_8016DADC_16E6DC`](D_8016DADC_16E6DC.md) | Active kind-2 pool count | [Tables](D_8016DADC_16E6DC.md#known-values) |
+| [`D_801C7768_1C8368`](D_801C7768_1C8368.md) | Current scenario window style | — |
+| [`D_801C7774_1C8374`](D_801C7774_1C8374.md) | Scenario typing-cancel continuation address | — |
+| [`D_801C7800_1C8400`](D_801C7800_1C8400.md) | Selected native choice-record address | — |
+| [`D_801C7808_1C8408`](D_801C7808_1C8408.md) | Native parsed choice-record storage | — |
+| [`D_801C7900_1C8500`](D_801C7900_1C8500.md) | Scenario controller-input source | [Tables](D_801C7900_1C8500.md#known-values) |
 | [`D_801FC600_5B8510`](D_801FC600_5B8510.md) | Player-manager task subtree root | — |
 | [`D_801FC604_5B8514`](D_801FC604_5B8514.md) | Current player task pointer | [Tables](D_801FC604_5B8514.md#known-values) |
 | [`D_801FC60C_5B851C`](D_801FC60C_5B851C.md) | Current player object pointer | [Tables](D_801FC60C_5B851C.md#known-values) |

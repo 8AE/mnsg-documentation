@@ -90,6 +90,11 @@
             "Game-loop timing/control byte; the system-step setter writes 2."
           ],
           [
+            "`0x3ADCC`",
+            "`uint16_t`",
+            "VI counter used by the saved play-time accumulator. Native Start pause does not stop its VI increments."
+          ],
+          [
             "`0x3ADCE`",
             "`int16_t`",
             "Game-loop/frame counter; a running numeric counter, not a state ID."
@@ -105,6 +110,21 @@
             "Main-step completion/substate byte; the step setter clears it to 0."
           ],
           [
+            "`0x3ADDE`",
+            "`uint8_t`",
+            "World-handler substate while main step is 13: 0 initializes the world, 1 handles ordinary gameplay/pause, 2 tears down the world."
+          ],
+          [
+            "`0x3ADF2`",
+            "`uint16_t`",
+            "Current room ID. The live destination consumer assigns it from the prepared destination; do not confuse it with +0x3AFE0."
+          ],
+          [
+            "`0x3ADFC`",
+            "`uint16_t`",
+            "Previous room ID preserved by the live destination consumer."
+          ],
+          [
             "`0x3AE16`",
             "`int16_t`",
             "Native start-sequence gate. Zero is the cleared value used for normal gameplay; nonzero values must retain their native sequence meaning."
@@ -115,9 +135,24 @@
             "Player control mask (D_800C7AE0). Either low bit in mask 0x03 suspends the native late player collision handlers."
           ],
           [
+            "`0x3AE22`",
+            "`uint8_t`",
+            "Player control/sequence lock. Nonzero retains native ownership; do not open another interactive prompt."
+          ],
+          [
             "`0x3AE23`",
             "`uint8_t`",
             "Scripted player input state (D_800C7AE3). The native move-toward and input-playback paths set it while supplying scripted input."
+          ],
+          [
+            "`0x3AE24`",
+            "`uint16_t`",
+            "Native task execution/render mask. The task scheduler uses only low mask bits 0x0007; Start pause adds 0x0001 to suspend matching task subtrees."
+          ],
+          [
+            "`0x3AE26`",
+            "`uint16_t`",
+            "Native Start pause/menu state. Zero is ordinary gameplay; nonzero dispatches the native pause overlay state machine."
           ],
           [
             "`0x3AE29`",
@@ -163,6 +198,11 @@
             "`0x3AFEA`",
             "`int16_t`",
             "Destination camera rotation."
+          ],
+          [
+            "`0xCF8A2`",
+            "`uint8_t`",
+            "Additional world/room-start busy gate checked by the ordinary gameplay pause path. Zero is required to begin another interactive operation."
           ]
         ]
       },
@@ -185,6 +225,11 @@
             "`0x0C`",
             "`12`",
             "Scene load/warp sequence path."
+          ],
+          [
+            "`0x0D`",
+            "`13`",
+            "Ordinary world dispatcher; world substate at +0x3ADDE selects setup, gameplay/pause, or teardown."
           ]
         ]
       },
@@ -252,6 +297,12 @@
             "Game-loop timing/control byte; the system-step setter writes 2."
           ],
           [
+            "`0xADCC`",
+            "`0x3ADCC`",
+            "`uint16_t`",
+            "VI counter used by the saved play-time accumulator. Native Start pause does not stop its VI increments."
+          ],
+          [
             "`0xADCE`",
             "`0x3ADCE`",
             "`int16_t`",
@@ -274,6 +325,18 @@
             "`0x3AE16`",
             "`int16_t`",
             "Native start-sequence gate. Zero is the cleared value used for normal gameplay; nonzero values must retain their native sequence meaning."
+          ],
+          [
+            "`0xAE24`",
+            "`0x3AE24`",
+            "`uint16_t`",
+            "Native task execution/render mask. The task scheduler uses only low mask bits 0x0007; Start pause adds 0x0001 to suspend matching task subtrees."
+          ],
+          [
+            "`0xAE26`",
+            "`0x3AE26`",
+            "`uint16_t`",
+            "Native Start pause/menu state. Zero is ordinary gameplay; nonzero dispatches the native pause overlay state machine."
           ],
           [
             "`0xAE29`",

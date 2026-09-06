@@ -1,0 +1,202 @@
+{
+  "D_80077858_78458": {
+    "tables": [
+      {
+        "id": "scenario-instructions",
+        "title": "Established scenario instructions",
+        "description": "Each instruction and operand occupies one 32-bit word in the US scenario VM. Text operands point to separate 16-bit glyph/control streams. This is a task-relevant subset, not the full instruction set.",
+        "columns": [
+          "Opcode",
+          "Meaning",
+          "Following words"
+        ],
+        "rows": [
+          [
+            "`0x8008`",
+            "End the scenario",
+            "None"
+          ],
+          [
+            "`0x800A`",
+            "Branch to another instruction stream",
+            "One instruction pointer"
+          ],
+          [
+            "`0x800B`",
+            "Invoke a native callback",
+            "One callback pointer; the established callback has void return and no arguments"
+          ],
+          [
+            "`0x8010`",
+            "Process native text",
+            "One pointer to a 16-bit glyph/control stream"
+          ],
+          [
+            "`0x8011`",
+            "Parse a choice list",
+            "Four-word text/branch records, ending at 0x8012"
+          ],
+          [
+            "`0x8012`",
+            "End choice-list definitions",
+            "The B continuation begins four words after this terminator"
+          ]
+        ]
+      },
+      {
+        "id": "scenario-text-controls",
+        "title": "Established native text controls",
+        "description": "These values belong to the 16-bit text stream, not the 32-bit scenario instruction stream. Printable US ASCII glyphs are encoded as character value minus 0x20.",
+        "columns": [
+          "16-bit value",
+          "Meaning"
+        ],
+        "rows": [
+          [
+            "`0x0000`–`0x005E`",
+            "Printable ASCII glyphs 0x20–0x7E"
+          ],
+          [
+            "`0xFFB9`",
+            "Close the message window"
+          ],
+          [
+            "`0xFFBA`",
+            "Open the message window"
+          ],
+          [
+            "`0xFFC4`",
+            "New line"
+          ],
+          [
+            "`0xFFDF`",
+            "Yellow text"
+          ],
+          [
+            "`0xFFE0`",
+            "White text"
+          ],
+          [
+            "`0xFFFF`",
+            "End the text stream"
+          ]
+        ]
+      }
+    ]
+  },
+  "D_80167C48_168848": {
+    "tables": [
+      {
+        "id": "message-window-state",
+        "title": "Message-window animation state",
+        "description": "Read the signed 16-bit field at offset +0x30 only after confirming a live window pointer. These state groups come from the native readiness helper; absence and readiness both require a separate pointer check.",
+        "columns": [
+          "Stored state",
+          "Meaning"
+        ],
+        "rows": [
+          [
+            "`1`–`3`",
+            "Opening animation"
+          ],
+          [
+            "`5`–`6`",
+            "Closing animation"
+          ]
+        ]
+      }
+    ]
+  },
+  "D_801C7900_1C8500": {
+    "tables": [
+      {
+        "id": "scenario-controller-values",
+        "title": "Scenario input-source values",
+        "description": "The native 32-bit selector chooses a source by exact value. It is not a general bitmask; zero and unrecognized values retain previously sampled input.",
+        "columns": [
+          "Raw value (hex)",
+          "Raw value (decimal)",
+          "Meaning"
+        ],
+        "rows": [
+          [
+            "`0x01`",
+            "`1`",
+            "Controller one"
+          ],
+          [
+            "`0x02`",
+            "`2`",
+            "Controller two"
+          ],
+          [
+            "`0x03`",
+            "`3`",
+            "Merged input from both controllers"
+          ]
+        ]
+      }
+    ]
+  },
+  "D_800C7DB0_C89B0": {
+    "tables": [
+      {
+        "id": "gameplay-controller-layout",
+        "title": "Derived gameplay-controller record",
+        "description": "Offsets are relative to one of four 0x18-byte records in this inline 0x60-byte block. Read native-width values with the correct offset origin.",
+        "columns": [
+          "Record-relative offset",
+          "Storage type",
+          "Meaning"
+        ],
+        "rows": [
+          [
+            "`0x00`",
+            "`uint16_t`",
+            "Controller connected/status value"
+          ],
+          [
+            "`0x02`",
+            "`uint16_t`",
+            "Held buttons"
+          ],
+          [
+            "`0x04`",
+            "`uint16_t`",
+            "Newly pressed buttons"
+          ],
+          [
+            "`0x06`",
+            "`int16_t`",
+            "Stick X"
+          ],
+          [
+            "`0x08`",
+            "`int16_t`",
+            "Stick Y"
+          ],
+          [
+            "`0x0A`",
+            "`2 bytes`",
+            "Unresolved field; do not assign an enum meaning"
+          ],
+          [
+            "`0x0C`",
+            "`float`",
+            "Analog magnitude"
+          ],
+          [
+            "`0x10`",
+            "`float`",
+            "Derived analog X"
+          ],
+          [
+            "`0x14`",
+            "`float`",
+            "Derived analog Y"
+          ]
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,349 @@
+{
+  "scope": "Verified native world transition and dialog findings used during Congo invitation work; no native runtime certification was performed.",
+  "game": {
+    "version": "US decompressed executable",
+    "sha256": "e40bee20508c2e29e651dca4e47504e40f908f0a2186e34a582784bf5a64be4c"
+  },
+  "world": {
+    "defaultTransform": {
+      "symbol": "D_8006B780_6C380",
+      "room": 22,
+      "romOffset": "0x6C45C",
+      "encoding": "five big-endian signed 16-bit scalars",
+      "values": [
+        60,
+        -70,
+        171,
+        512,
+        16
+      ]
+    },
+    "dispatch": {
+      "mainStepTableRuntime": "0x80058908",
+      "mainStepTableRom": "0x59508",
+      "step13": "0x80002EFC",
+      "worldDispatcher": "0x8001F8B0",
+      "substateTableRuntime": "0x8006B730",
+      "substateTableRom": "0x6C330",
+      "handlers": [
+        "0x8001F914",
+        "0x8001F940",
+        "0x8001FA3C"
+      ]
+    },
+    "liveWarp": {
+      "writer": "0x8000607C",
+      "stepSetter": "0x80003728",
+      "step12Handler": "0x80002E70",
+      "transitionWait": "0x800548D8",
+      "destinationConsumer": "0x8000B364",
+      "renderReset": "0x8000383C",
+      "nextStep": 13,
+      "savedSpawnReaderSeparate": "0x8000B2A0"
+    },
+    "correction": "Previous destination/step/scene-loader documentation generalized save-file launch requirements to every warp. Ghidra decompilation and disassembly of the live step-12 route establish direct prepared-destination consumption without reading saved respawn fields.",
+    "evidenceMethod": "Reviewed native callers, dispatch tables and Ghidra decompilation/disassembly; independently decoded the five room-start scalars from the available US executable.",
+    "sourceUse": "mnsg-recomp-example/src/anchor_boss_invite_world.c"
+  },
+  "dialog": {
+    "sourceUse": "mnsg-recomp-example/src/anchor_dialog.c",
+    "nativeFunctions": {
+      "scenarioInputSampler": "0x8003D17C",
+      "scenarioInitializer": "0x8003D468",
+      "scenarioInterpreter": "0x8003D68C",
+      "choiceParser": "0x8003E6C0",
+      "choiceInput": "0x8003E888",
+      "globalCancel": "0x8003E680",
+      "windowAllocator": "0x8000C260",
+      "windowCleanup": "0x8000C878",
+      "windowStateQuery": "0x8000C314",
+      "glyphAllocator": "0x8000D060",
+      "gameplayInputCopy": "0x80004AF8",
+      "genericWindowSetup": "0x8000B8A4"
+    },
+    "saveSignScriptEvidence": {
+      "decompressedAssetRomOffset": "0x73E400",
+      "scenarioScriptRomOffset": "0x73E948",
+      "yesLabelAssetOffset": "0x13C",
+      "noLabelAssetOffset": "0x158"
+    },
+    "style8": {
+      "tableRuntime": "0x800627F0",
+      "tableRomOffset": "0x633F0",
+      "recordSize": 36,
+      "index": 8,
+      "background": "0x8005BB70",
+      "palette": "0x800627D0",
+      "width": 256,
+      "stripHeight": 8,
+      "stripCount": 9,
+      "height": 72
+    },
+    "fonts": {
+      "glyphTexturesRuntime": "0x800629A0",
+      "glyphWidthsRuntime": "0x8005BB10"
+    },
+    "capacities": {
+      "choiceRecords": 10,
+      "choiceRecordBytes": 20,
+      "windowBytes": "0x1818",
+      "glyphRecordsPerWindow": 120,
+      "glyphRecordBytes": "0x30"
+    },
+    "input": {
+      "rawControllerOneSystemOffset": "0x3B078",
+      "rawControllerTwoSystemOffset": "0x3B090",
+      "derivedBlockSystemOffset": "0x3B0F0",
+      "derivedRecords": 4,
+      "derivedStride": "0x18",
+      "lockBytes": [
+        "0x3AE22",
+        "0x3AE23"
+      ]
+    },
+    "clarifications": [
+      "D_801C7900 is an exact input-source enum, not a general bitmask; 0 retains previous sampled values.",
+      "D_801C7774 handles B during typing/wait. Choice B resumes four words after 0x8012 instead.",
+      "E6C0 returns the 0x8012 sentinel and has a ten-record backing capacity without an in-loop bound check.",
+      "The D468 reset does not free existing windows. Return value zero means manager absent; nonzero follows initialization.",
+      "Host tests use a pointer-width DialogWord alias. The public declarations retain 32-bit MIPS words and native addresses.",
+      "The native input update has void(void) ABI but can block awaiting an SI/controller message; use its existing return boundary. Final source filters only controller-one derived input and scopes AE20 bit 2 within actual local-player pre/late calls, with no persistent AE22 writes.",
+      "Native scenario callers can establish AE20/AE22 control locks before entering D468. An initializer entry hook cannot assume current bits belong to the old interaction; cleanup must preserve replacement ownership."
+    ],
+    "evidenceMethod": "Verified native call paths and field widths through Ghidra decompilation and disassembly; decoded US save-sign/style/font assets; host VM-contract tests and MIPS object compilation, without launching the game."
+  },
+  "inventoryRefresh": {
+    "baselineCount": 223,
+    "currentCount": 238,
+    "added": [
+      "D_80077858_78458",
+      "D_80077860_78460",
+      "D_800C7DB0_C89B0",
+      "D_80167C48_168848",
+      "D_80167C54_168854",
+      "D_801C7768_1C8368",
+      "D_801C7774_1C8374",
+      "D_801C7800_1C8400",
+      "D_801C7808_1C8408",
+      "D_801C7900_1C8500",
+      "func_80004AF8_56F8",
+      "func_8000C260_CE60",
+      "func_8000C878_D478",
+      "func_8003D468_3E068",
+      "func_8003E6C0_3F2C0"
+    ],
+    "removed": [],
+    "refreshedSources": [
+      "mnsg-recomp-example/src/anchor_boss_invite_world.c",
+      "mnsg-recomp-example/src/anchor_dialog.c"
+    ],
+    "previewCount": 474,
+    "previewAudit": {
+      "unresolvedSymbols": [],
+      "unresolvedHooks": [],
+      "projectTableGaps": [],
+      "metadataConflicts": []
+    }
+  },
+  "sourceRevision": {
+    "project": "mnsg-recomp-example",
+    "commit": "d1e5845e4099443df3aa7cb647b27ddd602604b9",
+    "dirty": true,
+    "files": {
+      "mnsg-recomp-example/src/anchor_boss_invite_world.c": "38f3bcb2323f97618285367f696608cc7b612d5c0956c1b1e68b653d97729e07",
+      "mnsg-recomp-example/src/anchor_dialog.c": "3bf905bd48f6189a4db6a346ba1890149272eeca782d571a36f848ec7945c0df"
+    }
+  },
+  "pauseScheduler": {
+    "sourceUse": "mnsg-recomp-example/src/anchor_dialog.c",
+    "method": "Ghidra decompilation plus scheduler disassembly, cross-checked with the US native symbol tables; no in-game validation.",
+    "scheduler": {
+      "symbol": "func_80034734_35334",
+      "runtime": "0x80034734",
+      "rom": "0x35334",
+      "size": "0x158",
+      "taskFlagsLhu": "0x8003479C",
+      "systemMaskLhu": "0x800347A0",
+      "maskLimitAndi": "0x800347A8",
+      "hierarchyDepthLhu": [
+        "0x80034784",
+        "0x80034788"
+      ],
+      "callbackJalr": [
+        "0x80034808",
+        "0x80034828",
+        "0x80034848"
+      ]
+    },
+    "nativeStart": {
+      "controller": "0x8001F940",
+      "pauseFieldLhu": "0x8001F95C",
+      "pauseFieldStartSh": "0x8001FA0C",
+      "stateMachine": "0x8001FA80",
+      "executionMask": "system+0x3AE24",
+      "pauseMenuState": "system+0x3AE26",
+      "firstStateAddsMask": 1,
+      "resourceCursorHelpers": [
+        "0x80020308",
+        "0x80020364"
+      ],
+      "fadeHelpers": [
+        "0x800369F0",
+        "0x800369B4"
+      ]
+    },
+    "clocks": {
+      "viCounter": "system+0x3ADCC",
+      "viCounterIncrement": "0x800008A0",
+      "viIncrementScope": "unconditional on each received VI tick, including native Start pause",
+      "playTimeAccumulator": "0x8000B7E4",
+      "playTimeAccumulatorBehavior": "When VI counter >=60, increment saved play-time scalar 0x8015C86C then subtract60 from VI counter.",
+      "gameFrameCounter": "system+0x3ADCE",
+      "gameFrameScope": "game_thread_entrypoint increments it after rendering without a pause-mask gate."
+    },
+    "renderCaveat": "Native 80016C44 case6 decrements object+0x70 animation blend countdown on draw independently of task execution. The pause implementation follows native Start gameplay-task suspension, not a framebuffer snapshot.",
+    "scenarioTick": {
+      "symbol": "func_8003CFD0_3DBD0",
+      "runtime": "0x8003CFD0",
+      "rom": "0x3DBD0",
+      "size": "0x4C",
+      "decrementDelay": "0x8003CFF8",
+      "interpreterCall": "0x8003CFFC",
+      "statusCall": "0x8003D004",
+      "abi": "a0 and a1 saved at 0x8003CFE4 and 0x8003CFEC but not read; native scheduler callback(task, object).",
+      "caution": "Current-task context must match manager; native callback interpreter can invoke task-dependent opcodes.",
+      "nativeTaskFlags": "Scenario-manager creation inherits task flags 0x81: 0x801F728C calls 0x801F91F0 / 0x801F9230, which establishes D_8006D324 before 0x80034DD8 creates the manager. Task initialization copies this value to unsigned halfword +0x22. It is not naturally exempt from scheduler mask bit 1."
+    },
+    "currentTask": {
+      "symbol": "D_8016DAB4_16E6B4",
+      "runtime": "0x8016DAB4",
+      "sourceDeclaration": "extern void *D_8016DAB4_16E6B4;",
+      "meaning": "Native scheduler current-task pointer, reloaded after callbacks to tolerate task deletion or replacement.",
+      "sourceSnapshotSha256": "c9271bf07c3d55812bc1aaf13e344dd2186daa7d6908bc3f366d1f6de51c7cd3"
+    },
+    "sourceRefresh": {
+      "project": "mnsg-recomp-example",
+      "path": "src/anchor_dialog.c",
+      "newSymbols": [
+        "func_80034734_35334",
+        "func_8003CFD0_3DBD0"
+      ],
+      "updatedExistingSymbol": "D_8016DAB4_16E6B4",
+      "preserves": "All prior inventory records, other source snapshots and invitation documentation.",
+      "liveValidation": "Not performed; the user handles in-game testing."
+    }
+  },
+  "multiArenaEntrances": {
+    "date": "2026-09-06",
+    "scope": "Existing room and default-start variable values only; no new native imports, inventory records or source snapshots.",
+    "namingClarification": {
+      "source": "Direct user clarification during the request",
+      "statement": "Control Machine is apart of the dragon room",
+      "meaning": "The user means the mind-control robot in Koryuta flight, not an unidentified Gourmet Submarine machine."
+    },
+    "nativeIdentityEvidence": {
+      "roomSymbol": "D_800C7AB2",
+      "startTableSymbol": "D_8006B780_6C380",
+      "existingReference": "func_08002D18_703E18 is already documented as the health-bearing mind-control robot battle child in Koryuta flight.",
+      "room341Metadata": {
+        "pointerTableRuntime": "0x80231300",
+        "pointerTableRom": "0x5EC7D0",
+        "recordRuntime": "0x80230490",
+        "recordRom": "0x5EB960",
+        "actorDataFileId": "0x0403",
+        "actorRootId": "0x01B0",
+        "actorRootInitializer": "0x08001A28",
+        "actorCodeFileId": 46,
+        "actorCodeRom": "0x701100",
+        "rootSpawnXYZ": [
+          42,
+          200,
+          722
+        ]
+      },
+      "nativeFileIndexing": "Native file IDs select zero-based file-table index file_id - 1. Room341 file0x403 begins at decompressed ROM0x12D93E0.",
+      "separateFromClarification": "Native data establishes room341, the Koryuta controller family and its existing documented battle child. The user clarification establishes that Control Machine is the requested display name for that encounter."
+    },
+    "entranceData": {
+      "format": "Five big-endian signed 16-bit values: X, Y, Z, camera rotation, player rotation.",
+      "tableRom": "0x06C380",
+      "romImage": "US decompressed 32MiB big-endian image",
+      "romSha256": "e40bee20508c2e29e651dca4e47504e40f908f0a2186e34a582784bf5a64be4c",
+      "entries": [
+        {
+          "roomId": "0x0049",
+          "roomDecimal": 73,
+          "firstShortIndex": 365,
+          "entryByteOffset": "0x02DA",
+          "romOffset": "0x06C65A",
+          "signedFieldsXYZCameraPlayer": [
+            145,
+            -70,
+            -99,
+            768,
+            16
+          ]
+        },
+        {
+          "roomId": "0x0071",
+          "roomDecimal": 113,
+          "firstShortIndex": 565,
+          "entryByteOffset": "0x046A",
+          "romOffset": "0x06C7EA",
+          "signedFieldsXYZCameraPlayer": [
+            0,
+            -71,
+            318,
+            512,
+            16
+          ]
+        },
+        {
+          "roomId": "0x0155",
+          "roomDecimal": 341,
+          "firstShortIndex": 1705,
+          "entryByteOffset": "0x0D52",
+          "romOffset": "0x06D0D2",
+          "signedFieldsXYZCameraPlayer": [
+            27,
+            239,
+            131,
+            0,
+            16
+          ]
+        }
+      ]
+    },
+    "limitations": [
+      "No in-game or two-client verification was performed; the user handles game testing.",
+      "The values are native default room starts, not proof of a particular current encounter phase. Preserve the normal room-load and scenario lifecycle rather than invoking a boss child initializer directly.",
+      "No native progression, intro or victory flags are changed by this documentation update."
+    ],
+    "nativeEntryLifecycle": {
+      "review": "Independent native constructor and room-initialization review; no in-game verification.",
+      "cameraOwnership": {
+        "roomId": "0x0155",
+        "roomDecimal": 341,
+        "actorManagerResetCall": "0x8020D818 (ROM 0x5C8CE8)",
+        "resetFunction": "0x80023EE4",
+        "resetBank": "0x80168E90",
+        "reader": "0x80023E94",
+        "effect": "The actor-manager initializer clears this event bank before placed actors are spawned. The room camera actor therefore takes its fresh camera-allocation path instead of reusing the prior camera pointer at D_8015CDD4."
+      },
+      "placedDependencies": {
+        "ordering": "The placed actor0x0287 constructor runs before actor0x01B0.",
+        "actor0287Initializer": "0x08000000 (ROM 0x712F70)",
+        "effect": "The earlier constructor assigns D_8015CDB8; the later0x01B0 constructor builds its own dragon parts, controller, battle child and wave controller.",
+        "actor01B0Initializer": "0x08001A28 (ROM 0x702B28)",
+        "battleChildInitializer": "0x08002D18 (ROM 0x703E18)"
+      },
+      "cameraBranches": {
+        "branchBank": "0x80168EF8",
+        "reader": "0x80023FB8",
+        "meaning": "A separate transient bit0 selects the native intro/resume branch, without selecting a stale camera pointer.",
+        "geometrySource": "D_8015CDC4 and D_8015CDC8 are populated from the fresh dragon update, func_08001460_702560, at offsets0x1720 and0x172C within file46 code.",
+        "decision": "Preserve native flag and scenario branches; no additional entry flag writes or manual boss-child construction are required by this source review."
+      }
+    }
+  }
+}

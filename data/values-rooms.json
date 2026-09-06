@@ -799,7 +799,7 @@
           [
             "`0x0155`",
             "`341`",
-            "Koryuta's flight — airborne encounter"
+            "Koryuta's flight — airborne Control Machine encounter"
           ],
           [
             "`0x015E`",
@@ -1103,7 +1103,7 @@
             "`341`",
             "`1705`",
             "`0x0D52`",
-            "Koryuta's flight — airborne encounter"
+            "Koryuta's flight — airborne Control Machine encounter"
           ],
           [
             "`0x01D1`",
@@ -1111,6 +1111,130 @@
             "`2325`",
             "`0x122A`",
             "Goemon's House"
+          ]
+        ]
+      },
+      {
+        "id": "congo-default-transform",
+        "title": "Congo default start transform",
+        "description": "US executable values for room 0x0016 (22), Oedo Castle Congo battle. Its five signed 16-bit fields begin at table short index 110, byte offset 0x00DC. Coordinates and rotations are stored values, not indices or alternate room IDs.",
+        "columns": [
+          "Field",
+          "Stored signed value (decimal)"
+        ],
+        "rows": [
+          [
+            "X position",
+            "`60`"
+          ],
+          [
+            "Y position",
+            "`-70`"
+          ],
+          [
+            "Z position",
+            "`171`"
+          ],
+          [
+            "Camera rotation",
+            "`512`"
+          ],
+          [
+            "Player rotation",
+            "`16`"
+          ]
+        ]
+      },
+      {
+        "id": "dharumanyo-default-transform",
+        "title": "Dharumanyo default start transform",
+        "description": "US executable values for room 0x0049 (73), Ghost Toys Castle Dharumanyo battle. Its five signed 16-bit fields begin at table short index 365, byte offset 0x02DA. These are the room default entry values; native encounter setup and scripts still run after the room loads.",
+        "columns": [
+          "Field",
+          "Stored signed value (decimal)"
+        ],
+        "rows": [
+          [
+            "X position",
+            "`145`"
+          ],
+          [
+            "Y position",
+            "`-70`"
+          ],
+          [
+            "Z position",
+            "`-99`"
+          ],
+          [
+            "Camera rotation",
+            "`768`"
+          ],
+          [
+            "Player rotation",
+            "`16`"
+          ]
+        ]
+      },
+      {
+        "id": "tsurami-default-transform",
+        "title": "Tsurami default start transform",
+        "description": "US executable values for room 0x0071 (113), Festival Temple Castle Tsurami battle. Its five signed 16-bit fields begin at table short index 565, byte offset 0x046A. These are the room default entry values; native encounter setup and scripts still run after the room loads.",
+        "columns": [
+          "Field",
+          "Stored signed value (decimal)"
+        ],
+        "rows": [
+          [
+            "X position",
+            "`0`"
+          ],
+          [
+            "Y position",
+            "`-71`"
+          ],
+          [
+            "Z position",
+            "`318`"
+          ],
+          [
+            "Camera rotation",
+            "`512`"
+          ],
+          [
+            "Player rotation",
+            "`16`"
+          ]
+        ]
+      },
+      {
+        "id": "control-machine-default-transform",
+        "title": "Control Machine default start transform",
+        "description": "US executable values for room 0x0155 (341), Koryuta's flight Control Machine encounter. Its five signed 16-bit fields begin at table short index 1705, byte offset 0x0D52. These are the room default entry values; native encounter setup and scripts still run after the room loads.",
+        "columns": [
+          "Field",
+          "Stored signed value (decimal)"
+        ],
+        "rows": [
+          [
+            "X position",
+            "`27`"
+          ],
+          [
+            "Y position",
+            "`239`"
+          ],
+          [
+            "Z position",
+            "`131`"
+          ],
+          [
+            "Camera rotation",
+            "`0`"
+          ],
+          [
+            "Player rotation",
+            "`16`"
           ]
         ]
       }

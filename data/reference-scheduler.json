@@ -1,0 +1,65 @@
+{
+  "func_80034734_35334": {
+    "title": "Run the native task scheduler",
+    "summary": "Walks the native task hierarchy and executes each eligible task callback sequence.",
+    "declaration": "extern void func_80034734_35334(void);",
+    "behavior": [
+      "Starts at the root task list and updates D_8016DAB4_16E6B4 as it visits tasks. A live task carries its next pointer at +0x00, an unsigned 16-bit hierarchy depth at +0x20 and unsigned 16-bit execution flags at +0x22.",
+      "The execution gate tests task flags against the unsigned 16-bit system mask at full-system +0x3AE24, limited to the low three bits: (task_flags & system_mask & 7) != 0 skips the task. A skipped task also suppresses every following descendant whose depth is greater; iteration resumes at a peer or ancestor.",
+      "For an eligible task, the scheduler restores its resource context, then invokes non-null enabled callbacks at task +0x08, +0x0C and +0x10 in order. Each callback receives the current task and its object pointer from task +0x18. Callback addresses carrying bit 0x00800000 are inhibited.",
+      "The native Start pause sequence adds mask bit 0x0001 to suspend matching gameplay task subtrees. The separate unsigned 16-bit field at full-system +0x3AE26 selects the Start menu state machine; setting it is not a generic way to pause an unrelated dialog.",
+      "This function does not stop the game loop, input sampling, rendering, VI counter or frame counter. Systems outside its task hierarchy require their own pause policy."
+    ],
+    "example": "#include \"modding.h\"\n\nextern unsigned char *D_8015C5C8_15D1C8;\n\n/* Observe the scheduler mask without changing native ownership. */\nstatic unsigned short last_task_mask;\n\nRECOMP_HOOK(\"func_80034734_35334\")\nvoid observe_task_execution_mask(void)\n{\n    if (D_8015C5C8_15D1C8)\n        last_task_mask = *(unsigned short *)(D_8015C5C8_15D1C8 + 0x3AE24);\n}\n",
+    "exampleExplanation": "The entry hook reads the established native mask while leaving task execution and ownership to the engine.",
+    "returns": "No return value.",
+    "cautions": [
+      "Do not recurse into this scheduler from one of its callbacks; it depends on a shared current-task global and mutable linked hierarchy.",
+      "A pause mask can suppress entire subtrees, including a desired interface task. Verify the selected task flags and ancestor relationships before changing it.",
+      "Restore only state owned by the caller. A replacement native pause or scene can change the same mask during a callback."
+    ],
+    "related": [
+      "D_8016DAB4_16E6B4",
+      "D_8015C5C8_15D1C8"
+    ],
+    "confidence": "decompiled"
+  },
+  "func_8003CFD0_3DBD0": {
+    "title": "Advance the scenario manager",
+    "summary": "Runs one native scenario-manager tick, including interpreter input and dialog status.",
+    "declaration": "extern void func_8003CFD0_3DBD0(void *task, void *object);",
+    "behavior": [
+      "This is the recurring scenario-manager callback installed by its initializer. The ordinary scheduler supplies task and object arguments; this implementation saves but does not otherwise read either argument.",
+      "While the byte at 0x801C7930 is nonzero, decrement it and return. Otherwise run the shared scenario interpreter and then update scenario/dialog status.",
+      "The manager is part of the gameplay task hierarchy and can be suspended by the same execution mask as gameplay. A controlled custom interaction that suppresses the ordinary scheduler may advance its owned scenario once separately, while retaining the correct current-task/resource context.",
+      "Input collection, message-window rendering and choice-cursor drawing have their own native paths. Running this callback alone is not a complete dialog initialization or rendering API."
+    ],
+    "example": "#include \"modding.h\"\n\n/* Native callback observation; arguments are supplied by the scheduler. */\nRECOMP_HOOK(\"func_8003CFD0_3DBD0\")\nvoid observe_scenario_tick(void *task, void *object)\n{\n    (void)task;\n    (void)object;\n    /* The native callback continues to advance its own interpreter. */\n}\n",
+    "exampleExplanation": "Observe the recurring manager boundary without advancing the interpreter a second time.",
+    "parameters": [
+      {
+        "name": "task",
+        "type": "void *",
+        "description": "Native scenario-manager task supplied by the scheduler; not read by this callback itself."
+      },
+      {
+        "name": "object",
+        "type": "void *",
+        "description": "Task object argument supplied by the scheduler; not read by this callback itself."
+      }
+    ],
+    "returns": "No return value.",
+    "cautions": [
+      "A manual call must not duplicate a tick already performed by the native scheduler.",
+      "The interpreter uses shared globals and may invoke callbacks or task operations. Verify scenario ownership and current-task context before calling it outside ordinary scheduling.",
+      "This function does not allocate or validate message windows."
+    ],
+    "related": [
+      "func_80034734_35334",
+      "D_80077860_78460",
+      "D_80077858_78458",
+      "D_8016DAB4_16E6B4"
+    ],
+    "confidence": "decompiled"
+  }
+}

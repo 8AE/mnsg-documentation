@@ -36,10 +36,13 @@ This exported byte array begins at full-system offset +0x30000. Use the alias-re
 | Alias-relative offset | Full-system offset | Storage type | Meaning |
 | --- | --- | --- | --- |
 | `0xADCA` | `0x3ADCA` | `uint8_t` | Game-loop timing/control byte; the system-step setter writes 2. |
+| `0xADCC` | `0x3ADCC` | `uint16_t` | VI counter used by the saved play-time accumulator. Native Start pause does not stop its VI increments. |
 | `0xADCE` | `0x3ADCE` | `int16_t` | Game-loop/frame counter; a running numeric counter, not a state ID. |
 | `0xADD4` | `0x3ADD4` | `uint8_t` | Main system step. See [known main-system steps](./D_8015C5C8_15D1C8.md#known-system-steps). |
 | `0xADD5` | `0x3ADD5` | `uint8_t` | Main-step completion/substate byte; the step setter clears it to 0. |
 | `0xAE16` | `0x3AE16` | `int16_t` | Native start-sequence gate. Zero is the cleared value used for normal gameplay; nonzero values must retain their native sequence meaning. |
+| `0xAE24` | `0x3AE24` | `uint16_t` | Native task execution/render mask. The task scheduler uses only low mask bits 0x0007; Start pause adds 0x0001 to suspend matching task subtrees. |
+| `0xAE26` | `0x3AE26` | `uint16_t` | Native Start pause/menu state. Zero is ordinary gameplay; nonzero dispatches the native pause overlay state machine. |
 | `0xAE29` | `0x3AE29` | `uint8_t` | Destination-transition marker; the warp destination helper writes 1. |
 | `0xAE3A` | `0x3AE3A` | `uint16_t` | Seventh argument of the warp destination helper; individual values are not yet interpreted. |
 | `0xAE3C` | `0x3AE3C` | `uint32_t` | Eighth argument of the warp destination helper; individual values are not yet interpreted. |

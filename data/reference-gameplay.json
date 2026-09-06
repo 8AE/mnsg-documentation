@@ -61,7 +61,7 @@
   },
   "D_8015C5E4": {
     "title": "Runtime current health and Tsurami update gate",
-    "summary": "The runtime current-health word, also tested by Tsurami\u2019s root post-update callback.",
+    "summary": "The runtime current-health word, also tested by Tsurami’s root post-update callback.",
     "behavior": [
       "This 32-bit word is the same storage as D_8015C608_15D208 - 0x24. The native save-start copy mirrors the saved current-health field into it; health uses half-heart units.",
       "Tsurami private post callback func_08000388_6B3628 skips its body when this value is zero. Its test is nonzero, not positive: every nonzero bit pattern allows that native processing path to proceed.",
@@ -359,9 +359,12 @@
     "summary": "Loads normal stage resources before later actor and effect setup.",
     "behavior": [
       "Return from this routine provides a boundary after ordinary stage resources have completed loading. Additional native file resources can then be looked up or loaded through the scene registry.",
-      "The complete internal loading sequence and native argument/return signature are not established here. A zero-argument return hook does not imply that the native function has no parameters."
+      "The complete internal loading sequence and native argument/return signature are not established here. A zero-argument return hook does not imply that the native function has no parameters.",
+      "An entry hook can invalidate state tied to the preceding stage before resources are rebuilt. A return hook observes completion of this stage-resource load, including a new visit that reloads the same numeric room ID. Later player/actor initialization still needs its own validity checks."
     ],
-    "cautions": [],
+    "cautions": [
+      "Do not use the return hook alone as proof that the local player is alive, ordinary gameplay has resumed, or interactive UI is safe to open."
+    ],
     "confidence": "source-reviewed",
     "related": [
       "func_80013B14_14714",

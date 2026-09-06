@@ -25,6 +25,8 @@ Return from this routine provides a boundary after ordinary stage resources have
 
 The complete internal loading sequence and native argument/return signature are not established here. A zero-argument return hook does not imply that the native function has no parameters.
 
+An entry hook can invalidate state tied to the preceding stage before resources are rebuilt. A return hook observes completion of this stage-resource load, including a new visit that reloads the same numeric room ID. Later player/actor initialization still needs its own validity checks.
+
 Identified as the gameplay stage resource-loading routine. Its return is an appropriate boundary for acquiring additional resident render resources after the normal scene resources are available.
 
 Treat registry pointers and scene allocations as belonging to the current stage. Invalidate retained scene pointers before loading or binding resources for another stage. The complete native implementation is not reproduced here.
@@ -49,6 +51,7 @@ The example shows the documented native data layout or call sequence. Use it onl
 
 ## Notes
 
+- Do not use the return hook alone as proof that the local player is alive, ordinary gameplay has resumed, or interactive UI is safe to open.
 - Loading broad resources from a render/update callback can collide with the native resource lifecycle.
 - Overlay addresses and cached resource pointers cease to be valid across stage teardown.
 
