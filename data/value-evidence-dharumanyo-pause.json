@@ -1,0 +1,35 @@
+{
+  "scope": "Native Dharumanyo visible-root pause flag and its shared actor callback gate. Only the existing func_08003810_6CBA20 public reference changes; no symbol inventory expansion is required.",
+  "game": {
+    "version": "USA native recompiler output supplied for review",
+    "runtimeValidation": "No game was launched or live multiplayer behavior certified."
+  },
+  "nativeEvidence": {
+    "func_08003810_6CBA20": {
+      "source": "/tmp/dhar-bug-review/native-post.c",
+      "sha256": "73382a0c88d33fc12cc00fb02891009fd5d77c5c12ad98e21337d066df1cea96",
+      "addresses": [
+        "0x08003830..0x0800383C reads native flag 0x16C",
+        "0x08003848..0x08003858 ORs bit 0 into D_8015CC30 +0xD4 when the flag is set",
+        "0x0800386C checks the root object pointer",
+        "0x0800387C..0x0800388C clears bit 0 when the flag is clear and the object is live"
+      ],
+      "fact": "The Dharumanyo visible-root private post derives the shared pause bit from flag 0x16C and owns its clear path."
+    },
+    "func_80218FE8_5D44B8": {
+      "source": "/tmp/dhar-bug-review/native-pre.c",
+      "sha256": "d8736d5e37ce89c521228fc3e20832cb9c91514730648cdf850cdfaab47d46b7",
+      "addresses": [
+        "0x80219040..0x8021904C tests D_8015CC30 +0xD4 bit 0",
+        "0x80219054..0x8021905C tests task +0x64 bit 0x2 and bypasses the shared pause branch when set",
+        "0x80219074..0x80219090 marks task +0x0C and +0x10 callbacks disabled when the gate applies"
+      ],
+      "fact": "The common actor pre preserves a task-local bit-0x2 exemption, allowing the Dharumanyo root's private post to release the derived gate."
+    },
+    "schedulerContext": "The existing func_80034734_35334 reference establishes enabled callback order as task +0x08 pre, +0x0C AI, then +0x10 post."
+  },
+  "limitations": [
+    "The temporary generated C files are review evidence and are not copied into the repository.",
+    "This change documents native control flow; it does not claim runtime multiplayer certification."
+  ]
+}

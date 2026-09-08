@@ -1,0 +1,149 @@
+{
+  "scope": "Verified Congo root post, exact health threshold/death behavior, breath-flame lifecycle and actor target-turning helper. No full-fight protocol or project-specific behavior appears in public explanations.",
+  "game": {
+    "version": "USA decompressed native ROM",
+    "sha256": "e40bee20508c2e29e651dca4e47504e40f908f0a2186e34a582784bf5a64be4c",
+    "validation": "Native assembly/caller inspection plus host fixtures and MIPS compilation; no game or two-client runtime validation was performed."
+  },
+  "nativeEvidence": {
+    "func_0800000C_6B32AC": {
+      "addresses": [
+        "08000024 saves a1 as object",
+        "08000170 recovery-bit branch",
+        "08000358 victim-contact cleanup"
+      ],
+      "fields": {
+        "task+0x8D": "u8 HP, root initializer sets30",
+        "task+0x8C": "u8 recovery/flicker timer",
+        "task+0x8A": "u16 AI timer",
+        "root task+0xDC": "float sound cooldown",
+        "part task+0xDC": "parent root pointer",
+        "object+0x16": "u16 yaw",
+        "part object+0x28": "float animation frame"
+      },
+      "source": "/private/tmp/func_0800000C_6B32AC.asm.txt"
+    },
+    "func_0800A228_6BD4C8": {
+      "addresses": [
+        "0800A234..A244 health gate0x04000000",
+        "0800A248 reads HP",
+        "0800A25C queries flag12E",
+        "0800A26C..A298 clears remove/attack bits and restoresHP1",
+        "0800A29C sets1A1",
+        "0800A2B0 schedules7D24"
+      ],
+      "thresholds": {
+        "25": [
+          1,
+          11
+        ],
+        "20": [
+          2,
+          11
+        ],
+        "15": [
+          5,
+          11
+        ],
+        "10": [
+          4,
+          11
+        ],
+        "5": [
+          3,
+          11
+        ]
+      },
+      "source": "/private/tmp/func_0800A228_6BD4C8.asm.txt"
+    },
+    "func_0800A04C_6BD2EC": {
+      "source": "/private/tmp/congo-native-clean.asm",
+      "phaseSource": "fullsystem+3ADCE u16 modulo15",
+      "variants": [
+        [
+          0,
+          60,
+          16
+        ],
+        [
+          5,
+          55,
+          32
+        ],
+        [
+          10,
+          58,
+          64
+        ]
+      ],
+      "child": "kind10/file1D, initializer08000DCC, parent+0xD0",
+      "initialization": "opacityED120; timer8A15; horizontal yaw-directed speed2.2; birth initializer/post precede next AI phase"
+    },
+    "func_802197D8_5D4CA8": {
+      "abi": "int(void *task,int turn_step)",
+      "symbolIdentity": {
+        "address": "0x802197D8",
+        "romAddress": "0x005D4CA8",
+        "section": ".file_12",
+        "size": 56
+      },
+      "addresses": [
+        "802197E4 loads targetobject task+84",
+        "802197EC/F0/F4 targetxyz",
+        "802197F8 invokes196FC forwardingturnstep",
+        "80219788/90 snapyaw andreturn0",
+        "802197B4 return1",
+        "802197C4 return2",
+        "08007458 Congo passes1",
+        "08007460 branches on native result"
+      ],
+      "sources": [
+        "/private/tmp/func_802197D8_5D4CA8.asm.txt",
+        "/private/tmp/func_802196FC_5D4BCC.asm.txt",
+        "/private/tmp/func_080073FC_6BA69C.asm.txt"
+      ]
+    }
+  },
+  "inventoryRefresh": {
+    "baselineSymbolCount": 240,
+    "finalSymbolCount": 241,
+    "added": [
+      "func_802197D8_5D4CA8"
+    ],
+    "baselineSymbolsUnchanged": true,
+    "baselineSourceSnapshotsUnchanged": true,
+    "fullPreviewSymbolCount": 522,
+    "fullPreviewSourceFileCount": 111,
+    "fullPreviewUnresolvedSymbols": [],
+    "fullPreviewUnresolvedHooks": [],
+    "acceptedNewSymbolConflicts": [],
+    "acceptedNewSymbolTableGap": false,
+    "sourceSnapshot": {
+      "key": "mnsg-recomp-example/src/anchor_congo_native.c",
+      "sha256": "2fe8244df1f7794354ee28cfdbcf55baa7f35517d4454c28940786eb4e284849"
+    },
+    "note": "Prior project commits and unrelated audit/source metadata remain their original reviewed baseline; only the new real source reference is merged."
+  },
+  "validation": {
+    "nativeExamples": {
+      "symbols": [
+        "func_0800000C_6B32AC",
+        "func_802197D8_5D4CA8"
+      ],
+      "method": "Compiled actual MIPS objects with LLVM clang 21.1.0, -target mips -mips2 -mabi=32 -G0 -mno-abicalls -ffreestanding and the current modding.h"
+    },
+    "browser": {
+      "method": "Chrome browser against temporary local static preview at the configured /mnsg-documentation/ base path",
+      "checked": [
+        "func_0800000C_6B32AC#signature",
+        "func_0800A228_6BD4C8#how-it-works",
+        "func_0800A04C_6BD2EC#notes",
+        "func_802197D8_5D4CA8 signature, return values and example",
+        "exact-symbol search: 1 of 241 for func_802197D8_5D4CA8",
+        "semantic search: target object returns the same new helper"
+      ],
+      "scope": "Rendered content, anchors, layout and interactive search checked; browser console was not inspected. Preview tab and server were closed."
+    },
+    "runtime": "No game launched; no live multiplayer certification."
+  }
+}

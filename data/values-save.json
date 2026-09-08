@@ -598,7 +598,7 @@
             "`0x0E`",
             "`4`",
             "`0x10`",
-            "Post-Tsurami story event"
+            "Post-Tsurami story progression; file 73 controller phase 15 waits for this after the Miracle Star grant. It precedes final input release."
           ],
           [
             "`0x075`",
@@ -719,6 +719,14 @@
             "`0`",
             "`0x01`",
             "Witch cutscene event 6"
+          ],
+          [
+            "`0x0A4`",
+            "`164`",
+            "`0x14`",
+            "`4`",
+            "`0x10`",
+            "Miracle Moon pickup scene completed; permits the Congo exit opening and suppresses reward/boss setup on later entry."
           ],
           [
             "`0x0CA`",
@@ -1177,12 +1185,28 @@
             "Key pickup collected: Silver Oedo Castle 2F"
           ],
           [
+            "`0x12B`",
+            "`299`",
+            "`0x25`",
+            "`3`",
+            "`0x08`",
+            "Congo victory root finished its fade; the Miracle Moon reward may appear."
+          ],
+          [
             "`0x12D`",
             "`301`",
             "`0x25`",
             "`5`",
             "`0x20`",
             "Congo later reward-spawn / cutscene state"
+          ],
+          [
+            "`0x12E`",
+            "`302`",
+            "`0x25`",
+            "`6`",
+            "`0x40`",
+            "Congo victory root finished its fade; the death camera may continue its own cleanup."
           ],
           [
             "`0x15A`",
@@ -1652,7 +1676,7 @@
       {
         "id": "save-native-encounter-milestones",
         "title": "Encounter flag distinctions",
-        "description": "Native death, reward, dialogue and controller milestones are separate bits. Observe the matching native callback before treating a persistent bit as proof that a living boss has finished its transition. All IDs use the same packed-bit calculation above.",
+        "description": "Native death, reward, dialogue and controller milestones are separate bits. Observe the matching native callback before treating a persistent bit as proof that a living boss has finished its transition. All IDs use the same packed-bit calculation above. Miracle Moon completion flag 0x0A4 occupies byte +0x14, mask 0x10; it is not the Goemon weapon-tier word at byte offset +0x0A4. The Congo exit uses file_43 callbacks 08006174/080061C8/08006228 for its native wait and opening, not the generic key-padlock state machine. The native camera consumes its separate 0x132 reaction condition and returns after its exit view.",
         "columns": [
           "Encounter",
           "Flag ID",
@@ -1671,6 +1695,24 @@
             "`0x12D`",
             "Later reward-spawn / cutscene state",
             "Do not use it as a substitute for damage and victory handling."
+          ],
+          [
+            "Congo",
+            "`0x12B`",
+            "Reward appearance permitted",
+            "Written after the root fade controller is released; the Moon reward waits for this bit before appearing."
+          ],
+          [
+            "Congo",
+            "`0x12E`",
+            "Root victory cleanup finished",
+            "Written with 0x12B; the death camera still performs its separate wait and control release. This is earlier than collecting the Moon."
+          ],
+          [
+            "Congo / Miracle Moon",
+            "`0x0A4`",
+            "Pickup scene completed",
+            "Written only after the Moon scenario ends and native pickup control is released. The file_43 exit waits for this bit; the ordinary Congo camera also requires flag 0x132 for its exit view. Do not set it in the middle of an active pickup scene."
           ],
           [
             "Tsurami",
@@ -1731,6 +1773,12 @@
             "`0x033`",
             "Durable defeat/dialogue state",
             "Does not alone describe all controller topology or reward progress."
+          ],
+          [
+            "Tsurami / Miracle Star",
+            "`0x074`",
+            "Post-reward story gate",
+            "Read by file 73 controller phase 15 after scenario 0x73 grants the Star at save +0x250. Final control release and room 0x147 transition occur at controller phase 23, timer zero."
           ]
         ]
       },
@@ -2119,7 +2167,7 @@
             "`0x250`",
             "`592`",
             "`signed int`",
-            "Miracle Star acquired",
+            "Miracle Star inventory ownership; Tsurami’s reward scenario 0x73 grants this before its controller releases input.",
             "`0` = absent/unset; `1` = acquired/set. Additional nonzero states are not assigned here.",
             "`0`"
           ],
@@ -2127,8 +2175,8 @@
             "`0x254`",
             "`596`",
             "`signed int`",
-            "Miracle Moon acquired",
-            "`0` = absent/unset; `1` = acquired/set. Additional nonzero states are not assigned here.",
+            "Miracle Moon inventory ownership",
+            "`0` = absent; `1` = acquired. Scenario 0x71 grants it before the pickup scene finishes; packed flag 0x0A4 separately records completion. Other nonzero states are not assigned here.",
             "`0`"
           ],
           [

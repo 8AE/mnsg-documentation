@@ -1,0 +1,55 @@
+{
+  "scope": "Verified Tsurami Miracle Star identity, controller-owned reward lifetime and scene terminal. Existing documentation edits remain intact.",
+  "game": {
+    "version": "USA decompressed ROM",
+    "sha256": "e40bee20508c2e29e651dca4e47504e40f908f0a2186e34a582784bf5a64be4c",
+    "runtimeValidation": "No native game execution during this research."
+  },
+  "nativeEvidence": {
+    "source": "Native MIPS instruction comments in Goemon64Recomp/RecompiledFuncs, independently checked against decompressed ROM scenario table and script words; complete symbol metadata from mnsg.syms.toml. No binary dumps committed.",
+    "controller": {
+      "fileDecimal": 73,
+      "fileROM": "0x732F30",
+      "constructor": "func_08000000_732F30",
+      "callback": "func_08000090_732FC0",
+      "stateBytes": 52,
+      "statePointer": "task+0xD0",
+      "trigger": "phase0 reads0x1AB",
+      "ctorSuppression": "flag0x40 immediately calls80034ED4 before return",
+      "rewardChild": "08000EAC_733DDC returns child with file0x49/entity0x350; controller retains it at state+0x0C and 08000FFC_733F2C writes child+0xDC=1 before scenario73 starts",
+      "terminal": "jump table ROM734718: phase23->08000A0C, phase24->08000A74. Phase23 timer0 releases80221FB0 then transitions to0147 through801FA4FC; callback returns after native transition request."
+    },
+    "grant": {
+      "scenario": "0x73",
+      "tablePointerROM": "0x7876C",
+      "fileIDTableROM": "0x792EE",
+      "scriptFile": 93,
+      "scriptFileROM": "0x73F530",
+      "scriptPointer": "0x08002D88",
+      "grantROM": "0x742334",
+      "saveAddress": "0x8015C858",
+      "saveOffset": "0x250",
+      "value": 1
+    },
+    "storyGate": "Controller phase15 at08000814 reads packed0x74 before advancing; local state must not be skipped while actor/camera/input ownership remains.",
+    "exclusion": "Miracle Flower uses save+0x258 in scenario72 and belongs to file72 Dharumanyo controller."
+  },
+  "inventoryRefresh": {
+    "baselineCount": 248,
+    "added": [
+      "func_08000000_732F30",
+      "func_08000090_732FC0"
+    ],
+    "previewCount": 576,
+    "removedNamesNotAdopted": [
+      "D_8016DADC_16E6DC",
+      "D_8020D220_5C9130"
+    ],
+    "unresolvedNewSymbols": [],
+    "snapshotSHA256": "f509cea0786cdf326b1efd4812e8fe29e344cbfa765db0769b8aa9469f936687",
+    "policy": "Only two new exact file73 controller imports and their new source snapshot adopted; no unrelated preview additions, removals, or changed historical snapshots.",
+    "previewUnresolvedSymbols": [],
+    "previewUnresolvedHooks": [],
+    "previewMetadataConflicts": []
+  }
+}

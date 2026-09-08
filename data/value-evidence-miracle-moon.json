@@ -1,0 +1,89 @@
+{
+  "scope": "Verified native Miracle Moon inventory/completion distinction, three imported reward callbacks, and Congo exit/camera reactions. Public text contains no transport or source-project behavior.",
+  "game": {
+    "version": "USA decompressed ROM",
+    "sha256": "e40bee20508c2e29e651dca4e47504e40f908f0a2186e34a582784bf5a64be4c",
+    "runtimeValidation": "No game launched; this patch is documentation preparation only."
+  },
+  "nativeEvidence": {
+    "source": "Native room 0x16 placement data and exact ROM disassembly, cross-checked with Goemon64RecompSyms/mnsg.syms.toml. Small scalar facts only; no ROM or assembly dumps included.",
+    "reward": {
+      "placedEntity": "0x35F",
+      "nativeEntity": "0x350",
+      "fileDecimal": 30,
+      "fileROM": "0x6BF750",
+      "constructor": "func_08005018_6C4768",
+      "appearanceGate": "Saved flag 0x12B read by 08005090_6C47E0.",
+      "pickup": "func_0800532C_6C4A7C",
+      "completion": "func_080053A4_6C4AF4"
+    },
+    "script": {
+      "id": "0x71",
+      "fileDecimal": 93,
+      "fileROM": "0x73F530",
+      "segmentedAddress": "0x08002C48",
+      "romAddress": "0x742178",
+      "grantCommandROM": [
+        "0x7421F0",
+        "0x7421F8"
+      ],
+      "grant": "Writes 1 to 0x8015C85C (signed 32-bit save +0x254); later native callback sets packed flag0xA4."
+    },
+    "completion": "53A4 waits scenario PC0, calls80221FB0 control release, sets saved A4 through80024038, then task+68 OR2. Numeric save byte offsetA4 is a separate weapon-tier word.",
+    "selection": "8003521C stores selected callback at currenttask+C immediately (80035228); pickup entry hook runs only on the subsequent scheduled actor update.",
+    "exit": {
+      "placedEntity": "0x34B",
+      "nativeEntity": "0x23C",
+      "fileDecimal": 43,
+      "fileROM": "0x6F34E0",
+      "callbacks": [
+        "func_080060A0_6F9580",
+        "func_08006174_6F9654",
+        "func_080061C8_6F96A8",
+        "func_08006228_6F9708"
+      ],
+      "gate": "Saved A4; opening timer120, sound224, capability60 bit1.",
+      "placement": [
+        90,
+        -70,
+        -124
+      ],
+      "portalType": "0x8C",
+      "destinationRoom": "0x28",
+      "exclusion": "The file29 5D98 rotating-object chain is not the placed exit."
+    },
+    "camera": "8A38_6BBCD8 tests saved A4 and132, selects94D4_6BC774 with150 timer; consumes132 and views exit,95B0_6BC850 waits20 then ordinarycamera. Root5EDC andcamera83BC initializers also testA4."
+  },
+  "inventoryRefresh": {
+    "baselineCount": 245,
+    "finalCount": 248,
+    "added": [
+      "func_08005018_6C4768",
+      "func_0800532C_6C4A7C",
+      "func_080053A4_6C4AF4"
+    ],
+    "preservedExistingRecords": 245,
+    "preservedExistingSnapshots": 69,
+    "sourceSnapshot": {
+      "path": "mnsg-recomp-example/src/anchor_miracle_moon.c",
+      "sha256": "b1d7a36fe5c92f1b04528f59b1b8f846c2d4a08e405f830be30260b7ded74e41"
+    },
+    "preview": {
+      "symbolCount": 528,
+      "sourceFileCount": 115,
+      "referenceCount": 1593,
+      "removedNames": [
+        "D_8016DADC_16E6DC",
+        "D_8020D220_5C9130"
+      ],
+      "unresolvedSymbols": [],
+      "unresolvedHooks": [],
+      "projectTableGaps": [],
+      "metadataConflicts": [],
+      "addedNameCount": 285,
+      "sourceDeclarationDifferenceCount": 24,
+      "newMoonDeclarationDifferences": []
+    },
+    "policy": "Only the three real Moon imports and their one new source snapshot are adopted. All preexisting metadata/snapshots and historical aliases remain unchanged; unrelated preview additions/removals are not adopted."
+  }
+}

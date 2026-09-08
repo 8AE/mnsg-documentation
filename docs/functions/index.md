@@ -4,16 +4,19 @@ slug: "/functions"
 description: "Native functions for the US recompilation of Mystical Ninja Starring Goemon."
 ---
 
-178 functions with C interfaces, behavior, and usage examples. Use the search bar to look up an exact symbol, address, or purpose.
+188 functions with C interfaces, behavior, and usage examples. Use the search bar to look up an exact symbol, address, or purpose.
 
 | Symbol | Purpose |
 | --- | --- |
+| [`func_08000000_732F30`](func_08000000_732F30.md) | Initialize Tsurami reward and story controller |
 | [`func_0800000C_6B32AC`](func_0800000C_6B32AC.md) | Congo private actor post |
+| [`func_08000090_732FC0`](func_08000090_732FC0.md) | Run Tsurami Miracle Star and story scene |
 | [`func_080001A4_6AC6F4`](func_080001A4_6AC6F4.md) | Emit a Dango-machine wiper |
 | [`func_08000224_6AC774`](func_08000224_6AC774.md) | Initialize a Dango wiper child |
 | [`func_08000388_6B3628`](func_08000388_6B3628.md) | Process Tsurami root pipeline and damage |
 | [`func_080005DC_6ACB2C`](func_080005DC_6ACB2C.md) | Rotate an active spike chain |
 | [`func_08000970_6C8B80`](func_08000970_6C8B80.md) | Enter Dharumanyo neutral combat |
+| [`func_080009C4_6B3C64`](func_080009C4_6B3C64.md) | Fade and remove a Congo spin ray |
 | [`func_08000AA8_6F3F88`](func_08000AA8_6F3F88.md) | Initialize a locked doorway |
 | [`func_08000B98_70ABD8`](func_08000B98_70ABD8.md) | Benkei live battle controller |
 | [`func_08000DCC_6B406C`](func_08000DCC_6B406C.md) | Initialize a Congo flame |
@@ -73,6 +76,9 @@ description: "Native functions for the US recompilation of Mystical Ninja Starri
 | [`func_0800476C_6B7A0C`](func_0800476C_6B7A0C.md) | Tsurami model child recurring state B |
 | [`func_080049A4_6B7C44`](func_080049A4_6B7C44.md) | Initialize Tsurami travelling attacks |
 | [`func_08004ED0_6B8170`](func_08004ED0_6B8170.md) | Advance Tsurami travelling attack |
+| [`func_08005018_6C4768`](func_08005018_6C4768.md) | Initialize the Miracle Moon reward |
+| [`func_0800532C_6C4A7C`](func_0800532C_6C4A7C.md) | Start the Miracle Moon pickup scene |
+| [`func_080053A4_6C4AF4`](func_080053A4_6C4AF4.md) | Complete the Miracle Moon pickup scene |
 | [`func_0800636C_6CE57C`](func_0800636C_6CE57C.md) | Update Dharmanyo post-fight controller |
 | [`func_080066B0_6B9950`](func_080066B0_6B9950.md) | Initialize Congo model part 1 |
 | [`func_080066E0_6CE8F0`](func_080066E0_6CE8F0.md) | Finish Dharmanyo post-fight teardown |
@@ -86,6 +92,7 @@ description: "Native functions for the US recompilation of Mystical Ninja Starri
 | [`func_08007BB0_6BAE50`](func_08007BB0_6BAE50.md) | Advance one Congo spin revolution |
 | [`func_08007C18_6BAEB8`](func_08007C18_6BAEB8.md) | Wind down Congo spin |
 | [`func_08007D24_6BAFC4`](func_08007D24_6BAFC4.md) | Congo native victory callback |
+| [`func_08008E54_6BC0F4`](func_08008E54_6BC0F4.md) | Update the Congo camera shake |
 | [`func_0800A04C_6BD2EC`](func_0800A04C_6BD2EC.md) | Emit Congo breath flames |
 | [`func_0800A228_6BD4C8`](func_0800A228_6BD4C8.md) | Congo health and damage-threshold controller |
 | [`func_80001640_2240`](func_80001640_2240.md) | Copy a ROM range to memory |
@@ -123,6 +130,7 @@ description: "Native functions for the US recompilation of Mystical Ninja Starri
 | [`func_8001C3E0_1CFE0`](func_8001C3E0_1CFE0.md) | Replace model display pointers |
 | [`func_8001DB04_1E704`](func_8001DB04_1E704.md) | Orient native angles from a direction vector |
 | [`func_80023E40_24A40`](func_80023E40_24A40.md) | Clear a transient event bit |
+| [`func_80023E94_24A94`](func_80023E94_24A94.md) | Read an immediate transient event |
 | [`func_80024038_24C38`](func_80024038_24C38.md) | Set a game flag |
 | [`func_80024088_24C88`](func_80024088_24C88.md) | Clear a game flag |
 | [`func_800240DC_24CDC`](func_800240DC_24CDC.md) | Read a game flag |
@@ -151,6 +159,7 @@ description: "Native functions for the US recompilation of Mystical Ninja Starri
 | [`func_80036448_37048`](func_80036448_37048.md) | Allocate a single kind-2 record |
 | [`func_8003674C_3734C`](func_8003674C_3734C.md) | Release the cached child subtree |
 | [`func_80036798_37398`](func_80036798_37398.md) | Release the cached sibling subtree |
+| [`func_80038B98_39798`](func_80038B98_39798.md) | Queue a native audio command |
 | [`func_8003CFD0_3DBD0`](func_8003CFD0_3DBD0.md) | Advance the scenario manager |
 | [`func_8003D468_3E068`](func_8003D468_3E068.md) | Initialize or reset the scenario interpreter |
 | [`func_8003E6C0_3F2C0`](func_8003E6C0_3F2C0.md) | Parse the native scenario choice list |
@@ -182,6 +191,7 @@ description: "Native functions for the US recompilation of Mystical Ninja Starri
 | [`func_80218A54_5D3F24`](func_80218A54_5D3F24.md) | Apply a room actor spawn instance |
 | [`func_80218E7C_5D434C`](func_80218E7C_5D434C.md) | Run the common actor update pipeline |
 | [`func_80218F30_5D4400`](func_80218F30_5D4400.md) | Common actor post-processing and removal |
+| [`func_802197D8_5D4CA8`](func_802197D8_5D4CA8.md) | Turn an actor toward its target object |
 | [`func_80219CA0_5D5170`](func_80219CA0_5D5170.md) | Choose an actor task owner and enforce caps |
 | [`func_8021A310_5D57E0`](func_8021A310_5D57E0.md) | Set object rotation fields to 0x8000 |
 | [`func_8021B808_5D6CD8`](func_8021B808_5D6CD8.md) | Integrate actor velocity |

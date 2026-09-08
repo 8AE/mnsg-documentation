@@ -1,0 +1,632 @@
+{
+  "scope": "Native Congo music transition, spin-ray consumed stop signal and fade, immediate event getter, and camera-shake phase. Public explanations contain no project protocol or wrapper implementation.",
+  "game": {
+    "version": "USA decompressed native ROM",
+    "sha256": "e40bee20508c2e29e651dca4e47504e40f908f0a2186e34a582784bf5a64be4c",
+    "runtimeValidation": "No game was launched or live multiplayer behavior certified."
+  },
+  "nativeEvidence": {
+    "func_80038B98_39798": {
+      "abi": "void(unsigned short cue)",
+      "sources": [
+        "native generated funcs10.c",
+        "/private/tmp/congo-native-clean.asm"
+      ],
+      "facts": [
+        "wrapper masks16bit cue then38C30(cue,0,0)",
+        "audio queue has8 slots; duplicate suppression is limited to currently queued commands",
+        "camera083BC constructor timer8A=30 at8524",
+        "camera08560 timer==25 at8580 queues003D at8590; laterintro doesnotrepeat"
+      ],
+      "symbolTable": {
+        "address": "0x80038B98",
+        "romAddress": "0x00039798",
+        "section": ".main",
+        "size": 48
+      }
+    },
+    "func_08007C18_6BAEB8": {
+      "source": "/private/tmp/congo-native-clean.asm",
+      "addresses": [
+        "7C24..7C38 decrementu16timer",
+        "7C30 thresholdremaining<31",
+        "7C3C..7C48 parentE8OR80",
+        "7C4C..7C5C zero schedules7C70",
+        "ray077C:0850..0864 sees80 andqueues09C4"
+      ]
+    },
+    "func_080009C4_6B3C64": {
+      "abi": "void(void *ray_task,void *ray_object)",
+      "source": "/private/tmp/congo-native-clean.asm",
+      "addresses": [
+        "09D0 saves consumedobject",
+        "0AA8..0AB4 clearsparentE8bit80",
+        "0AB8..0B2C fourdirectionyaw",
+        "0B30..0B58 u8ECsubtract2/clamp4",
+        "0BE8..0BFC at4 invokes80034ED4 currenttaskremoval"
+      ],
+      "initializer": "05F4 setsEC64 and native resources; selecting09C4 doesnotresetEC"
+    },
+    "func_80023E94_24A94": {
+      "abi": "int(int event_id)",
+      "storage": "D_80168E90 byte[(event_id/8)&255] masked by1<<(event_id&7)",
+      "eventB": "byte1 &8, normalize!=0",
+      "sameBank": [
+        "func_80023DF0_249F0",
+        "func_80023E40_24A40"
+      ],
+      "note": "Actual transient event is separate from HP thresholds and saved progress flags."
+    },
+    "func_08008E54_6BC0F4": {
+      "abi": "void(void *camera_task,void *object)",
+      "source": "/private/tmp/congo-native-clean.asm",
+      "addresses": [
+        "ordinary8A38:8BCC..8BF0 eventB selects8E54",
+        "8EDC..8F14 worldframeu16 system3ADCE modulo4"
+      ],
+      "fields": {
+        "task+D0": "native camera handle",
+        "task+80/+84/+88": "camera position floats",
+        "task+DC": "byte cleared eachcallback"
+      },
+      "distanceSquaredThreshold": 10000,
+      "farTargetYOffsets": [
+        30,
+        33,
+        30,
+        27
+      ],
+      "nearTargetYOffsets": [
+        10,
+        13,
+        10,
+        7
+      ],
+      "note": "LocalplayerD801FC60C supplies distance; return to8A38 when actual eventB clears."
+    },
+    "func_0800A228_6BD4C8": {
+      "note": "Existing verified exact HP thresholds write eventB; independent native callers can clear it before next sample. Immediate event getter is the authoritative query."
+    }
+  },
+  "inventoryRefresh": {
+    "baselineSymbolCount": 241,
+    "finalSymbolCount": 245,
+    "added": [
+      "func_080009C4_6B3C64",
+      "func_08008E54_6BC0F4",
+      "func_80023E94_24A94",
+      "func_80038B98_39798"
+    ],
+    "refreshedSourceReferences": [
+      "func_802197D8_5D4CA8"
+    ],
+    "preservedBaselineSymbolCount": 240,
+    "preservedHistoricalAliases": [
+      "D_8016DADC_16E6DC",
+      "D_8020D220_5C9130"
+    ],
+    "fullPreviewSymbolCount": 526,
+    "fullPreviewSourceFileCount": 111,
+    "fullPreviewAddedNames": [
+      "D_8015C562_15D162",
+      "D_8015CC30_15D830",
+      "D_8020EF40_63A320",
+      "func_080005F4_6B3894",
+      "func_080009C4_6B3C64",
+      "func_08000F44_6B41E4",
+      "func_0800110C_6B43AC",
+      "func_08005EDC_6B917C",
+      "func_080066F4_6B9994",
+      "func_080068FC_6B9B9C",
+      "func_08006B04_6B9DA4",
+      "func_08006D0C_6B9FAC",
+      "func_08006F14_6BA1B4",
+      "func_0800711C_6BA3BC",
+      "func_080073D0_6BA670",
+      "func_080073FC_6BA69C",
+      "func_08007488_6BA728",
+      "func_080074CC_6BA76C",
+      "func_0800751C_6BA7BC",
+      "func_080075E8_6BA888",
+      "func_08007694_6BA934",
+      "func_08007724_6BA9C4",
+      "func_080077A4_6BAA44",
+      "func_0800781C_6BAABC",
+      "func_080079B0_6BAC50",
+      "func_08007A64_6BAD04",
+      "func_08007ACC_6BAD6C",
+      "func_08007C70_6BAF10",
+      "func_08007CBC_6BAF5C",
+      "func_08007DEC_6BB08C",
+      "func_08008194_6BB434",
+      "func_0800820C_6BB4AC",
+      "func_08008280_6BB520",
+      "func_080082F8_6BB598",
+      "func_0800833C_6BB5DC",
+      "func_080083A0_6BB640",
+      "func_080083BC_6BB65C",
+      "func_08008560_6BB800",
+      "func_08008624_6BB8C4",
+      "func_0800868C_6BB92C",
+      "func_0800876C_6BBA0C",
+      "func_08008804_6BBAA4",
+      "func_08008888_6BBB28",
+      "func_080088C4_6BBB64",
+      "func_08008E54_6BC0F4",
+      "func_08009C04_6BCEA4",
+      "func_80023DF0_249F0",
+      "func_80023E94_24A94",
+      "func_80034F20_35B20",
+      "func_80035020_35C20",
+      "func_80038B98_39798",
+      "func_801D36CC_5FEAAC",
+      "func_801D3954_5FED34",
+      "func_801D614C_60152C",
+      "func_801E4800_60FBE0",
+      "func_801E52D8_6106B8",
+      "func_801E59F8_610DD8",
+      "func_801E5A88_610E68",
+      "func_801E5BDC_610FBC",
+      "func_801E5D38_611118",
+      "func_801E5DAC_61118C",
+      "func_801E5E14_6111F4",
+      "func_801E5EE0_6112C0",
+      "func_801E5F64_611344",
+      "func_801E6024_611404",
+      "func_801E607C_61145C",
+      "func_801E60CC_6114AC",
+      "func_801E6150_611530",
+      "func_801E61A8_611588",
+      "func_801E628C_61166C",
+      "func_801E6370_611750",
+      "func_801E641C_6117FC",
+      "func_801E6474_611854",
+      "func_801E651C_6118FC",
+      "func_801E6600_6119E0",
+      "func_801E66C4_611AA4",
+      "func_801E6778_611B58",
+      "func_801E67D4_611BB4",
+      "func_801E6854_611C34",
+      "func_801E69F4_611DD4",
+      "func_801E6D00_6120E0",
+      "func_801E6DE0_6121C0",
+      "func_801E6ECC_6122AC",
+      "func_801E6FC4_6123A4",
+      "func_801E700C_6123EC",
+      "func_801E7064_612444",
+      "func_801E7134_612514",
+      "func_801E71E8_6125C8",
+      "func_801E72F4_6126D4",
+      "func_801E752C_61290C",
+      "func_801E75E4_6129C4",
+      "func_801E7714_612AF4",
+      "func_801E7838_612C18",
+      "func_801E79E4_612DC4",
+      "func_801E7C50_613030",
+      "func_801E7CA8_613088",
+      "func_801E7FB0_613390",
+      "func_801E8108_6134E8",
+      "func_801EA3F0_6157D0",
+      "func_801EA534_615914",
+      "func_801EA900_615CE0",
+      "func_801EAC4C_61602C",
+      "func_801EC488_617868",
+      "func_801EC61C_6179FC",
+      "func_801EC7B8_617B98",
+      "func_801EC85C_617C3C",
+      "func_801EC908_617CE8",
+      "func_801ECA74_617E54",
+      "func_801EEF40_61A320",
+      "func_801F03C4_61B7A4",
+      "func_801F0414_61B7F4",
+      "func_801F047C_61B85C",
+      "func_801F04E0_61B8C0",
+      "func_801F05BC_61B99C",
+      "func_801F060C_61B9EC",
+      "func_801F07E4_61BBC4",
+      "func_801F0A0C_61BDEC",
+      "func_801F0A50_61BE30",
+      "func_801F0AD4_61BEB4",
+      "func_801F0BF4_61BFD4",
+      "func_801F0CF8_61C0D8",
+      "func_801F0E00_61C1E0",
+      "func_801F0F3C_61C31C",
+      "func_801F0FCC_61C3AC",
+      "func_801F1074_61C454",
+      "func_801F1110_61C4F0",
+      "func_801F1218_61C5F8",
+      "func_801F12F8_61C6D8",
+      "func_801F1340_61C720",
+      "func_801F14FC_61C8DC",
+      "func_801F1690_61CA70",
+      "func_801F16E0_61CAC0",
+      "func_801F1738_61CB18",
+      "func_801F1788_61CB68",
+      "func_801F20B4_61D494",
+      "func_801F214C_61D52C",
+      "func_801F223C_61D61C",
+      "func_801F234C_61D72C",
+      "func_801F2418_61D7F8",
+      "func_801F2438_61D818",
+      "func_801F24F4_61D8D4",
+      "func_801F25A0_61D980",
+      "func_801F2644_61DA24",
+      "func_801F26E0_61DAC0",
+      "func_801F2788_61DB68",
+      "func_801F2854_61DC34",
+      "func_801F28A4_61DC84",
+      "func_801F2914_61DCF4",
+      "func_801F2A04_61DDE4",
+      "func_801F2A98_61DE78",
+      "func_801F2B1C_61DEFC",
+      "func_801F2B7C_61DF5C",
+      "func_801F2C24_61E004",
+      "func_801F2C70_61E050",
+      "func_801F2CB4_61E094",
+      "func_801F2DDC_61E1BC",
+      "func_801F2ED8_61E2B8",
+      "func_801F2FA0_61E380",
+      "func_801F300C_61E3EC",
+      "func_801F30A0_61E480",
+      "func_801F31A0_61E580",
+      "func_801F3254_61E634",
+      "func_801F331C_61E6FC",
+      "func_801F3498_61E878",
+      "func_801F3634_61EA14",
+      "func_801F3714_61EAF4",
+      "func_801F37F4_61EBD4",
+      "func_801F3878_61EC58",
+      "func_801F38DC_61ECBC",
+      "func_801F3950_61ED30",
+      "func_801F39A8_61ED88",
+      "func_801F3A34_61EE14",
+      "func_801F3A68_61EE48",
+      "func_801F3AC8_61EEA8",
+      "func_801F3B20_61EF00",
+      "func_801F3BAC_61EF8C",
+      "func_801F3C9C_61F07C",
+      "func_801F3DCC_61F1AC",
+      "func_801F3E24_61F204",
+      "func_801F3EB8_61F298",
+      "func_801F3FC0_61F3A0",
+      "func_801F40DC_61F4BC",
+      "func_801F4220_61F600",
+      "func_801F436C_61F74C",
+      "func_801F43D0_61F7B0",
+      "func_801F443C_61F81C",
+      "func_801F453C_61F91C",
+      "func_801F7CEC_6230CC",
+      "func_801F7E54_623234",
+      "func_801F7EE8_6232C8",
+      "func_801F833C_62371C",
+      "func_801F85C8_6239A8",
+      "func_801F8830_623C10",
+      "func_801F89D8_623DB8",
+      "func_801F92D0_6246B0",
+      "func_801F9350_624730",
+      "func_801F9464_624844",
+      "func_801F9508_6248E8",
+      "func_801FAEB0_626290",
+      "func_801FBD6C_62714C",
+      "func_801FC3FC_6277DC",
+      "func_801FC460_627840",
+      "func_801FC510_6278F0",
+      "func_801FC638_627A18",
+      "func_801FC75C_627B3C",
+      "func_801FC8A4_627C84",
+      "func_801FC9E4_627DC4",
+      "func_801FCA6C_627E4C",
+      "func_801FCAB4_627E94",
+      "func_801FCB88_627F68",
+      "func_801FCC64_628044",
+      "func_801FCD1C_6280FC",
+      "func_801FCDAC_62818C",
+      "func_801FCE74_628254",
+      "func_801FCF68_628348",
+      "func_801FD028_628408",
+      "func_801FD088_628468",
+      "func_801FD114_6284F4",
+      "func_801FD1D0_6285B0",
+      "func_801FD30C_6286EC",
+      "func_801FD46C_62884C",
+      "func_801FD500_6288E0",
+      "func_801FD634_628A14",
+      "func_801FD724_628B04",
+      "func_801FD840_628C20",
+      "func_801FD888_628C68",
+      "func_801FD8F0_628CD0",
+      "func_801FDA20_628E00",
+      "func_801FDB70_628F50",
+      "func_801FDC84_629064",
+      "func_801FDD84_629164",
+      "func_801FDE94_629274",
+      "func_801FF730_62AB10",
+      "func_801FF798_62AB78",
+      "func_801FF8B4_62AC94",
+      "func_801FF944_62AD24",
+      "func_801FFAAC_62AE8C",
+      "func_80200200_62B5E0",
+      "func_80200508_62B8E8",
+      "func_80200BA4_62BF84",
+      "func_80200BE8_62BFC8",
+      "func_80200D4C_62C12C",
+      "func_80201018_62C3F8",
+      "func_80201088_62C468",
+      "func_80201218_62C5F8",
+      "func_802012C8_62C6A8",
+      "func_80201374_62C754",
+      "func_802013D0_62C7B0",
+      "func_8020143C_62C81C",
+      "func_80201598_62C978",
+      "func_80201618_62C9F8",
+      "func_80201684_62CA64",
+      "func_80201770_62CB50",
+      "func_802017C8_62CBA8",
+      "func_802018B4_62CC94",
+      "func_8020190C_62CCEC",
+      "func_80202264_62D644",
+      "func_80202598_62D978",
+      "func_80202904_62DCE4",
+      "func_80202BE4_62DFC4",
+      "func_80202EA4_62E284",
+      "func_80203154_62E534",
+      "func_8020396C_62ED4C",
+      "func_80203A54_62EE34",
+      "func_80203DFC_62F1DC",
+      "func_8020407C_62F45C",
+      "func_802043E4_62F7C4",
+      "func_8020451C_62F8FC",
+      "func_80204C5C_63003C",
+      "func_80204EF4_6302D4",
+      "func_802055B4_630994",
+      "func_80205614_6309F4",
+      "func_80205734_630B14",
+      "func_8020580C_630BEC",
+      "func_802058B0_630C90",
+      "func_80205978_630D58",
+      "func_80205A04_630DE4",
+      "func_80205FC8_6313A8",
+      "func_80206AA4_631E84",
+      "func_80206D38_632118",
+      "func_802070C0_6324A0",
+      "func_80207158_632538",
+      "func_80207288_632668",
+      "func_80207698_632A78",
+      "func_802078E0_632CC0",
+      "func_8021925C_5D472C",
+      "memcpy"
+    ],
+    "fullPreviewRemovedNames": [
+      "D_8016DADC_16E6DC",
+      "D_8020D220_5C9130"
+    ],
+    "fullPreviewAudit": {
+      "unresolvedSymbols": [],
+      "unresolvedHooks": [],
+      "projectTableGaps": [],
+      "metadataConflicts": [],
+      "sourceDeclarationDifferences": [
+        {
+          "name": "D_8015C608_15D208",
+          "variants": [
+            "extern u8 D_8015C608_15D208[];",
+            "extern unsigned char D_8015C608_15D208[];"
+          ],
+          "reason": "Mod-side declarations differ; review parameter names, typedef aliases and ABI assumptions before reuse."
+        },
+        {
+          "name": "D_8015C5C8_15D1C8",
+          "variants": [
+            "extern unsigned char *D_8015C5C8_15D1C8;",
+            "extern void *D_8015C5C8_15D1C8;"
+          ],
+          "reason": "Mod-side declarations differ; review parameter names, typedef aliases and ABI assumptions before reuse."
+        },
+        {
+          "name": "func_80218A54_5D3F24",
+          "variants": [
+            "extern void func_80218A54_5D3F24(int actor, ExtraOptionsActorInstance *instance);",
+            "extern void func_80218A54_5D3F24(int actor, RaceEnemyActorInstance *instance);"
+          ],
+          "reason": "Mod-side declarations differ; review parameter names, typedef aliases and ABI assumptions before reuse."
+        },
+        {
+          "name": "D_8015CDDC",
+          "variants": [
+            "extern ExtraOptionsActorInstance *D_8015CDDC;",
+            "extern RaceEnemyActorInstance *D_8015CDDC;"
+          ],
+          "reason": "Mod-side declarations differ; review parameter names, typedef aliases and ABI assumptions before reuse."
+        },
+        {
+          "name": "D_8015CDE0",
+          "variants": [
+            "extern ExtraOptionsActorDefinition *D_8015CDE0;",
+            "extern RaceEnemyActorDefinition *D_8015CDE0;"
+          ],
+          "reason": "Mod-side declarations differ; review parameter names, typedef aliases and ABI assumptions before reuse."
+        },
+        {
+          "name": "D_800C7AB2",
+          "variants": [
+            "extern signed short D_800C7AB2;",
+            "extern unsigned short D_800C7AB2;"
+          ],
+          "reason": "Mod-side declarations differ; review parameter names, typedef aliases and ABI assumptions before reuse."
+        },
+        {
+          "name": "func_8021DDE8_5D92B8",
+          "variants": [
+            "extern void *func_8021DDE8_5D92B8( void *owner, HyperCongoTaskCallback initializer, unsigned char task_kind, float x, float y, float z, int angle);",
+            "extern void *func_8021DDE8_5D92B8(void *, CongoCallback, unsigned char, float, float, float, int);"
+          ],
+          "reason": "Mod-side declarations differ; review parameter names, typedef aliases and ABI assumptions before reuse."
+        },
+        {
+          "name": "func_800141C4_14DC4",
+          "variants": [
+            "extern void *func_800141C4_14DC4(unsigned int file);",
+            "extern void *func_800141C4_14DC4(unsigned int file_id);"
+          ],
+          "reason": "Mod-side declarations differ; review parameter names, typedef aliases and ABI assumptions before reuse."
+        },
+        {
+          "name": "func_80023E40_24A40",
+          "variants": [
+            "extern void func_80023E40_24A40(unsigned int event);",
+            "extern void func_80023E40_24A40(unsigned int);"
+          ],
+          "reason": "Mod-side declarations differ; review parameter names, typedef aliases and ABI assumptions before reuse."
+        },
+        {
+          "name": "func_8003521C_35E1C",
+          "variants": [
+            "extern void func_8003521C_35E1C(HyperCongoTaskCallback callback);",
+            "extern void func_8003521C_35E1C(void (*update)(void *, void *));",
+            "extern void func_8003521C_35E1C(void *func_ptr);"
+          ],
+          "reason": "Mod-side declarations differ; review parameter names, typedef aliases and ABI assumptions before reuse."
+        },
+        {
+          "name": "func_8021664C_5D1B1C",
+          "variants": [
+            "extern void func_8021664C_5D1B1C( void *task, unsigned int animation, float rate, unsigned int flags);",
+            "extern void func_8021664C_5D1B1C(void *, unsigned int, float, unsigned int);"
+          ],
+          "reason": "Mod-side declarations differ; review parameter names, typedef aliases and ABI assumptions before reuse."
+        },
+        {
+          "name": "func_08000DCC_6B406C",
+          "variants": [
+            "extern void func_08000DCC_6B406C(void *, void *);",
+            "extern void func_08000DCC_6B406C(void *task, void *object);"
+          ],
+          "reason": "Mod-side declarations differ; review parameter names, typedef aliases and ABI assumptions before reuse."
+        },
+        {
+          "name": "func_08007BB0_6BAE50",
+          "variants": [
+            "extern void func_08007BB0_6BAE50(void *, void *);",
+            "extern void func_08007BB0_6BAE50(void *task, void *object);"
+          ],
+          "reason": "Mod-side declarations differ; review parameter names, typedef aliases and ABI assumptions before reuse."
+        },
+        {
+          "name": "func_08007C18_6BAEB8",
+          "variants": [
+            "extern void func_08007C18_6BAEB8(void *, void *);",
+            "extern void func_08007C18_6BAEB8(void *task, void *object);"
+          ],
+          "reason": "Mod-side declarations differ; review parameter names, typedef aliases and ABI assumptions before reuse."
+        },
+        {
+          "name": "func_800240DC_24CDC",
+          "variants": [
+            "extern int func_800240DC_24CDC(int flag_id);",
+            "extern int func_800240DC_24CDC(unsigned short flag);"
+          ],
+          "reason": "Mod-side declarations differ; review parameter names, typedef aliases and ABI assumptions before reuse."
+        },
+        {
+          "name": "func_802171A8_5D2678",
+          "variants": [
+            "extern void *func_802171A8_5D2678( void *owner, ExtraOptionsTaskCallback initializer, unsigned char task_kind);",
+            "extern void *func_802171A8_5D2678( void *owner, void (*initializer)(void *, void *), unsigned char task_kind);"
+          ],
+          "reason": "Mod-side declarations differ; review parameter names, typedef aliases and ABI assumptions before reuse."
+        },
+        {
+          "name": "D_801FC60C_5B851C",
+          "variants": [
+            "extern ExtraOptionsRyoPopupObject *D_801FC60C_5B851C;",
+            "extern PlayerObject *D_801FC60C_5B851C;",
+            "extern void *D_801FC60C_5B851C;"
+          ],
+          "reason": "Mod-side declarations differ; review parameter names, typedef aliases and ABI assumptions before reuse."
+        },
+        {
+          "name": "func_8001B5AC_1C1AC",
+          "variants": [
+            "extern float func_8001B5AC_1C1AC(void *);",
+            "extern float func_8001B5AC_1C1AC(void *model);",
+            "extern float func_8001B5AC_1C1AC(void *object);"
+          ],
+          "reason": "Mod-side declarations differ; review parameter names, typedef aliases and ABI assumptions before reuse."
+        },
+        {
+          "name": "D_8006B780_6C380",
+          "variants": [
+            "extern short D_8006B780_6C380[];",
+            "extern signed short D_8006B780_6C380[];"
+          ],
+          "reason": "Mod-side declarations differ; review parameter names, typedef aliases and ABI assumptions before reuse."
+        },
+        {
+          "name": "func_80024038_24C38",
+          "variants": [
+            "extern void func_80024038_24C38(unsigned int);",
+            "extern void func_80024038_24C38(unsigned short flag);"
+          ],
+          "reason": "Mod-side declarations differ; review parameter names, typedef aliases and ABI assumptions before reuse."
+        },
+        {
+          "name": "func_080088C4_6BBB64",
+          "variants": [
+            "extern void func_080088C4_6BBB64(void *, void *);",
+            "extern void func_080088C4_6BBB64(void *,void *);"
+          ],
+          "reason": "Mod-side declarations differ; review parameter names, typedef aliases and ABI assumptions before reuse."
+        },
+        {
+          "name": "func_80034E08_35A08",
+          "variants": [
+            "extern void *func_80034E08_35A08(void *parent, void (*update)(void *, void *), unsigned short flags);",
+            "extern void *func_80034E08_35A08(void *task_list, void (*update)(void *, void *), unsigned short flags);"
+          ],
+          "reason": "Mod-side declarations differ; review parameter names, typedef aliases and ABI assumptions before reuse."
+        },
+        {
+          "name": "func_8000DBF0_E7F0",
+          "variants": [
+            "extern void *func_8000DBF0_E7F0(void *task, unsigned int model, unsigned int material, float x, float y, float z, short rx, short ry, short rz, float sx, float sy, float sz, short file8, short file9);",
+            "extern void *func_8000DBF0_E7F0(void *task, unsigned int model_ptr, unsigned int anim_ptr, float x, float y, float z, short rot_x, short rot_y, short rot_z, float scale_x, float scale_y, float scale_z, short seg8_file_id, short seg9_file_id);"
+          ],
+          "reason": "Mod-side declarations differ; review parameter names, typedef aliases and ABI assumptions before reuse."
+        },
+        {
+          "name": "D_80167FC0_168BC0",
+          "variants": [
+            "extern ProjectileSceneResource D_80167FC0_168BC0[48];",
+            "extern RenderSceneResource D_80167FC0_168BC0[48];",
+            "extern SceneResourceEntry D_80167FC0_168BC0[SCENE_RESOURCE_ENTRY_COUNT];"
+          ],
+          "reason": "Mod-side declarations differ; review parameter names, typedef aliases and ABI assumptions before reuse."
+        }
+      ]
+    },
+    "acceptedNewSymbolsHaveNoConflicts": true,
+    "sourceSnapshot": {
+      "key": "mnsg-recomp-example/src/anchor_congo_native.c",
+      "sha256": "c14d8a8c7b1a1d6c618c61fee615331596404458999f4c01ec7aa808773166d6"
+    },
+    "note": "This updates the single current native-source snapshot. Earlier value-evidence-congo.json retains the prior reviewed snapshot hash as historical provenance; all prior public explanations and unrelated baseline metadata are preserved."
+  },
+  "validation": {
+    "nativeExamples": "All four new examples compile to actual MIPS objects with LLVM21.1.0 and current modding.h. This checks syntax/ABI-shaped declarations, not game behavior.",
+    "transport": "All28 Congo tests pass. Actual framed state values2/3 at HP17 survive latest-state delivery and stalepacket rejection, with20authority snapshots per2seconds and no extraevent packets.",
+    "browser": {
+      "method": "Chrome local static preview at the configured /mnsg-documentation/ base path",
+      "checked": [
+        "ray fade notes, signature and example with visual layout inspection",
+        "music how-it-works anchor and cue003D/timer25 text",
+        "getter return-value anchor, rawmask and !=0 example",
+        "quake how-it-works anchor, worldframe and near/far offsets",
+        "wind-down how-it-works anchor and consumedstop signal",
+        "health controller how-it-works anchor and actualevent requirement",
+        "header exact-symbol search returns1of245 for80023E94",
+        "semantic camera shake search returns8E54 and resultclick navigatescorrectly"
+      ],
+      "scope": "Page content, layout, links, anchors and interactive search checked. Browser console was not inspected. Temporary tab and preview server were closed."
+    }
+  }
+}

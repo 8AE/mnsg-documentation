@@ -25,6 +25,12 @@ Uses world_frame % 15. Phase 0 emits at forward offset 60 with flags 0x10; phase
 
 Allocates a kind-10 child at owner-local offset (0,35,forward_offset), uses initializer func_08000DCC_6B406C and installs resource file 0x1D and owner context.
 
+The phase source is the unsigned halfword at full system +0x3ADCE. The created flame stores its variant in task +0xE8 and its parent root in task +0xD0.
+
+The flame initializer sets opacity byte +0xED to 120, horizontal velocity from parent yaw at speed 2.2, and timer +0x8A to 15. Initialization plus its post is the birth pass; the next AI callback begins on a later scheduler pass.
+
+Its first moving phase descends by two world units for 16 updates. The later phase removes the flame for opacity 10, native world culling or contact flag 0x200.
+
 ## Parameters
 
 | Parameter | Type | Description |
@@ -57,6 +63,8 @@ Observe entry into this native routine and sample the task entity field. The ori
 - The phase is based on the shared world clock, so repeated invocations on the same eligible frame can duplicate the same emission.
 - Resolve the full ROM-qualified overlay symbol; a shared 0x080... address alone does not identify the loaded routine.
 - Use a live task of the documented family. Task pointers and callback slots follow the 32-bit target ABI.
+- Flame constructors enqueue tasks; allocation alone does not mean the child initializer has already executed.
+- At a constructor return hook, the original argument registers can be clobbered. Retain the entry task explicitly or use a validated current scheduler-task pointer from D_8016DAB4_16E6B4; do not reinterpret a0 as an unchanged task argument.
 
 ## Related symbols
 

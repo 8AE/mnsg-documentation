@@ -1,0 +1,74 @@
+{
+  "scope": "Native rotation marker in the Dharumanyo and Tsurami travelling-projectile constructors; existing symbol reference updates only.",
+  "game": {
+    "checkout": "30775d247e912178d28fe46bf04d5d610ebc43da",
+    "version": "USA native recompiler output",
+    "runtimeValidation": "Host regression and native source review only; fresh two-client rendering was not certified."
+  },
+  "nativeEvidence": {
+    "func_08002620_6CA830": {
+      "source": "/Users/ahmad/git/Goemon64Recomp/RecompiledFuncs/funcs_111.c",
+      "sha256": "f4d18357fdafb833646f89def621e44979a1506d9bc9faf3722c67db7f2fed9c",
+      "addresses": [
+        "0x08002754..0x08002764: calls 0x8021A310 with the projectile task"
+      ]
+    },
+    "func_080049A4_6B7C44": {
+      "source": "/Users/ahmad/git/Goemon64Recomp/RecompiledFuncs/funcs_105.c",
+      "sha256": "3d245770ce9e62924ead32af2fb00211dfa66063d73a428cfcd56a9b19a7c3c5",
+      "addresses": [
+        "0x08004E50..0x08004E5C: calls 0x8021A310 with the travelling-attack task"
+      ]
+    },
+    "func_8021A310_5D57E0": {
+      "source": "/Users/ahmad/git/Goemon64Recomp/RecompiledFuncs/funcs_41.c",
+      "sha256": "b90402600fa4a360205277fb991355898edc1a195062d8f3d0c71e2f71563ac9",
+      "addresses": [
+        "0x8021A310: loads task object from +0x18",
+        "0x8021A314: sets value 0x8000",
+        "0x8021A318..0x8021A324: stores the value at object +0x14/+0x16/+0x18"
+      ]
+    },
+    "func_08004ED0_6B8170": {
+      "source": "/Users/ahmad/git/Goemon64Recomp/RecompiledFuncs/funcs_103.c",
+      "sha256": "d7339050683a1f946747543a26c4714d5d3c05fb9a5342128e0b48b0b7145068",
+      "addresses": [
+        "0x080053CC: chooses ring initializer 0x080056FC",
+        "0x080053DC..0x080053F0: calls owner-relative allocation with this travelling projectile as owner",
+        "0x080055EC..0x0800560C: later ring allocation also uses the travelling projectile"
+      ]
+    },
+    "func_080056FC_6B899C": {
+      "source": "/Users/ahmad/git/Goemon64Recomp/RecompiledFuncs/funcs_106.c",
+      "sha256": "c0478087663ca63133449be12703aadf1801287dfc06cfa3ce1c1b164324e31c",
+      "addresses": [
+        "0x080056FC..0x08005878: ring initializer preserves inherited object roll",
+        "0x08005848..0x0800585C: mode0x100 writes pitch +0x14 =0x0200 only"
+      ]
+    },
+    "func_802171A8_5D2678": {
+      "source": "/Users/ahmad/git/Goemon64Recomp/RecompiledFuncs/funcs_42.c",
+      "sha256": "8726bf23c57baab3a57c269b276c8605260fe34c244131f354fff04060e7b3ca",
+      "addresses": [
+        "0x80217218..0x80217250: forwards owner rotation halfwords to child allocation"
+      ]
+    },
+    "func_80035964_36564": {
+      "source": "/Users/ahmad/git/Goemon64Recomp/RecompiledFuncs/funcs_6.c",
+      "sha256": "bdc31cba96a2fc5aac78896ca754067a581995bcc42a3eb0f491797a27d377e2",
+      "addresses": [
+        "0x800359BC..0x800359C0: stores incoming roll halfword unchanged at new object+0x18"
+      ]
+    }
+  },
+  "regression": {
+    "source": "mnsg-recomp-example/tests/test_anchor_dharumanyo_native.c native_projectile_orientation_round_trip_test",
+    "before": "After reproducing the native constructor rotation writes in the fixture, authority checkpoint capture failed because yaw 0x8000 exceeded the old 1023 range.",
+    "after": "Exact 0x8000 or ordinary 0..1023 is accepted. Both native travelling variants reconstruct the same rotation marker on a follower, and 1024 and 0x8001 remain rejected."
+  },
+  "limitations": [
+    "The helper writes a special rotation marker; this evidence does not establish a universal billboard or camera-facing interpretation for every renderer.",
+    "Generated native C and ROM data are not copied into the documentation repository."
+  ],
+  "ringConsequence": "The native ring owner is a travelling projectile with roll0x8000. A reconstruction using the boss root as allocation owner needs to retain that native roll explicitly; the ring initializer does not regenerate it."
+}

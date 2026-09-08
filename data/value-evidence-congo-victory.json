@@ -1,0 +1,45 @@
+{
+  "scope": "Native Congo victory continuation and white screen-fade ownership. Only the existing 7D24 and A228 reference pages change; no new catalog symbols or examples.",
+  "game": {
+    "version": "USA decompressed native ROM",
+    "sha256": "e40bee20508c2e29e651dca4e47504e40f908f0a2186e34a582784bf5a64be4c",
+    "runtimeValidation": "No game was launched or live multiplayer behavior certified."
+  },
+  "nativeEvidence": {
+    "sources": [
+      "Native ROM disassembly of file 29 Congo callbacks and file 12 fade helpers; symbol addresses and sizes resolved from Goemon64RecompSyms/mnsg.syms.toml.",
+      "Temporary local evidence: /private/tmp/congo-native-clean.asm, /private/tmp/congo-fade-helpers.asm.txt, /private/tmp/congo-fade-owner.asm.txt, /private/tmp/congo-fade-free.asm.txt. No ROM bytes or disassembly dumps are included in this repository."
+    ],
+    "entry": "7D24 clears root +0x68 recovery bit 1, sets +0xE8 bit 0x80, progress event 0x12D and immediate events 1 through 5. It writes the +0x8A halfword timer to 120 and queues the victory continuation; scheduling does not invoke the next callback immediately.",
+    "controller": "8022026C calls 80036B7C(owner), then writes RGB bytes +0xD/+0xE/+0xF and zero alpha byte +0x10 on the separate controller at full-system +0x3B018. The controller belongs to the task +0x18/+0x1C native object list. Root +0xDC remains a floating-point hit-sound cooldown, not fade alpha.",
+    "creation": "08008220..0800822C calls 8022026C(root,255,255,255). 820C sets the root timer to 30 and D_8015C562_15D162 to 1, then queues 8280.",
+    "rampUp": "080082C8 calls 80220210(root,4), increasing alpha to 255; return zero selects 82F8. Audio cue 0x181 occurs only when the root timer equals zero before decrement.",
+    "fadeOut": "0800830C calls 80220168(root,5). This sole Congo fade-out call subtracts alpha to zero and calls 80036158(owner,controller,1) before returning zero and selecting 833C. The object is unlinked and released; the global pointer being cleared was not established and is not claimed.",
+    "milestones": "833C clears root capability word +0x60, sets progress flags 0x12B and 0x12E, clears D_8015C562_15D162 and selects the inert callback. These writes do not replace fade-out or object release.",
+    "camera": "9298 waits for progress 0x12E; 930C sets a 90-update timer; 934C closes the letterbox; 93FC restores controls. The camera chain does not release the white fade controller.",
+    "contract": "Preserve the native continuation after entry. Repeated entry restarts timing; replacing later callbacks can skip the only fade-out and release path even while camera cleanup completes."
+  },
+  "inventoryRefresh": {
+    "baselineSymbolCount": 245,
+    "finalSymbolCount": 245,
+    "added": [],
+    "refreshedSourceReferences": [
+      "func_802197D8_5D4CA8",
+      "func_080009C4_6B3C64",
+      "func_08008E54_6BC0F4",
+      "func_80023E94_24A94",
+      "func_80038B98_39798"
+    ],
+    "preservedUnrelatedRecords": 240,
+    "preservedOtherSourceSnapshots": 68,
+    "sourceSnapshot": {
+      "path": "mnsg-recomp-example/src/anchor_congo_native.c",
+      "sha256": "d42f797548e15827e1dd3ae8301f20bea0921092e49a7e0688141ef1db07ba63"
+    },
+    "policy": "Only the five reviewed reference lists and declaration line positions plus their one source snapshot were refreshed. All other records, aliases, inventory order and snapshots remain unchanged. Previous evidence hashes remain historical; no removed variable use is assigned to the new snapshot."
+  },
+  "validation": {
+    "examples": "Both existing examples unchanged; no new native declaration or call example introduced.",
+    "runtime": "No in-game validation. Documentation generation, build, tests and browser checks are performed separately."
+  }
+}

@@ -437,7 +437,8 @@
     "behavior": [
       "Selects an owner/list through func_80219CA0_5D5170, creates the task and copies actor context through FUN_80218C28. An owner object supplies initial position and rotation; an owner without an object supplies a zero transform.",
       "The new task starts with resource ID 0xFFFE at +0x28 and pointer 0xFFFFFFFF at +0x2C. Install the resource fields expected by its initializer before the first scheduled update.",
-      "The initializer runs through the native scheduler. Null indicates owner selection or allocation failed."
+      "The initializer runs through the native scheduler. Null indicates owner selection or allocation failed.",
+      "The inherited rotation halfwords are forwarded unchanged, including special values such as 0x8000. Tsurami ring children illustrate this: their travelling-projectile owner supplies roll 0x8000, which their initializer retains."
     ],
     "cautions": [
       "The owner pointer itself is dereferenced even when its object is absent.",
@@ -561,13 +562,17 @@
     "summary": "Assigns 0x8000 to all three rotation fields of a task object.",
     "behavior": [
       "Loads the object pointer from task +0x18, then writes 16-bit values at object +0x14/+0x16/+0x18.",
-      "The native Ryo popup setup uses this orientation. This function alone does not establish a universal billboard or camera-facing interpretation for every renderer."
+      "The native Ryo popup setup uses this orientation. This function alone does not establish a universal billboard or camera-facing interpretation for every renderer.",
+      "The Dharumanyo travelling-projectile initializer func_08002620_6CA830 and Tsurami travelling-attack initializer func_080049A4_6B7C44 also call this helper. Their initialized rotation state therefore includes the exact 0x8000 value."
     ],
     "cautions": [
       "The object must already exist; this routine performs no allocation."
     ],
     "confidence": "decompiled",
-    "related": [],
+    "related": [
+      "func_08002620_6CA830",
+      "func_080049A4_6B7C44"
+    ],
     "example": "extern void func_8021A310_5D57E0(void *task);\n\nvoid apply_native_popup_orientation(void *task)\n{\n    if (task && *(void **)((char *)task + 0x18))\n        func_8021A310_5D57E0(task);\n}\n",
     "exampleExplanation": "The example shows the documented native data layout or call sequence. Use it only while the relevant game state and resources are valid.",
     "parameters": [
@@ -1195,46 +1200,73 @@
   },
   "func_0800000C_6B32AC": {
     "title": "Congo private actor post",
-    "summary": "Runs Congo private actor post-processing.",
+    "summary": "Runs Congo root post-processing, including damage recovery and health transitions.",
     "behavior": [
-      "Congo replaces the ordinary task +0x10 common post with this callback. Its processing includes the root-specific health/damage path.",
-      "Six separate animated model-part tasks follow the root in scheduler order and consume root animation signals."
+      "Congo root initialization installs this callback in task +0x10. The root has entity ID 0x323 and starts at 30 HP; its six animated model-part tasks are separate actors.",
+      "Calls the common contact/damage path func_80218E7C_5D434C, then the health-threshold controller func_0800A228_6BD4C8. Replaying this post can therefore repeat health, sound and transition bookkeeping.",
+      "Root fields include unsigned-byte HP at +0x8D, unsigned-byte recovery/flicker timer at +0x8C, unsigned-halfword AI timer at +0x8A, and a float hit-sound cooldown at +0xDC. Model yaw is the unsigned halfword at object +0x16.",
+      "The recovery branch depends on status bit 0x1 at task +0x68. Victim-contact pointer +0x38 is cleared only inside that branch; removing its trigger can also skip that cleanup.",
+      "The six model parts carry their root pointer at task +0xDC and their animation frame as a float at object +0x28. This differs from the root float at task +0xDC; the same byte offset is not a common actor-field type."
     ],
     "cautions": [
+      "Use the health-bearing root when reading HP. The six model parts do not own the boss health field.",
+      "Preserve native contact ownership: victim pointer +0x38 and attacker pointer +0x34 have different roles. Suppressing recovery processing does not automatically consume the pending victim contact.",
+      "A constructor can enqueue children that initialize on a later scheduler pass. Its return does not prove that all six model parts exist.",
       "Re-entering this post can repeat damage or state bookkeeping.",
       "Resolve the full ROM-qualified overlay symbol; a shared 0x080... address alone does not identify the loaded routine.",
       "Use a live task of the documented family. Task pointers and callback slots follow the 32-bit target ABI."
     ],
-    "confidence": "source-reviewed",
+    "confidence": "decompiled",
     "related": [
-      "D_8016DAB4_16E6B4"
+      "D_8016DAB4_16E6B4",
+      "func_0800A228_6BD4C8",
+      "func_80218E7C_5D434C",
+      "func_802197D8_5D4CA8"
     ],
-    "example": "#include \"modding.h\"\n\nstatic unsigned short last_entity;\n\nRECOMP_HOOK(\"func_0800000C_6B32AC\")\nvoid observe_native_state(void *task)\n{\n    if (!task) return;\n    last_entity = *(volatile unsigned short *)((char *)task + 0x5E);\n}\n",
-    "exampleExplanation": "Observe entry into this native routine and sample the task entity field. The original function continues executing in its normal scheduler context.",
+    "example": "#include \"modding.h\"\n\nstatic unsigned char observed_congo_health;\n\nRECOMP_HOOK(\"func_0800000C_6B32AC\")\nvoid observe_congo_post(void *task, void *object)\n{\n    if (!task || !object) return;\n    if (*(volatile unsigned short *)((char *)task + 0x5E) != 0x323u) return;\n    observed_congo_health = *(volatile unsigned char *)((char *)task + 0x8D);\n}\n",
+    "exampleExplanation": "Observe a live root at its native post entry. Both scheduler callback arguments are preserved and the original routine continues; no extra post invocation is introduced.",
     "parameters": [
       {
         "name": "task",
         "type": "void *",
-        "description": "Native task supplied at routine entry. Only this consumed argument is established here; additional native parameters have not been confirmed."
+        "description": "Live native root task; Congo is entity 0x323 at unsigned halfword +0x5E."
+      },
+      {
+        "name": "object",
+        "type": "void *",
+        "description": "The root model/object supplied by the scheduler; this post consumes both native callback arguments."
       }
     ],
-    "returns": "No return value is used by the documented task-callback convention."
+    "returns": "No return value is used by the documented task-callback convention.",
+    "declaration": "extern void func_0800000C_6B32AC(void *task, void *object);"
   },
   "func_0800A228_6BD4C8": {
     "title": "Congo health and damage-threshold controller",
     "summary": "Processes Congo health thresholds and defeat state.",
     "behavior": [
-      "The health-bearing root is entity 0x323. Relevant fields are health byte +0x8D and controller flag 0x04000000 at +0xE8.",
-      "Health thresholds 25, 20, 15, 10 and 5 generate transient event 0x0B for the spin reaction. At zero HP, native defeat handling restores HP to one before scheduling the victory sequence."
+      "Task +0xE8 bit 0x04000000 gates the health-threshold and zero-health portion. Other effect bits in the same word are processed separately, so skipping the entire routine is broader than disabling that health portion.",
+      "For Congo, HP is the unsigned byte at task +0x8D. Exact HP values 25, 20, 15, 10 and 5 produce event pairs (1, 0x0B), (2, 0x0B), (5, 0x0B), (4, 0x0B) and (3, 0x0B), respectively. A different HP value clears transient event 0x0B.",
+      "A threshold event can be emitted again on every call while HP remains exactly at that threshold. The routine does not identify a unique physical attack or consume an encounter-wide threshold serial.",
+      "At zero HP, when flag 0x12E is clear, Congo handling clears status remove bit 0x2 and attack-capability bit 0x00200000, restores HP to one, sets kill flag 0x1A1 and schedules func_08007D24_6BAFC4 for the victory sequence.",
+      "This controller can also run for Tsurami roots. Identify Congo by entity 0x323 at unsigned halfword task +0x5E before interpreting Congo-specific state.",
+      "Event 0x0B is an immediate transient event, separate from saved progress flags. The ordinary Congo camera selects its shake callback while that event is set.",
+      "Read the actual event bank through func_80023E94_24A94 when its current state matters. Other native callers can clear the event even while HP remains at a threshold, so HP alone is not an equivalent event-state query.",
+      "The zero-health transition starts the native victory chain rather than completing it. Later root callbacks create, raise, lower and release a white screen-fade controller; a separate camera continuation eventually restores normal framing and player control."
     ],
     "cautions": [
+      "A post-return HP sample can already be one after a lethal hit. Observe zero HP before this controller normalizes it if the lethal edge itself is required.",
+      "Repeated manual calls can requeue threshold events. Preserve the native scheduler and transient-event lifecycle.",
       "A health value of one alone is not proof that normal combat remains active. Native defeat state must also be considered.",
       "Resolve the full ROM-qualified overlay symbol; a shared 0x080... address alone does not identify the loaded routine.",
-      "Use a live task of the documented family. Task pointers and callback slots follow the 32-bit target ABI."
+      "Use a live task of the documented family. Task pointers and callback slots follow the 32-bit target ABI.",
+      "The final victory flags are not a substitute for the intervening fade cleanup. Preserve the native victory continuation from func_08007D24_6BAFC4 instead of replacing it with a later callback or only setting its final flags."
     ],
-    "confidence": "source-reviewed",
+    "confidence": "decompiled",
     "related": [
-      "D_8016DAB4_16E6B4"
+      "D_8016DAB4_16E6B4",
+      "func_80023E94_24A94",
+      "func_08008E54_6BC0F4",
+      "func_08007D24_6BAFC4"
     ],
     "example": "#include \"modding.h\"\n\nstatic unsigned short last_entity;\n\nRECOMP_HOOK(\"func_0800A228_6BD4C8\")\nvoid observe_native_state(void *task)\n{\n    if (!task) return;\n    last_entity = *(volatile unsigned short *)((char *)task + 0x5E);\n}\n",
     "exampleExplanation": "Observe entry into this native routine and sample the task entity field. The original function continues executing in its normal scheduler context.",
@@ -1335,16 +1367,22 @@
     "title": "Wind down Congo spin",
     "summary": "Runs Congo wind-down after an active spin revolution.",
     "behavior": [
-      "The active spinning callback func_08007BB0_6BAE50 installs this state at yaw 0x360 with a 60-tick timer.",
-      "The detailed wind-down animation transitions have not been fully reconstructed."
+      "The active spinning callback func_08007BB0_6BAE50 installs this state at yaw 0x360 with an unsigned-halfword timer of 60 at task +0x8A.",
+      "Decrements the timer first. On every call with a remaining value at most 30, sets bit 0x80 in the parent root word at task +0xE8. A remaining value of zero also schedules the next native callback.",
+      "Growing ray children observe parent bit 0x80 and select func_080009C4_6B3C64 for their next AI pass. That fade callback clears the shared parent bit, so it can be absent again after the scheduler finishes.",
+      "The stop bit is a consumed signal rather than a persistent ray-lifetime flag. The root callback and countdown identify the wind-down even after a child clears the signal."
     ],
     "cautions": [
+      "A post-scheduler sample of parent +0xE8 can miss a stop signal already consumed by ray children. Do not infer that existing rays should still grow solely from a clear bit 0x80.",
+      "Changing the parent signal does not reset a ray fade that already began. Its unsigned-byte color/opacity scalar at task +0xEC continues toward removal.",
       "Resolve the full ROM-qualified overlay symbol; a shared 0x080... address alone does not identify the loaded routine.",
       "Use a live task of the documented family. Task pointers and callback slots follow the 32-bit target ABI."
     ],
-    "confidence": "source-reviewed",
+    "confidence": "decompiled",
     "related": [
-      "D_8016DAB4_16E6B4"
+      "D_8016DAB4_16E6B4",
+      "func_08007BB0_6BAE50",
+      "func_080009C4_6B3C64"
     ],
     "example": "typedef void (*ActorCallback)(void *task, void *object);\nextern void func_08007C18_6BAEB8(void *task, void *object);\n\nint is_this_native_state(void *task)\n{\n    if (!task) return 0;\n    ActorCallback current =\n        *(ActorCallback *)((char *)task + 0x0C);\n    return current == func_08007C18_6BAEB8;\n}\n",
     "exampleExplanation": "Compare the installed AI callback at task +0x0C to identify this exact native state without advancing its state machine.",
@@ -1360,7 +1398,8 @@
         "description": "Native object associated with the task, normally the pointer at task +0x18; included where the two-argument callback declaration is established."
       }
     ],
-    "returns": "No return value is used by the documented task-callback convention."
+    "returns": "No return value is used by the documented task-callback convention.",
+    "declaration": "extern void func_08007C18_6BAEB8(void *task, void *object);"
   },
   "func_08000DCC_6B406C": {
     "title": "Initialize a Congo flame",
@@ -1398,14 +1437,19 @@
     "summary": "Emits Congo breath flames according to the native world-frame phase.",
     "behavior": [
       "Uses world_frame % 15. Phase 0 emits at forward offset 60 with flags 0x10; phase 5 uses offset 55 and flags 0x20; phase 10 uses offset 58 and flags 0x40. Other phases emit nothing.",
-      "Allocates a kind-10 child at owner-local offset (0,35,forward_offset), uses initializer func_08000DCC_6B406C and installs resource file 0x1D and owner context."
+      "Allocates a kind-10 child at owner-local offset (0,35,forward_offset), uses initializer func_08000DCC_6B406C and installs resource file 0x1D and owner context.",
+      "The phase source is the unsigned halfword at full system +0x3ADCE. The created flame stores its variant in task +0xE8 and its parent root in task +0xD0.",
+      "The flame initializer sets opacity byte +0xED to 120, horizontal velocity from parent yaw at speed 2.2, and timer +0x8A to 15. Initialization plus its post is the birth pass; the next AI callback begins on a later scheduler pass.",
+      "Its first moving phase descends by two world units for 16 updates. The later phase removes the flame for opacity 10, native world culling or contact flag 0x200."
     ],
     "cautions": [
       "The phase is based on the shared world clock, so repeated invocations on the same eligible frame can duplicate the same emission.",
       "Resolve the full ROM-qualified overlay symbol; a shared 0x080... address alone does not identify the loaded routine.",
-      "Use a live task of the documented family. Task pointers and callback slots follow the 32-bit target ABI."
+      "Use a live task of the documented family. Task pointers and callback slots follow the 32-bit target ABI.",
+      "Flame constructors enqueue tasks; allocation alone does not mean the child initializer has already executed.",
+      "At a constructor return hook, the original argument registers can be clobbered. Retain the entry task explicitly or use a validated current scheduler-task pointer from D_8016DAB4_16E6B4; do not reinterpret a0 as an unchanged task argument."
     ],
-    "confidence": "source-reviewed",
+    "confidence": "decompiled",
     "related": [
       "D_8016DAB4_16E6B4"
     ],
@@ -1610,19 +1654,24 @@
   },
   "func_08003810_6CBA20": {
     "title": "Post-process Dharumanyo visible root",
-    "summary": "Runs post-processing for Dharumanyo visible actor.",
+    "summary": "Runs post-processing for the Dharumanyo visible actor and owns its native combat-pause gate.",
     "behavior": [
       "The visible actor owns movement, attack state, animation and projectile spawning. This callback is its private task post at +0x10.",
+      "At entry, reads native flag 0x16C. While the flag is set, this post ORs bit 0 into the word at D_8015CC30_15D830 +0xD4 and takes its paused branch. After the flag clears, a root with a live object pointer clears that bit before ordinary movement and post-processing.",
+      "The common actor pre func_80218FE8_5D44B8 treats task +0x64 bit 0x2 as an exemption from the shared bit-0 gate. This lets the Dharumanyo root reach its private post and release the derived gate after flag 0x16C clears. The normal scheduler order remains pre, AI, then post.",
       "The linked carrier uses func_08003F84_6CC194 for actual collision, damage, lives and death processing."
     ],
     "cautions": [
       "Visible-root state and carrier state have different responsibilities; neither task can substitute for the other.",
+      "Treat D_8015CC30_15D830 +0xD4 bit 0 as derived runtime pause state. Do not clear it while native flag 0x16C remains set.",
+      "Do not suppress this root's private post through the same pause gate or remove its task +0x64 bit-0x2 exemption; the post owns the native release path.",
       "Resolve the full ROM-qualified overlay symbol; a shared 0x080... address alone does not identify the loaded routine.",
       "Use a live task of the documented family. Task pointers and callback slots follow the 32-bit target ABI."
     ],
-    "confidence": "source-reviewed",
+    "confidence": "decompiled",
     "related": [
-      "D_8016DAB4_16E6B4"
+      "D_8016DAB4_16E6B4",
+      "func_80034734_35334"
     ],
     "example": "#include \"modding.h\"\n\nstatic unsigned short last_entity;\n\nRECOMP_HOOK(\"func_08003810_6CBA20\")\nvoid observe_native_state(void *task)\n{\n    if (!task) return;\n    last_entity = *(volatile unsigned short *)((char *)task + 0x5E);\n}\n",
     "exampleExplanation": "Observe entry into this native routine and sample the task entity field. The original function continues executing in its normal scheduler context.",
@@ -1674,18 +1723,21 @@
   },
   "func_08002620_6CA830": {
     "title": "Initialize a Dharumanyo travelling projectile",
-    "summary": "Initializes a Dharumanyo travelling projectile.",
+    "summary": "Initializes a Dharumanyo travelling projectile with native 0x8000 rotation markers.",
     "behavior": [
       "The allocator establishes projectile +0xDC = visible root before this scheduled initializer runs.",
-      "Initialization installs entity 0xCC, one of the two travelling callbacks func_0800284C_6CAA5C or func_08002A40_6CAC50, and the common actor post. Trail, impact and phase-effect children are separate task families."
+      "Initialization installs entity 0xCC, one of the two travelling callbacks func_0800284C_6CAA5C or func_08002A40_6CAC50, and the common actor post. Trail, impact and phase-effect children are separate task families.",
+      "Calls func_8021A310_5D57E0 during initialization, setting object rotation halfwords +0x14, +0x16 and +0x18 to the native special value 0x8000. This value is not an ordinary 0..1023 angle."
     ],
     "cautions": [
       "Resolve the full ROM-qualified overlay symbol; a shared 0x080... address alone does not identify the loaded routine.",
-      "Use a live task of the documented family. Task pointers and callback slots follow the 32-bit target ABI."
+      "Use a live task of the documented family. Task pointers and callback slots follow the 32-bit target ABI.",
+      "Retain the exact 0x8000 rotation value when copying this initialized state. An ordinary-angle-only range check rejects a valid native projectile; masking the value to ten bits changes its native orientation state."
     ],
     "confidence": "source-reviewed",
     "related": [
-      "D_8016DAB4_16E6B4"
+      "D_8016DAB4_16E6B4",
+      "func_8021A310_5D57E0"
     ],
     "example": "#include \"modding.h\"\n\nstatic unsigned short last_entity;\n\nRECOMP_HOOK(\"func_08002620_6CA830\")\nvoid observe_native_state(void *task)\n{\n    if (!task) return;\n    last_entity = *(volatile unsigned short *)((char *)task + 0x5E);\n}\n",
     "exampleExplanation": "Observe entry into this native routine and sample the task entity field. The original function continues executing in its normal scheduler context.",
@@ -2043,7 +2095,7 @@
     "title": "Initialize Tsurami health-bearing root",
     "summary": "Initializes Ghost Robot Tsurami health-bearing root before its model and introduction children.",
     "behavior": [
-      "The native encounter uses room 0x71 and actor ID 0xCB.",
+      "The native encounter uses room 0x71. This health-bearing root does not initialize the usual entity field at +0x5E; actor ID 0xCB identifies its separate visual components and attacks.",
       "The root later installs private post func_08000388_6B3628, distinguishing it from the separate persistent model and attack children."
     ],
     "cautions": [
@@ -2067,19 +2119,25 @@
   },
   "func_08000388_6B3628": {
     "title": "Process Tsurami root pipeline and damage",
-    "summary": "Runs Tsurami root actor processing, damage, phase bookkeeping and visual effects.",
+    "summary": "Runs Tsurami root damage, phase bookkeeping and the nonlethal blue-flash recovery lifecycle.",
     "behavior": [
       "Installed only on the health-bearing root at task +0x10. Its body is skipped when D_8015C5E4 is zero.",
-      "The private post includes the common actor pipeline plus boss-specific collision/damage and phase/defeat work. It is separate from the current AI callback at task +0x0C."
+      "The private post includes the common actor pipeline plus boss-specific collision/damage and phase/defeat work. It is separate from the current AI callback at task +0x0C.",
+      "The nonlethal damage state func_08002E34_6B60D4 creates a screen overlay with RGB (128,128,255) and alpha 0 through func_8022026C_5DB73C. Its next AI func_08002EC8_6B6168 increases alpha by 80 per invocation through func_80220210_5DB6E0, clamping at 255 before scheduling func_08002F0C_6B61AC.",
+      "The fade-out AI subtracts 80 through func_80220168_5DB638. At zero it releases the root-owned display record and advances to func_08002F50_6B61F0. After the animation condition, func_08002FA4_6B6244 clears task-status bit 0 and schedules neutral state func_08001D54_6B4FF4. The native one-HP lethal branch instead selects func_08002FFC_6B629C before creating the flash."
     ],
     "cautions": [
       "An extra invocation repeats more than animation or movement; it can process damage and phase changes again.",
       "Resolve the full ROM-qualified overlay symbol; a shared 0x080... address alone does not identify the loaded routine.",
-      "Use a live task of the documented family. Task pointers and callback slots follow the 32-bit target ABI."
+      "Use a live task of the documented family. Task pointers and callback slots follow the 32-bit target ABI.",
+      "The screen-overlay cursor at full-system +0x3B018 remains nonnull after normal fade-out, while release resets the freed record's alpha to 255. Active kind-1 ownership and the release boundary are necessary to distinguish a live blue flash from this freed record."
     ],
     "confidence": "source-reviewed",
     "related": [
-      "D_8016DAB4_16E6B4"
+      "D_8016DAB4_16E6B4",
+      "D_8015C5C8_15D1C8",
+      "func_08001D54_6B4FF4",
+      "func_08002FFC_6B629C"
     ],
     "example": "#include \"modding.h\"\n\nstatic unsigned short last_entity;\n\nRECOMP_HOOK(\"func_08000388_6B3628\")\nvoid observe_native_state(void *task)\n{\n    if (!task) return;\n    last_entity = *(volatile unsigned short *)((char *)task + 0x5E);\n}\n",
     "exampleExplanation": "Observe entry into this native routine and sample the task entity field. The original function continues executing in its normal scheduler context.",
@@ -2218,18 +2276,23 @@
   },
   "func_080049A4_6B7C44": {
     "title": "Initialize Tsurami travelling attacks",
-    "summary": "Initializes Tsurami travelling attacks across the three combat phases.",
+    "summary": "Initializes Tsurami travelling attacks across three combat phases with native 0x8000 rotation markers.",
     "behavior": [
       "Installs entity 0xCB, recurring AI func_08004ED0_6B8170 and the common actor post.",
-      "The low five bits of attack flags at task +0xE8 identify modes 0x01, 0x02, 0x04, 0x08 and 0x10. Their full mapping to individual attack trajectories is not established."
+      "The low five bits of attack flags at task +0xE8 identify modes 0x01, 0x02, 0x04, 0x08 and 0x10. Their full mapping to individual attack trajectories is not established.",
+      "Calls func_8021A310_5D57E0 during initialization, setting object rotation halfwords +0x14, +0x16 and +0x18 to the native special value 0x8000. This value is not an ordinary 0..1023 angle.",
+      "The mode-0x01 attack installs reflection callback func_08005B1C_6B8DBC in task +0x90. That callback schedules func_08005B50_6B8DF0; the latter creates a replacement travelling attack in mode 0x10, copies the original boss-root link at task +0xD4 into the replacement and removes the original projectile. The allocator owner for the replacement is the original projectile, distinct from its copied boss-root link."
     ],
     "cautions": [
       "Resolve the full ROM-qualified overlay symbol; a shared 0x080... address alone does not identify the loaded routine.",
-      "Use a live task of the documented family. Task pointers and callback slots follow the 32-bit target ABI."
+      "Use a live task of the documented family. Task pointers and callback slots follow the 32-bit target ABI.",
+      "Retain the exact 0x8000 rotation value when copying this initialized state. An ordinary-angle-only range check rejects a valid native projectile; masking the value to ten bits changes its native orientation state.",
+      "Reflection includes a callback transition and a new projectile task. Preserving only the original travelling AI or changing its velocity does not reproduce that native lifecycle."
     ],
     "confidence": "source-reviewed",
     "related": [
-      "D_8016DAB4_16E6B4"
+      "D_8016DAB4_16E6B4",
+      "func_8021A310_5D57E0"
     ],
     "example": "#include \"modding.h\"\n\nstatic unsigned short last_entity;\n\nRECOMP_HOOK(\"func_080049A4_6B7C44\")\nvoid observe_native_state(void *task)\n{\n    if (!task) return;\n    last_entity = *(volatile unsigned short *)((char *)task + 0x5E);\n}\n",
     "exampleExplanation": "Observe entry into this native routine and sample the task entity field. The original function continues executing in its normal scheduler context.",
@@ -2247,15 +2310,20 @@
     "summary": "Advances a travelling Tsurami attack initialized by func_080049A4_6B7C44.",
     "behavior": [
       "The task uses actor/entity 0xCB and the common actor post; the same callback supports travelling attacks from all three combat phases.",
-      "Attack mode is stored in the low five bits at task +0xE8. Individual mode trajectories and transition equations remain unconfirmed."
+      "Attack mode is stored in the low five bits at task +0xE8. Individual mode trajectories and transition equations remain unconfirmed.",
+      "Ring children initialized by func_080056FC_6B899C are allocated relative to this travelling projectile through func_8021DDE8_5D92B8 and func_802171A8_5D2678. They inherit the projectile object rotation, including roll +0x18 = 0x8000. The ring initializer keeps that roll; its mode-0x100 branch changes only pitch +0x14 to 0x0200."
     ],
     "cautions": [
       "Resolve the full ROM-qualified overlay symbol; a shared 0x080... address alone does not identify the loaded routine.",
-      "Use a live task of the documented family. Task pointers and callback slots follow the 32-bit target ABI."
+      "Use a live task of the documented family. Task pointers and callback slots follow the 32-bit target ABI.",
+      "A ring created with a different owner must retain the native projectile-owner rotation state. Substituting the visible boss as owner can otherwise replace the inherited 0x8000 roll with an ordinary boss angle."
     ],
     "confidence": "source-reviewed",
     "related": [
-      "D_8016DAB4_16E6B4"
+      "D_8016DAB4_16E6B4",
+      "func_080049A4_6B7C44",
+      "func_802171A8_5D2678",
+      "func_8021DDE8_5D92B8"
     ],
     "example": "typedef void (*ActorCallback)(void *task, void *object);\nextern void func_08004ED0_6B8170(void *task, void *object);\n\nint is_this_native_state(void *task)\n{\n    if (!task) return 0;\n    ActorCallback current =\n        *(ActorCallback *)((char *)task + 0x0C);\n    return current == func_08004ED0_6B8170;\n}\n",
     "exampleExplanation": "Compare the installed AI callback at task +0x0C to identify this exact native state without advancing its state machine.",
@@ -3130,5 +3198,173 @@
       }
     ],
     "returns": "No return value is used by the documented task-callback convention."
+  },
+  "func_802197D8_5D4CA8": {
+    "title": "Turn an actor toward its target object",
+    "summary": "Steps an actor yaw toward the position of the target object stored at task +0x84.",
+    "confidence": "decompiled",
+    "declaration": "extern int func_802197D8_5D4CA8(void *task, int turn_step);",
+    "parameters": [
+      {
+        "name": "task",
+        "type": "void *",
+        "description": "Live actor task with its own model/object at +0x18 and a valid target object at +0x84."
+      },
+      {
+        "name": "turn_step",
+        "type": "int",
+        "description": "Native angular step parameter; the stepping amount is twice this value in the 0..1023 yaw space. Congo passes 1."
+      }
+    ],
+    "returns": "0 when the yaw is snapped to the target direction, 1 after a positive yaw step, or 2 after a negative yaw step. Congo checks zero before advancing its turn state.",
+    "behavior": [
+      "Dereferences the target-object pointer at task +0x84 and reads its float X, Y and Z at object +0x08, +0x0C and +0x10. It forwards those values and turn_step to the coordinate-based turning routine.",
+      "The coordinate routine obtains the moving actor object from task +0x18 and computes direction from the X/Z difference. Yaw is the unsigned halfword at that object +0x16, wrapped with mask 0x3FF.",
+      "If the shortest angular difference is strictly smaller than twice turn_step, it snaps to the target angle and returns zero. Otherwise it takes a signed step of twice turn_step and returns 1 or 2 for its direction.",
+      "The Congo turn callback invokes this helper with turn_step 1 and uses its return value to decide when the next native state may begin."
+    ],
+    "cautions": [
+      "Both task +0x18 and task +0x84 must identify initialized live objects. The native helper does not test either pointer for null before dereferencing it.",
+      "Invoke only with the file_12 code and the actor resources resident, normally from the actor native update context. Calling again advances yaw again.",
+      "The target field is an object pointer, not a player-task pointer. A temporary target substitution must have object-compatible float coordinates and stay valid for the entire call; do not replace unrelated global player pointers.",
+      "Preserve the native return value in hooks and wrappers; treating this as a void helper loses the turn-completion signal."
+    ],
+    "example": "#include \"modding.h\"\n\nextern int func_802197D8_5D4CA8(void *task, int turn_step);\n\n/* Call from a live actor update with file_12 resident. */\nint turn_actor_toward_current_target(void *task)\n{\n    if (!task) return -1;\n    void *object = *(void **)((char *)task + 0x18);\n    void *target = *(void **)((char *)task + 0x84);\n    if (!object || !target) return -1;\n    return func_802197D8_5D4CA8(task, 1);\n}\n",
+    "exampleExplanation": "Forward the native result while advancing a live actor toward its current target. The wrapper rejects null pointers; the caller remains responsible for their native lifetime and loaded resources.",
+    "related": [
+      "D_8016DAB4_16E6B4",
+      "func_0800000C_6B32AC"
+    ]
+  },
+  "func_80038B98_39798": {
+    "title": "Queue a native audio command",
+    "summary": "Queues a 16-bit native audio command with the wrapper default parameters.",
+    "confidence": "decompiled",
+    "declaration": "extern void func_80038B98_39798(unsigned short cue);",
+    "parameters": [
+      {
+        "name": "cue",
+        "type": "unsigned short",
+        "description": "Native 16-bit command or cue ID. Congo battle music uses 0x003D."
+      }
+    ],
+    "returns": "No return value. The wrapper does not report whether the queue accepted the command.",
+    "behavior": [
+      "Masks the cue to 16 bits and forwards it to the underlying audio queue with both additional parameters set to zero.",
+      "The queue holds at most eight pending commands and suppresses duplicates only while they remain in that pending queue. A later call can enqueue the same command again.",
+      "Congo camera initialization starts unsigned-halfword task timer +0x8A at 30. During its opening callback, the timer value 25 queues music cue 0x003D exactly once before the rest of the intro continues.",
+      "Subsequent Congo intro callbacks do not repeat that music command. Advancing directly to a later intro callback can therefore bypass its original music transition."
+    ],
+    "cautions": [
+      "Invoke at the intended native transition. Repeating a command every frame is not prevented by a persistent already-playing check in this wrapper.",
+      "The void return provides no delivery acknowledgment; preserve the native audio scheduler and queue lifetime."
+    ],
+    "example": "extern void func_80038B98_39798(unsigned short cue);\n\n/* Call once at the intended battle-music transition. */\nvoid queue_congo_battle_music(void)\n{\n    func_80038B98_39798(0x003D);\n}\n",
+    "exampleExplanation": "Queue the verified Congo music command once. The caller supplies the transition lifetime; the native wrapper supplies its default queue parameters.",
+    "related": []
+  },
+  "func_80023E94_24A94": {
+    "title": "Read an immediate transient event",
+    "summary": "Returns the masked bit for an event in the immediate transient-event bank.",
+    "confidence": "decompiled",
+    "declaration": "extern int func_80023E94_24A94(int event_id);",
+    "parameters": [
+      {
+        "name": "event_id",
+        "type": "int",
+        "description": "Immediate event identifier, distinct from a saved progress-flag ID. Congo camera shake reads event 0x0B."
+      }
+    ],
+    "returns": "The stored masked bit, not a normalized Boolean. Event 0x0B returns zero or 0x08; compare the result with zero.",
+    "behavior": [
+      "Reads the immediate byte-backed event bank also used by func_80023DF0_249F0 and func_80023E40_24A40.",
+      "Event 0x0B occupies bit 0x08 in the second byte. Native camera code tests the raw return for zero before entering or leaving the Congo shake callback.",
+      "Congo health processing may set event 0x0B repeatedly while HP is exactly 25, 20, 15, 10 or 5. Other event consumers can clear it, so a current bank read can differ from an HP-based inference."
+    ],
+    "cautions": [
+      "Use result != 0 rather than result == 1. A set event can return a different power-of-two mask.",
+      "This bank is transient and has separate set/clear functions. Do not substitute saved progress-flag readers or infer its lifetime from boss HP."
+    ],
+    "example": "extern int func_80023E94_24A94(int event_id);\n\nint congo_camera_shake_event_is_set(void)\n{\n    return func_80023E94_24A94(0x0B) != 0;\n}\n",
+    "exampleExplanation": "Normalize the raw event mask at the read boundary. This queries the live event without changing it or deriving it from health.",
+    "related": [
+      "func_80023DF0_249F0",
+      "func_80023E40_24A40",
+      "func_0800A228_6BD4C8",
+      "func_08008E54_6BC0F4"
+    ]
+  },
+  "func_080009C4_6B3C64": {
+    "title": "Fade and remove a Congo spin ray",
+    "summary": "Runs an initialized Congo ray through its native fade and removal phase.",
+    "confidence": "decompiled",
+    "declaration": "extern void func_080009C4_6B3C64(void *ray_task, void *ray_object);",
+    "parameters": [
+      {
+        "name": "ray_task",
+        "type": "void *",
+        "description": "Initialized ray task with a live parent root at +0xD0; the current scheduler task must be this ray."
+      },
+      {
+        "name": "ray_object",
+        "type": "void *",
+        "description": "The ray object supplied by the native scheduler, normally task +0x18. Both callback arguments are consumed."
+      }
+    ],
+    "returns": "No return value is used by the native callback convention.",
+    "behavior": [
+      "The ray initializer starts unsigned-byte color/opacity scalar +0xEC at 64. The growing ray callback selects this fade callback after observing parent root +0xE8 bit 0x80.",
+      "Clears parent root +0xE8 bit 0x80 and tracks one of four directional yaw offsets from the parent according to the ray variant.",
+      "Subtracts two from the ray scalar +0xEC, clamps it at four, and updates the corresponding native ray colors. At four, requests native current-task removal.",
+      "Selecting the fade callback is sufficient to begin fading an initialized ray. No additional fade initializer resets its opacity."
+    ],
+    "cautions": [
+      "Keep file_29, the initialized ray object and its parent root live. This routine assumes the ray initializer has already established its native resources.",
+      "Removal uses the current scheduler-task pointer. Manually invoking this callback under another current task can remove the wrong task.",
+      "Do not reset +0xEC to 64 on repeated state observations; doing so restarts the fade and prevents normal removal.",
+      "The shared parent stop bit can be clear while a ray is already fading. The ray callback and remaining scalar describe its ongoing lifetime."
+    ],
+    "example": "#include \"modding.h\"\n\nstatic unsigned char observed_ray_fade;\n\nRECOMP_HOOK(\"func_080009C4_6B3C64\")\nvoid observe_congo_ray_fade(void *ray_task, void *ray_object)\n{\n    if (!ray_task || !ray_object) return;\n    observed_ray_fade = *(volatile unsigned char *)((char *)ray_task + 0xEC);\n}\n",
+    "exampleExplanation": "Observe the remaining fade scalar during its normal native callback. The hook preserves current-task ownership and leaves removal to the original routine.",
+    "related": [
+      "func_08007C18_6BAEB8",
+      "D_8016DAB4_16E6B4",
+      "func_80034ED4_35AD4"
+    ]
+  },
+  "func_08008E54_6BC0F4": {
+    "title": "Update the Congo camera shake",
+    "summary": "Applies Congo camera shake while immediate event 0x0B remains set.",
+    "confidence": "decompiled",
+    "declaration": "extern void func_08008E54_6BC0F4(void *camera_task, void *object);",
+    "parameters": [
+      {
+        "name": "camera_task",
+        "type": "void *",
+        "description": "Initialized Congo camera task with its live native camera handle at +0xD0."
+      },
+      {
+        "name": "object",
+        "type": "void *",
+        "description": "Second scheduler callback argument. This routine saves it but does not otherwise consume it."
+      }
+    ],
+    "returns": "No return value is used by the native callback convention.",
+    "behavior": [
+      "The ordinary Congo camera selects this callback when immediate event 0x0B is set. It returns to the ordinary camera callback when the event is clear.",
+      "Compares squared distance between the local player and task camera-position fields +0x80, +0x84 and +0x88 with threshold 10000.",
+      "Uses the unsigned-halfword world frame at full system +0x3ADCE modulo four. Far target-Y offsets follow 30, 33, 30, 27; near offsets follow 10, 13, 10, 7.",
+      "Updates the native camera target and matrix, then clears byte task +0xDC. The shake phase follows the native world frame; it is not a once-only effect triggered by a health value."
+    ],
+    "cautions": [
+      "Run in the initialized Congo camera context with the file_29 code and camera resources resident. This is not a generic camera effect helper.",
+      "The camera follows the local player and the current immediate event bank. Preserve its own task and handle rather than substituting a root actor or saved progress flags."
+    ],
+    "example": "typedef void (*CameraCallback)(void *task, void *object);\nextern void func_08008E54_6BC0F4(void *camera_task, void *object);\n\nint congo_camera_is_shaking(void *camera_task)\n{\n    if (!camera_task) return 0;\n    CameraCallback current = *(CameraCallback *)((char *)camera_task + 0x0C);\n    return current == func_08008E54_6BC0F4;\n}\n",
+    "exampleExplanation": "Identify the installed native camera state without replaying its update or changing the event bank.",
+    "related": [
+      "func_80023E94_24A94",
+      "func_0800A228_6BD4C8"
+    ]
   }
 }

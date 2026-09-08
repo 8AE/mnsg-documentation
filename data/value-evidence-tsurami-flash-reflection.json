@@ -1,0 +1,179 @@
+{
+  "scope": "Tsurami nonlethal blue-flash allocation, native display-record release ownership, and projectile reflection replacement; bounded existing-page corrections.",
+  "game": {
+    "checkout": "30775d247e912178d28fe46bf04d5d610ebc43da",
+    "version": "USA native recompiler output",
+    "runtimeValidation": "Native source review and supplied single-player function-presence trace; no fresh two-client gameplay certification."
+  },
+  "nativeEvidence": {
+    "func_08002E34_6B60D4": {
+      "source": "/Users/ahmad/git/Goemon64Recomp/RecompiledFuncs/funcs_104.c",
+      "sha256": "1aa2093355b58903cb6bbef33288f6b8faff98a295349f9258ec2a9f4f855fff",
+      "addresses": [
+        "0x08002E40..0x08002E64: one remaining HP selects 0x08002FFC before flash creation",
+        "0x08002E88..0x08002EA0: calls 0x8022026C(root,128,128,255)",
+        "0x08002EAC..0x08002EB4: schedules fade-in 0x08002EC8"
+      ]
+    },
+    "func_08002EC8_6B6168": {
+      "source": "/Users/ahmad/git/Goemon64Recomp/RecompiledFuncs/funcs_105.c",
+      "sha256": "3d245770ce9e62924ead32af2fb00211dfa66063d73a428cfcd56a9b19a7c3c5",
+      "addresses": [
+        "0x08002ED8..0x08002EE0: increment helper 0x80220210, step80",
+        "0x08002EE4..0x08002EF8: helper result0 advances to fade-out 0x08002F0C"
+      ]
+    },
+    "func_08002F0C_6B61AC": {
+      "source": "/Users/ahmad/git/Goemon64Recomp/RecompiledFuncs/funcs_104.c",
+      "sha256": "1aa2093355b58903cb6bbef33288f6b8faff98a295349f9258ec2a9f4f855fff",
+      "addresses": [
+        "0x08002F1C..0x08002F24: decrement helper 0x80220168, step80",
+        "0x08002F28..0x08002F3C: result0 advances to animation wait 0x08002F50"
+      ]
+    },
+    "func_08002FA4_6B6244": {
+      "source": "/Users/ahmad/git/Goemon64Recomp/RecompiledFuncs/funcs_105.c",
+      "sha256": "3d245770ce9e62924ead32af2fb00211dfa66063d73a428cfcd56a9b19a7c3c5",
+      "addresses": [
+        "0x08002FB0..0x08002FC4: clears task status +0x68 bit0",
+        "0x08002FD8..0x08002FE8: schedules neutral AI 0x08001D54"
+      ]
+    },
+    "func_8022026C_5DB73C": {
+      "source": "/Users/ahmad/git/Goemon64Recomp/RecompiledFuncs/funcs_47.c",
+      "sha256": "a87e322fb65c15235076a6a5ca27de5c8f048373e42432e824bf32e09ba18742",
+      "addresses": [
+        "0x80220284: allocates screen-overlay display record via 0x80036B7C",
+        "0x802202AC..0x802202E4: writes RGB and zero alpha to the full-system +0x3B018 cursor"
+      ]
+    },
+    "func_80220168_5DB638": {
+      "source": "/Users/ahmad/git/Goemon64Recomp/RecompiledFuncs/funcs_52.c",
+      "sha256": "5dde7c988f2687e017087b6be55637decd93d2db2fc131b13455014e4c99fa88",
+      "addresses": [
+        "0x80220168..0x8022020C: subtracts low-byte step from alpha; at zero calls 0x80036158(ownerTask, record, 1)",
+        "The helper does not clear full-system +0x3B018"
+      ]
+    },
+    "func_80036B7C_3777C": {
+      "source": "/Users/ahmad/git/Goemon64Recomp/RecompiledFuncs/funcs_13.c",
+      "sha256": "58d47bcc1000c6d5c5e73fa50827a246cb5fba9fcabedf52b6a55dd3c3594301",
+      "addresses": [
+        "0x80036BA4..0x80036BB4: allocates one kind-1 display record for task",
+        "0x80036BD0..0x80036BE0: writes task display-list tail to static 0x800C7CD8",
+        "0x80036C1C: display-record kind byte +0x04 =1"
+      ]
+    },
+    "func_80036158_36D58": {
+      "source": "/Users/ahmad/git/Goemon64Recomp/RecompiledFuncs/funcs_13.c",
+      "sha256": "58d47bcc1000c6d5c5e73fa50827a246cb5fba9fcabedf52b6a55dd3c3594301",
+      "addresses": [
+        "0x80036178..0x800361D0: finds supplied record in owner task display list starting at task +0x18",
+        "0x800361EC..0x80036220: returns record to free list, dispatches cleanup and rewires owner list/tail",
+        "0x8003623C: returns successor display-record pointer; missing target returns null"
+      ]
+    },
+    "func_80036308_36F08": {
+      "source": "/Users/ahmad/git/Goemon64Recomp/RecompiledFuncs/funcs_2.c",
+      "sha256": "998dd3042196baf72dc2206919eb565cc42f9a734443282efe45ae432764d0c1",
+      "addresses": [
+        "0x80036314..0x80036320: dispatches by display-record kind +0x04 masked0x7F",
+        "0x80036348..0x80036354: kind1 resource cleanup via0x80007C90 then reset via0x8000A228"
+      ]
+    },
+    "func_8000A228_AE28": {
+      "source": "/Users/ahmad/git/Goemon64Recomp/RecompiledFuncs/funcs_10.c",
+      "sha256": "9c9638aab3382eb7544bc424eb615dfdc4899ab11e2090278631fd64435017dd",
+      "addresses": [
+        "0x8000A234: sets freed kind1 byte +0x04 =0x81",
+        "0x8000A2AC..0x8000A2B8: resets RGB and alpha +0x10 to255",
+        "No stores clear the overlay cursor at0x800C7CD8/full-system +0x3B018"
+      ]
+    },
+    "func_08005B1C_6B8DBC": {
+      "source": "/Users/ahmad/git/Goemon64Recomp/RecompiledFuncs/funcs_105.c",
+      "sha256": "3d245770ce9e62924ead32af2fb00211dfa66063d73a428cfcd56a9b19a7c3c5",
+      "addresses": [
+        "0x08005B24..0x08005B3C: schedules replacement AI0x08005B50 using current-task callback setter"
+      ]
+    },
+    "func_08005B50_6B8DF0": {
+      "source": "/Users/ahmad/git/Goemon64Recomp/RecompiledFuncs/funcs_103.c",
+      "sha256": "d7339050683a1f946747543a26c4714d5d3c05fb9a5342128e0b48b0b7145068",
+      "addresses": [
+        "0x08005B60..0x08005B90: saves original task +0xD4 and allocates travelling replacement from original projectile",
+        "0x08005BA0..0x08005BC8: sets resource file0x1D, attackmode0x10 and copied boss-root link +0xD4",
+        "0x08005C48..0x08005C54: removes original current projectile via0x80034ED4"
+      ]
+    },
+    "func_080049A4_6B7C44": {
+      "source": "/Users/ahmad/git/Goemon64Recomp/RecompiledFuncs/funcs_105.c",
+      "sha256": "3d245770ce9e62924ead32af2fb00211dfa66063d73a428cfcd56a9b19a7c3c5",
+      "addresses": [
+        "0x080049BC..0x080049C8: mode bit0 selects reflection-capable branch",
+        "0x08004A2C..0x08004A5C: +90=0x08005B1C, +8D=20, +60=0x00200EE1 and +64 OR0x8000"
+      ]
+    },
+    "func_80218FE8_5D44B8": {
+      "source": "/Users/ahmad/git/Goemon64Recomp/RecompiledFuncs/funcs_44.c",
+      "sha256": "3a9db655fa32ec9924c0ca0feaff87ac2b29821316c92e42db5a2144f9f8d51f",
+      "addresses": [
+        "0x802190D8..0x802190F0: task +0x60 bit0x00200000 enables collision receive byte +0x30 bit0",
+        "0x8021912C..0x8021915C: nonnull attacker +0x38 with attack type +0x4C !=0x14 sets task status +0x68 CONTACT0x80"
+      ]
+    },
+    "func_80033688_34288": {
+      "source": "/Users/ahmad/git/Goemon64Recomp/RecompiledFuncs/funcs_2.c",
+      "sha256": "998dd3042196baf72dc2206919eb565cc42f9a734443282efe45ae432764d0c1",
+      "addresses": [
+        "0x80033864..0x8003387C: successful native collision writes attacker +0x34 = victim and victim +0x38 = attacker; records sphere index at victim +0x44"
+      ]
+    },
+    "func_80218E7C_5D434C": {
+      "source": "/Users/ahmad/git/Goemon64Recomp/RecompiledFuncs/funcs_51.c",
+      "sha256": "5210fa7b7cad45c6f84d282452497da1495fded87a27a087ede9b706885510fc",
+      "addresses": [
+        "0x80218EF0..0x80218EF4: common post pipeline invokes damage routine0x80218350 with current actor"
+      ]
+    },
+    "func_80218F30_5D4400": {
+      "source": "/Users/ahmad/git/Goemon64Recomp/RecompiledFuncs/funcs_47.c",
+      "sha256": "a87e322fb65c15235076a6a5ca27de5c8f048373e42432e824bf32e09ba18742",
+      "addresses": [
+        "0x80218F3C..0x80218F40: runs common actor pipeline",
+        "0x80218F4C..0x80218F50: subsequently clears actor +0x38 attacker and +0x34 victim pointers"
+      ]
+    }
+  },
+  "suppliedTrace": {
+    "sha256": "d6f7b5059cef6876247ff4115d2b60e9e020c4d4fc0a6deb8f6904d8d95dc141",
+    "lineCount": 1146,
+    "uniqueLineCount": 1143,
+    "normalRecordedSequence": [
+      "line1003: reflection callback08005B1C",
+      "line1014: replacement08005B50",
+      "line1019: damage08002E34",
+      "line1020: overlayallocation80036B7C",
+      "line1023: fadein08002EC8",
+      "line1024: increment80220210",
+      "line1029: fadeout08002F0C",
+      "line1030: decrement/release80220168",
+      "line1031: animationwait08002F50",
+      "line1032: return-to-combat08002FA4"
+    ],
+    "limitation": "Every function name occurs at most once; only three model-cache log lines repeat. This establishes recorded presence/order, not frame cadence or call counts. Absence of wrapper8022026C is not absence of its native call: inspected08002E34 invokes it."
+  },
+  "syncConsequence": "After native release the cursor still equals a formerly tracked flash and alpha reads255. Pointer-equality-only capture falsely reports a fully opaque live flash. Track the release boundary and validate active kind1 plus owning task-list membership; do not rewrite the native global cursor to hide the stale alias.",
+  "limitations": [
+    "No timing duration is inferred from the function-presence trace.",
+    "Only exact native lifecycle facts are public; mod protocol and regression provenance remain maintenance evidence.",
+    "No copied ROM or generated native function bodies are included."
+  ],
+  "validation": {
+    "documentation": "npm run build generated 250 symbols. npm test passed 29 tests; the site validator checked 257 HTML pages, 50,436 internal links and 250 search entries with zero errors.",
+    "servedContent": "HTTP checked the four changed pages at the configured /mnsg-documentation/ base path and the flash summary in the served search index.",
+    "browser": "CUA returned No browser is available; interactive visual verification was unavailable this run.",
+    "nativeRuntime": "No fresh two-client gameplay certification."
+  },
+  "reflectionAudit": "Native mode1 constructor, receive flags, attacker pointer, pre-derived CONTACT and post damage dispatch were traced. This source review did not reproduce the reported follower rejection; preserve that uncertainty rather than claiming a separate reflection fix from this evidence alone."
+}

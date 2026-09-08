@@ -1,0 +1,102 @@
+{
+  "func_08005018_6C4768": {
+    "title": "Initialize the Miracle Moon reward",
+    "summary": "Initializes Congo’s Miracle Moon reward when its pickup scene is not complete.",
+    "confidence": "decompiled",
+    "behavior": [
+      "The room 0x0016 reward is placed as entity 0x35F and uses file_30. This initializer assigns native entity identity 0x350 at task +0x5E.",
+      "Saved flag 0x0A4 suppresses reward setup when the Moon pickup scene has already finished. Inventory ownership at save +0x254 is a separate value and is not this completion test.",
+      "The next callback waits for Congo victory flag 0x12B before the reward appears and enters its idle pickup behavior."
+    ],
+    "example": "#include \"modding.h\"\n\nextern void *D_8016DAB4_16E6B4;\nstatic unsigned int initialized_moon_rewards;\n\nRECOMP_HOOK_RETURN(\"func_08005018_6C4768\")\nvoid observe_moon_initialization(void)\n{\n    /* The scheduler still owns the current task at constructor return. */\n    const unsigned char *task = D_8016DAB4_16E6B4;\n    if (!task || *(const unsigned short *)(task + 0x5E) != 0x350u ||\n        (*(const unsigned int *)(task + 0x68) & 2u)) return;\n    ++initialized_moon_rewards;\n}\n",
+    "exampleExplanation": "Observe only a successfully initialized native reward at constructor return. Read the scheduler current-task value in this callback context rather than assuming the first argument register survived initialization.",
+    "cautions": [
+      "Requires the native room placement and file_30 resources; this is not a general collectible constructor.",
+      "Do not infer pickup completion from the inventory word alone.",
+      "An observation hook is shown; no direct constructor call is required."
+    ],
+    "related": [
+      "func_0800532C_6C4A7C",
+      "func_080053A4_6C4AF4",
+      "D_8015C608_15D208",
+      "D_8016DAB4_16E6B4"
+    ]
+  },
+  "func_0800532C_6C4A7C": {
+    "title": "Start the Miracle Moon pickup scene",
+    "summary": "Starts the Moon acquisition scenario and its native player-control ownership.",
+    "confidence": "decompiled",
+    "declaration": "extern void func_0800532C_6C4A7C(void *task, void *object);",
+    "parameters": [
+      {
+        "name": "task",
+        "type": "void *",
+        "description": "Initialized native Miracle Moon reward task."
+      },
+      {
+        "name": "object",
+        "type": "void *",
+        "description": "The reward task’s native display object."
+      }
+    ],
+    "returns": "No return value.",
+    "behavior": [
+      "The idle reward selects this callback when pickup begins. Native callback selection writes task +0xC immediately; execution occurs on its scheduled actor update.",
+      "Starts scenario 0x71 and acquires the native pickup control state. That scenario writes 1 to the signed 32-bit Miracle Moon inventory field at save +0x254 before its final scene completion.",
+      "The later completion callback waits for the scenario to end, releases pickup control and records saved flag 0x0A4."
+    ],
+    "example": "#include \"modding.h\"\n\nstatic unsigned int moon_pickup_starts;\n\nRECOMP_HOOK(\"func_0800532C_6C4A7C\")\nvoid observe_moon_pickup(void *task, void *object)\n{\n    if (!task || !object ||\n        *(const unsigned short *)((const char *)task + 0x5E) != 0x350u)\n        return;\n    ++moon_pickup_starts;\n    /* Leave the native scenario and control ownership intact. */\n}\n",
+    "exampleExplanation": "Observe the exact native pickup entry without replacing the scenario or changing its player-control state.",
+    "cautions": [
+      "Preserve an already selected pickup callback, even before its entry hook executes.",
+      "Do not remove the active reward or set completion flag 0x0A4 while its local scenario still owns player control.",
+      "Do not invoke this callback on an idle task merely to grant inventory."
+    ],
+    "related": [
+      "func_08005018_6C4768",
+      "func_080053A4_6C4AF4",
+      "D_8015C608_15D208",
+      "func_8003521C_35E1C"
+    ]
+  },
+  "func_080053A4_6C4AF4": {
+    "title": "Complete the Miracle Moon pickup scene",
+    "summary": "Releases native pickup control, records Moon completion and retires the reward.",
+    "confidence": "decompiled",
+    "declaration": "extern void func_080053A4_6C4AF4(void *task, void *object);",
+    "parameters": [
+      {
+        "name": "task",
+        "type": "void *",
+        "description": "Native Moon reward whose pickup scenario has started."
+      },
+      {
+        "name": "object",
+        "type": "void *",
+        "description": "The reward task’s native display object."
+      }
+    ],
+    "returns": "No return value.",
+    "behavior": [
+      "Waits until the native scenario program counter is zero. Then releases pickup control, sets packed save flag 0x0A4 through the native flag setter, and sets task status +0x68 remove bit 0x2.",
+      "The common native actor post consumes remove bit 0x2 through its normal task cleanup. The completion routine must remain associated with the pickup that acquired player control.",
+      "Completion flag 0x0A4 is at save byte +0x14, bit 4, mask 0x10. It is separate from Moon inventory at +0x254 and the Goemon weapon-tier word at +0x0A4.",
+      "The actual Congo exit is the file_43 placed actor 0x34B, initialized as 0x23C. Its native wait reads flag 0x0A4, then starts a 120-update opening timer, sound 0x224 and opening animation. The existing portal leads to room 0x28.",
+      "The ordinary Congo camera reacts when both 0x0A4 and its separate 0x132 condition are set. It consumes 0x132, views the exit for its native 150-update phase, then waits 20 updates before returning to normal. On later room entry, flag 0x0A4 suppresses the Congo root and skips the camera intro."
+    ],
+    "example": "#include \"modding.h\"\n\nextern void *D_8016DAB4_16E6B4;\nstatic unsigned int completed_moon_pickups;\n\nRECOMP_HOOK_RETURN(\"func_080053A4_6C4AF4\")\nvoid observe_moon_completion(void)\n{\n    const unsigned char *task = D_8016DAB4_16E6B4;\n    if (!task || *(const unsigned short *)(task + 0x5E) != 0x350u)\n        return;\n    if (*(const unsigned int *)(task + 0x68) & 2u)\n        ++completed_moon_pickups;\n    /* The normal post callback consumes removal; retain no task pointer. */\n}\n",
+    "exampleExplanation": "Observe successful completion after native control release and flag mutation, before the ordinary post callback retires the reward. The example does not retain a task pointer or call the completion routine itself.",
+    "cautions": [
+      "This routine releases global pickup control. Do not call it to retire an uncollected reward that never started the scenario.",
+      "A saved flag change can activate the exit and camera while a scene is still active; preserve the native completion ordering.",
+      "The Congo exit is not the generic locked doorway or the unrelated file_29 rotating-object callback."
+    ],
+    "related": [
+      "func_08005018_6C4768",
+      "func_0800532C_6C4A7C",
+      "D_8015C608_15D208",
+      "D_8016DAB4_16E6B4",
+      "func_80218F30_5D4400"
+    ]
+  }
+}

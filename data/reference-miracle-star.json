@@ -1,0 +1,75 @@
+{
+  "func_08000000_732F30": {
+    "title": "Initialize Tsurami reward and story controller",
+    "summary": "Creates the controller that presents Tsurami’s Miracle Star and following story scene.",
+    "confidence": "decompiled",
+    "declaration": "extern void func_08000000_732F30(void *task, void *object);",
+    "parameters": [
+      {
+        "name": "task",
+        "type": "void *",
+        "description": "Native file 73 controller task."
+      },
+      {
+        "name": "object",
+        "type": "void *",
+        "description": "Native task display object supplied by the scheduler."
+      }
+    ],
+    "returns": "No return value.",
+    "behavior": [
+      "Checks packed save flag 0x040. When set, immediately destroys the current task and returns; an observer must not dereference that task after return.",
+      "Otherwise allocates a 0x34-byte controller state block, stores its pointer at task +0xD0, initializes its phase word to zero, and installs func_08000090_732FC0.",
+      "The controller belongs to room 0x0071, Tsurami’s Arena. Its reward is the Miracle Star at save +0x250. The Miracle Flower at +0x258 belongs to a different reward scene."
+    ],
+    "cautions": [
+      "Keep a living Tsurami encounter’s required reward controller available; a persistent progression bit is distinct from the lifetime of a local boss and its story actors.",
+      "Do not directly call this constructor or treat task +0xD0 as inline storage."
+    ],
+    "example": "#include \"modding.h\"\n\nstatic unsigned int reward_controller_starts;\n\nRECOMP_HOOK(\"func_08000000_732F30\")\nvoid observe_tsurami_reward_constructor(void *task, void *object)\n{\n    (void)object;\n    if (task)\n        ++reward_controller_starts;\n    /* Entry observation only: the native function may destroy this task. */\n}\n",
+    "exampleExplanation": "Observe constructor entry without retaining a pointer that the native saved-state branch can destroy.",
+    "related": [
+      "func_08000090_732FC0",
+      "D_8015C608_15D208",
+      "D_800C7AB2"
+    ]
+  },
+  "func_08000090_732FC0": {
+    "title": "Run Tsurami Miracle Star and story scene",
+    "summary": "Advances the native post-Tsurami reward presentation, dialogue, control release and exit transition.",
+    "confidence": "decompiled",
+    "declaration": "extern void func_08000090_732FC0(void *task, void *object);",
+    "parameters": [
+      {
+        "name": "task",
+        "type": "void *",
+        "description": "Initialized file 73 reward controller; +0xD0 points to its 0x34-byte state block."
+      },
+      {
+        "name": "object",
+        "type": "void *",
+        "description": "Native display object supplied by the scheduler."
+      }
+    ],
+    "returns": "No return value.",
+    "behavior": [
+      "The unsigned phase word is at controller-state +0x00 and its timer at +0x04. Phase zero waits for native flag 0x1AB before acquiring its camera/player-control state.",
+      "Creates a Miracle Star child through the file 73 helper at offset 0x0EAC and retains that task in controller-state +0x0C. This reward has entity 0x350; that ID also appears on other reward tasks, so entity ID alone does not establish ownership.",
+      "Phase six retires the presented Star through its own native child command, then starts scenario 0x73. That scenario writes 1 to the signed 32-bit inventory field at save +0x250. Receiving inventory ownership is not permission to destroy the controller’s retained actors.",
+      "The following story phases include a wait for packed flag 0x074 in phase 15. The flag’s byte offset is +0x0E with mask 0x10; it is separate from the Star inventory field and from a completed controller lifetime.",
+      "Phase 23 waits for the timer to be exactly zero. It then calls native player-control release and requests the transition to room 0x0147. Phase 24 destroys the controller. Observe phase 23 with timer zero at entry and its successful return to identify this native terminal path."
+    ],
+    "cautions": [
+      "Do not remove a reward child or force a remote story flag while this local scene still owns its camera, task references and player input.",
+      "The inventory grant and story flag can precede final input release and room transition. Never equate either early write with scene completion.",
+      "Do not dereference retained controller state after the terminal room transition or directly invoke its cleanup functions."
+    ],
+    "example": "#include \"modding.h\"\n\nstatic unsigned int star_scene_terminal_selected;\n\nRECOMP_HOOK(\"func_08000090_732FC0\")\nvoid observe_star_scene(void *task, void *object)\n{\n    (void)object;\n    if (!task) return;\n    const unsigned int *state =\n        *(const unsigned int *const *)((const char *)task + 0xD0);\n    if (!state) return;\n    if (state[0] == 23u && state[1] == 0u)\n        ++star_scene_terminal_selected;\n    /* Native callback performs control release and the room transition. */\n}\n",
+    "exampleExplanation": "Observe the exact native terminal phase without changing the camera, reward actor, or scenario. Production observers should also validate task identity and room lifetime.",
+    "related": [
+      "func_08000000_732F30",
+      "D_8015C608_15D208",
+      "D_800C7AB2"
+    ]
+  }
+}
