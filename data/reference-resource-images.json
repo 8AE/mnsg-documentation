@@ -1,0 +1,43 @@
+{
+  "func_800144E8_150E8": {
+    "title": "Load and decode a resource",
+    "summary": "Loads a resource into scratch memory, decodes PIC image data or copies raw bytes into a caller-provided output buffer, and returns the output end pointer.",
+    "declaration": "extern unsigned char *func_800144E8_150E8(unsigned int resource_id, void *packed_scratch, void *decoded_out);",
+    "behavior": [
+      "Calls func_800145B4_151B4 to load the selected resource into packed_scratch. If the loaded data begins with the ASCII bytes PIC, it parses the picture header and decodes pixels into decoded_out; otherwise it copies the loaded byte range unchanged into decoded_out.",
+      "For PIC input, the return advances by the decoded byte count from the parsed metadata. For non-PIC input, it advances by the loaded byte count. The routine writes back the output data cache before returning.",
+      "Loading and decoding are synchronous. The resource tables and PI manager must already be initialized, and callers should perform this work at a resource-initialization boundary rather than once per frame."
+    ],
+    "parameters": [
+      {
+        "name": "resource_id",
+        "type": "unsigned int",
+        "description": "General-file or packed-resource ID accepted by the underlying resource loader."
+      },
+      {
+        "name": "packed_scratch",
+        "type": "void *",
+        "description": "Caller-owned, DMA-aligned writable scratch buffer large enough for the loaded representation."
+      },
+      {
+        "name": "decoded_out",
+        "type": "void *",
+        "description": "Caller-owned writable destination large enough for the raw copy or decoded picture data."
+      }
+    ],
+    "returns": "Pointer one byte past the output written to decoded_out. If the loader produces no bytes, returns decoded_out unchanged.",
+    "cautions": [
+      "Neither destination has a capacity argument. Establish both the stored size and the maximum decoded size for the exact resource before calling; checking the returned pointer afterward cannot prevent an overrun.",
+      "Use separate, nonoverlapping packed and decoded buffers. The picture decoder resets and mutates resident global workspace, so serialize this function with other picture decodes on the game thread.",
+      "The packed destination must satisfy the PI DMA alignment requirements. If decoded bytes will be referenced by native display-list or segmented texture commands, keep them in original 8 MiB RDRAM and retain them for the renderer's full lifetime."
+    ],
+    "related": [
+      "func_800145B4_151B4",
+      "func_80014698_15298",
+      "func_80001640_2240"
+    ],
+    "confidence": "decompiled",
+    "example": "extern int func_80014698_15298(unsigned int resource_id, void *rom_address_out);\nextern unsigned char *func_800144E8_150E8(unsigned int resource_id,\n                                          void *packed_scratch,\n                                          void *decoded_out);\n\nenum {\n    PICTURE_RESOURCE_ID = 0x8016u,\n    PICTURE_ROM_ADDRESS = 0x007EB740u,\n    PICTURE_STORED_BYTES = 0x02C0u,\n    PICTURE_DECODED_BYTES = 0x1000u\n};\n\nstatic unsigned char packed[PICTURE_STORED_BYTES] __attribute__((aligned(16)));\nstatic unsigned char decoded[PICTURE_DECODED_BYTES] __attribute__((aligned(16)));\n\nunsigned char *load_known_picture(void)\n{\n    unsigned int rom_address = 0;\n    unsigned char *end;\n\n    if (func_80014698_15298(PICTURE_RESOURCE_ID, &rom_address) !=\n            PICTURE_STORED_BYTES ||\n        rom_address != PICTURE_ROM_ADDRESS)\n        return 0;\n\n    end = func_800144E8_150E8(PICTURE_RESOURCE_ID, packed, decoded);\n    return end == decoded + PICTURE_DECODED_BYTES ? decoded : 0;\n}",
+    "exampleExplanation": "This example uses a verified resource whose ROM address, stored size, and decoded size are known in advance. Those checks are part of the asset contract."
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "func_800144E8_150E8": {
+    "confidence": "decompiled",
+    "evidence": [
+      {
+        "project": "Goemon64Recomp US",
+        "path": "RecompiledFuncs/funcs_17.c",
+        "line": 172,
+        "note": "Direct recompiled MIPS confirms the three-argument ABI, PIC and raw branches, output-end return, and cache writeback."
+      },
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/ui/anchor_rom_icons.c",
+        "line": 15,
+        "note": "The current caller declares the reviewed ABI and validates exact stored and decoded sizes."
+      }
+    ]
+  }
+}

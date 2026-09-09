@@ -1,0 +1,139 @@
+{
+  "func_8020F170_66E120": {
+    "title": "Create the standard Japan-map task",
+    "summary": "Standard file_17 Japan-map constructor and lifecycle boundary.",
+    "confidence": "decompiled",
+    "behavior": [
+      "Direct US-ROM disassembly establishes seven arguments: parent, mode, marker-context word, character, source room, world X, and world Z. The return register carries the allocated outer task or zero on failure.",
+      "The routine creates its inner marker task through func_8020E930_66D8E0 and maps the source room and coordinates through func_8020F734_66E6E4."
+    ],
+    "cautions": [
+      "Overlay identity is required because 0x8020F170 is reused outside file_17.",
+      "The marker-context word is stored and forwarded, but its broader gameplay meaning remains unresolved."
+    ],
+    "related": [
+      "func_8020F3B8_66E368",
+      "func_8020E630_66D5E0",
+      "func_8020F734_66E6E4"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/anchor_world_map.c",
+        "line": 355,
+        "note": "Entry-hook ABI and source-location capture reviewed in the current uncommitted implementation; file SHA-256 23039504585884ba600ccc1821f8c58db540ffece8d33fc27da64678c6337c13."
+      },
+      {
+        "project": "Goemon64Recomp US",
+        "path": ".file_17",
+        "note": "Direct MIPS disassembly reviewed 2026-09-08 at VRAM 0x8020F170, ROM 0x0066E120, size 0x248."
+      }
+    ]
+  },
+  "func_8020F3B8_66E368": {
+    "title": "Create a fixed-location Japan-map task",
+    "summary": "Separate file_17 constructor for two fixed native map sequences.",
+    "confidence": "decompiled",
+    "behavior": [
+      "Direct US-ROM disassembly establishes the parent and mode arguments and a task-pointer return.",
+      "Mode 0 initializes room 0x0138 and world position (-120.0, -300.0); mode 1 initializes room 0x0177 and (0.0, 0.0). Both feed the common room mapper and marker constructor."
+    ],
+    "cautions": [
+      "Only modes 0 and 1 have complete native field initialization in the inspected branches.",
+      "This constructor is distinct from the ordinary func_8020F170_66E120 path."
+    ],
+    "related": [
+      "func_8020F170_66E120",
+      "func_8020E630_66D5E0",
+      "func_8020F734_66E6E4"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/anchor_world_map.c",
+        "line": 376,
+        "note": "Entry hook separates special-map task reuse from the ordinary map generation; current file SHA-256 23039504585884ba600ccc1821f8c58db540ffece8d33fc27da64678c6337c13."
+      },
+      {
+        "project": "Goemon64Recomp US",
+        "path": ".file_17",
+        "note": "Direct MIPS disassembly reviewed 2026-09-08 at VRAM 0x8020F3B8, ROM 0x0066E368, size 0x22C."
+      }
+    ]
+  },
+  "func_8020E630_66D5E0": {
+    "title": "Update Japan-map markers",
+    "summary": "Persistent update callback for the common file_17 marker task.",
+    "confidence": "decompiled",
+    "behavior": [
+      "func_8020E930_66D8E0 installs this callback on the inner marker task. The native body reads the task from a0 and does not consume a1.",
+      "The phase counter at task offset 0xA4 reaches its toggle path every 21 calls. When the byte at 0xB0 is zero, the routine XORs bit 0 at object offset 0x64 for the face at task+0x5C and 15 nullable destination-marker pointers through task+0x98."
+    ],
+    "cautions": [
+      "The pointer block and counters are version-specific native task layout, not a general actor ABI.",
+      "Entry and return hooks observe opposite sides of the native phase update."
+    ],
+    "related": [
+      "func_8020F170_66E120",
+      "func_8020F3B8_66E368",
+      "func_8020F734_66E6E4"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/anchor_world_map.c",
+        "line": 387,
+        "note": "Entry hook captures the exact marker task used to attach additional engine-owned records."
+      },
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/anchor_world_map.c",
+        "line": 410,
+        "note": "Return hook leaves the stock local face untouched while forcing active remote records visible and inactive retained records hidden; current file SHA-256 23039504585884ba600ccc1821f8c58db540ffece8d33fc27da64678c6337c13."
+      },
+      {
+        "project": "Goemon64Recomp US",
+        "path": ".file_17",
+        "note": "Direct MIPS disassembly reviewed 2026-09-08 at VRAM 0x8020E630, ROM 0x0066D5E0, size 0x1E0."
+      }
+    ]
+  },
+  "func_8020F734_66E6E4": {
+    "title": "Map a room position onto Japan",
+    "summary": "file_17 room and world-coordinate mapper for the Japan map's 49 canonical XYZ positions.",
+    "confidence": "decompiled",
+    "behavior": [
+      "Direct US-ROM disassembly establishes the unsigned room, two float inputs, three output pointers, and void return ABI.",
+      "The room jump table covers 0x012C through 0x017D. Branches choose coordinate indices 0 through 48, with several room-specific world-X/Z splits, then copy all three floats from D_FLT_80216BF0 to the caller outputs.",
+      "Out-of-range rooms select coordinate index 0 rather than returning a failure indication."
+    ],
+    "cautions": [
+      "The routine does not check any output pointer before writing.",
+      "Coordinate index 0 is also a legitimate result for some in-range branches and cannot serve as a validity sentinel."
+    ],
+    "related": [
+      "func_8020F170_66E120",
+      "func_8020F3B8_66E368",
+      "func_8020E630_66D5E0"
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/anchor_world_map.c",
+        "line": 271,
+        "note": "Callable declaration reviewed against the native register and stack use."
+      },
+      {
+        "project": "mnsg-recomp-example",
+        "path": "src/anchor_world_map.c",
+        "line": 332,
+        "note": "Current call site converts retained gameplay coordinates and preserves all three native outputs; file SHA-256 23039504585884ba600ccc1821f8c58db540ffece8d33fc27da64678c6337c13."
+      },
+      {
+        "project": "Goemon64Recomp US",
+        "path": ".file_17",
+        "note": "Direct MIPS disassembly reviewed 2026-09-08 at VRAM 0x8020F734, ROM 0x0066E6E4, size 0x354."
+      }
+    ]
+  }
+}

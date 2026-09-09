@@ -1,0 +1,192 @@
+{
+  "func_8020F170_66E120": {
+    "title": "Create the standard Japan-map task",
+    "summary": "Allocates and initializes the standard file_17 Japan-map task from a source room, world coordinates, character selection, and map mode. Returns the task pointer, or null if required task allocation fails.",
+    "confidence": "decompiled",
+    "declaration": "extern void *func_8020F170_66E120(void *parent, int mode, int marker_context, int character, unsigned int source_room, float world_x, float world_z);",
+    "behavior": [
+      "Allocates an outer map task, installs native scene records, and creates the inner marker task. If a required allocation fails, the routine releases the partial task and returns null.",
+      "Mode 0 installs the ordinary interactive map-input callback. Mode 1 installs the alternate native selection callback and its associated setup. Other mode values do not take either established branch.",
+      "Forwards the marker context, character index, source room, and world X/Z values to the marker builder. It also calls func_8020F734_66E6E4 and uses the resulting map-space position to place the map model."
+    ],
+    "parameters": [
+      {
+        "name": "parent",
+        "type": "void *",
+        "description": "Native task owner used for the new map task."
+      },
+      {
+        "name": "mode",
+        "type": "int",
+        "description": "Map interaction mode. Native paths for 0 and 1 are established."
+      },
+      {
+        "name": "marker_context",
+        "type": "int",
+        "description": "Value stored in the outer task and forwarded to native marker-selection logic; its broader semantic meaning is not established."
+      },
+      {
+        "name": "character",
+        "type": "int",
+        "description": "Character-face selection forwarded to the inner marker task. Established values 0 through 3 select the four playable characters."
+      },
+      {
+        "name": "source_room",
+        "type": "unsigned int",
+        "description": "Room identifier used to choose the canonical Japan-map position."
+      },
+      {
+        "name": "world_x",
+        "type": "float",
+        "description": "Gameplay X coordinate used for rooms whose map position has regional splits."
+      },
+      {
+        "name": "world_z",
+        "type": "float",
+        "description": "Gameplay Z coordinate used for rooms whose map position has regional splits."
+      }
+    ],
+    "returns": "Pointer to the newly allocated native map task, or null when required allocation fails.",
+    "cautions": [
+      "This address belongs to the file_17 overlay. Call or hook it only while that exact overlay is loaded; the runtime address can identify unrelated code in another overlay.",
+      "The returned task and its child records are native-owned and valid only for that map task's lifetime.",
+      "Pass only established character values 0 through 3; behavior for other values is not documented.",
+      "Do not invent meanings for unestablished mode or marker-context values."
+    ],
+    "example": "#include \"modding.h\"\n\nRECOMP_HOOK(\"func_8020F170_66E120\")\nvoid observe_standard_world_map(void *parent, int mode, int marker_context,\n                                int character, unsigned int source_room,\n                                float world_x, float world_z)\n{\n    (void)parent;\n    (void)mode;\n    (void)marker_context;\n    (void)character;\n    (void)source_room;\n    (void)world_x;\n    (void)world_z;\n    /* Capture only transient values needed by the observer. */\n}",
+    "exampleExplanation": "The entry hook observes the complete established argument layout without allocating a second map task. Any retained data must be copied rather than treated as a persistent native pointer.",
+    "related": [
+      "func_8020F3B8_66E368",
+      "func_8020E630_66D5E0",
+      "func_8020F734_66E6E4"
+    ]
+  },
+  "func_8020F3B8_66E368": {
+    "title": "Create a fixed-location Japan-map task",
+    "summary": "Allocates the file_17 Japan-map variant used by two fixed native sequences. The selected mode supplies a built-in room and world position before the common map and marker tasks are created.",
+    "confidence": "decompiled",
+    "declaration": "extern void *func_8020F3B8_66E368(void *parent, int mode);",
+    "behavior": [
+      "Allocates an outer task with the fixed-sequence update callback, creates the common map model and marker task, and returns the outer task. Required allocation failure returns null after native cleanup.",
+      "Mode 0 uses room 0x0138 with world position (-120.0, -300.0). Mode 1 uses room 0x0177 with world position (0.0, 0.0). Both positions pass through func_8020F734_66E6E4.",
+      "The marker builder is called with marker context 0 and character 0, so this path uses the first playable-character face."
+    ],
+    "parameters": [
+      {
+        "name": "parent",
+        "type": "void *",
+        "description": "Native task owner used for the new map task."
+      },
+      {
+        "name": "mode",
+        "type": "int",
+        "description": "Fixed-map selector. Only values 0 and 1 have established native initialization paths."
+      }
+    ],
+    "returns": "Pointer to the newly allocated native map task, or null when required allocation fails.",
+    "cautions": [
+      "This address belongs to the file_17 overlay and is not a resident global function.",
+      "Only mode values 0 and 1 have verified initialization. Other values can leave the fixed room and position fields without a meaningful setup.",
+      "This is a separate constructor path from the ordinary interactive Japan map."
+    ],
+    "example": "#include \"modding.h\"\n\nRECOMP_HOOK(\"func_8020F3B8_66E368\")\nvoid observe_fixed_world_map(void *parent, int mode)\n{\n    (void)parent;\n    (void)mode;\n    /* Observe the fixed-sequence entry without creating another task. */\n}",
+    "exampleExplanation": "The hook distinguishes this constructor path from the standard map constructor. It does not retain or duplicate native task ownership.",
+    "related": [
+      "func_8020F170_66E120",
+      "func_8020E630_66D5E0",
+      "func_8020F734_66E6E4"
+    ]
+  },
+  "func_8020E630_66D5E0": {
+    "title": "Update Japan-map markers",
+    "summary": "Updates the file_17 marker task, prepares its display work, advances a rotating map decoration, and periodically flips the visibility phase of the character face and destination markers.",
+    "confidence": "decompiled",
+    "declaration": "extern void func_8020E630_66D5E0(void *map_task, void *object);",
+    "behavior": [
+      "The common marker constructor installs this routine as the persistent update callback of its returned task. The second argument is not read by the native body.",
+      "Each update prepares native display work, advances a task counter, and adds 0x20 to a marker rotation before masking that rotation to 10 bits.",
+      "After 21 updates, when the task's native suppression byte is clear, the routine toggles bit 0 of byte offset 0x64 on the local face and each non-null destination marker, then resets the phase counter. The pointer block contains one face followed by 15 destination-marker slots."
+    ],
+    "parameters": [
+      {
+        "name": "map_task",
+        "type": "void *",
+        "description": "Inner native marker task created by the common Japan-map marker constructor."
+      },
+      {
+        "name": "object",
+        "type": "void *",
+        "description": "Scheduler callback argument; unused by this native implementation."
+      }
+    ],
+    "returns": "No return value.",
+    "cautions": [
+      "This callback and the task offsets it accesses are specific to the file_17 overlay and this game version.",
+      "Do not call the update routine directly or retain its task pointer after map teardown.",
+      "A return hook runs after the visibility bits have changed; an entry hook observes the previous phase."
+    ],
+    "example": "#include \"modding.h\"\n\nstatic void *observed_map_task;\n\nRECOMP_HOOK(\"func_8020E630_66D5E0\")\nvoid before_world_map_marker_update(void *map_task, void *object)\n{\n    (void)object;\n    observed_map_task = map_task;\n}\n\nRECOMP_HOOK_RETURN(\"func_8020E630_66D5E0\")\nvoid after_world_map_marker_update(void)\n{\n    /* The native visibility phase has now been updated. */\n    observed_map_task = 0;\n}",
+    "exampleExplanation": "The paired hooks show the callback ABI and the timing difference between entry and return observation. Production logic should additionally verify that the expected map generation is still active before dereferencing task fields.",
+    "related": [
+      "func_8020F170_66E120",
+      "func_8020F3B8_66E368",
+      "func_8020F734_66E6E4"
+    ]
+  },
+  "func_8020F734_66E6E4": {
+    "title": "Map a room position onto Japan",
+    "summary": "Converts a gameplay room and world X/Z position into the canonical three-dimensional position used by the file_17 Japan map.",
+    "confidence": "decompiled",
+    "declaration": "extern void func_8020F734_66E6E4(unsigned int room, float world_x, float world_z, float *map_x, float *map_y, float *map_z);",
+    "behavior": [
+      "For room IDs 0x012C through 0x017D, an 82-entry dispatch table selects one of 49 map-space XYZ triples. Most rooms have a fixed result; several large or connecting rooms choose among multiple triples using world X or Z thresholds.",
+      "Rooms outside that range select coordinate-table entry 0. Some valid rooms also intentionally select entry 0, so the output is a position rather than a validity result.",
+      "Always writes all three output floats. Map Y is not universally constant and must be preserved alongside X and Z."
+    ],
+    "parameters": [
+      {
+        "name": "room",
+        "type": "unsigned int",
+        "description": "Gameplay room identifier to map. The native direct-dispatch range is 0x012C through 0x017D."
+      },
+      {
+        "name": "world_x",
+        "type": "float",
+        "description": "Gameplay X coordinate used by room-specific regional splits."
+      },
+      {
+        "name": "world_z",
+        "type": "float",
+        "description": "Gameplay Z coordinate used by room-specific regional splits."
+      },
+      {
+        "name": "map_x",
+        "type": "float *",
+        "description": "Receives the canonical Japan-map X coordinate."
+      },
+      {
+        "name": "map_y",
+        "type": "float *",
+        "description": "Receives the canonical Japan-map Y coordinate."
+      },
+      {
+        "name": "map_z",
+        "type": "float *",
+        "description": "Receives the canonical Japan-map Z coordinate."
+      }
+    ],
+    "returns": "No C return value. The selected XYZ triple is written through map_x, map_y, and map_z.",
+    "cautions": [
+      "This function and its coordinate table belong to the file_17 overlay. The same runtime address can refer to unrelated code when another overlay is loaded.",
+      "All three output pointers must be non-null and writable; the native routine performs no pointer validation.",
+      "Do not use coordinate-table entry 0 as an invalid-room sentinel."
+    ],
+    "example": "typedef struct WorldMapPosition {\n    float x;\n    float y;\n    float z;\n} WorldMapPosition;\n\nextern void func_8020F734_66E6E4(unsigned int room, float world_x,\n                                 float world_z, float *map_x, float *map_y,\n                                 float *map_z);\n\nstatic WorldMapPosition world_map_position(unsigned int room,\n                                            float world_x, float world_z)\n{\n    WorldMapPosition result;\n    func_8020F734_66E6E4(room, world_x, world_z,\n                         &result.x, &result.y, &result.z);\n    return result;\n}",
+    "exampleExplanation": "Call only while file_17 is loaded. The wrapper keeps the complete native XYZ result, including the height selected by the coordinate table.",
+    "related": [
+      "func_8020F170_66E120",
+      "func_8020F3B8_66E368",
+      "func_8020E630_66D5E0"
+    ]
+  }
+}

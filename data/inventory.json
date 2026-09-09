@@ -103,6 +103,7 @@
         "src/item_sync.c",
         "src/race_goemon_house_unlock.c",
         "src/ui/anchor_connect_ui.c",
+        "src/ui/anchor_rom_icons.c",
         "src/ui/anchor_ui.c",
         "src/ui/debug.c",
         "src/ui/race_lobby_ui.c",
@@ -119,7 +120,7 @@
         "Goemon64RecompSyms/mnsg.datasyms.toml",
         "Goemon64RecompSyms/mnsg.syms.toml"
       ],
-      "symbolCount": 166
+      "symbolCount": 167
     },
     {
       "name": "mnsg-team-up",
@@ -24764,6 +24765,7 @@
       ],
       "declarationReviewRequired": false
     },
+    {"name":"func_800144E8_150E8","kind":"function","address":"0x800144E8","size":204,"section":".main","romAddress":"0x000150E8","projects":["mnsg-recomp-example"],"roles":["called","declared"],"declarations":[{"text":"extern unsigned char *func_800144E8_150E8(unsigned int resource_id,\n                                          void *packed_scratch,\n                                          void *decoded_out);","project":"mnsg-recomp-example","path":"src/ui/anchor_rom_icons.c","line":15}],"references":[{"project":"mnsg-recomp-example","path":"src/ui/anchor_rom_icons.c","line":15,"role":"declared","context":"#define MAP_FACE_SHEET_HEIGHT 64u\n#define ROM_ICON_SHEET_PIXELS (64u * 32u)\n\n/* The stock resource helper resolves the resource through the game's ROM\n * tables, loads its packed bytes into scratch, detects PIC0000, and invokes\n * the native decoder into decoded_out. */\nextern unsigned char *func_800144E8_150E8(unsigned int resource_id,\n                                          void *packed_scratch,\n                                          void *decoded_out);\nextern int func_80014698_15298(unsigned int resource_id,\n                               void *rom_address_out);\n\n/* func_800144E8 needs separate packed and decoded regions. Both known sheets\n * decode to 0x1000 bytes, and the map-face resource has the larger packed","contextStartLine":9},{"project":"mnsg-recomp-example","path":"src/ui/anchor_rom_icons.c","line":53,"role":"called","context":"     * size and ROM address before allowing either buffer write. */\n    packed_size = func_80014698_15298(resource_id, &rom_address);\n    if (packed_size != (int)expected_packed_size ||\n        rom_address != expected_rom_address)\n        return 0;\n\n    decoded_end = func_800144E8_150E8(resource_id, s_icon_packed,\n                                      s_icon_sheet);\n    return decoded_end ==\n           (unsigned char *)s_icon_sheet + sizeof(s_icon_sheet);\n}\n\nstatic void copy_rgba5551_crop(unsigned char *rgba_out,\n                               unsigned int sheet_width,","contextStartLine":47}],"symbolSources":[{"project":"mnsg-custom-fish","path":"Goemon64RecompSyms/mnsg.us.syms.toml","line":1009,"kind":"function","address":"0x800144E8","size":204,"section":".main","romAddress":"0x000150E8","context":"    { name = \"func_8000C3EC_CFEC\", vram = 0x8000C3EC, size = 0x44 },\n    { name = \"osPfsNumFiles\", vram = 0x800457D0, size = 0x144 },\n    { name = \"func_800144E8_150E8\", vram = 0x800144E8, size = 0xCC },\n    { name = \"func_80006DF0_79F0\", vram = 0x80006DF0, size = 0x14C },\n    { name = \"func_80010C6C_1186C\", vram = 0x80010C6C, size = 0x230 },","contextStartLine":1007,"sha256":"ff7d8a852e902eb84511a00e2ba0dd22a9e1f17b0b9264cd5fc98ef157adb933"},{"project":"mnsg-enable-boss-rush","path":"Goemon64RecompSyms/mnsg.us.syms.toml","line":1009,"kind":"function","address":"0x800144E8","size":204,"section":".main","romAddress":"0x000150E8","context":"    { name = \"func_8000C3EC_CFEC\", vram = 0x8000C3EC, size = 0x44 },\n    { name = \"osPfsNumFiles\", vram = 0x800457D0, size = 0x144 },\n    { name = \"func_800144E8_150E8\", vram = 0x800144E8, size = 0xCC },\n    { name = \"func_80006DF0_79F0\", vram = 0x80006DF0, size = 0x14C },\n    { name = \"func_80010C6C_1186C\", vram = 0x80010C6C, size = 0x230 },","contextStartLine":1007,"sha256":"ff7d8a852e902eb84511a00e2ba0dd22a9e1f17b0b9264cd5fc98ef157adb933"},{"project":"mnsg-extra-options","path":"Goemon64RecompSyms/mnsg.us.syms.toml","line":1009,"kind":"function","address":"0x800144E8","size":204,"section":".main","romAddress":"0x000150E8","context":"    { name = \"func_8000C3EC_CFEC\", vram = 0x8000C3EC, size = 0x44 },\n    { name = \"osPfsNumFiles\", vram = 0x800457D0, size = 0x144 },\n    { name = \"func_800144E8_150E8\", vram = 0x800144E8, size = 0xCC },\n    { name = \"func_80006DF0_79F0\", vram = 0x80006DF0, size = 0x14C },\n    { name = \"func_80010C6C_1186C\", vram = 0x80010C6C, size = 0x230 },","contextStartLine":1007,"sha256":"ff7d8a852e902eb84511a00e2ba0dd22a9e1f17b0b9264cd5fc98ef157adb933"},{"project":"mnsg-recomp-example","path":"Goemon64RecompSyms/mnsg.syms.toml","line":1009,"kind":"function","address":"0x800144E8","size":204,"section":".main","romAddress":"0x000150E8","context":"    { name = \"func_8000C3EC_CFEC\", vram = 0x8000C3EC, size = 0x44 },\n    { name = \"osPfsNumFiles\", vram = 0x800457D0, size = 0x144 },\n    { name = \"func_800144E8_150E8\", vram = 0x800144E8, size = 0xCC },\n    { name = \"func_80006DF0_79F0\", vram = 0x80006DF0, size = 0x14C },\n    { name = \"func_80010C6C_1186C\", vram = 0x80010C6C, size = 0x230 },","contextStartLine":1007,"sha256":"705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"},{"project":"mnsg-team-up","path":"Goemon64RecompSyms/mnsg.us.syms.toml","line":1009,"kind":"function","address":"0x800144E8","size":204,"section":".main","romAddress":"0x000150E8","context":"    { name = \"func_8000C3EC_CFEC\", vram = 0x8000C3EC, size = 0x44 },\n    { name = \"osPfsNumFiles\", vram = 0x800457D0, size = 0x144 },\n    { name = \"func_800144E8_150E8\", vram = 0x800144E8, size = 0xCC },\n    { name = \"func_80006DF0_79F0\", vram = 0x80006DF0, size = 0x14C },\n    { name = \"func_80010C6C_1186C\", vram = 0x80010C6C, size = 0x230 },","contextStartLine":1007,"sha256":"ff7d8a852e902eb84511a00e2ba0dd22a9e1f17b0b9264cd5fc98ef157adb933"}],"aliases":[],"variants":[{"kind":"function","address":"0x800144E8","size":204,"section":".main","romAddress":"0x000150E8"}],"conflicts":[],"declarationVariants":["extern unsigned char *func_800144E8_150E8(unsigned int resource_id, void *packed_scratch, void *decoded_out);"],"declarationReviewRequired":false},
     {
       "name": "func_800145B4_151B4",
       "kind": "function",
@@ -24933,6 +24935,12 @@
           "line": 180
         },
         {
+          "text": "extern int func_80014698_15298(unsigned int resource_id,\n                               void *rom_address_out);",
+          "project": "mnsg-recomp-example",
+          "path": "src/ui/anchor_rom_icons.c",
+          "line": 18
+        },
+        {
           "text": "extern int func_80014698_15298(unsigned int resource_id, void *rom_address_out);",
           "project": "mnsg-team-up",
           "path": "src/team_up_models.c",
@@ -24955,6 +24963,22 @@
           "role": "called",
           "context": "    }\n\n    /* Use the stock resource-size query to reject an unrelated table value\n     * before FUN_800145B4 is allowed to write into a face buffer. Correct\n     * player aux resources fit the 0x1000-byte buffers from FUN_801DC630. */\n    {\n        int stored_size = func_80014698_15298(resource, 0);\n\n        if (stored_size <= 0 || stored_size > (int)AUX_BUFFER_SIZE)\n        {\n            recomp_printf(\"[remote_models] invalid aux resource %x size %d\\n\",\n                          resource, stored_size);\n            return 0;\n        }",
           "contextStartLine": 808
+        },
+        {
+          "project": "mnsg-recomp-example",
+          "path": "src/ui/anchor_rom_icons.c",
+          "line": 18,
+          "role": "declared",
+          "context": "/* The stock resource helper resolves the resource through the game's ROM\n * tables, loads its packed bytes into scratch, detects PIC0000, and invokes\n * the native decoder into decoded_out. */\nextern unsigned char *func_800144E8_150E8(unsigned int resource_id,\n                                          void *packed_scratch,\n                                          void *decoded_out);\nextern int func_80014698_15298(unsigned int resource_id,\n                               void *rom_address_out);\n\n/* func_800144E8 needs separate packed and decoded regions. Both known sheets\n * decode to 0x1000 bytes, and the map-face resource has the larger packed\n * representation. Calls are serialized on the game's update thread. */\nstatic unsigned char s_icon_packed[ANCHOR_MAP_FACE_RESOURCE_PACKED_SIZE]\n    __attribute__((aligned(8)));",
+          "contextStartLine": 12
+        },
+        {
+          "project": "mnsg-recomp-example",
+          "path": "src/ui/anchor_rom_icons.c",
+          "line": 48,
+          "role": "called",
+          "context": "\n    if (expected_packed_size > sizeof(s_icon_packed))\n        return 0;\n\n    /* The native APIs have no capacity arguments. Pin the verified US stored\n     * size and ROM address before allowing either buffer write. */\n    packed_size = func_80014698_15298(resource_id, &rom_address);\n    if (packed_size != (int)expected_packed_size ||\n        rom_address != expected_rom_address)\n        return 0;\n\n    decoded_end = func_800144E8_150E8(resource_id, s_icon_packed,\n                                      s_icon_sheet);\n    return decoded_end ==",
+          "contextStartLine": 42
         },
         {
           "project": "mnsg-team-up",
@@ -35155,7 +35179,7 @@
     }
   ],
   "audit": {
-    "sourceFileCount": 71,
+    "sourceFileCount": 72,
     "tableEntryCounts": {
       "mnsg-custom-fish": 28853,
       "mnsg-enable-boss-rush": 28853,
@@ -35164,10 +35188,10 @@
       "mnsg-team-up": 28853
     },
     "tableSymbolCount": 28866,
-    "documentedSymbolCount": 250,
-    "functionCount": 188,
+    "documentedSymbolCount": 251,
+    "functionCount": 189,
     "variableCount": 62,
-    "referenceCount": 1023,
+    "referenceCount": 1027,
     "macroHookReferenceCount": 6,
     "unresolvedSymbols": [],
     "unresolvedHooks": [],
@@ -35326,7 +35350,8 @@
       "2026-09-05 scoped dialog pause refresh adds the native task scheduler and scenario-manager tick, and refreshes only src/anchor_dialog.c. The existing current-task global gains this exact source provenance. All 238 prior native records, historical aliases, other source snapshots and prior invitation documentation are retained. Unrelated additions in the full-workspace preview are not adopted.",
       "2026-09-06 scoped Congo native-interface refresh adds only the verified file_12 target-turning helper and its src/anchor_congo_native.c source snapshot. All 240 prior symbol records, source snapshots, historical aliases and audit findings are preserved. The full preview contains 522 symbols across 111 source files and was not adopted; native explanations also update three previously inventoried Congo routines.",
       "2026-09-06 scoped Congo effects refresh adds four verified native imports for audio commands, immediate event reads, ray fading and camera shake. All 241 prior symbols remain; only the previously added target-turning helper source references are refreshed to match the current src/anchor_congo_native.c snapshot. All unrelated symbol records, 68 prior source snapshots and existing reviewed evidence remain unchanged. Full scan preview is maintenance evidence only; unrelated additions and two absent historical aliases are not adopted.",
-      "2026-09-07 scoped Miracle Moon refresh adds only three verified file_30 reward callbacks and the exact src/anchor_miracle_moon.c source snapshot. All 245 existing symbol records, 69 existing snapshots, aliases and prior audit findings are unchanged. Door/camera behavior is explained through the existing save variable rather than inventorying unused callbacks. The full preview is maintenance evidence only."
+      "2026-09-07 scoped Miracle Moon refresh adds only three verified file_30 reward callbacks and the exact src/anchor_miracle_moon.c source snapshot. All 245 existing symbol records, 69 existing snapshots, aliases and prior audit findings are unchanged. Door/camera behavior is explained through the existing save variable rather than inventorying unused callbacks. The full preview is maintenance evidence only.",
+      "2026-09-08 scoped ROM-icon refresh adds only the verified load-and-decode helper and src/ui/anchor_rom_icons.c references. Existing symbol records and unrelated source snapshots are retained. The full workspace preview contained unrelated additions and was not adopted."
     ]
   }
 }

@@ -4,7 +4,7 @@ slug: "/functions"
 description: "Native functions for the US recompilation of Mystical Ninja Starring Goemon."
 ---
 
-188 functions with C interfaces, behavior, and usage examples. Use the search bar to look up an exact symbol, address, or purpose.
+189 functions with C interfaces, behavior, and usage examples. Use the search bar to look up an exact symbol, address, or purpose.
 
 | Symbol | Purpose |
 | --- | --- |
@@ -116,6 +116,7 @@ description: "Native functions for the US recompilation of Mystical Ninja Starri
 | [`func_8000F420_10020`](func_8000F420_10020.md) | Play a sound at an object position |
 | [`func_80013B14_14714`](func_80013B14_14714.md) | Load a file into the scene registry |
 | [`func_800141C4_14DC4`](func_800141C4_14DC4.md) | Look up a loaded resource file |
+| [`func_800144E8_150E8`](func_800144E8_150E8.md) | Load and decode a resource |
 | [`func_800145B4_151B4`](func_800145B4_151B4.md) | Load an auxiliary resource into a buffer |
 | [`func_80014698_15298`](func_80014698_15298.md) | Query a resource ROM size and address |
 | [`func_80016950_17550`](func_80016950_17550.md) | Initialize the current graphics bank |
