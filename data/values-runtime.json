@@ -107,7 +107,17 @@
           [
             "`0x3ADD5`",
             "`uint8_t`",
-            "Main-step completion/substate byte; the step setter clears it to 0."
+            "Main-step completion byte. A step handler writes an exit value here; the game-over handler uses 1 for its state-restore exit. The system-step setter clears it to 0."
+          ],
+          [
+            "`0x3ADD6`",
+            "`uint8_t`",
+            "Per-step substate byte. The active step handler switches on it, and the step setter resets it to 0 through func_80003628_4228."
+          ],
+          [
+            "`0x3ADD7`",
+            "`uint8_t`",
+            "Per-step substate completion byte, cleared by the substate setter."
           ],
           [
             "`0x3ADDE`",
@@ -217,6 +227,11 @@
         ],
         "rows": [
           [
+            "`0x03`",
+            "`3`",
+            "Start/sequence step; loads overlay file 0x16. The native game-over goodbye exit and the ordinary world-teardown path both select it."
+          ],
+          [
             "`0x07`",
             "`7`",
             "Native start/title/demo sequence path."
@@ -230,6 +245,11 @@
             "`0x0D`",
             "`13`",
             "Ordinary world dispatcher; world substate at +0x3ADDE selects setup, gameplay/pause, or teardown."
+          ],
+          [
+            "`0x0E`",
+            "`14`",
+            "Game-over handler; presents the continue/goodbye choice and exits to step 0x0B or step 0x03."
           ]
         ]
       },

@@ -3435,5 +3435,34 @@
       "D_8015CDE0"
     ],
     "confidence": "source-reviewed"
+  },
+  "func_80002F54_3B54": {
+    "title": "Run the game-over step",
+    "summary": "Advances the native game-over state machine that offers continue or goodbye, and returns to the start sequence on goodbye.",
+    "behavior": [
+      "This handler runs while the main system step at full-system +0x3ADD4 is 0x0E. Native death paths select that step only when the runtime life count reaches zero, so it is the game-over screen rather than ordinary gameplay.",
+      "A substate byte at full-system +0x3ADD6 drives a five-value sequence: 0 marks the transition, 1 initializes the game-over overlay and its task, 2 starts that task, 3 waits for it to finish, and 4 performs the exit.",
+      "At the exit substate, the completion byte at full-system +0x3ADD5 chooses the outcome. The value 1 restores saved state and selects step 0x0B; any other nonzero value runs func_8000383C_443C to tear down the overlay and selects step 3.",
+      "Step 3 is the start/sequence step that loads overlay file 0x16, and it is also selected by the ordinary world-teardown path, so this exit returns to the title flow instead of resuming the room.",
+      "The handler is dispatched once per frame while step 0x0E remains selected. Redirecting a game over to step 3 requires the teardown call before the step change, exactly as the native goodbye branch does."
+    ],
+    "cautions": [
+      "The completion byte at +0x3ADD5 and the substate byte at +0x3ADD6 are separate fields; changing the wrong one does not advance the handler.",
+      "Selecting another step without the native teardown can leave the game-over overlay and its tasks resident.",
+      "The overlay identifiers and substates here are specific to the game-over flow; this is not a general menu interface."
+    ],
+    "related": [
+      "func_80002040_2C40",
+      "func_80003728_4328",
+      "func_8000383C_443C",
+      "D_8015C5C8_15D1C8"
+    ],
+    "confidence": "decompiled",
+    "declaration": "extern void func_80002F54_3B54(void);",
+    "example": "#include \"modding.h\"\n\nextern void func_8000383C_443C(void);\nextern void func_80003728_4328(unsigned char step);\n\n/* Runs after the game-over handler on each frame while step 0x0E is selected. */\nRECOMP_HOOK_RETURN(\"func_80002F54_3B54\")\nvoid leave_game_over(void)\n{\n    /* The native goodbye branch tears the overlay down before selecting the\n     * start/sequence step. Do not change the step without that teardown. */\n    func_8000383C_443C();\n    func_80003728_4328(3);\n}\n",
+    "exampleExplanation": "The hook performs the same teardown plus step change the native goodbye branch uses. Guard the redirect so it only runs for a game over that should leave the flow.",
+    "returns": "No return value.",
+    "decompilation": "void FUN_80002f54(void)\n{\n  switch(PTR_g_system_8015c5c8->stepw_s) {\n  case 0:\n    g_system.field4_0x3adb6 = 1;\n    g_system.stepw_s = g_system.stepw_s + '\\x01';\n    break;\n  case 1:\n    if (DAT_800548d8 == 0) {\n      FUN_8000383c();\n      PTR_g_system_8015c5c8->field37_0x3ade4 = 0xc;\n      PTR_g_system_8015c5c8->field45_0x3adf4 = 0;\n      FUN_80020440();\n      FUN_800369b4(PTR_PTR_8006d328);\n      PTR_g_system_8015c5c8->stepw_s = PTR_g_system_8015c5c8->stepw_s + '\\x01';\n    }\n    break;\n  case 2:\n    g_system.field4_0x3adb6 = 0;\n    FUN_80036840(PTR_PTR_8006d328);\n    FUN_800038e4();\n    break;\n  case 3:\n    FUN_8000394c();\n    break;\n  case 4:\n    if (DAT_800548d8 == 0) {\n      FUN_8000383c();\n      if (g_system.stepw_end == '\\x01') {\n        FUN_8000b6e0();\n        g_system.field58_0x3ae0c = g_system.field58_0x3ae0c + '\\x01';\n        FUN_80003728(0xb);\n      }\n      else {\n        FUN_80003728(3);\n      }\n    }\n  }\n  return;\n}\n",
+    "decompilationNote": "Recovered native logic, whitespace normalized. Decompiler types and temporary names are approximate reference material, not a replacement function. The substate switch at +0x3ADD6 and the exit branch at case 4 are the relevant behavior."
   }
 }

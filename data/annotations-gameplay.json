@@ -3970,5 +3970,58 @@
       }
     ],
     "returns": "No value is consumed by the mod callback ABI."
+  },
+  "func_80002F54_3B54": {
+    "title": "Run the game-over step",
+    "summary": "Native system step 0x0E handler. It runs the game-over overlay and its exit selects continue (step 0x0B) or the title/start step 0x03.",
+    "behavior": [
+      "Live Ghidra decompilation of 0x80002F54 shows a switch on the substate byte at full-system +0x3ADD6 with five cases and an exit branch that reads the completion byte at full-system +0x3ADD5.",
+      "Substep 1 sets the overlay selector at +0x3ADE4 to 0x0C and builds the overlay through 0x80020440. Substep 4 runs 0x8000383C and then selects step 0x0B when the completion byte is 1, otherwise step 3.",
+      "Step 0x0E is reached only from the player-death handlers; the main-executable death helper 0x800374EC decrements the runtime life word and selects 0x0E when it reaches zero, otherwise it restores the destination stage at +0x3ADF2 and selects the warp step 0x0C."
+    ],
+    "cautions": [
+      "The completion byte and substate byte are distinct fields at +0x3ADD5 and +0x3ADD6.",
+      "The native goodbye branch runs 0x8000383C before selecting step 3; skipping the teardown can leave overlay tasks resident."
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-extra-options",
+        "path": "src/game_over_to_title.c",
+        "line": 26,
+        "note": "Return hook on the game-over step handler; confirmed against live Ghidra decompilation of 0x80002F54 and the recompiled main-executable body."
+      }
+    ],
+    "confidence": "decompiled",
+    "related": [
+      "func_80002040_2C40",
+      "func_80003728_4328",
+      "func_8000383C_443C",
+      "D_8015C5C8_15D1C8"
+    ]
+  },
+  "func_800374EC_380EC": {
+    "title": "Player death handler",
+    "summary": "Main-executable death helper that consumes one runtime life and either respawns or selects the game-over step.",
+    "behavior": [
+      "Decompiled at 0x800374EC: calls 0x8000B578 to decrement the runtime life word at save-block -0x1C. A nonzero result copies +0x3ADF2 into the destination stage at +0x3AFE0 and selects step 0x0C; a zero result selects step 0x0E.",
+      "It is not referenced by any inventoried mod source; it was located through the step-0x0E callers and live Ghidra analysis."
+    ],
+    "cautions": [
+      "The main executable contains this helper only once; overlay addresses repeat and must not be used to infer its identity."
+    ],
+    "evidence": [
+      {
+        "project": "mnsg-extra-options",
+        "path": "src/game_over_to_title.c",
+        "line": 26,
+        "note": "Context for the step it selects; the death helper itself was verified in Ghidra at 0x800374EC and in the generated main-executable recompilation."
+      }
+    ],
+    "confidence": "decompiled",
+    "related": [
+      "func_80002F54_3B54",
+      "func_80003728_4328",
+      "D_8015C5C8_15D1C8"
+    ]
   }
 }

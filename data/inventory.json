@@ -40,6 +40,7 @@
         "include/extra_options.h",
         "include/hyper_enemies.h",
         "src/enemy_multiplier.c",
+        "src/game_over_to_title.c",
         "src/hyper_congo.c",
         "src/hyper_dharumanyo.c",
         "src/hyper_enemies.c",
@@ -54,7 +55,7 @@
         "Goemon64RecompSyms/mnsg.us.datasyms.toml",
         "Goemon64RecompSyms/mnsg.us.syms.toml"
       ],
-      "symbolCount": 108
+      "symbolCount": 109
     },
     {
       "name": "mnsg-recomp-example",
@@ -22484,6 +22485,111 @@
       "declarationReviewRequired": false
     },
     {
+      "name": "func_80002F54_3B54",
+      "kind": "function",
+      "address": "0x80002F54",
+      "size": 412,
+      "section": ".main",
+      "romAddress": "0x00003B54",
+      "projects": [
+        "mnsg-extra-options"
+      ],
+      "roles": [
+        "hook-return"
+      ],
+      "declarations": [],
+      "references": [
+        {
+          "project": "mnsg-extra-options",
+          "path": "src/game_over_to_title.c",
+          "line": 26,
+          "role": "hook-return",
+          "context": "}\n\nRECOMP_HOOK_RETURN(\"func_80002F54_3B54\")\nvoid extra_options_game_over_to_title_hook(void)\n{\n    if (!game_over_to_title_is_enabled())\n        return;\n\n    func_8000383C_443C();\n    func_80003728_4328(EXTRA_OPTIONS_TITLE_STEP);\n}",
+          "contextStartLine": 24
+        }
+      ],
+      "symbolSources": [
+        {
+          "project": "mnsg-custom-fish",
+          "path": "Goemon64RecompSyms/mnsg.us.syms.toml",
+          "line": 359,
+          "kind": "function",
+          "address": "0x80002F54",
+          "size": 412,
+          "section": ".main",
+          "romAddress": "0x00003B54",
+          "context": "    { name = \"func_80015AB0_166B0\", vram = 0x80015AB0, size = 0x100 },\n    { name = \"func_80034268_34E68\", vram = 0x80034268, size = 0x2E4 },\n    { name = \"func_80002F54_3B54\", vram = 0x80002F54, size = 0x19C },\n    { name = \"func_800203D4_20FD4\", vram = 0x800203D4, size = 0x6C },\n    { name = \"func_80034F44_35B44\", vram = 0x80034F44, size = 0xDC },",
+          "contextStartLine": 357,
+          "sha256": "ff7d8a852e902eb84511a00e2ba0dd22a9e1f17b0b9264cd5fc98ef157adb933"
+        },
+        {
+          "project": "mnsg-enable-boss-rush",
+          "path": "Goemon64RecompSyms/mnsg.us.syms.toml",
+          "line": 359,
+          "kind": "function",
+          "address": "0x80002F54",
+          "size": 412,
+          "section": ".main",
+          "romAddress": "0x00003B54",
+          "context": "    { name = \"func_80015AB0_166B0\", vram = 0x80015AB0, size = 0x100 },\n    { name = \"func_80034268_34E68\", vram = 0x80034268, size = 0x2E4 },\n    { name = \"func_80002F54_3B54\", vram = 0x80002F54, size = 0x19C },\n    { name = \"func_800203D4_20FD4\", vram = 0x800203D4, size = 0x6C },\n    { name = \"func_80034F44_35B44\", vram = 0x80034F44, size = 0xDC },",
+          "contextStartLine": 357,
+          "sha256": "ff7d8a852e902eb84511a00e2ba0dd22a9e1f17b0b9264cd5fc98ef157adb933"
+        },
+        {
+          "project": "mnsg-extra-options",
+          "path": "Goemon64RecompSyms/mnsg.us.syms.toml",
+          "line": 359,
+          "kind": "function",
+          "address": "0x80002F54",
+          "size": 412,
+          "section": ".main",
+          "romAddress": "0x00003B54",
+          "context": "    { name = \"func_80015AB0_166B0\", vram = 0x80015AB0, size = 0x100 },\n    { name = \"func_80034268_34E68\", vram = 0x80034268, size = 0x2E4 },\n    { name = \"func_80002F54_3B54\", vram = 0x80002F54, size = 0x19C },\n    { name = \"func_800203D4_20FD4\", vram = 0x800203D4, size = 0x6C },\n    { name = \"func_80034F44_35B44\", vram = 0x80034F44, size = 0xDC },",
+          "contextStartLine": 357,
+          "sha256": "ff7d8a852e902eb84511a00e2ba0dd22a9e1f17b0b9264cd5fc98ef157adb933"
+        },
+        {
+          "project": "mnsg-recomp-example",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 359,
+          "kind": "function",
+          "address": "0x80002F54",
+          "size": 412,
+          "section": ".main",
+          "romAddress": "0x00003B54",
+          "context": "    { name = \"func_80015AB0_166B0\", vram = 0x80015AB0, size = 0x100 },\n    { name = \"func_80034268_34E68\", vram = 0x80034268, size = 0x2E4 },\n    { name = \"func_80002F54_3B54\", vram = 0x80002F54, size = 0x19C },\n    { name = \"func_800203D4_20FD4\", vram = 0x800203D4, size = 0x6C },\n    { name = \"func_80034F44_35B44\", vram = 0x80034F44, size = 0xDC },",
+          "contextStartLine": 357,
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        },
+        {
+          "project": "mnsg-team-up",
+          "path": "Goemon64RecompSyms/mnsg.us.syms.toml",
+          "line": 359,
+          "kind": "function",
+          "address": "0x80002F54",
+          "size": 412,
+          "section": ".main",
+          "romAddress": "0x00003B54",
+          "context": "    { name = \"func_80015AB0_166B0\", vram = 0x80015AB0, size = 0x100 },\n    { name = \"func_80034268_34E68\", vram = 0x80034268, size = 0x2E4 },\n    { name = \"func_80002F54_3B54\", vram = 0x80002F54, size = 0x19C },\n    { name = \"func_800203D4_20FD4\", vram = 0x800203D4, size = 0x6C },\n    { name = \"func_80034F44_35B44\", vram = 0x80034F44, size = 0xDC },",
+          "contextStartLine": 357,
+          "sha256": "ff7d8a852e902eb84511a00e2ba0dd22a9e1f17b0b9264cd5fc98ef157adb933"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x80002F54",
+          "size": 412,
+          "section": ".main",
+          "romAddress": "0x00003B54"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [],
+      "declarationReviewRequired": false
+    },
+    {
       "name": "func_80003728_4328",
       "kind": "function",
       "address": "0x80003728",
@@ -35520,7 +35626,7 @@
     }
   ],
   "audit": {
-    "sourceFileCount": 72,
+    "sourceFileCount": 73,
     "tableEntryCounts": {
       "mnsg-custom-fish": 28853,
       "mnsg-enable-boss-rush": 28853,
@@ -35529,10 +35635,10 @@
       "mnsg-team-up": 28853
     },
     "tableSymbolCount": 28866,
-    "documentedSymbolCount": 251,
-    "functionCount": 189,
+    "documentedSymbolCount": 252,
+    "functionCount": 190,
     "variableCount": 62,
-    "referenceCount": 1027,
+    "referenceCount": 1028,
     "macroHookReferenceCount": 6,
     "unresolvedSymbols": [],
     "unresolvedHooks": [],
@@ -35692,7 +35798,8 @@
       "2026-09-06 scoped Congo native-interface refresh adds only the verified file_12 target-turning helper and its src/anchor_congo_native.c source snapshot. All 240 prior symbol records, source snapshots, historical aliases and audit findings are preserved. The full preview contains 522 symbols across 111 source files and was not adopted; native explanations also update three previously inventoried Congo routines.",
       "2026-09-06 scoped Congo effects refresh adds four verified native imports for audio commands, immediate event reads, ray fading and camera shake. All 241 prior symbols remain; only the previously added target-turning helper source references are refreshed to match the current src/anchor_congo_native.c snapshot. All unrelated symbol records, 68 prior source snapshots and existing reviewed evidence remain unchanged. Full scan preview is maintenance evidence only; unrelated additions and two absent historical aliases are not adopted.",
       "2026-09-07 scoped Miracle Moon refresh adds only three verified file_30 reward callbacks and the exact src/anchor_miracle_moon.c source snapshot. All 245 existing symbol records, 69 existing snapshots, aliases and prior audit findings are unchanged. Door/camera behavior is explained through the existing save variable rather than inventorying unused callbacks. The full preview is maintenance evidence only.",
-      "2026-09-08 scoped ROM-icon refresh adds only the verified load-and-decode helper and src/ui/anchor_rom_icons.c references. Existing symbol records and unrelated source snapshots are retained. The full workspace preview contained unrelated additions and was not adopted."
+      "2026-09-08 scoped ROM-icon refresh adds only the verified load-and-decode helper and src/ui/anchor_rom_icons.c references. Existing symbol records and unrelated source snapshots are retained. The full workspace preview contained unrelated additions and was not adopted.",
+      "2026-09-10 scoped game-over native-interface refresh adds the verified system game-over step handler func_80002F54_3B54 and its src/game_over_to_title.c source snapshot. The reviewed public pages and known-step tables also document step 0x0E, the title/start step 0x03, and the completion/substate bytes at full-system +0x3ADD5..+0x3ADD7. All prior symbol records, source snapshots, aliases and audit findings are preserved. The full workspace preview contained unrelated sibling-project additions and was not adopted."
     ]
   }
 }

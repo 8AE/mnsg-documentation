@@ -1047,16 +1047,21 @@
     "summary": "Resets render/texture state for the next scene.",
     "behavior": [
       "Runs the broader render initialization path and clears graphics/texture buffers used by the following scene.",
-      "This belongs in scene transition setup before gameplay control/UI initialization. Invoking it from ordinary object rendering would reset shared scene graphics state."
+      "This belongs in scene transition setup before gameplay control/UI initialization. Invoking it from ordinary object rendering would reset shared scene graphics state.",
+      "The native game-over goodbye exit calls this before selecting the start/sequence step, so it is the shared teardown used by several step transitions rather than scene setup alone.",
+      "Beyond the render/texture reset, the wider teardown path it invokes also resets the native task-scheduler lists and copies a fixed workspace block, so it belongs at a step boundary and not inside ordinary rendering."
     ],
     "cautions": [
-      "Do not invoke from ordinary object rendering; it resets scene-level graphics state."
+      "Do not invoke from ordinary object rendering; it resets scene-level graphics state.",
+      "The call clears shared task and graphics state, so it must run only at the intended scene or step transition."
     ],
     "related": [
       "func_80003478_4078",
-      "func_8000B364_BF64"
+      "func_8000B364_BF64",
+      "func_80002F54_3B54",
+      "func_80003728_4328"
     ],
-    "confidence": "source-reviewed",
+    "confidence": "decompiled",
     "example": "extern void func_80003478_4078(void);\n\nextern void func_8000383C_443C(void);\n\n/* Requires the native start/load preparation described above.\n * This helper is one step of that sequence, not a complete launch API. */\nvoid reset_prepared_scene_rendering(void) {\n    /* During scene setup, before gameplay control initialization: */\n    func_8000383C_443C();\n    func_80003478_4078();\n}\n",
     "exampleExplanation": "Complete C syntax example using the documented native declarations. Integrate it only at the described engine lifecycle boundary; the game supplies symbol definitions and resident resources.",
     "returns": "No return value in the established declaration."
@@ -1164,7 +1169,8 @@
     "behavior": [
       "Writes the main system step, clears its completion byte, marks the transition and resets its substate.",
       "The numeric step selects a state-machine branch, not a room. Step 12 is the live destination/warp sequence; provide a valid prepared destination while ordinary gameplay is safe to leave. It eventually invokes destination preparation and render reset, then selects step 13.",
-      "Step 13 is the ordinary world dispatcher. Its separate substate byte at full-system +0x3ADDE selects stage setup (0), ordinary play/pause handling (1), or world teardown (2). Main step 3 uses another overlay and is not an ordinary gameplay readiness test."
+      "Step 0x0E is the game-over handler. It presents the continue/goodbye choice: the continue exit selects step 0x0B, and the goodbye exit runs func_8000383C_443C then selects step 0x03.",
+      "Step 0x03 is the start/sequence step that loads overlay file 0x16. The native game-over goodbye exit and the ordinary world-teardown path both select it, so it is not an ordinary gameplay readiness test."
     ],
     "cautions": [
       "Step numbers are state-machine selectors, not arbitrary room IDs.",
@@ -1172,6 +1178,8 @@
     ],
     "related": [
       "func_80002040_2C40",
+      "func_8000383C_443C",
+      "func_80002F54_3B54",
       "func_8000607C_6C7C"
     ],
     "confidence": "decompiled",

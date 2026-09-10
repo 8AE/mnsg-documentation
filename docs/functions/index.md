@@ -4,7 +4,7 @@ slug: "/functions"
 description: "Native functions for the US recompilation of Mystical Ninja Starring Goemon."
 ---
 
-191 functions with C interfaces, behavior, and usage examples. Use the search bar to look up an exact symbol, address, or purpose.
+192 functions with C interfaces, behavior, and usage examples. Use the search bar to look up an exact symbol, address, or purpose.
 
 | Symbol | Purpose |
 | --- | --- |
@@ -99,6 +99,7 @@ description: "Native functions for the US recompilation of Mystical Ninja Starri
 | [`func_80001D68_2968`](func_80001D68_2968.md) | Get a file ROM start |
 | [`func_80001D94_2994`](func_80001D94_2994.md) | Get a file ROM end |
 | [`func_80002040_2C40`](func_80002040_2C40.md) | Dispatch the current system step |
+| [`func_80002F54_3B54`](func_80002F54_3B54.md) | Run the game-over step |
 | [`func_80003478_4078`](func_80003478_4078.md) | Initialize gameplay control/UI state |
 | [`func_80003728_4328`](func_80003728_4328.md) | Switch the system execution step |
 | [`func_8000383C_443C`](func_8000383C_443C.md) | Reset render and texture buffers |

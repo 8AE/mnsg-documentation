@@ -19,7 +19,7 @@
   "sourceCheckouts": {
     "mnsg-extra-options": {
       "commit": "8ff1ff2a3f4de42679ea5cb0b6b021a830140ed2",
-      "dirty": false
+      "dirty": true
     },
     "mnsg-recomp-example": {
       "commit": "caa88eea1021a8ee9eb4edeb1c6d56ed64d79a2d",
@@ -287,6 +287,15 @@
       "endLine": 753,
       "sha256": "3fd7c8bc2b690bf36a63bef05d50fa1c5ab3713f57582fc5c7892989312167e3",
       "note": "Current-source reference identified by committed symbol inventory; table is intentionally limited to established representation or native allocator roles."
+    },
+    {
+      "id": "game-over-step",
+      "project": "mnsg-extra-options",
+      "path": "src/game_over_to_title.c",
+      "line": 1,
+      "endLine": 32,
+      "sha256": "b02812296572460d47843e8c97f000867af254090f984b6b058178358ce28797",
+      "note": "Return hook on the game-over step handler; evidence for step 0x0E, its substate/completion bytes, and the goodbye-to-step-3 exit."
     }
   ],
   "nativeVerification": [
@@ -605,22 +614,28 @@
       ],
       "sourceIds": [
         "system-layout",
-        "start-gate"
+        "start-gate",
+        "game-over-step"
       ],
       "nativeFunctions": [
         "0x80004170",
         "0x8000607C",
-        "0x80003728"
+        "0x80003728",
+        "0x80002F54",
+        "0x8000383C",
+        "0x800374EC"
       ],
       "romReads": [],
       "unknowns": [
-        "System step values other than selected7/12.",
         "Detailed meaning of warp args7/8.",
-        "Specific nonzero startupgatevalues."
+        "Specific nonzero startupgatevalues.",
+        "Exact step set beyond the reviewed entries in the known-system-steps table.",
+        "Resolved overlay identity and contents of file 0x16 loaded by step 3."
       ],
       "notes": [
         "CORRECTION: prior public docs treatedD_800BCCC0 asfullsystembase and used+3AFE0. It is interiorbase+30000; correct directoffset+AFE0. Parent corrected prose/examples and this dataset records pairedoffsets.",
-        "Unsigned16 counter reads and signed16 native struct view share identicalstorage; publishedtype followsSYS_W layout."
+        "Unsigned16 counter reads and signed16 native struct view share identicalstorage; publishedtype followsSYS_W layout.",
+        "2026-09-10 scoped game-over finding: step 0x0E is the game-over handler 0x80002F54. Substep 0x3ADD6, exit/completion byte 0x3ADD5. Goodbye runs 0x8000383C then selects step 3 (start/sequence overlay file 0x16); the continue exit selects step 0x0B. Step 0x0E is selected only by player-death paths when the runtime life count reaches zero (main-executable 0x800374EC)."
       ]
     },
     "D_800BCCC0_BD8C0": {
