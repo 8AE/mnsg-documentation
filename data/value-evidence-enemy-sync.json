@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-10T20:00:00+00:00",
+  "scope": "Regular room-enemy lifecycle: player pursuit target acquisition, actor AI callback self-modification, actor-data spawn staging, and the ordinary health-zero entry. Established while building room-scoped enemy state/health/AI synchronization against a live two-client build.",
+  "game": "Mystical Ninja Starring Goemon (US rev1) recompilation",
+  "nativeEvidence": [
+    {
+      "symbols": [
+        "D_801FC60C_5B851C",
+        "D_801FC604_5B8514",
+        "func_802197D8_5D4CA8"
+      ],
+      "addresses": [
+        "0x801FC60C",
+        "0x801FC604",
+        "0x802197D8"
+      ],
+      "finding": "Room enemies acquire \"the player\" through the current player display object at 0x801FC60C. The position is read either directly, through the player task 0x801FC604 at +0x18 (same object), or through the actor target-object field at +0x84 consumed by func_802197D8. Writing the object's +0x08/+0x0C/+0x10 during a single actor's AI callback redirects that actor's pursuit; restoring immediately afterwards leaves the local player's own update, collision, rendering and camera unaffected.",
+      "confidence": "verified",
+      "method": "Ghidra decompilation of the target helper plus live two-client behavior: moving the object for one actor's callback caused that actor to pursue the redirected position while the local player never observed the temporary transform."
+    },
+    {
+      "symbols": [
+        "func_80034734_35334",
+        "func_80218F30_5D4400"
+      ],
+      "addresses": [
+        "0x80034734",
+        "0x80218F30"
+      ],
+      "finding": "The scheduler invokes callbacks at task +0x08/+0x0C/+0x10 and inhibits a callback address carrying bit 0x00800000. Ordinary actors use +0x0C as a self-modifying AI state callback: a state transition rewrites +0x0C to the next callback. Temporarily replacing an actor's +0x0C to scope work (hold or wrap) therefore requires saving the replaced callback, invoking it, and restoring only while +0x0C still equals the replacement, while preserving the inhibit tag so paused/cutscene actors stay paused.",
+      "confidence": "verified",
+      "method": "Ghidra decompilation and live behavior across two-client sessions; a trampoline that preserved the tag and restored conditionally did not break enemy state transitions."
+    },
+    {
+      "symbols": [
+        "func_8020D848_5C8D18",
+        "D_80231300_5EC7D0",
+        "func_80218A54_5D3F24",
+        "D_8015CDDC",
+        "D_8015CDE0"
+      ],
+      "addresses": [
+        "0x8020D848",
+        "0x80231300",
+        "0x80218A54",
+        "0x8015CDDC",
+        "0x8015CDE0"
+      ],
+      "finding": "Static room actors are staged by func_8020D848_5C8D18, which selects the per-room metadata record at D_80231300_5EC7D0[room]. A record exposes the normal actor-instance array, partitioned/proximity lists, and the actor-data file id; a zero instance definition terminates each list. func_80218A54 initializes each instance and updates the transient scratch pointers D_8015CDDC (current instance) and D_8015CDE0 (resolved definition).",
+      "confidence": "verified",
+      "method": "Ghidra decompilation of the spawn stage/initializer plus a room roster enumeration that reproduced the actor counts and signed signature across two clients."
+    },
+    {
+      "symbols": [
+        "func_80218548_5D3A18",
+        "func_80218350_5D3820"
+      ],
+      "addresses": [
+        "0x80218548",
+        "0x80218350"
+      ],
+      "finding": "func_80218548_5D3A18 is entered only from the common zero-health path, not by scene unloads or distance culls, making it the authoritative local death edge for an ordinary actor. Setting health (task +0x8D) to one and status bit 0x00040000 reproduces the real zero-health reaction, counters, effects and cleanup through the normal damage pipeline.",
+      "confidence": "verified",
+      "method": "Ghidra decompilation and live single/two-client tests where a synthetic fast-hit produced the native death animation, drop and removal."
+    }
+  ],
+  "limitations": [
+    "Player-object relocation was confirmed for the inspected room actors; not every actor was enumerated. An actor that caches the player task pointer and reads task-only fields, or uses a separate hard-coded player structure, may not follow the redirected position.",
+    "Target selection in the mod chooses the nearest candidate per actor with no hysteresis; this is a mod policy, not native behavior.",
+    "Enemy-owned attack tasks/projectiles were not part of these findings and are not documented here.",
+    "The health/transform/target behavior is scoped to US rev1 and the inspected overlay/actor set."
+  ],
+  "supportingSource": "mnsg-recomp-example native room-enemy synchronization module and its documentation; findings cross-checked against current Ghidra decompilation of the resident helpers and live two-client sessions.",
+  "inventoryReview": {
+    "adoptedNewSymbols": [
+      "D_80231300_5EC7D0",
+      "func_8020D848_5C8D18",
+      "func_80218548_5D3A18"
+    ],
+    "method": "These three entries were extracted from a temporary full-workspace scan_symbols run (which reported 592 symbols) and inserted into the curated inventory together with their public reference records. The broader 343-symbol expansion in that scan was intentionally not adopted because it reflects unrelated project drift outside this task's scope.",
+    "sourceTables": "mnsg.us.syms.toml / mnsg.us.datasyms.toml across the scanned projects."
+  }
+}

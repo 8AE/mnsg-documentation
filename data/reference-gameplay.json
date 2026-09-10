@@ -393,10 +393,12 @@
     "summary": "Pointer to the current player object and transform.",
     "behavior": [
       "The partial object layout contains float x/y/z at offsets +0x08/+0x0C/+0x10. These coordinates locate player-centered effects and spatial sounds.",
-      "The object pointer differs from the player task pointer at D_801FC604_5B8514."
+      "The object pointer differs from the player task pointer at D_801FC604_5B8514.",
+      "Room actors commonly pursue \"the player\" by reading this object's position, either directly, through the player task's +0x18 primary-object pointer, or through the actor target-object field at +0x84 (see func_802197D8_5D4CA8). Moving this object's x/y/z during one actor's AI callback therefore redirects only that actor's pursuit, without relocating the local player."
     ],
     "cautions": [
-      "The object can be absent during transitions and non-gameplay system states."
+      "The object can be absent during transitions and non-gameplay system states.",
+      "A temporary position substitution is only safe when scoped to a single actor callback and restored before the local player's own update, collision, rendering or camera work reads the object."
     ],
     "confidence": "source-reviewed",
     "related": [],
@@ -801,7 +803,8 @@
     "behavior": [
       "Resolves instance->definition through the active actor-data file, sets actor/entity IDs at task +0x5C/+0x5E, copies the signed 16-bit spawn transform into the model and copies definition words into task +0xD0/+0xD4/+0xD8.",
       "Assigns an incrementing 8-bit generation at +0x74, initializes actor state and installs the native earlier callback FUN_8021925C and common post func_80218F30_5D4400.",
-      "D_8015CDDC identifies the current room instance and D_8015CDE0 holds the current resolved definition during the native spawn path. These are transient scratch pointers."
+      "D_8015CDDC identifies the current room instance and D_8015CDE0 holds the current resolved definition during the native spawn path. These are transient scratch pointers.",
+      "Room actors are staged before initialization by the actor-data spawn routine func_8020D848_5C8D18, which selects the per-room metadata record at D_80231300_5EC7D0[room]. The record's normal actor-instance list, partitioned/proximity lists and active actor-data file must be resident before this initializer can resolve an instance; a zero instance definition terminates the list."
     ],
     "cautions": [
       "The active actor-data file must be loaded before resolving the definition.",
@@ -3366,5 +3369,71 @@
       "func_80023E94_24A94",
       "func_0800A228_6BD4C8"
     ]
+  },
+  "func_8020D848_5C8D18": {
+    "title": "Stage room actor data and spawn definitions",
+    "summary": "Selects the current room's actor-data wave and stages its static actor spawn definitions.",
+    "behavior": [
+      "Indexes the per-room metadata table at D_80231300_5EC7D0 with the current room id and resolves the actor-data file that supplies the room's actor instances.",
+      "Runs before the static actor initializers and is retried while the actor-data wave is still loading. A hook here precedes every static actor initialization for the room.",
+      "Each metadata record exposes the normal actor-instance array, the partitioned/proximity actor lists and the actor-data file id. A zero instance definition terminates a list.",
+      "The stage only reads the room tables; the per-instance actor initialization is performed later by func_80218A54_5D3F24."
+    ],
+    "example": "#include \"modding.h\"\n\nextern unsigned short D_800C7AB2;\nextern void *D_80231300_5EC7D0[];\n\n/* Observe the room actor-data staging point. */\nRECOMP_HOOK(\"func_8020D848_5C8D18\")\nvoid observe_room_actor_stage(void)\n{\n    void *metadata = D_80231300_5EC7D0[D_800C7AB2];\n    if (metadata)\n    {\n        /* The room's actor-data record is present; native spawn may proceed. */\n    }\n}\n",
+    "exampleExplanation": "The entry hook observes the actor-data staging step and checks that the current room's actor-data record is present before the native spawn uses it.",
+    "cautions": [
+      "The actor-data resources can be absent on early passes; retry from a later invocation instead of resolving segmented pointers before the file is loaded.",
+      "Read-only observation is safe. Mutating the room tables without the native list and backlink rules corrupts actor spawning."
+    ],
+    "related": [
+      "D_80231300_5EC7D0",
+      "func_80218A54_5D3F24",
+      "D_8015CDDC",
+      "D_8015CDE0"
+    ],
+    "confidence": "decompiled"
+  },
+  "func_80218548_5D3A18": {
+    "title": "Handle an actor reaching zero health",
+    "summary": "Runs the native zero-health handling for an ordinary actor; the authoritative local death edge.",
+    "behavior": [
+      "Entered only from the common health-zero path after func_80218350_5D3820 has consumed the final health point. Room unloads and distance culls do not call it.",
+      "Performs the generic death handling for an ordinary actor, including the reaction, counters, effects and removal bookkeeping.",
+      "The synthetic fast-hit bit 0x00040000 at actor +0x68 reaches this path after subtracting one health point, which lets an external source drive the real death without a native attacker pointer."
+    ],
+    "example": "#include \"modding.h\"\n\n/* Observe an ordinary actor's native zero-health entry. */\nRECOMP_HOOK(\"func_80218548_5D3A18\")\nvoid observe_actor_zero_health(void *actor)\n{\n    if (!actor) return;\n    /* Record the death only for a validated actor; it may be removed after. */\n}\n",
+    "exampleExplanation": "The entry hook observes the authoritative zero-health edge for an actor. The entry argument is established; a complete callable prototype is not.",
+    "cautions": [
+      "This is not a universal boss completion signal; bosses such as Dharmanyo and Tsurami use custom remaining-health callbacks.",
+      "The task may be removed after this path; do not retain or dereference the actor pointer afterwards."
+    ],
+    "related": [
+      "func_80218350_5D3820",
+      "func_80218E7C_5D434C",
+      "func_80218F30_5D4400"
+    ],
+    "confidence": "decompiled"
+  },
+  "D_80231300_5EC7D0": {
+    "title": "Per-room actor-data metadata table",
+    "summary": "Table of per-room records that describe each room's static actor-data wave.",
+    "behavior": [
+      "Indexed by the raw room id (D_800C7AB2). Each entry describes a room's normal actor-instance array, its partitioned/proximity actor lists and the actor-data file id that supplies the instances.",
+      "Read by the actor-data spawn stage func_8020D848_5C8D18. A null record or a not-yet-resolved actor-data file means the room's actor wave is unavailable and spawning is deferred.",
+      "The instance and list pointers are segmented and must be resolved through the active actor-data file id; they are not raw RAM addresses."
+    ],
+    "example": "#include \"modding.h\"\n\nextern unsigned short D_800C7AB2;\nextern void *D_80231300_5EC7D0[];\n\n/* Look up the current room's actor-data record. */\nvoid *room_actor_metadata(void)\n{\n    return D_80231300_5EC7D0[D_800C7AB2];\n}\n",
+    "exampleExplanation": "The table is indexed by the raw current-room id; a null entry means the room has no actor-data record.",
+    "cautions": [
+      "Index only with a valid room id; the table has no bounds checking.",
+      "Resolve the record's segmented pointers with its own actor-data file id. Resolving them with an unrelated or unloaded file faults."
+    ],
+    "related": [
+      "func_8020D848_5C8D18",
+      "D_800C7AB2",
+      "D_8015CDDC",
+      "D_8015CDE0"
+    ],
+    "confidence": "source-reviewed"
   }
 }

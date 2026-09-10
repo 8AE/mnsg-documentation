@@ -1294,7 +1294,8 @@
     "behavior": [
       "Status bit 0x00040000 at actor+0x68 enables a fast one-point health subtraction at byte +0x8D without the usual attacker pointer. The normal path checks actor flags, hit bit 0x80, attacker data and damage type.",
       "Nonzero health sets status bit 0 and may install/invoke the actor-specific +0x90 callback. Zero health enters generic death. The inner routine does not clear the synthetic pending-damage bit the same way the outer func_80218E7C wrapper does.",
-      "Some bosses use generic health only as a damage carrier. Dharmanyo separately consumes lives at +0xD1, while Tsurami uses its custom remaining-health callback."
+      "Some bosses use generic health only as a damage carrier. Dharmanyo separately consumes lives at +0xD1, while Tsurami uses its custom remaining-health callback.",
+      "The native zero-health entry is func_80218548_5D3A18, reached only from the common health-zero path. Scene unloads and distance culls do not call it, so it is the authoritative local death edge for an ordinary actor. Setting health to one and status bit 0x00040000 reproduces the real zero-health reaction, counters, effects and cleanup through the normal pipeline."
     ],
     "cautions": [
       "Generic HP zero is not a universal boss-completion signal. Tsurami and Dharmanyo require their custom remaining-HP callbacks.",

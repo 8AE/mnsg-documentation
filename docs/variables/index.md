@@ -4,7 +4,7 @@ slug: "/variables"
 description: "Native variables for the US recompilation of Mystical Ninja Starring Goemon."
 ---
 
-62 variables with C interfaces, behavior, and usage examples. Use the search bar to look up an exact symbol, address, or purpose.
+63 variables with C interfaces, behavior, and usage examples. Use the search bar to look up an exact symbol, address, or purpose.
 
 Value tables decode established raw values and document known field layouts. Select **Tables** to jump to a variable’s mappings.
 
@@ -71,4 +71,5 @@ Value tables decode established raw values and document known field layouts. Sel
 | [`D_8020EED0_63A2B0`](D_8020EED0_63A2B0.md) | Impact battle state pointer | [Tables](D_8020EED0_63A2B0.md#known-values) |
 | [`D_802287BC_5E3C8C`](D_802287BC_5E3C8C.md) | Actor entry callback table | [Tables](D_802287BC_5E3C8C.md#known-values) |
 | [`D_802297D6_5E4CA6`](D_802297D6_5E4CA6.md) | Actor model and category metadata base | [Tables](D_802297D6_5E4CA6.md#known-values) |
+| [`D_80231300_5EC7D0`](D_80231300_5EC7D0.md) | Per-room actor-data metadata table | — |
 | [`D_80239AFC_5F4FCC`](D_80239AFC_5F4FCC.md) | Stage actor allocation scale | [Tables](D_80239AFC_5F4FCC.md#known-values) |

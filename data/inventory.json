@@ -35176,6 +35176,347 @@
         "extern void *func_8021DDE8_5D92B8(\n    void *owner, HyperCongoTaskCallback initializer, unsigned char task_kind,\n    float x, float y, float z, int angle);"
       ],
       "declarationReviewRequired": false
+    },
+    {
+      "name": "func_8020D848_5C8D18",
+      "kind": "function",
+      "address": "0x8020D848",
+      "size": 1072,
+      "section": ".file_12",
+      "romAddress": "0x005C8D18",
+      "projects": [
+        "mnsg-recomp-example"
+      ],
+      "roles": [
+        "hook"
+      ],
+      "declarations": [],
+      "references": [
+        {
+          "project": "mnsg-recomp-example",
+          "path": "src/enemy_sync.c",
+          "line": 1935,
+          "role": "hook",
+          "context": " * hook is retried while the actor-data wave is unavailable, runs after the\n * randomizer's earlier setup hook, and still precedes every static actor init. */\nRECOMP_HOOK(\"func_8020D848_5C8D18\")\nvoid enemy_sync_prepare_room_roster(void)\n{\n    EnemyStageActorMetadata *metadata;\n    unsigned short room = D_800C7AB2;\n\n    /* This callback may be attempted while room resources are still loading.\n     * Do not clear/publish or touch segmented pointers until the actor wave is\n     * present; the native scheduler will invoke this stage again. */\n    if ((unsigned int)room >= ENEMY_ROOM_METADATA_COUNT)\n        return;\n    metadata = D_80231300_5EC7D0[room];\n    if (!metadata || metadata->actor_data_file_id == 0 ||\n        func_800141C4_14DC4(\n            (unsigned int)metadata->actor_data_file_id) == -1)\n        return;\n\n    build_room_roster();\n}",
+          "contextStartLine": 1933
+        }
+      ],
+      "symbolSources": [
+        {
+          "project": "mnsg-custom-fish",
+          "path": "Goemon64RecompSyms/mnsg.us.syms.toml",
+          "line": 2882,
+          "kind": "function",
+          "address": "0x8020D848",
+          "size": 1072,
+          "section": ".file_12",
+          "romAddress": "0x005C8D18",
+          "context": "    { name = \"func_80210C18_5CC0E8\", vram = 0x80210C18, size = 0x24 },\n    { name = \"func_80215164_5D0634\", vram = 0x80215164, size = 0x78 },\n    { name = \"func_8020D848_5C8D18\", vram = 0x8020D848, size = 0x430 },\n    { name = \"func_8021A978_5D5E48\", vram = 0x8021A978, size = 0x168 },\n    { name = \"func_80210048_5CB518\", vram = 0x80210048, size = 0x24 },",
+          "contextStartLine": 2880,
+          "sha256": "ff7d8a852e902eb84511a00e2ba0dd22a9e1f17b0b9264cd5fc98ef157adb933"
+        },
+        {
+          "project": "mnsg-enable-boss-rush",
+          "path": "Goemon64RecompSyms/mnsg.us.syms.toml",
+          "line": 2882,
+          "kind": "function",
+          "address": "0x8020D848",
+          "size": 1072,
+          "section": ".file_12",
+          "romAddress": "0x005C8D18",
+          "context": "    { name = \"func_80210C18_5CC0E8\", vram = 0x80210C18, size = 0x24 },\n    { name = \"func_80215164_5D0634\", vram = 0x80215164, size = 0x78 },\n    { name = \"func_8020D848_5C8D18\", vram = 0x8020D848, size = 0x430 },\n    { name = \"func_8021A978_5D5E48\", vram = 0x8021A978, size = 0x168 },\n    { name = \"func_80210048_5CB518\", vram = 0x80210048, size = 0x24 },",
+          "contextStartLine": 2880,
+          "sha256": "ff7d8a852e902eb84511a00e2ba0dd22a9e1f17b0b9264cd5fc98ef157adb933"
+        },
+        {
+          "project": "mnsg-extra-options",
+          "path": "Goemon64RecompSyms/mnsg.us.syms.toml",
+          "line": 2882,
+          "kind": "function",
+          "address": "0x8020D848",
+          "size": 1072,
+          "section": ".file_12",
+          "romAddress": "0x005C8D18",
+          "context": "    { name = \"func_80210C18_5CC0E8\", vram = 0x80210C18, size = 0x24 },\n    { name = \"func_80215164_5D0634\", vram = 0x80215164, size = 0x78 },\n    { name = \"func_8020D848_5C8D18\", vram = 0x8020D848, size = 0x430 },\n    { name = \"func_8021A978_5D5E48\", vram = 0x8021A978, size = 0x168 },\n    { name = \"func_80210048_5CB518\", vram = 0x80210048, size = 0x24 },",
+          "contextStartLine": 2880,
+          "sha256": "ff7d8a852e902eb84511a00e2ba0dd22a9e1f17b0b9264cd5fc98ef157adb933"
+        },
+        {
+          "project": "mnsg-recomp-example",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 2882,
+          "kind": "function",
+          "address": "0x8020D848",
+          "size": 1072,
+          "section": ".file_12",
+          "romAddress": "0x005C8D18",
+          "context": "    { name = \"func_80210C18_5CC0E8\", vram = 0x80210C18, size = 0x24 },\n    { name = \"func_80215164_5D0634\", vram = 0x80215164, size = 0x78 },\n    { name = \"func_8020D848_5C8D18\", vram = 0x8020D848, size = 0x430 },\n    { name = \"func_8021A978_5D5E48\", vram = 0x8021A978, size = 0x168 },\n    { name = \"func_80210048_5CB518\", vram = 0x80210048, size = 0x24 },",
+          "contextStartLine": 2880,
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        },
+        {
+          "project": "mnsg-team-up",
+          "path": "Goemon64RecompSyms/mnsg.us.syms.toml",
+          "line": 2882,
+          "kind": "function",
+          "address": "0x8020D848",
+          "size": 1072,
+          "section": ".file_12",
+          "romAddress": "0x005C8D18",
+          "context": "    { name = \"func_80210C18_5CC0E8\", vram = 0x80210C18, size = 0x24 },\n    { name = \"func_80215164_5D0634\", vram = 0x80215164, size = 0x78 },\n    { name = \"func_8020D848_5C8D18\", vram = 0x8020D848, size = 0x430 },\n    { name = \"func_8021A978_5D5E48\", vram = 0x8021A978, size = 0x168 },\n    { name = \"func_80210048_5CB518\", vram = 0x80210048, size = 0x24 },",
+          "contextStartLine": 2880,
+          "sha256": "ff7d8a852e902eb84511a00e2ba0dd22a9e1f17b0b9264cd5fc98ef157adb933"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x8020D848",
+          "size": 1072,
+          "section": ".file_12",
+          "romAddress": "0x005C8D18"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [],
+      "declarationReviewRequired": false
+    },
+    {
+      "name": "func_80218548_5D3A18",
+      "kind": "function",
+      "address": "0x80218548",
+      "size": 700,
+      "section": ".file_12",
+      "romAddress": "0x005D3A18",
+      "projects": [
+        "mnsg-recomp-example"
+      ],
+      "roles": [
+        "hook"
+      ],
+      "declarations": [],
+      "references": [
+        {
+          "project": "mnsg-recomp-example",
+          "path": "src/enemy_sync.c",
+          "line": 2016,
+          "role": "hook",
+          "context": "/* func_80218548 is entered only from the common health-zero path.  It is the\n * authoritative local death edge; unloads and distance culls do not call it. */\nRECOMP_HOOK(\"func_80218548_5D3A18\")\nvoid enemy_sync_observe_native_death(void *actor)\n{\n    int index;\n\n    if (!s_roster_valid)\n        return;\n    index = find_live_actor(actor);\n    if (index < 0 || !actor_matches_index(actor, (unsigned int)index))\n        return;\n\n    if (bitmap_set(s_dead_bitmap, (unsigned int)index))\n    {\n        if (s_session_active)\n        {\n            enqueue_local_death((unsigned int)index);\n            s_publish_pending = 1;\n        }\n        recomp_printf(\"[EnemySync] Observed local death room=0x%X index=%u entity=0x%X.\\n\",\n                      s_room, (unsigned int)index, s_entity_ids[index]);\n    }\n\n    /* A remote native death already set the bit before arming damage, so it\n     * reaches this path without enqueuing an echo. */\n    bitmap_clear(s_remote_kill_pending, (unsigned int)index);\n    s_held[index] = 0;\n    s_hold_ai[index] = 0;\n    s_death_actors[index] = actor;\n    s_live_actors[index] = 0;\n}",
+          "contextStartLine": 2014
+        }
+      ],
+      "symbolSources": [
+        {
+          "project": "mnsg-custom-fish",
+          "path": "Goemon64RecompSyms/mnsg.us.syms.toml",
+          "line": 2845,
+          "kind": "function",
+          "address": "0x80218548",
+          "size": 700,
+          "section": ".file_12",
+          "romAddress": "0x005D3A18",
+          "context": "    { name = \"func_80221C0C_5DD0DC\", vram = 0x80221C0C, size = 0xC0 },\n    { name = \"func_80213424_5CE8F4\", vram = 0x80213424, size = 0xE0 },\n    { name = \"func_80218548_5D3A18\", vram = 0x80218548, size = 0x2BC },\n    { name = \"func_8020E83C_5C9D0C\", vram = 0x8020E83C, size = 0x24 },\n    { name = \"func_80221724_5DCBF4\", vram = 0x80221724, size = 0x98 },",
+          "contextStartLine": 2843,
+          "sha256": "ff7d8a852e902eb84511a00e2ba0dd22a9e1f17b0b9264cd5fc98ef157adb933"
+        },
+        {
+          "project": "mnsg-enable-boss-rush",
+          "path": "Goemon64RecompSyms/mnsg.us.syms.toml",
+          "line": 2845,
+          "kind": "function",
+          "address": "0x80218548",
+          "size": 700,
+          "section": ".file_12",
+          "romAddress": "0x005D3A18",
+          "context": "    { name = \"func_80221C0C_5DD0DC\", vram = 0x80221C0C, size = 0xC0 },\n    { name = \"func_80213424_5CE8F4\", vram = 0x80213424, size = 0xE0 },\n    { name = \"func_80218548_5D3A18\", vram = 0x80218548, size = 0x2BC },\n    { name = \"func_8020E83C_5C9D0C\", vram = 0x8020E83C, size = 0x24 },\n    { name = \"func_80221724_5DCBF4\", vram = 0x80221724, size = 0x98 },",
+          "contextStartLine": 2843,
+          "sha256": "ff7d8a852e902eb84511a00e2ba0dd22a9e1f17b0b9264cd5fc98ef157adb933"
+        },
+        {
+          "project": "mnsg-extra-options",
+          "path": "Goemon64RecompSyms/mnsg.us.syms.toml",
+          "line": 2845,
+          "kind": "function",
+          "address": "0x80218548",
+          "size": 700,
+          "section": ".file_12",
+          "romAddress": "0x005D3A18",
+          "context": "    { name = \"func_80221C0C_5DD0DC\", vram = 0x80221C0C, size = 0xC0 },\n    { name = \"func_80213424_5CE8F4\", vram = 0x80213424, size = 0xE0 },\n    { name = \"func_80218548_5D3A18\", vram = 0x80218548, size = 0x2BC },\n    { name = \"func_8020E83C_5C9D0C\", vram = 0x8020E83C, size = 0x24 },\n    { name = \"func_80221724_5DCBF4\", vram = 0x80221724, size = 0x98 },",
+          "contextStartLine": 2843,
+          "sha256": "ff7d8a852e902eb84511a00e2ba0dd22a9e1f17b0b9264cd5fc98ef157adb933"
+        },
+        {
+          "project": "mnsg-recomp-example",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 2845,
+          "kind": "function",
+          "address": "0x80218548",
+          "size": 700,
+          "section": ".file_12",
+          "romAddress": "0x005D3A18",
+          "context": "    { name = \"func_80221C0C_5DD0DC\", vram = 0x80221C0C, size = 0xC0 },\n    { name = \"func_80213424_5CE8F4\", vram = 0x80213424, size = 0xE0 },\n    { name = \"func_80218548_5D3A18\", vram = 0x80218548, size = 0x2BC },\n    { name = \"func_8020E83C_5C9D0C\", vram = 0x8020E83C, size = 0x24 },\n    { name = \"func_80221724_5DCBF4\", vram = 0x80221724, size = 0x98 },",
+          "contextStartLine": 2843,
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        },
+        {
+          "project": "mnsg-team-up",
+          "path": "Goemon64RecompSyms/mnsg.us.syms.toml",
+          "line": 2845,
+          "kind": "function",
+          "address": "0x80218548",
+          "size": 700,
+          "section": ".file_12",
+          "romAddress": "0x005D3A18",
+          "context": "    { name = \"func_80221C0C_5DD0DC\", vram = 0x80221C0C, size = 0xC0 },\n    { name = \"func_80213424_5CE8F4\", vram = 0x80213424, size = 0xE0 },\n    { name = \"func_80218548_5D3A18\", vram = 0x80218548, size = 0x2BC },\n    { name = \"func_8020E83C_5C9D0C\", vram = 0x8020E83C, size = 0x24 },\n    { name = \"func_80221724_5DCBF4\", vram = 0x80221724, size = 0x98 },",
+          "contextStartLine": 2843,
+          "sha256": "ff7d8a852e902eb84511a00e2ba0dd22a9e1f17b0b9264cd5fc98ef157adb933"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x80218548",
+          "size": 700,
+          "section": ".file_12",
+          "romAddress": "0x005D3A18"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [],
+      "declarationReviewRequired": false
+    },
+    {
+      "name": "D_80231300_5EC7D0",
+      "kind": "variable",
+      "address": "0x80231300",
+      "size": null,
+      "section": ".file_12",
+      "romAddress": "0x005EC7D0",
+      "projects": [
+        "mnsg-recomp-example"
+      ],
+      "roles": [
+        "declared",
+        "referenced"
+      ],
+      "declarations": [
+        {
+          "text": "extern EnemyStageActorMetadata *D_80231300_5EC7D0[];",
+          "project": "mnsg-recomp-example",
+          "path": "src/enemy_sync.c",
+          "line": 79
+        }
+      ],
+      "references": [
+        {
+          "project": "mnsg-recomp-example",
+          "path": "src/enemy_sync.c",
+          "line": 79,
+          "role": "declared",
+          "context": "    unsigned char unknown[0x14];\n    unsigned short cells_x;\n    unsigned short cells_y;\n    unsigned short cells_z;\n} EnemyActorPartitionConfig;\n\nextern EnemyStageActorMetadata *D_80231300_5EC7D0[];\nextern EnemyActorInstance *D_8015CDDC;\nextern EnemyActorDefinition *D_8015CDE0;\nextern signed int func_800141C4_14DC4(unsigned int file_id);\nextern signed int func_80014840_15440(signed int pointer,\n                                     unsigned int file_id);\n\n#define ENEMY_MAX_INSTANCES 256",
+          "contextStartLine": 73
+        },
+        {
+          "project": "mnsg-recomp-example",
+          "path": "src/enemy_sync.c",
+          "line": 1268,
+          "role": "referenced",
+          "context": "            previous_dead_bitmap[i] = s_dead_bitmap[i];\n    }\n    clear_room_state();\n    s_room = D_800C7AB2;\n    if ((unsigned int)s_room >= ENEMY_ROOM_METADATA_COUNT)\n        goto invalid_roster;\n    metadata = D_80231300_5EC7D0[s_room];\n    if (!metadata || !metadata->actor_instances)\n        goto invalid_roster;\n\n    /* The native pointer resolver crashes intentionally if this wave is not\n     * present.  func_8020D848 is retried while actor data is loading, so leave\n     * an invalid roster and rebuild from its next invocation instead. */\n    if (metadata->actor_data_file_id == 0 ||",
+          "contextStartLine": 1262
+        },
+        {
+          "project": "mnsg-recomp-example",
+          "path": "src/enemy_sync.c",
+          "line": 1946,
+          "role": "referenced",
+          "context": "\n    /* This callback may be attempted while room resources are still loading.\n     * Do not clear/publish or touch segmented pointers until the actor wave is\n     * present; the native scheduler will invoke this stage again. */\n    if ((unsigned int)room >= ENEMY_ROOM_METADATA_COUNT)\n        return;\n    metadata = D_80231300_5EC7D0[room];\n    if (!metadata || metadata->actor_data_file_id == 0 ||\n        func_800141C4_14DC4(\n            (unsigned int)metadata->actor_data_file_id) == -1)\n        return;\n\n    build_room_roster();\n}",
+          "contextStartLine": 1940
+        }
+      ],
+      "symbolSources": [
+        {
+          "project": "mnsg-custom-fish",
+          "path": "Goemon64RecompSyms/mnsg.us.datasyms.toml",
+          "line": 4279,
+          "kind": "variable",
+          "address": "0x80231300",
+          "size": null,
+          "section": ".file_12",
+          "romAddress": "0x005EC7D0",
+          "context": "    { name = \"D_802312C8_5EC798\", vram = 0x802312C8 },\n    { name = \"D_802312E4_5EC7B4\", vram = 0x802312E4 },\n    { name = \"D_80231300_5EC7D0\", vram = 0x80231300 },\n    { name = \"D_80231F80_5ED450\", vram = 0x80231F80 },\n    { name = \"D_80231FC4_5ED494\", vram = 0x80231FC4 },",
+          "contextStartLine": 4277,
+          "sha256": "85d592e7ab67e21e1633ec8cdc6b2c7514dad4b5ad9a2365329ab1556fa418c8"
+        },
+        {
+          "project": "mnsg-enable-boss-rush",
+          "path": "Goemon64RecompSyms/mnsg.us.datasyms.toml",
+          "line": 4279,
+          "kind": "variable",
+          "address": "0x80231300",
+          "size": null,
+          "section": ".file_12",
+          "romAddress": "0x005EC7D0",
+          "context": "    { name = \"D_802312C8_5EC798\", vram = 0x802312C8 },\n    { name = \"D_802312E4_5EC7B4\", vram = 0x802312E4 },\n    { name = \"D_80231300_5EC7D0\", vram = 0x80231300 },\n    { name = \"D_80231F80_5ED450\", vram = 0x80231F80 },\n    { name = \"D_80231FC4_5ED494\", vram = 0x80231FC4 },",
+          "contextStartLine": 4277,
+          "sha256": "85d592e7ab67e21e1633ec8cdc6b2c7514dad4b5ad9a2365329ab1556fa418c8"
+        },
+        {
+          "project": "mnsg-extra-options",
+          "path": "Goemon64RecompSyms/mnsg.us.datasyms.toml",
+          "line": 4279,
+          "kind": "variable",
+          "address": "0x80231300",
+          "size": null,
+          "section": ".file_12",
+          "romAddress": "0x005EC7D0",
+          "context": "    { name = \"D_802312C8_5EC798\", vram = 0x802312C8 },\n    { name = \"D_802312E4_5EC7B4\", vram = 0x802312E4 },\n    { name = \"D_80231300_5EC7D0\", vram = 0x80231300 },\n    { name = \"D_80231F80_5ED450\", vram = 0x80231F80 },\n    { name = \"D_80231FC4_5ED494\", vram = 0x80231FC4 },",
+          "contextStartLine": 4277,
+          "sha256": "85d592e7ab67e21e1633ec8cdc6b2c7514dad4b5ad9a2365329ab1556fa418c8"
+        },
+        {
+          "project": "mnsg-recomp-example",
+          "path": "Goemon64RecompSyms/mnsg.datasyms.toml",
+          "line": 4274,
+          "kind": "variable",
+          "address": "0x80231300",
+          "size": null,
+          "section": ".file_12",
+          "romAddress": "0x005EC7D0",
+          "context": "    { name = \"D_802312C8_5EC798\", vram = 0x802312C8 },\n    { name = \"D_802312E4_5EC7B4\", vram = 0x802312E4 },\n    { name = \"D_80231300_5EC7D0\", vram = 0x80231300 },\n    { name = \"D_80231F80_5ED450\", vram = 0x80231F80 },\n    { name = \"D_80231FC4_5ED494\", vram = 0x80231FC4 },",
+          "contextStartLine": 4272,
+          "sha256": "af7855b91d29f74351faaf8052c21f1e378badb4c322b9784d205da5016e9ce2"
+        },
+        {
+          "project": "mnsg-team-up",
+          "path": "Goemon64RecompSyms/mnsg.us.datasyms.toml",
+          "line": 4279,
+          "kind": "variable",
+          "address": "0x80231300",
+          "size": null,
+          "section": ".file_12",
+          "romAddress": "0x005EC7D0",
+          "context": "    { name = \"D_802312C8_5EC798\", vram = 0x802312C8 },\n    { name = \"D_802312E4_5EC7B4\", vram = 0x802312E4 },\n    { name = \"D_80231300_5EC7D0\", vram = 0x80231300 },\n    { name = \"D_80231F80_5ED450\", vram = 0x80231F80 },\n    { name = \"D_80231FC4_5ED494\", vram = 0x80231FC4 },",
+          "contextStartLine": 4277,
+          "sha256": "85d592e7ab67e21e1633ec8cdc6b2c7514dad4b5ad9a2365329ab1556fa418c8"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "variable",
+          "address": "0x80231300",
+          "size": null,
+          "section": ".file_12",
+          "romAddress": "0x005EC7D0"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [
+        "extern EnemyStageActorMetadata *D_80231300_5EC7D0[];"
+      ],
+      "declarationReviewRequired": false
     }
   ],
   "audit": {

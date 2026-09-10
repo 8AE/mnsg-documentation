@@ -4,7 +4,7 @@ slug: "/functions"
 description: "Native functions for the US recompilation of Mystical Ninja Starring Goemon."
 ---
 
-189 functions with C interfaces, behavior, and usage examples. Use the search bar to look up an exact symbol, address, or purpose.
+191 functions with C interfaces, behavior, and usage examples. Use the search bar to look up an exact symbol, address, or purpose.
 
 | Symbol | Purpose |
 | --- | --- |
@@ -184,11 +184,13 @@ description: "Native functions for the US recompilation of Mystical Ninja Starri
 | [`func_801F6C4C_62202C`](func_801F6C4C_62202C.md) | Dispatch Thaisamba collision and damage |
 | [`func_801F77F4_5B3704`](func_801F77F4_5B3704.md) | Run scene contacts and player-state maintenance |
 | [`func_8020D6BC_5C8B8C`](func_8020D6BC_5C8B8C.md) | Load normal stage resources |
+| [`func_8020D848_5C8D18`](func_8020D848_5C8D18.md) | Stage room actor data and spawn definitions |
 | [`func_8021664C_5D1B1C`](func_8021664C_5D1B1C.md) | Select and restart an actor animation |
 | [`func_80216AB8_5D1F88`](func_80216AB8_5D1F88.md) | Advance actor model animation |
 | [`func_80216E1C_5D22EC`](func_80216E1C_5D22EC.md) | Initialize object model and default scale |
 | [`func_802171A8_5D2678`](func_802171A8_5D2678.md) | Allocate a child actor task |
 | [`func_80218350_5D3820`](func_80218350_5D3820.md) | Process actor damage and hit reactions |
+| [`func_80218548_5D3A18`](func_80218548_5D3A18.md) | Handle an actor reaching zero health |
 | [`func_80218A54_5D3F24`](func_80218A54_5D3F24.md) | Apply a room actor spawn instance |
 | [`func_80218E7C_5D434C`](func_80218E7C_5D434C.md) | Run the common actor update pipeline |
 | [`func_80218F30_5D4400`](func_80218F30_5D4400.md) | Common actor post-processing and removal |
