@@ -63,3 +63,9 @@ The scanner has regression tests for declarations, comments, function-pointer re
 `.github/workflows/pages.yml` builds and tests pushes and pull requests. Pushes to `main` and manual runs publish the Docusaurus `build/` artifact; pull requests only validate. Set **Settings → Pages → Source** to **GitHub Actions**.
 
 The deployment follows the [Docusaurus GitHub Pages guide](https://docusaurus.io/docs/deployment#deploying-to-github-pages) and [GitHub's Pages workflow documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages).
+
+## Native texture gallery
+
+`data/textures.json` indexes original ROM sheets and verified display crops. PNGs live in `static/img/textures/`; supplied screenshots are not included. Texture-handle names match the recomp data-symbol table, separately from packed-resource ROM addresses. Unmatched assets do not receive guessed variable names.
+
+`data/inventory-native-*.json` deliberately extends the source-usage inventory with reviewed native-only symbols. The generator and validator combine both inventories and reject duplicate names. `data/reference-texture-handles.json` supplies their descriptions; `data/value-evidence-notification-icons.json` records the symbol-table hash and native registration evidence. A source rescan does not overwrite these supplemental symbols.

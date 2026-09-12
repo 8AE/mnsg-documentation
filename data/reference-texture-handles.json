@@ -1,0 +1,782 @@
+{
+  "D_80217F6C_676F1C": {
+    "title": "Silver Goemon texture handle",
+    "summary": "Runtime texture handle for native image resource 0x8004, initialized by the pause-menu overlay.",
+    "declaration": "extern unsigned int D_80217F6C_676F1C;",
+    "behavior": [
+      "The pause-menu initializer func_80211870_670820 stores the return from the native texture registration routine at 0x80217F6C. The matching recomp data symbol is D_80217F6C_676F1C.",
+      "The registered image is resource 0x8004, stored at ROM address 0x007E6C00. Its decoded RGBA5551 sheet is 64 \u00d7 32 pixels.",
+      "This word holds an opaque runtime texture handle, not pixel bytes or a ROM pointer. The named storage is beyond the file-backed pause overlay; the numeric suffix in its symbol name does not identify the packed image resource."
+    ],
+    "example": "extern unsigned int D_80217F6C_676F1C;\n\n/* Read only after the pause overlay has registered its textures. */\nunsigned int read_pause_texture_handle(void)\n{\n    return D_80217F6C_676F1C;\n}",
+    "exampleExplanation": "Observe this value while the pause-menu overlay is active and its texture initialization has completed. Pass handles only to native interfaces that expect them.",
+    "cautions": [
+      "The runtime address is reused by other overlays. Do not read or write this variable when the pause overlay is inactive.",
+      "Texture handles are assigned at runtime; no fixed handle value or enum meaning is established."
+    ],
+    "related": [
+      "func_800144E8_150E8"
+    ],
+    "confidence": "decompiled"
+  },
+  "D_80217F70_676F20": {
+    "title": "Chain Pipe, Gold Goemon texture handle",
+    "summary": "Runtime texture handle for native image resource 0x8005, initialized by the pause-menu overlay.",
+    "declaration": "extern unsigned int D_80217F70_676F20;",
+    "behavior": [
+      "The pause-menu initializer func_80211870_670820 stores the return from the native texture registration routine at 0x80217F70. The matching recomp data symbol is D_80217F70_676F20.",
+      "The registered image is resource 0x8005, stored at ROM address 0x007E7100. Its decoded RGBA5551 sheet is 64 \u00d7 32 pixels.",
+      "This word holds an opaque runtime texture handle, not pixel bytes or a ROM pointer. The named storage is beyond the file-backed pause overlay; the numeric suffix in its symbol name does not identify the packed image resource."
+    ],
+    "example": "extern unsigned int D_80217F70_676F20;\n\n/* Read only after the pause overlay has registered its textures. */\nunsigned int read_pause_texture_handle(void)\n{\n    return D_80217F70_676F20;\n}",
+    "exampleExplanation": "Observe this value while the pause-menu overlay is active and its texture initialization has completed. Pass handles only to native interfaces that expect them.",
+    "cautions": [
+      "The runtime address is reused by other overlays. Do not read or write this variable when the pause overlay is inactive.",
+      "Texture handles are assigned at runtime; no fixed handle value or enum meaning is established."
+    ],
+    "related": [
+      "func_800144E8_150E8"
+    ],
+    "confidence": "decompiled"
+  },
+  "D_80217F74_676F24": {
+    "title": "Fire Ryo texture handle",
+    "summary": "Runtime texture handle for native image resource 0x8006, initialized by the pause-menu overlay.",
+    "declaration": "extern unsigned int D_80217F74_676F24;",
+    "behavior": [
+      "The pause-menu initializer func_80211870_670820 stores the return from the native texture registration routine at 0x80217F74. The matching recomp data symbol is D_80217F74_676F24.",
+      "The registered image is resource 0x8006, stored at ROM address 0x007E74E0. Its decoded RGBA5551 sheet is 64 \u00d7 32 pixels.",
+      "This word holds an opaque runtime texture handle, not pixel bytes or a ROM pointer. The named storage is beyond the file-backed pause overlay; the numeric suffix in its symbol name does not identify the packed image resource."
+    ],
+    "example": "extern unsigned int D_80217F74_676F24;\n\n/* Read only after the pause overlay has registered its textures. */\nunsigned int read_pause_texture_handle(void)\n{\n    return D_80217F74_676F24;\n}",
+    "exampleExplanation": "Observe this value while the pause-menu overlay is active and its texture initialization has completed. Pass handles only to native interfaces that expect them.",
+    "cautions": [
+      "The runtime address is reused by other overlays. Do not read or write this variable when the pause overlay is inactive.",
+      "Texture handles are assigned at runtime; no fixed handle value or enum meaning is established."
+    ],
+    "related": [
+      "func_800144E8_150E8"
+    ],
+    "confidence": "decompiled"
+  },
+  "D_80217F78_676F28": {
+    "title": "Silver Yae texture handle",
+    "summary": "Runtime texture handle for native image resource 0x8007, initialized by the pause-menu overlay.",
+    "declaration": "extern unsigned int D_80217F78_676F28;",
+    "behavior": [
+      "The pause-menu initializer func_80211870_670820 stores the return from the native texture registration routine at 0x80217F78. The matching recomp data symbol is D_80217F78_676F28.",
+      "The registered image is resource 0x8007, stored at ROM address 0x007E7B70. Its decoded RGBA5551 sheet is 64 \u00d7 32 pixels.",
+      "This word holds an opaque runtime texture handle, not pixel bytes or a ROM pointer. The named storage is beyond the file-backed pause overlay; the numeric suffix in its symbol name does not identify the packed image resource."
+    ],
+    "example": "extern unsigned int D_80217F78_676F28;\n\n/* Read only after the pause overlay has registered its textures. */\nunsigned int read_pause_texture_handle(void)\n{\n    return D_80217F78_676F28;\n}",
+    "exampleExplanation": "Observe this value while the pause-menu overlay is active and its texture initialization has completed. Pass handles only to native interfaces that expect them.",
+    "cautions": [
+      "The runtime address is reused by other overlays. Do not read or write this variable when the pause overlay is inactive.",
+      "Texture handles are assigned at runtime; no fixed handle value or enum meaning is established."
+    ],
+    "related": [
+      "func_800144E8_150E8"
+    ],
+    "confidence": "decompiled"
+  },
+  "D_80217F7C_676F2C": {
+    "title": "Bazooka, Gold Yae texture handle",
+    "summary": "Runtime texture handle for native image resource 0x8008, initialized by the pause-menu overlay.",
+    "declaration": "extern unsigned int D_80217F7C_676F2C;",
+    "behavior": [
+      "The pause-menu initializer func_80211870_670820 stores the return from the native texture registration routine at 0x80217F7C. The matching recomp data symbol is D_80217F7C_676F2C.",
+      "The registered image is resource 0x8008, stored at ROM address 0x007E7EA0. Its decoded RGBA5551 sheet is 64 \u00d7 32 pixels.",
+      "This word holds an opaque runtime texture handle, not pixel bytes or a ROM pointer. The named storage is beyond the file-backed pause overlay; the numeric suffix in its symbol name does not identify the packed image resource."
+    ],
+    "example": "extern unsigned int D_80217F7C_676F2C;\n\n/* Read only after the pause overlay has registered its textures. */\nunsigned int read_pause_texture_handle(void)\n{\n    return D_80217F7C_676F2C;\n}",
+    "exampleExplanation": "Observe this value while the pause-menu overlay is active and its texture initialization has completed. Pass handles only to native interfaces that expect them.",
+    "cautions": [
+      "The runtime address is reused by other overlays. Do not read or write this variable when the pause overlay is inactive.",
+      "Texture handles are assigned at runtime; no fixed handle value or enum meaning is established."
+    ],
+    "related": [
+      "func_800144E8_150E8"
+    ],
+    "confidence": "decompiled"
+  },
+  "D_80217F80_676F30": {
+    "title": "Silver Sasuke texture handle",
+    "summary": "Runtime texture handle for native image resource 0x8009, initialized by the pause-menu overlay.",
+    "declaration": "extern unsigned int D_80217F80_676F30;",
+    "behavior": [
+      "The pause-menu initializer func_80211870_670820 stores the return from the native texture registration routine at 0x80217F80. The matching recomp data symbol is D_80217F80_676F30.",
+      "The registered image is resource 0x8009, stored at ROM address 0x007E8270. Its decoded RGBA5551 sheet is 64 \u00d7 32 pixels.",
+      "This word holds an opaque runtime texture handle, not pixel bytes or a ROM pointer. The named storage is beyond the file-backed pause overlay; the numeric suffix in its symbol name does not identify the packed image resource."
+    ],
+    "example": "extern unsigned int D_80217F80_676F30;\n\n/* Read only after the pause overlay has registered its textures. */\nunsigned int read_pause_texture_handle(void)\n{\n    return D_80217F80_676F30;\n}",
+    "exampleExplanation": "Observe this value while the pause-menu overlay is active and its texture initialization has completed. Pass handles only to native interfaces that expect them.",
+    "cautions": [
+      "The runtime address is reused by other overlays. Do not read or write this variable when the pause overlay is inactive.",
+      "Texture handles are assigned at runtime; no fixed handle value or enum meaning is established."
+    ],
+    "related": [
+      "func_800144E8_150E8"
+    ],
+    "confidence": "decompiled"
+  },
+  "D_80217F84_676F34": {
+    "title": "Ice Kunai, Gold Sasuke texture handle",
+    "summary": "Runtime texture handle for native image resource 0x800A, initialized by the pause-menu overlay.",
+    "declaration": "extern unsigned int D_80217F84_676F34;",
+    "behavior": [
+      "The pause-menu initializer func_80211870_670820 stores the return from the native texture registration routine at 0x80217F84. The matching recomp data symbol is D_80217F84_676F34.",
+      "The registered image is resource 0x800A, stored at ROM address 0x007E8620. Its decoded RGBA5551 sheet is 64 \u00d7 32 pixels.",
+      "This word holds an opaque runtime texture handle, not pixel bytes or a ROM pointer. The named storage is beyond the file-backed pause overlay; the numeric suffix in its symbol name does not identify the packed image resource."
+    ],
+    "example": "extern unsigned int D_80217F84_676F34;\n\n/* Read only after the pause overlay has registered its textures. */\nunsigned int read_pause_texture_handle(void)\n{\n    return D_80217F84_676F34;\n}",
+    "exampleExplanation": "Observe this value while the pause-menu overlay is active and its texture initialization has completed. Pass handles only to native interfaces that expect them.",
+    "cautions": [
+      "The runtime address is reused by other overlays. Do not read or write this variable when the pause overlay is inactive.",
+      "Texture handles are assigned at runtime; no fixed handle value or enum meaning is established."
+    ],
+    "related": [
+      "func_800144E8_150E8"
+    ],
+    "confidence": "decompiled"
+  },
+  "D_80217F88_676F38": {
+    "title": "Silver Ebisumaru texture handle",
+    "summary": "Runtime texture handle for native image resource 0x800B, initialized by the pause-menu overlay.",
+    "declaration": "extern unsigned int D_80217F88_676F38;",
+    "behavior": [
+      "The pause-menu initializer func_80211870_670820 stores the return from the native texture registration routine at 0x80217F88. The matching recomp data symbol is D_80217F88_676F38.",
+      "The registered image is resource 0x800B, stored at ROM address 0x007E8A80. Its decoded RGBA5551 sheet is 64 \u00d7 32 pixels.",
+      "This word holds an opaque runtime texture handle, not pixel bytes or a ROM pointer. The named storage is beyond the file-backed pause overlay; the numeric suffix in its symbol name does not identify the packed image resource."
+    ],
+    "example": "extern unsigned int D_80217F88_676F38;\n\n/* Read only after the pause overlay has registered its textures. */\nunsigned int read_pause_texture_handle(void)\n{\n    return D_80217F88_676F38;\n}",
+    "exampleExplanation": "Observe this value while the pause-menu overlay is active and its texture initialization has completed. Pass handles only to native interfaces that expect them.",
+    "cautions": [
+      "The runtime address is reused by other overlays. Do not read or write this variable when the pause overlay is inactive.",
+      "Texture handles are assigned at runtime; no fixed handle value or enum meaning is established."
+    ],
+    "related": [
+      "func_800144E8_150E8"
+    ],
+    "confidence": "decompiled"
+  },
+  "D_80217F8C_676F3C": {
+    "title": "Meat Hammer, Gold Ebisumaru texture handle",
+    "summary": "Runtime texture handle for native image resource 0x800C, initialized by the pause-menu overlay.",
+    "declaration": "extern unsigned int D_80217F8C_676F3C;",
+    "behavior": [
+      "The pause-menu initializer func_80211870_670820 stores the return from the native texture registration routine at 0x80217F8C. The matching recomp data symbol is D_80217F8C_676F3C.",
+      "The registered image is resource 0x800C, stored at ROM address 0x007E8DE0. Its decoded RGBA5551 sheet is 64 \u00d7 32 pixels.",
+      "This word holds an opaque runtime texture handle, not pixel bytes or a ROM pointer. The named storage is beyond the file-backed pause overlay; the numeric suffix in its symbol name does not identify the packed image resource."
+    ],
+    "example": "extern unsigned int D_80217F8C_676F3C;\n\n/* Read only after the pause overlay has registered its textures. */\nunsigned int read_pause_texture_handle(void)\n{\n    return D_80217F8C_676F3C;\n}",
+    "exampleExplanation": "Observe this value while the pause-menu overlay is active and its texture initialization has completed. Pass handles only to native interfaces that expect them.",
+    "cautions": [
+      "The runtime address is reused by other overlays. Do not read or write this variable when the pause overlay is inactive.",
+      "Texture handles are assigned at runtime; no fixed handle value or enum meaning is established."
+    ],
+    "related": [
+      "func_800144E8_150E8"
+    ],
+    "confidence": "decompiled"
+  },
+  "D_80217F90_676F40": {
+    "title": "Bomb texture handle",
+    "summary": "Runtime texture handle for native image resource 0x800D, initialized by the pause-menu overlay.",
+    "declaration": "extern unsigned int D_80217F90_676F40;",
+    "behavior": [
+      "The pause-menu initializer func_80211870_670820 stores the return from the native texture registration routine at 0x80217F90. The matching recomp data symbol is D_80217F90_676F40.",
+      "The registered image is resource 0x800D, stored at ROM address 0x007E9180. Its decoded RGBA5551 sheet is 64 \u00d7 32 pixels.",
+      "This word holds an opaque runtime texture handle, not pixel bytes or a ROM pointer. The named storage is beyond the file-backed pause overlay; the numeric suffix in its symbol name does not identify the packed image resource."
+    ],
+    "example": "extern unsigned int D_80217F90_676F40;\n\n/* Read only after the pause overlay has registered its textures. */\nunsigned int read_pause_texture_handle(void)\n{\n    return D_80217F90_676F40;\n}",
+    "exampleExplanation": "Observe this value while the pause-menu overlay is active and its texture initialization has completed. Pass handles only to native interfaces that expect them.",
+    "cautions": [
+      "The runtime address is reused by other overlays. Do not read or write this variable when the pause overlay is inactive.",
+      "Texture handles are assigned at runtime; no fixed handle value or enum meaning is established."
+    ],
+    "related": [
+      "func_800144E8_150E8"
+    ],
+    "confidence": "decompiled"
+  },
+  "D_80217F94_676F44": {
+    "title": "Silver Doll, Gold Doll texture handle",
+    "summary": "Runtime texture handle for native image resource 0x800E, initialized by the pause-menu overlay.",
+    "declaration": "extern unsigned int D_80217F94_676F44;",
+    "behavior": [
+      "The pause-menu initializer func_80211870_670820 stores the return from the native texture registration routine at 0x80217F94. The matching recomp data symbol is D_80217F94_676F44.",
+      "The registered image is resource 0x800E, stored at ROM address 0x007E9570. Its decoded RGBA5551 sheet is 64 \u00d7 32 pixels.",
+      "This word holds an opaque runtime texture handle, not pixel bytes or a ROM pointer. The named storage is beyond the file-backed pause overlay; the numeric suffix in its symbol name does not identify the packed image resource."
+    ],
+    "example": "extern unsigned int D_80217F94_676F44;\n\n/* Read only after the pause overlay has registered its textures. */\nunsigned int read_pause_texture_handle(void)\n{\n    return D_80217F94_676F44;\n}",
+    "exampleExplanation": "Observe this value while the pause-menu overlay is active and its texture initialization has completed. Pass handles only to native interfaces that expect them.",
+    "cautions": [
+      "The runtime address is reused by other overlays. Do not read or write this variable when the pause overlay is inactive.",
+      "Texture handles are assigned at runtime; no fixed handle value or enum meaning is established."
+    ],
+    "related": [
+      "func_800144E8_150E8"
+    ],
+    "confidence": "decompiled"
+  },
+  "D_80217F98_676F48": {
+    "title": "Pause-menu resource 0x800F texture handle",
+    "summary": "Runtime texture handle for native image resource 0x800F, initialized by the pause-menu overlay.",
+    "declaration": "extern unsigned int D_80217F98_676F48;",
+    "behavior": [
+      "The pause-menu initializer func_80211870_670820 stores the return from the native texture registration routine at 0x80217F98. The matching recomp data symbol is D_80217F98_676F48.",
+      "The registered image is resource 0x800F, stored at ROM address 0x007E9AE0. Its decoded RGBA5551 sheet is 64 \u00d7 32 pixels.",
+      "This word holds an opaque runtime texture handle, not pixel bytes or a ROM pointer. The named storage is beyond the file-backed pause overlay; the numeric suffix in its symbol name does not identify the packed image resource."
+    ],
+    "example": "extern unsigned int D_80217F98_676F48;\n\n/* Read only after the pause overlay has registered its textures. */\nunsigned int read_pause_texture_handle(void)\n{\n    return D_80217F98_676F48;\n}",
+    "exampleExplanation": "Observe this value while the pause-menu overlay is active and its texture initialization has completed. Pass handles only to native interfaces that expect them.",
+    "cautions": [
+      "The runtime address is reused by other overlays. Do not read or write this variable when the pause overlay is inactive.",
+      "Texture handles are assigned at runtime; no fixed handle value or enum meaning is established."
+    ],
+    "related": [
+      "func_800144E8_150E8"
+    ],
+    "confidence": "decompiled"
+  },
+  "D_80217F9C_676F4C": {
+    "title": "Pause-menu resource 0x8010 texture handle",
+    "summary": "Runtime texture handle for native image resource 0x8010, initialized by the pause-menu overlay.",
+    "declaration": "extern unsigned int D_80217F9C_676F4C;",
+    "behavior": [
+      "The pause-menu initializer func_80211870_670820 stores the return from the native texture registration routine at 0x80217F9C. The matching recomp data symbol is D_80217F9C_676F4C.",
+      "The registered image is resource 0x8010, stored at ROM address 0x007E9E00. Its decoded RGBA5551 sheet is 64 \u00d7 32 pixels.",
+      "This word holds an opaque runtime texture handle, not pixel bytes or a ROM pointer. The named storage is beyond the file-backed pause overlay; the numeric suffix in its symbol name does not identify the packed image resource."
+    ],
+    "example": "extern unsigned int D_80217F9C_676F4C;\n\n/* Read only after the pause overlay has registered its textures. */\nunsigned int read_pause_texture_handle(void)\n{\n    return D_80217F9C_676F4C;\n}",
+    "exampleExplanation": "Observe this value while the pause-menu overlay is active and its texture initialization has completed. Pass handles only to native interfaces that expect them.",
+    "cautions": [
+      "The runtime address is reused by other overlays. Do not read or write this variable when the pause overlay is inactive.",
+      "Texture handles are assigned at runtime; no fixed handle value or enum meaning is established."
+    ],
+    "related": [
+      "func_800144E8_150E8"
+    ],
+    "confidence": "decompiled"
+  },
+  "D_80217FA0_676F50": {
+    "title": "Camera, Super Pass texture handle",
+    "summary": "Runtime texture handle for native image resource 0x8011, initialized by the pause-menu overlay.",
+    "declaration": "extern unsigned int D_80217FA0_676F50;",
+    "behavior": [
+      "The pause-menu initializer func_80211870_670820 stores the return from the native texture registration routine at 0x80217FA0. The matching recomp data symbol is D_80217FA0_676F50.",
+      "The registered image is resource 0x8011, stored at ROM address 0x007EA200. Its decoded RGBA5551 sheet is 64 \u00d7 32 pixels.",
+      "This word holds an opaque runtime texture handle, not pixel bytes or a ROM pointer. The named storage is beyond the file-backed pause overlay; the numeric suffix in its symbol name does not identify the packed image resource."
+    ],
+    "example": "extern unsigned int D_80217FA0_676F50;\n\n/* Read only after the pause overlay has registered its textures. */\nunsigned int read_pause_texture_handle(void)\n{\n    return D_80217FA0_676F50;\n}",
+    "exampleExplanation": "Observe this value while the pause-menu overlay is active and its texture initialization has completed. Pass handles only to native interfaces that expect them.",
+    "cautions": [
+      "The runtime address is reused by other overlays. Do not read or write this variable when the pause overlay is inactive.",
+      "Texture handles are assigned at runtime; no fixed handle value or enum meaning is established."
+    ],
+    "related": [
+      "func_800144E8_150E8"
+    ],
+    "confidence": "decompiled"
+  },
+  "D_80217FAC_676F5C": {
+    "title": "Flute texture handle",
+    "summary": "Runtime texture handle for native image resource 0x8016, initialized by the pause-menu overlay.",
+    "declaration": "extern unsigned int D_80217FAC_676F5C;",
+    "behavior": [
+      "The pause-menu initializer func_80211870_670820 stores the return from the native texture registration routine at 0x80217FAC. The matching recomp data symbol is D_80217FAC_676F5C.",
+      "The registered image is resource 0x8016, stored at ROM address 0x007EB740. Its decoded RGBA5551 sheet is 64 \u00d7 32 pixels.",
+      "This word holds an opaque runtime texture handle, not pixel bytes or a ROM pointer. The named storage is beyond the file-backed pause overlay; the numeric suffix in its symbol name does not identify the packed image resource."
+    ],
+    "example": "extern unsigned int D_80217FAC_676F5C;\n\n/* Read only after the pause overlay has registered its textures. */\nunsigned int read_pause_texture_handle(void)\n{\n    return D_80217FAC_676F5C;\n}",
+    "exampleExplanation": "Observe this value while the pause-menu overlay is active and its texture initialization has completed. Pass handles only to native interfaces that expect them.",
+    "cautions": [
+      "The runtime address is reused by other overlays. Do not read or write this variable when the pause overlay is inactive.",
+      "Texture handles are assigned at runtime; no fixed handle value or enum meaning is established."
+    ],
+    "related": [
+      "func_800144E8_150E8"
+    ],
+    "confidence": "decompiled"
+  },
+  "D_80217FA4_676F54": {
+    "title": "Pause-menu resource 0x8018 texture handle",
+    "summary": "Runtime texture handle for native image resource 0x8018, initialized by the pause-menu overlay.",
+    "declaration": "extern unsigned int D_80217FA4_676F54;",
+    "behavior": [
+      "The pause-menu initializer func_80211870_670820 stores the return from the native texture registration routine at 0x80217FA4. The matching recomp data symbol is D_80217FA4_676F54.",
+      "The registered image is resource 0x8018, stored at ROM address 0x007EBC30. Its decoded RGBA5551 sheet is 64 \u00d7 32 pixels.",
+      "This word holds an opaque runtime texture handle, not pixel bytes or a ROM pointer. The named storage is beyond the file-backed pause overlay; the numeric suffix in its symbol name does not identify the packed image resource."
+    ],
+    "example": "extern unsigned int D_80217FA4_676F54;\n\n/* Read only after the pause overlay has registered its textures. */\nunsigned int read_pause_texture_handle(void)\n{\n    return D_80217FA4_676F54;\n}",
+    "exampleExplanation": "Observe this value while the pause-menu overlay is active and its texture initialization has completed. Pass handles only to native interfaces that expect them.",
+    "cautions": [
+      "The runtime address is reused by other overlays. Do not read or write this variable when the pause overlay is inactive.",
+      "Texture handles are assigned at runtime; no fixed handle value or enum meaning is established."
+    ],
+    "related": [
+      "func_800144E8_150E8"
+    ],
+    "confidence": "decompiled"
+  },
+  "D_80217FA8_676F58": {
+    "title": "Pause-menu resource 0x8019 texture handle",
+    "summary": "Runtime texture handle for native image resource 0x8019, initialized by the pause-menu overlay.",
+    "declaration": "extern unsigned int D_80217FA8_676F58;",
+    "behavior": [
+      "The pause-menu initializer func_80211870_670820 stores the return from the native texture registration routine at 0x80217FA8. The matching recomp data symbol is D_80217FA8_676F58.",
+      "The registered image is resource 0x8019, stored at ROM address 0x007EC240. Its decoded RGBA5551 sheet is 64 \u00d7 32 pixels.",
+      "This word holds an opaque runtime texture handle, not pixel bytes or a ROM pointer. The named storage is beyond the file-backed pause overlay; the numeric suffix in its symbol name does not identify the packed image resource."
+    ],
+    "example": "extern unsigned int D_80217FA8_676F58;\n\n/* Read only after the pause overlay has registered its textures. */\nunsigned int read_pause_texture_handle(void)\n{\n    return D_80217FA8_676F58;\n}",
+    "exampleExplanation": "Observe this value while the pause-menu overlay is active and its texture initialization has completed. Pass handles only to native interfaces that expect them.",
+    "cautions": [
+      "The runtime address is reused by other overlays. Do not read or write this variable when the pause overlay is inactive.",
+      "Texture handles are assigned at runtime; no fixed handle value or enum meaning is established."
+    ],
+    "related": [
+      "func_800144E8_150E8"
+    ],
+    "confidence": "decompiled"
+  },
+  "D_80217F10_676EC0": {
+    "title": "Gold Key texture handle",
+    "summary": "Runtime texture handle for native image resource 0x868F, initialized by the pause-menu overlay.",
+    "declaration": "extern unsigned int D_80217F10_676EC0;",
+    "behavior": [
+      "The pause-menu initializer func_80211870_670820 stores the return from the native texture registration routine at 0x80217F10. The matching recomp data symbol is D_80217F10_676EC0.",
+      "The registered image is resource 0x868F, stored at ROM address 0x013F4F60. Its decoded RGBA5551 sheet is 64 \u00d7 32 pixels.",
+      "This word holds an opaque runtime texture handle, not pixel bytes or a ROM pointer. The named storage is beyond the file-backed pause overlay; the numeric suffix in its symbol name does not identify the packed image resource."
+    ],
+    "example": "extern unsigned int D_80217F10_676EC0;\n\n/* Read only after the pause overlay has registered its textures. */\nunsigned int read_pause_texture_handle(void)\n{\n    return D_80217F10_676EC0;\n}",
+    "exampleExplanation": "Observe this value while the pause-menu overlay is active and its texture initialization has completed. Pass handles only to native interfaces that expect them.",
+    "cautions": [
+      "The runtime address is reused by other overlays. Do not read or write this variable when the pause overlay is inactive.",
+      "Texture handles are assigned at runtime; no fixed handle value or enum meaning is established."
+    ],
+    "related": [
+      "func_800144E8_150E8"
+    ],
+    "confidence": "decompiled"
+  },
+  "D_80217F14_676EC4": {
+    "title": "Red Fish, Blue Fish texture handle",
+    "summary": "Runtime texture handle for native image resource 0x8691, initialized by the pause-menu overlay.",
+    "declaration": "extern unsigned int D_80217F14_676EC4;",
+    "behavior": [
+      "The pause-menu initializer func_80211870_670820 stores the return from the native texture registration routine at 0x80217F14. The matching recomp data symbol is D_80217F14_676EC4.",
+      "The registered image is resource 0x8691, stored at ROM address 0x013F5660. Its decoded RGBA5551 sheet is 64 \u00d7 32 pixels.",
+      "This word holds an opaque runtime texture handle, not pixel bytes or a ROM pointer. The named storage is beyond the file-backed pause overlay; the numeric suffix in its symbol name does not identify the packed image resource."
+    ],
+    "example": "extern unsigned int D_80217F14_676EC4;\n\n/* Read only after the pause overlay has registered its textures. */\nunsigned int read_pause_texture_handle(void)\n{\n    return D_80217F14_676EC4;\n}",
+    "exampleExplanation": "Observe this value while the pause-menu overlay is active and its texture initialization has completed. Pass handles only to native interfaces that expect them.",
+    "cautions": [
+      "The runtime address is reused by other overlays. Do not read or write this variable when the pause overlay is inactive.",
+      "Texture handles are assigned at runtime; no fixed handle value or enum meaning is established."
+    ],
+    "related": [
+      "func_800144E8_150E8"
+    ],
+    "confidence": "decompiled"
+  },
+  "D_80217F18_676EC8": {
+    "title": "Yellow Fish texture handle",
+    "summary": "Runtime texture handle for native image resource 0x8692, initialized by the pause-menu overlay.",
+    "declaration": "extern unsigned int D_80217F18_676EC8;",
+    "behavior": [
+      "The pause-menu initializer func_80211870_670820 stores the return from the native texture registration routine at 0x80217F18. The matching recomp data symbol is D_80217F18_676EC8.",
+      "The registered image is resource 0x8692, stored at ROM address 0x013F5CD0. Its decoded RGBA5551 sheet is 64 \u00d7 32 pixels.",
+      "This word holds an opaque runtime texture handle, not pixel bytes or a ROM pointer. The named storage is beyond the file-backed pause overlay; the numeric suffix in its symbol name does not identify the packed image resource."
+    ],
+    "example": "extern unsigned int D_80217F18_676EC8;\n\n/* Read only after the pause overlay has registered its textures. */\nunsigned int read_pause_texture_handle(void)\n{\n    return D_80217F18_676EC8;\n}",
+    "exampleExplanation": "Observe this value while the pause-menu overlay is active and its texture initialization has completed. Pass handles only to native interfaces that expect them.",
+    "cautions": [
+      "The runtime address is reused by other overlays. Do not read or write this variable when the pause overlay is inactive.",
+      "Texture handles are assigned at runtime; no fixed handle value or enum meaning is established."
+    ],
+    "related": [
+      "func_800144E8_150E8"
+    ],
+    "confidence": "decompiled"
+  },
+  "D_80217F1C_676ECC": {
+    "title": "Achilles Heel, Cucumber texture handle",
+    "summary": "Runtime texture handle for native image resource 0x8693, initialized by the pause-menu overlay.",
+    "declaration": "extern unsigned int D_80217F1C_676ECC;",
+    "behavior": [
+      "The pause-menu initializer func_80211870_670820 stores the return from the native texture registration routine at 0x80217F1C. The matching recomp data symbol is D_80217F1C_676ECC.",
+      "The registered image is resource 0x8693, stored at ROM address 0x013F6080. Its decoded RGBA5551 sheet is 64 \u00d7 32 pixels.",
+      "This word holds an opaque runtime texture handle, not pixel bytes or a ROM pointer. The named storage is beyond the file-backed pause overlay; the numeric suffix in its symbol name does not identify the packed image resource."
+    ],
+    "example": "extern unsigned int D_80217F1C_676ECC;\n\n/* Read only after the pause overlay has registered its textures. */\nunsigned int read_pause_texture_handle(void)\n{\n    return D_80217F1C_676ECC;\n}",
+    "exampleExplanation": "Observe this value while the pause-menu overlay is active and its texture initialization has completed. Pass handles only to native interfaces that expect them.",
+    "cautions": [
+      "The runtime address is reused by other overlays. Do not read or write this variable when the pause overlay is inactive.",
+      "Texture handles are assigned at runtime; no fixed handle value or enum meaning is established."
+    ],
+    "related": [
+      "func_800144E8_150E8"
+    ],
+    "confidence": "decompiled"
+  },
+  "D_80217F20_676ED0": {
+    "title": "Miracle Star, Miracle Moon texture handle",
+    "summary": "Runtime texture handle for native image resource 0x8694, initialized by the pause-menu overlay.",
+    "declaration": "extern unsigned int D_80217F20_676ED0;",
+    "behavior": [
+      "The pause-menu initializer func_80211870_670820 stores the return from the native texture registration routine at 0x80217F20. The matching recomp data symbol is D_80217F20_676ED0.",
+      "The registered image is resource 0x8694, stored at ROM address 0x013F6490. Its decoded RGBA5551 sheet is 64 \u00d7 32 pixels.",
+      "This word holds an opaque runtime texture handle, not pixel bytes or a ROM pointer. The named storage is beyond the file-backed pause overlay; the numeric suffix in its symbol name does not identify the packed image resource."
+    ],
+    "example": "extern unsigned int D_80217F20_676ED0;\n\n/* Read only after the pause overlay has registered its textures. */\nunsigned int read_pause_texture_handle(void)\n{\n    return D_80217F20_676ED0;\n}",
+    "exampleExplanation": "Observe this value while the pause-menu overlay is active and its texture initialization has completed. Pass handles only to native interfaces that expect them.",
+    "cautions": [
+      "The runtime address is reused by other overlays. Do not read or write this variable when the pause overlay is inactive.",
+      "Texture handles are assigned at runtime; no fixed handle value or enum meaning is established."
+    ],
+    "related": [
+      "func_800144E8_150E8"
+    ],
+    "confidence": "decompiled"
+  },
+  "D_80217F24_676ED4": {
+    "title": "Miracle Flower, Miracle Snow texture handle",
+    "summary": "Runtime texture handle for native image resource 0x8695, initialized by the pause-menu overlay.",
+    "declaration": "extern unsigned int D_80217F24_676ED4;",
+    "behavior": [
+      "The pause-menu initializer func_80211870_670820 stores the return from the native texture registration routine at 0x80217F24. The matching recomp data symbol is D_80217F24_676ED4.",
+      "The registered image is resource 0x8695, stored at ROM address 0x013F68E0. Its decoded RGBA5551 sheet is 64 \u00d7 32 pixels.",
+      "This word holds an opaque runtime texture handle, not pixel bytes or a ROM pointer. The named storage is beyond the file-backed pause overlay; the numeric suffix in its symbol name does not identify the packed image resource."
+    ],
+    "example": "extern unsigned int D_80217F24_676ED4;\n\n/* Read only after the pause overlay has registered its textures. */\nunsigned int read_pause_texture_handle(void)\n{\n    return D_80217F24_676ED4;\n}",
+    "exampleExplanation": "Observe this value while the pause-menu overlay is active and its texture initialization has completed. Pass handles only to native interfaces that expect them.",
+    "cautions": [
+      "The runtime address is reused by other overlays. Do not read or write this variable when the pause overlay is inactive.",
+      "Texture handles are assigned at runtime; no fixed handle value or enum meaning is established."
+    ],
+    "related": [
+      "func_800144E8_150E8"
+    ],
+    "confidence": "decompiled"
+  },
+  "D_80217F28_676ED8": {
+    "title": "Pause-menu resource 0x8696 texture handle",
+    "summary": "Runtime texture handle for native image resource 0x8696, initialized by the pause-menu overlay.",
+    "declaration": "extern unsigned int D_80217F28_676ED8;",
+    "behavior": [
+      "The pause-menu initializer func_80211870_670820 stores the return from the native texture registration routine at 0x80217F28. The matching recomp data symbol is D_80217F28_676ED8.",
+      "The registered image is resource 0x8696, stored at ROM address 0x013F6E30. Its decoded RGBA5551 sheet is 64 \u00d7 32 pixels.",
+      "This word holds an opaque runtime texture handle, not pixel bytes or a ROM pointer. The named storage is beyond the file-backed pause overlay; the numeric suffix in its symbol name does not identify the packed image resource."
+    ],
+    "example": "extern unsigned int D_80217F28_676ED8;\n\n/* Read only after the pause overlay has registered its textures. */\nunsigned int read_pause_texture_handle(void)\n{\n    return D_80217F28_676ED8;\n}",
+    "exampleExplanation": "Observe this value while the pause-menu overlay is active and its texture initialization has completed. Pass handles only to native interfaces that expect them.",
+    "cautions": [
+      "The runtime address is reused by other overlays. Do not read or write this variable when the pause overlay is inactive.",
+      "Texture handles are assigned at runtime; no fixed handle value or enum meaning is established."
+    ],
+    "related": [
+      "func_800144E8_150E8"
+    ],
+    "confidence": "decompiled"
+  },
+  "D_80217F2C_676EDC": {
+    "title": "Battery texture handle",
+    "summary": "Runtime texture handle for native image resource 0x8697, initialized by the pause-menu overlay.",
+    "declaration": "extern unsigned int D_80217F2C_676EDC;",
+    "behavior": [
+      "The pause-menu initializer func_80211870_670820 stores the return from the native texture registration routine at 0x80217F2C. The matching recomp data symbol is D_80217F2C_676EDC.",
+      "The registered image is resource 0x8697, stored at ROM address 0x013F7260. Its decoded RGBA5551 sheet is 64 \u00d7 32 pixels.",
+      "This word holds an opaque runtime texture handle, not pixel bytes or a ROM pointer. The named storage is beyond the file-backed pause overlay; the numeric suffix in its symbol name does not identify the packed image resource."
+    ],
+    "example": "extern unsigned int D_80217F2C_676EDC;\n\n/* Read only after the pause overlay has registered its textures. */\nunsigned int read_pause_texture_handle(void)\n{\n    return D_80217F2C_676EDC;\n}",
+    "exampleExplanation": "Observe this value while the pause-menu overlay is active and its texture initialization has completed. Pass handles only to native interfaces that expect them.",
+    "cautions": [
+      "The runtime address is reused by other overlays. Do not read or write this variable when the pause overlay is inactive.",
+      "Texture handles are assigned at runtime; no fixed handle value or enum meaning is established."
+    ],
+    "related": [
+      "func_800144E8_150E8"
+    ],
+    "confidence": "decompiled"
+  },
+  "D_80217F30_676EE0": {
+    "title": "Pause-menu resource 0x8698 texture handle",
+    "summary": "Runtime texture handle for native image resource 0x8698, initialized by the pause-menu overlay.",
+    "declaration": "extern unsigned int D_80217F30_676EE0;",
+    "behavior": [
+      "The pause-menu initializer func_80211870_670820 stores the return from the native texture registration routine at 0x80217F30. The matching recomp data symbol is D_80217F30_676EE0.",
+      "The registered image is resource 0x8698, stored at ROM address 0x013F7740. Its decoded RGBA5551 sheet is 64 \u00d7 32 pixels.",
+      "This word holds an opaque runtime texture handle, not pixel bytes or a ROM pointer. The named storage is beyond the file-backed pause overlay; the numeric suffix in its symbol name does not identify the packed image resource."
+    ],
+    "example": "extern unsigned int D_80217F30_676EE0;\n\n/* Read only after the pause overlay has registered its textures. */\nunsigned int read_pause_texture_handle(void)\n{\n    return D_80217F30_676EE0;\n}",
+    "exampleExplanation": "Observe this value while the pause-menu overlay is active and its texture initialization has completed. Pass handles only to native interfaces that expect them.",
+    "cautions": [
+      "The runtime address is reused by other overlays. Do not read or write this variable when the pause overlay is inactive.",
+      "Texture handles are assigned at runtime; no fixed handle value or enum meaning is established."
+    ],
+    "related": [
+      "func_800144E8_150E8"
+    ],
+    "confidence": "decompiled"
+  },
+  "D_80217F34_676EE4": {
+    "title": "Pause-menu resource 0x8699 texture handle",
+    "summary": "Runtime texture handle for native image resource 0x8699, initialized by the pause-menu overlay.",
+    "declaration": "extern unsigned int D_80217F34_676EE4;",
+    "behavior": [
+      "The pause-menu initializer func_80211870_670820 stores the return from the native texture registration routine at 0x80217F34. The matching recomp data symbol is D_80217F34_676EE4.",
+      "The registered image is resource 0x8699, stored at ROM address 0x013F7850. Its decoded RGBA5551 sheet is 64 \u00d7 32 pixels.",
+      "This word holds an opaque runtime texture handle, not pixel bytes or a ROM pointer. The named storage is beyond the file-backed pause overlay; the numeric suffix in its symbol name does not identify the packed image resource."
+    ],
+    "example": "extern unsigned int D_80217F34_676EE4;\n\n/* Read only after the pause overlay has registered its textures. */\nunsigned int read_pause_texture_handle(void)\n{\n    return D_80217F34_676EE4;\n}",
+    "exampleExplanation": "Observe this value while the pause-menu overlay is active and its texture initialization has completed. Pass handles only to native interfaces that expect them.",
+    "cautions": [
+      "The runtime address is reused by other overlays. Do not read or write this variable when the pause overlay is inactive.",
+      "Texture handles are assigned at runtime; no fixed handle value or enum meaning is established."
+    ],
+    "related": [
+      "func_800144E8_150E8"
+    ],
+    "confidence": "decompiled"
+  },
+  "D_80217F38_676EE8": {
+    "title": "Pause-menu resource 0x869A texture handle",
+    "summary": "Runtime texture handle for native image resource 0x869A, initialized by the pause-menu overlay.",
+    "declaration": "extern unsigned int D_80217F38_676EE8;",
+    "behavior": [
+      "The pause-menu initializer func_80211870_670820 stores the return from the native texture registration routine at 0x80217F38. The matching recomp data symbol is D_80217F38_676EE8.",
+      "The registered image is resource 0x869A, stored at ROM address 0x013F7A90. Its decoded RGBA5551 sheet is 64 \u00d7 32 pixels.",
+      "This word holds an opaque runtime texture handle, not pixel bytes or a ROM pointer. The named storage is beyond the file-backed pause overlay; the numeric suffix in its symbol name does not identify the packed image resource."
+    ],
+    "example": "extern unsigned int D_80217F38_676EE8;\n\n/* Read only after the pause overlay has registered its textures. */\nunsigned int read_pause_texture_handle(void)\n{\n    return D_80217F38_676EE8;\n}",
+    "exampleExplanation": "Observe this value while the pause-menu overlay is active and its texture initialization has completed. Pass handles only to native interfaces that expect them.",
+    "cautions": [
+      "The runtime address is reused by other overlays. Do not read or write this variable when the pause overlay is inactive.",
+      "Texture handles are assigned at runtime; no fixed handle value or enum meaning is established."
+    ],
+    "related": [
+      "func_800144E8_150E8"
+    ],
+    "confidence": "decompiled"
+  },
+  "D_80217F3C_676EEC": {
+    "title": "Pause-menu resource 0x869B texture handle",
+    "summary": "Runtime texture handle for native image resource 0x869B, initialized by the pause-menu overlay.",
+    "declaration": "extern unsigned int D_80217F3C_676EEC;",
+    "behavior": [
+      "The pause-menu initializer func_80211870_670820 stores the return from the native texture registration routine at 0x80217F3C. The matching recomp data symbol is D_80217F3C_676EEC.",
+      "The registered image is resource 0x869B, stored at ROM address 0x013F7BC0. Its decoded RGBA5551 sheet is 64 \u00d7 32 pixels.",
+      "This word holds an opaque runtime texture handle, not pixel bytes or a ROM pointer. The named storage is beyond the file-backed pause overlay; the numeric suffix in its symbol name does not identify the packed image resource."
+    ],
+    "example": "extern unsigned int D_80217F3C_676EEC;\n\n/* Read only after the pause overlay has registered its textures. */\nunsigned int read_pause_texture_handle(void)\n{\n    return D_80217F3C_676EEC;\n}",
+    "exampleExplanation": "Observe this value while the pause-menu overlay is active and its texture initialization has completed. Pass handles only to native interfaces that expect them.",
+    "cautions": [
+      "The runtime address is reused by other overlays. Do not read or write this variable when the pause overlay is inactive.",
+      "Texture handles are assigned at runtime; no fixed handle value or enum meaning is established."
+    ],
+    "related": [
+      "func_800144E8_150E8"
+    ],
+    "confidence": "decompiled"
+  },
+  "D_80217F40_676EF0": {
+    "title": "Pause-menu resource 0x869C texture handle",
+    "summary": "Runtime texture handle for native image resource 0x869C, initialized by the pause-menu overlay.",
+    "declaration": "extern unsigned int D_80217F40_676EF0;",
+    "behavior": [
+      "The pause-menu initializer func_80211870_670820 stores the return from the native texture registration routine at 0x80217F40. The matching recomp data symbol is D_80217F40_676EF0.",
+      "The registered image is resource 0x869C, stored at ROM address 0x013F7E40. Its decoded RGBA5551 sheet is 64 \u00d7 32 pixels.",
+      "This word holds an opaque runtime texture handle, not pixel bytes or a ROM pointer. The named storage is beyond the file-backed pause overlay; the numeric suffix in its symbol name does not identify the packed image resource."
+    ],
+    "example": "extern unsigned int D_80217F40_676EF0;\n\n/* Read only after the pause overlay has registered its textures. */\nunsigned int read_pause_texture_handle(void)\n{\n    return D_80217F40_676EF0;\n}",
+    "exampleExplanation": "Observe this value while the pause-menu overlay is active and its texture initialization has completed. Pass handles only to native interfaces that expect them.",
+    "cautions": [
+      "The runtime address is reused by other overlays. Do not read or write this variable when the pause overlay is inactive.",
+      "Texture handles are assigned at runtime; no fixed handle value or enum meaning is established."
+    ],
+    "related": [
+      "func_800144E8_150E8"
+    ],
+    "confidence": "decompiled"
+  },
+  "D_80217F44_676EF4": {
+    "title": "Pause-menu resource 0x869D texture handle",
+    "summary": "Runtime texture handle for native image resource 0x869D, initialized by the pause-menu overlay.",
+    "declaration": "extern unsigned int D_80217F44_676EF4;",
+    "behavior": [
+      "The pause-menu initializer func_80211870_670820 stores the return from the native texture registration routine at 0x80217F44. The matching recomp data symbol is D_80217F44_676EF4.",
+      "The registered image is resource 0x869D, stored at ROM address 0x013F8090. Its decoded RGBA5551 sheet is 64 \u00d7 32 pixels.",
+      "This word holds an opaque runtime texture handle, not pixel bytes or a ROM pointer. The named storage is beyond the file-backed pause overlay; the numeric suffix in its symbol name does not identify the packed image resource."
+    ],
+    "example": "extern unsigned int D_80217F44_676EF4;\n\n/* Read only after the pause overlay has registered its textures. */\nunsigned int read_pause_texture_handle(void)\n{\n    return D_80217F44_676EF4;\n}",
+    "exampleExplanation": "Observe this value while the pause-menu overlay is active and its texture initialization has completed. Pass handles only to native interfaces that expect them.",
+    "cautions": [
+      "The runtime address is reused by other overlays. Do not read or write this variable when the pause overlay is inactive.",
+      "Texture handles are assigned at runtime; no fixed handle value or enum meaning is established."
+    ],
+    "related": [
+      "func_800144E8_150E8"
+    ],
+    "confidence": "decompiled"
+  },
+  "D_80217F48_676EF8": {
+    "title": "Triton Shell texture handle",
+    "summary": "Runtime texture handle for native image resource 0x869E, initialized by the pause-menu overlay.",
+    "declaration": "extern unsigned int D_80217F48_676EF8;",
+    "behavior": [
+      "The pause-menu initializer func_80211870_670820 stores the return from the native texture registration routine at 0x80217F48. The matching recomp data symbol is D_80217F48_676EF8.",
+      "The registered image is resource 0x869E, stored at ROM address 0x013F82B0. Its decoded RGBA5551 sheet is 64 \u00d7 32 pixels.",
+      "This word holds an opaque runtime texture handle, not pixel bytes or a ROM pointer. The named storage is beyond the file-backed pause overlay; the numeric suffix in its symbol name does not identify the packed image resource."
+    ],
+    "example": "extern unsigned int D_80217F48_676EF8;\n\n/* Read only after the pause overlay has registered its textures. */\nunsigned int read_pause_texture_handle(void)\n{\n    return D_80217F48_676EF8;\n}",
+    "exampleExplanation": "Observe this value while the pause-menu overlay is active and its texture initialization has completed. Pass handles only to native interfaces that expect them.",
+    "cautions": [
+      "The runtime address is reused by other overlays. Do not read or write this variable when the pause overlay is inactive.",
+      "Texture handles are assigned at runtime; no fixed handle value or enum meaning is established."
+    ],
+    "related": [
+      "func_800144E8_150E8"
+    ],
+    "confidence": "decompiled"
+  },
+  "D_80217F4C_676EFC": {
+    "title": "Pause-menu resource 0x869F texture handle",
+    "summary": "Runtime texture handle for native image resource 0x869F, initialized by the pause-menu overlay.",
+    "declaration": "extern unsigned int D_80217F4C_676EFC;",
+    "behavior": [
+      "The pause-menu initializer func_80211870_670820 stores the return from the native texture registration routine at 0x80217F4C. The matching recomp data symbol is D_80217F4C_676EFC.",
+      "The registered image is resource 0x869F, stored at ROM address 0x013F8650. Its decoded RGBA5551 sheet is 64 \u00d7 32 pixels.",
+      "This word holds an opaque runtime texture handle, not pixel bytes or a ROM pointer. The named storage is beyond the file-backed pause overlay; the numeric suffix in its symbol name does not identify the packed image resource."
+    ],
+    "example": "extern unsigned int D_80217F4C_676EFC;\n\n/* Read only after the pause overlay has registered its textures. */\nunsigned int read_pause_texture_handle(void)\n{\n    return D_80217F4C_676EFC;\n}",
+    "exampleExplanation": "Observe this value while the pause-menu overlay is active and its texture initialization has completed. Pass handles only to native interfaces that expect them.",
+    "cautions": [
+      "The runtime address is reused by other overlays. Do not read or write this variable when the pause overlay is inactive.",
+      "Texture handles are assigned at runtime; no fixed handle value or enum meaning is established."
+    ],
+    "related": [
+      "func_800144E8_150E8"
+    ],
+    "confidence": "decompiled"
+  },
+  "D_80217F50_676F00": {
+    "title": "Pause-menu resource 0x86A0 texture handle",
+    "summary": "Runtime texture handle for native image resource 0x86A0, initialized by the pause-menu overlay.",
+    "declaration": "extern unsigned int D_80217F50_676F00;",
+    "behavior": [
+      "The pause-menu initializer func_80211870_670820 stores the return from the native texture registration routine at 0x80217F50. The matching recomp data symbol is D_80217F50_676F00.",
+      "The registered image is resource 0x86A0, stored at ROM address 0x013F89A0. Its decoded RGBA5551 sheet is 64 \u00d7 32 pixels.",
+      "This word holds an opaque runtime texture handle, not pixel bytes or a ROM pointer. The named storage is beyond the file-backed pause overlay; the numeric suffix in its symbol name does not identify the packed image resource."
+    ],
+    "example": "extern unsigned int D_80217F50_676F00;\n\n/* Read only after the pause overlay has registered its textures. */\nunsigned int read_pause_texture_handle(void)\n{\n    return D_80217F50_676F00;\n}",
+    "exampleExplanation": "Observe this value while the pause-menu overlay is active and its texture initialization has completed. Pass handles only to native interfaces that expect them.",
+    "cautions": [
+      "The runtime address is reused by other overlays. Do not read or write this variable when the pause overlay is inactive.",
+      "Texture handles are assigned at runtime; no fixed handle value or enum meaning is established."
+    ],
+    "related": [
+      "func_800144E8_150E8"
+    ],
+    "confidence": "decompiled"
+  },
+  "D_80217F54_676F04": {
+    "title": "Pause-menu resource 0x86A1 texture handle",
+    "summary": "Runtime texture handle for native image resource 0x86A1, initialized by the pause-menu overlay.",
+    "declaration": "extern unsigned int D_80217F54_676F04;",
+    "behavior": [
+      "The pause-menu initializer func_80211870_670820 stores the return from the native texture registration routine at 0x80217F54. The matching recomp data symbol is D_80217F54_676F04.",
+      "The registered image is resource 0x86A1, stored at ROM address 0x013F8D10. Its decoded RGBA5551 sheet is 32 \u00d7 64 pixels.",
+      "This word holds an opaque runtime texture handle, not pixel bytes or a ROM pointer. The named storage is beyond the file-backed pause overlay; the numeric suffix in its symbol name does not identify the packed image resource."
+    ],
+    "example": "extern unsigned int D_80217F54_676F04;\n\n/* Read only after the pause overlay has registered its textures. */\nunsigned int read_pause_texture_handle(void)\n{\n    return D_80217F54_676F04;\n}",
+    "exampleExplanation": "Observe this value while the pause-menu overlay is active and its texture initialization has completed. Pass handles only to native interfaces that expect them.",
+    "cautions": [
+      "The runtime address is reused by other overlays. Do not read or write this variable when the pause overlay is inactive.",
+      "Texture handles are assigned at runtime; no fixed handle value or enum meaning is established."
+    ],
+    "related": [
+      "func_800144E8_150E8"
+    ],
+    "confidence": "decompiled"
+  },
+  "D_80217F58_676F08": {
+    "title": "Pause-menu resource 0x86A2 texture handle",
+    "summary": "Runtime texture handle for native image resource 0x86A2, initialized by the pause-menu overlay.",
+    "declaration": "extern unsigned int D_80217F58_676F08;",
+    "behavior": [
+      "The pause-menu initializer func_80211870_670820 stores the return from the native texture registration routine at 0x80217F58. The matching recomp data symbol is D_80217F58_676F08.",
+      "The registered image is resource 0x86A2, stored at ROM address 0x013F93B0. Its decoded RGBA5551 sheet is 32 \u00d7 64 pixels.",
+      "This word holds an opaque runtime texture handle, not pixel bytes or a ROM pointer. The named storage is beyond the file-backed pause overlay; the numeric suffix in its symbol name does not identify the packed image resource."
+    ],
+    "example": "extern unsigned int D_80217F58_676F08;\n\n/* Read only after the pause overlay has registered its textures. */\nunsigned int read_pause_texture_handle(void)\n{\n    return D_80217F58_676F08;\n}",
+    "exampleExplanation": "Observe this value while the pause-menu overlay is active and its texture initialization has completed. Pass handles only to native interfaces that expect them.",
+    "cautions": [
+      "The runtime address is reused by other overlays. Do not read or write this variable when the pause overlay is inactive.",
+      "Texture handles are assigned at runtime; no fixed handle value or enum meaning is established."
+    ],
+    "related": [
+      "func_800144E8_150E8"
+    ],
+    "confidence": "decompiled"
+  },
+  "D_80217F5C_676F0C": {
+    "title": "Pause-menu resource 0x86A3 texture handle",
+    "summary": "Runtime texture handle for native image resource 0x86A3, initialized by the pause-menu overlay.",
+    "declaration": "extern unsigned int D_80217F5C_676F0C;",
+    "behavior": [
+      "The pause-menu initializer func_80211870_670820 stores the return from the native texture registration routine at 0x80217F5C. The matching recomp data symbol is D_80217F5C_676F0C.",
+      "The registered image is resource 0x86A3, stored at ROM address 0x013F9C50. Its decoded RGBA5551 sheet is 32 \u00d7 64 pixels.",
+      "This word holds an opaque runtime texture handle, not pixel bytes or a ROM pointer. The named storage is beyond the file-backed pause overlay; the numeric suffix in its symbol name does not identify the packed image resource."
+    ],
+    "example": "extern unsigned int D_80217F5C_676F0C;\n\n/* Read only after the pause overlay has registered its textures. */\nunsigned int read_pause_texture_handle(void)\n{\n    return D_80217F5C_676F0C;\n}",
+    "exampleExplanation": "Observe this value while the pause-menu overlay is active and its texture initialization has completed. Pass handles only to native interfaces that expect them.",
+    "cautions": [
+      "The runtime address is reused by other overlays. Do not read or write this variable when the pause overlay is inactive.",
+      "Texture handles are assigned at runtime; no fixed handle value or enum meaning is established."
+    ],
+    "related": [
+      "func_800144E8_150E8"
+    ],
+    "confidence": "decompiled"
+  },
+  "D_80217F60_676F10": {
+    "title": "Pause-menu resource 0x86A4 texture handle",
+    "summary": "Runtime texture handle for native image resource 0x86A4, initialized by the pause-menu overlay.",
+    "declaration": "extern unsigned int D_80217F60_676F10;",
+    "behavior": [
+      "The pause-menu initializer func_80211870_670820 stores the return from the native texture registration routine at 0x80217F60. The matching recomp data symbol is D_80217F60_676F10.",
+      "The registered image is resource 0x86A4, stored at ROM address 0x013FA4F0. Its decoded RGBA5551 sheet is 32 \u00d7 64 pixels.",
+      "This word holds an opaque runtime texture handle, not pixel bytes or a ROM pointer. The named storage is beyond the file-backed pause overlay; the numeric suffix in its symbol name does not identify the packed image resource."
+    ],
+    "example": "extern unsigned int D_80217F60_676F10;\n\n/* Read only after the pause overlay has registered its textures. */\nunsigned int read_pause_texture_handle(void)\n{\n    return D_80217F60_676F10;\n}",
+    "exampleExplanation": "Observe this value while the pause-menu overlay is active and its texture initialization has completed. Pass handles only to native interfaces that expect them.",
+    "cautions": [
+      "The runtime address is reused by other overlays. Do not read or write this variable when the pause overlay is inactive.",
+      "Texture handles are assigned at runtime; no fixed handle value or enum meaning is established."
+    ],
+    "related": [
+      "func_800144E8_150E8"
+    ],
+    "confidence": "decompiled"
+  },
+  "D_80217F64_676F14": {
+    "title": "Pause-menu resource 0x86A5 texture handle",
+    "summary": "Runtime texture handle for native image resource 0x86A5, initialized by the pause-menu overlay.",
+    "declaration": "extern unsigned int D_80217F64_676F14;",
+    "behavior": [
+      "The pause-menu initializer func_80211870_670820 stores the return from the native texture registration routine at 0x80217F64. The matching recomp data symbol is D_80217F64_676F14.",
+      "The registered image is resource 0x86A5, stored at ROM address 0x013FAD40. Its decoded RGBA5551 sheet is 32 \u00d7 64 pixels.",
+      "This word holds an opaque runtime texture handle, not pixel bytes or a ROM pointer. The named storage is beyond the file-backed pause overlay; the numeric suffix in its symbol name does not identify the packed image resource."
+    ],
+    "example": "extern unsigned int D_80217F64_676F14;\n\n/* Read only after the pause overlay has registered its textures. */\nunsigned int read_pause_texture_handle(void)\n{\n    return D_80217F64_676F14;\n}",
+    "exampleExplanation": "Observe this value while the pause-menu overlay is active and its texture initialization has completed. Pass handles only to native interfaces that expect them.",
+    "cautions": [
+      "The runtime address is reused by other overlays. Do not read or write this variable when the pause overlay is inactive.",
+      "Texture handles are assigned at runtime; no fixed handle value or enum meaning is established."
+    ],
+    "related": [
+      "func_800144E8_150E8"
+    ],
+    "confidence": "decompiled"
+  }
+}

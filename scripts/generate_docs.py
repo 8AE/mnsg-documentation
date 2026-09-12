@@ -4,6 +4,9 @@ from __future__ import annotations
 import json
 from pathlib import Path
 import re
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from native_inventory import load_inventory
 
 ROOT = Path(__file__).resolve().parents[1]
 FORBIDDEN = re.compile(r'mnsg-(?:custom-fish|enable-boss-rush|extra-options|recomp-example|team-up|anchor)|\b(?:Extra Options|Team Up|Custom Fish|Anchor|multiplayer)\b', re.I)
@@ -104,7 +107,55 @@ def declaration(a,name):
     candidates=re.findall(r'\bextern\s+[^;]+;',a.get('example',''))
     return '\n'.join(c for c in candidates if re.search(r'\b'+re.escape(name)+r'\b',c))
 
-def render(s,a,known,values=None):
+def load_textures(known):
+    """Validate public image metadata before attaching it to native symbols."""
+    path = ROOT/'data/textures.json'
+    if not path.exists():
+        return {}
+    catalog = json.loads(path.read_text())
+    resources = {row['id']: row for row in catalog['resources']}
+    if len(resources) != len(catalog['resources']):
+        raise ValueError('Duplicate texture resource ID')
+    for row in catalog['resources'] + catalog['icons']:
+        image = row['image']
+        if not image.startswith('/img/textures/') or '..' in image or not (ROOT/'static'/image.lstrip('/')).is_file():
+            raise ValueError(f'Missing or invalid texture image: {image}')
+    for row in catalog['resources']:
+        if row.get('nativeSymbol'):
+            symbol = known.get(row['nativeSymbol'])
+            if not symbol or symbol['address'] != row['nativeHandle']:
+                raise ValueError(f'Texture symbol address mismatch: {row["id"]}')
+    for icon in catalog['icons']:
+        source = resources[icon['resource']]
+        if min(icon['x'], icon['y']) < 0 or min(icon['width'], icon['height']) <= 0 or icon['x'] + icon['width'] > source['width'] or icon['y'] + icon['height'] > source['height']:
+            raise ValueError(f'Invalid texture crop: {icon["name"]}')
+        if icon['romAddress'] != source['romAddress']:
+            raise ValueError(f'Texture ROM address mismatch: {icon["name"]}')
+        if any(symbol not in known for symbol in icon['symbols']):
+            raise ValueError(f'Unknown texture symbol: {icon["name"]}')
+    (ROOT/'src/data/textures.json').write_text(json.dumps(catalog,ensure_ascii=False,separators=(',',':'))+'\n')
+    return catalog
+
+def render_textures(name, catalog):
+    icons = [icon for icon in catalog.get('icons', []) if name in icon['symbols'] + icon.get('stateSymbols', [])]
+    sheets = [row for row in catalog.get('resources', []) if row.get('nativeSymbol') == name]
+    if not icons and not sheets:
+        return ''
+    body = '\n## Native textures\n\n'
+    body += ('This variable holds the native texture handle for the sheet below. ' if sheets else 'These images correspond to the character or item state stored here. This variable stores state, not texture pixels. ')
+    body += 'Browse the [texture gallery](/textures/) for original sheets, ROM resource addresses, and matched recomp texture variables.\n\n'
+    for sheet in sheets:
+        body += f'![Resource {sheet["id"]} sheet]({sheet["image"]})\n\n[{sheet["id"]} in the gallery](/textures/?q={name}) · {sheet["width"]} × {sheet["height"]} pixels · packed ROM address `{sheet["romAddress"]}`.\n\n'
+    if not icons:
+        return body
+    body += '| Image | Meaning | ROM resource / address | Texture handle storage |\n| --- | --- | --- | --- |\n'
+    for icon in icons:
+        symbol = icon.get('nativeSymbol')
+        handle = f'[`{symbol}`](/variables/{symbol}/) · `{icon["nativeHandle"]}`' if symbol else 'Exact recomp texture variable not verified'
+        body += f'| ![{icon["label"]}]({icon["image"]}) | {icon["label"]} | [{icon["resource"]}](/textures/?q={icon["resource"]}) · `{icon["romAddress"]}` | {handle} |\n'
+    return body
+
+def render(s,a,known,values=None,textures=None):
     name=s['name'];folder='functions' if s['kind']=='function' else 'variables'
     body=frontmatter({'title':a['title'],'sidebar_label':name,'slug':f'/{folder}/{name}','description':a['summary']})
     body+=f'`{name}` · **{s["kind"].capitalize()}**\n\n{a["summary"]}\n\n'
@@ -120,6 +171,7 @@ def render(s,a,known,values=None):
         for p in a['parameters']:body+=f'| `{table_cell(p["name"])}` | `{table_cell(p.get("type","See signature"))}` | {table_cell(p["description"])} |\n'
     if a.get('returns'):body+='\n## Return value\n\n'+a['returns']+'\n'
     body+=render_value_tables(values or {})
+    body+=render_textures(name, textures or {})
     body+='\n## Usage example\n'+code(a['example'])+'\n'+a.get('exampleExplanation','The example illustrates the native interface and its required state.')+'\n'
     if a.get('cautions'):body+='\n## Notes\n\n'+'\n'.join('- '+item for item in a['cautions'])+'\n'
     if a.get('decompilation'):
@@ -133,8 +185,9 @@ def render(s,a,known,values=None):
     return body
 
 def generate():
-    inv=json.loads((ROOT/'data/inventory.json').read_text());reference=load_reference();known={s['name']:s for s in inv['symbols']}
+    inv=load_inventory(ROOT/'data');reference=load_reference();known={s['name']:s for s in inv['symbols']}
     values=load_value_tables(known=known)
+    textures=load_textures(known)
     missing=sorted(known.keys()-reference.keys())
     if missing:raise ValueError(f'Native API descriptions missing: {missing}')
     outputs={};index=[]
@@ -142,13 +195,15 @@ def generate():
         a=reference[s['name']]
         for field in ('title','summary','behavior','example'):
             if not a.get(field):raise ValueError(f'{s["name"]}: missing {field}')
-        body=render(s,a,known,values.get(s['name']))
+        body=render(s,a,known,values.get(s['name']),textures)
         match=FORBIDDEN.search(body)
         if match:raise ValueError(f'{s["name"]}: project reference in public text: {match.group()}')
         folder='functions' if s['kind']=='function' else 'variables'
         outputs[ROOT/'docs'/folder/(s['name']+'.md')]=body
         index.append({'name':s['name'],'kind':s['kind'],'title':a['title'],'summary':a['summary'],'address':s.get('address'),'romAddress':s.get('romAddress'),'url':f'/{folder}/{s["name"]}/'})
         if s['name'] in values:index[-1]['values']=value_search_text(values[s['name']])
+        texture_terms = ' '.join(' '.join([row['label'],row['id'],row['romAddress'],row.get('nativeHandle') or '',row.get('nativeSymbol') or '']) for row in textures.get('resources',[]) if s['name'] in row['symbols'])
+        if texture_terms:index[-1]['textures']=texture_terms
     for folder in ('functions','variables'):
         directory=ROOT/'docs'/folder;directory.mkdir(parents=True,exist_ok=True)
         # Only remove generated symbol markdown; handwritten overview pages survive.

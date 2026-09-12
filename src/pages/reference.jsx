@@ -12,7 +12,7 @@ export default function Reference() {
   useEffect(()=>{const p=new URLSearchParams(location.search);setQuery(p.get('q')||'');setKind(['function','variable'].includes(p.get('kind'))?p.get('kind'):'');},[location.search]);
   const hits=useMemo(()=>{
     const q=query.toLowerCase().replace(/\\_/g,'_').trim();
-    return api.filter(s=>(!kind||s.kind===kind)&&q.split(/\s+/).every(word=>`${s.name} ${s.title} ${s.summary} ${s.address||''} ${s.romAddress||''} ${s.values||''}`.toLowerCase().includes(word))).sort((a,b)=>{
+    return api.filter(s=>(!kind||s.kind===kind)&&q.split(/\s+/).every(word=>`${s.name} ${s.title} ${s.summary} ${s.address||''} ${s.romAddress||''} ${s.values||''} ${s.textures||''}`.toLowerCase().includes(word))).sort((a,b)=>{
       const rank=s=>q&&s.name.toLowerCase()===q?0:q&&s.name.toLowerCase().includes(q)?1:2;
       return rank(a)-rank(b)||a.name.localeCompare(b.name);
     });

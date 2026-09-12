@@ -13,6 +13,9 @@ from html.parser import HTMLParser
 import json
 from pathlib import Path
 import re
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from native_inventory import load_inventory
 from urllib.parse import unquote, urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -227,7 +230,7 @@ def validate_site(site: Path, data_dir: Path | None = None, docs_dir: Path | Non
     if not site.is_dir():
         return {"ok": False, "errors": [f"Docusaurus output is absent: {site}. Run npm run build first."]}
     try:
-        inventory = json.loads((data_dir / "inventory.json").read_text())
+        inventory = load_inventory(data_dir)
         pages = {path.resolve(): Page(path.read_text()) for path in site.rglob("*.html")}
     except (OSError, json.JSONDecodeError) as error:
         return {"ok": False, "errors": [f"Cannot read required site data: {error}"]}

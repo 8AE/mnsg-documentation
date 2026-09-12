@@ -4,7 +4,7 @@ slug: "/variables"
 description: "Native variables for the US recompilation of Mystical Ninja Starring Goemon."
 ---
 
-63 variables with C interfaces, behavior, and usage examples. Use the search bar to look up an exact symbol, address, or purpose.
+102 variables with C interfaces, behavior, and usage examples. Use the search bar to look up an exact symbol, address, or purpose.
 
 Value tables decode established raw values and document known field layouts. Select **Tables** to jump to a variable’s mappings.
 
@@ -69,6 +69,45 @@ Value tables decode established raw values and document known field layouts. Sel
 | [`D_8020D1D0_5C90E0`](D_8020D1D0_5C90E0.md) | Camera radius used for projection | [Tables](D_8020D1D0_5C90E0.md#known-values) |
 | [`D_8020D220_5C9130`](D_8020D220_5C9130.md) | Reusable player broad-resource buffer | — |
 | [`D_8020EED0_63A2B0`](D_8020EED0_63A2B0.md) | Impact battle state pointer | [Tables](D_8020EED0_63A2B0.md#known-values) |
+| [`D_80217F10_676EC0`](D_80217F10_676EC0.md) | Gold Key texture handle | — |
+| [`D_80217F14_676EC4`](D_80217F14_676EC4.md) | Red Fish, Blue Fish texture handle | — |
+| [`D_80217F18_676EC8`](D_80217F18_676EC8.md) | Yellow Fish texture handle | — |
+| [`D_80217F1C_676ECC`](D_80217F1C_676ECC.md) | Achilles Heel, Cucumber texture handle | — |
+| [`D_80217F20_676ED0`](D_80217F20_676ED0.md) | Miracle Star, Miracle Moon texture handle | — |
+| [`D_80217F24_676ED4`](D_80217F24_676ED4.md) | Miracle Flower, Miracle Snow texture handle | — |
+| [`D_80217F28_676ED8`](D_80217F28_676ED8.md) | Pause-menu resource 0x8696 texture handle | — |
+| [`D_80217F2C_676EDC`](D_80217F2C_676EDC.md) | Battery texture handle | — |
+| [`D_80217F30_676EE0`](D_80217F30_676EE0.md) | Pause-menu resource 0x8698 texture handle | — |
+| [`D_80217F34_676EE4`](D_80217F34_676EE4.md) | Pause-menu resource 0x8699 texture handle | — |
+| [`D_80217F38_676EE8`](D_80217F38_676EE8.md) | Pause-menu resource 0x869A texture handle | — |
+| [`D_80217F3C_676EEC`](D_80217F3C_676EEC.md) | Pause-menu resource 0x869B texture handle | — |
+| [`D_80217F40_676EF0`](D_80217F40_676EF0.md) | Pause-menu resource 0x869C texture handle | — |
+| [`D_80217F44_676EF4`](D_80217F44_676EF4.md) | Pause-menu resource 0x869D texture handle | — |
+| [`D_80217F48_676EF8`](D_80217F48_676EF8.md) | Triton Shell texture handle | — |
+| [`D_80217F4C_676EFC`](D_80217F4C_676EFC.md) | Pause-menu resource 0x869F texture handle | — |
+| [`D_80217F50_676F00`](D_80217F50_676F00.md) | Pause-menu resource 0x86A0 texture handle | — |
+| [`D_80217F54_676F04`](D_80217F54_676F04.md) | Pause-menu resource 0x86A1 texture handle | — |
+| [`D_80217F58_676F08`](D_80217F58_676F08.md) | Pause-menu resource 0x86A2 texture handle | — |
+| [`D_80217F5C_676F0C`](D_80217F5C_676F0C.md) | Pause-menu resource 0x86A3 texture handle | — |
+| [`D_80217F60_676F10`](D_80217F60_676F10.md) | Pause-menu resource 0x86A4 texture handle | — |
+| [`D_80217F64_676F14`](D_80217F64_676F14.md) | Pause-menu resource 0x86A5 texture handle | — |
+| [`D_80217F6C_676F1C`](D_80217F6C_676F1C.md) | Silver Goemon texture handle | — |
+| [`D_80217F70_676F20`](D_80217F70_676F20.md) | Chain Pipe, Gold Goemon texture handle | — |
+| [`D_80217F74_676F24`](D_80217F74_676F24.md) | Fire Ryo texture handle | — |
+| [`D_80217F78_676F28`](D_80217F78_676F28.md) | Silver Yae texture handle | — |
+| [`D_80217F7C_676F2C`](D_80217F7C_676F2C.md) | Bazooka, Gold Yae texture handle | — |
+| [`D_80217F80_676F30`](D_80217F80_676F30.md) | Silver Sasuke texture handle | — |
+| [`D_80217F84_676F34`](D_80217F84_676F34.md) | Ice Kunai, Gold Sasuke texture handle | — |
+| [`D_80217F88_676F38`](D_80217F88_676F38.md) | Silver Ebisumaru texture handle | — |
+| [`D_80217F8C_676F3C`](D_80217F8C_676F3C.md) | Meat Hammer, Gold Ebisumaru texture handle | — |
+| [`D_80217F90_676F40`](D_80217F90_676F40.md) | Bomb texture handle | — |
+| [`D_80217F94_676F44`](D_80217F94_676F44.md) | Silver Doll, Gold Doll texture handle | — |
+| [`D_80217F98_676F48`](D_80217F98_676F48.md) | Pause-menu resource 0x800F texture handle | — |
+| [`D_80217F9C_676F4C`](D_80217F9C_676F4C.md) | Pause-menu resource 0x8010 texture handle | — |
+| [`D_80217FA0_676F50`](D_80217FA0_676F50.md) | Camera, Super Pass texture handle | — |
+| [`D_80217FA4_676F54`](D_80217FA4_676F54.md) | Pause-menu resource 0x8018 texture handle | — |
+| [`D_80217FA8_676F58`](D_80217FA8_676F58.md) | Pause-menu resource 0x8019 texture handle | — |
+| [`D_80217FAC_676F5C`](D_80217FAC_676F5C.md) | Flute texture handle | — |
 | [`D_802287BC_5E3C8C`](D_802287BC_5E3C8C.md) | Actor entry callback table | [Tables](D_802287BC_5E3C8C.md#known-values) |
 | [`D_802297D6_5E4CA6`](D_802297D6_5E4CA6.md) | Actor model and category metadata base | [Tables](D_802297D6_5E4CA6.md#known-values) |
 | [`D_80231300_5EC7D0`](D_80231300_5EC7D0.md) | Per-room actor-data metadata table | — |

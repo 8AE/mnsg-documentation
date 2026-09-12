@@ -103,3 +103,21 @@ html{scroll-behavior:smooth}a,button,input{touch-action:manipulation}a:focus-vis
   .home-container { padding-inline: 18px; }
   .home-header h1 { font-size: 26px; }
 }
+/* Keep original low-resolution game texels visible without smoothing. */
+.native-texture { image-rendering: pixelated; object-fit: contain; }
+.texture-search { display: grid; gap: .5rem; font-weight: 600; }
+.texture-search input { padding: .85rem; border: 1px solid var(--ifm-color-emphasis-400); border-radius: 8px; font: inherit; }
+.texture-toggle { display: flex; align-items: baseline; gap: .6rem; margin: 1rem 0; }
+.texture-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 1rem; }
+.texture-card { padding: 1.25rem; border: 1px solid var(--ifm-color-emphasis-300); border-radius: 12px; scroll-margin-top: 6rem; min-width: 0; }
+.texture-card h2 { overflow-wrap: anywhere; font-size: 1rem; }
+.texture-card p { min-height: 3em; }
+.texture-sheet { display: block; width: 192px; height: 192px; padding: 12px; background: #30333b; border-radius: 8px; margin: 1rem auto; }
+.texture-card dt { margin-top: .5rem; font-size: .85rem; color: var(--ifm-color-emphasis-700); }
+.texture-card dd { margin: 0; overflow-wrap: anywhere; }
+.texture-crop { display: flex; align-items: center; gap: .8rem; border-top: 1px solid var(--ifm-color-emphasis-300); padding-top: .9rem; margin-top: .9rem; font-size: .8rem; }
+.texture-crop img { width: 64px; height: 64px; padding: 5px; background: #30333b; border-radius: 6px; flex-shrink: 0; }
+.texture-crop code { overflow-wrap: anywhere; }
+.markdown img[src*="/img/textures/"] { image-rendering: pixelated; width: 48px; height: 48px; object-fit: contain; background: #30333b; border-radius: 4px; }
+
+.markdown > p > img[src*="/img/textures/resource-"] { width: 192px; height: auto; image-rendering: pixelated; }

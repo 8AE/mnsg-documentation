@@ -6,7 +6,8 @@
     "behavior": [
       "Calls func_800145B4_151B4 to load the selected resource into packed_scratch. If the loaded data begins with the ASCII bytes PIC, it parses the picture header and decodes pixels into decoded_out; otherwise it copies the loaded byte range unchanged into decoded_out.",
       "For PIC input, the return advances by the decoded byte count from the parsed metadata. For non-PIC input, it advances by the loaded byte count. The routine writes back the output data cache before returning.",
-      "Loading and decoding are synchronous. The resource tables and PI manager must already be initialized, and callers should perform this work at a resource-initialization boundary rather than once per frame."
+      "Loading and decoding are synchronous. The resource tables and PI manager must already be initialized, and callers should perform this work at a resource-initialization boundary rather than once per frame.",
+      "The [native texture gallery](/textures/) records verified US image resources, ROM addresses, decoded sheets, and item crops. For example, resource 0x800E at ROM 0x007E9570 decodes to a 64x32 RGBA5551 sheet containing the silver and gold fortune dolls in adjacent 24x24 cells at (0,0) and (24,0). The four face cells in resource 0x868C must be flipped vertically to match the native map-marker quads."
     ],
     "parameters": [
       {

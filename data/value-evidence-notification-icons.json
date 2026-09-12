@@ -1,0 +1,366 @@
+{
+  "version": "US decompressed ROM",
+  "romSha256": "e40bee20508c2e29e651dca4e47504e40f908f0a2186e34a582784bf5a64be4c",
+  "sources": [
+    "Ghidra mnsg.us.0.z64 resident and actor overlay",
+    "Ghidra file_17_linked.elf pause overlay",
+    "Goemon64RecompSyms/mnsg.syms.toml .file_26 plus raw MIPS disassembly"
+  ],
+  "nativeEvidence": {
+    "pauseRegistration": "func_80211870_670820",
+    "weaponTierHelpers": [
+      "0x80212470",
+      "0x802124EC",
+      "0x80212568",
+      "0x802125E4"
+    ],
+    "tritonShell": "file_17 0x802135EC: 24x24, U=24, V=0, texture handle storage 0x80217F48",
+    "pickupActors": {
+      "0x86": "Mr. Elly Fant",
+      "0x87": "Mr. Arrow"
+    },
+    "actorDispatchTable": "0x802287BC",
+    "actorModelTable": "0x80236984",
+    "pickupModelDescriptors": [
+      "0x80234F48",
+      "0x80234F58"
+    ],
+    "pickupModelFiles": [
+      "0x193",
+      "0x194"
+    ],
+    "pickupTextureAddresses": [
+      "0x0A002980",
+      "0x0A003980"
+    ],
+    "pickupResourceBindingRomAddresses": [
+      "0x00067888",
+      "0x00067890"
+    ],
+    "pickupResources": [
+      "0x829D",
+      "0x829E"
+    ],
+    "pickupOrientation": "Left 32x32 cells, vertical flip established by model UVs and 0x8000 texture scale."
+  },
+  "scope": "368 decoded original-game sheets are preserved. 39 labeled crops have a verified item/character interpretation. Exact recomp variable names are matched for native pause texture-handle storage; unmatched resources retain their ROM identity without an invented D_ name.",
+  "validation": "Independent PIC0000 decode, native draw/disassembly, visual comparison with supplied screenshots, crop canaries and ROM guards, release/debug builds. Live game rendering remains unverified.",
+  "symbolTable": {
+    "path": "Goemon64RecompSyms/mnsg.datasyms.toml",
+    "sha256": "af7855b91d29f74351faaf8052c21f1e378badb4c322b9784d205da5016e9ce2",
+    "matches": [
+      {
+        "symbol": "D_80217F6C_676F1C",
+        "address": "0x80217F6C",
+        "resource": "0x8004",
+        "tableLine": 31260,
+        "registrationFunction": "func_80211870_670820",
+        "overlay": ".file_17"
+      },
+      {
+        "symbol": "D_80217F70_676F20",
+        "address": "0x80217F70",
+        "resource": "0x8005",
+        "tableLine": 31261,
+        "registrationFunction": "func_80211870_670820",
+        "overlay": ".file_17"
+      },
+      {
+        "symbol": "D_80217F74_676F24",
+        "address": "0x80217F74",
+        "resource": "0x8006",
+        "tableLine": 31262,
+        "registrationFunction": "func_80211870_670820",
+        "overlay": ".file_17"
+      },
+      {
+        "symbol": "D_80217F78_676F28",
+        "address": "0x80217F78",
+        "resource": "0x8007",
+        "tableLine": 31263,
+        "registrationFunction": "func_80211870_670820",
+        "overlay": ".file_17"
+      },
+      {
+        "symbol": "D_80217F7C_676F2C",
+        "address": "0x80217F7C",
+        "resource": "0x8008",
+        "tableLine": 31264,
+        "registrationFunction": "func_80211870_670820",
+        "overlay": ".file_17"
+      },
+      {
+        "symbol": "D_80217F80_676F30",
+        "address": "0x80217F80",
+        "resource": "0x8009",
+        "tableLine": 31265,
+        "registrationFunction": "func_80211870_670820",
+        "overlay": ".file_17"
+      },
+      {
+        "symbol": "D_80217F84_676F34",
+        "address": "0x80217F84",
+        "resource": "0x800A",
+        "tableLine": 31266,
+        "registrationFunction": "func_80211870_670820",
+        "overlay": ".file_17"
+      },
+      {
+        "symbol": "D_80217F88_676F38",
+        "address": "0x80217F88",
+        "resource": "0x800B",
+        "tableLine": 31267,
+        "registrationFunction": "func_80211870_670820",
+        "overlay": ".file_17"
+      },
+      {
+        "symbol": "D_80217F8C_676F3C",
+        "address": "0x80217F8C",
+        "resource": "0x800C",
+        "tableLine": 31268,
+        "registrationFunction": "func_80211870_670820",
+        "overlay": ".file_17"
+      },
+      {
+        "symbol": "D_80217F90_676F40",
+        "address": "0x80217F90",
+        "resource": "0x800D",
+        "tableLine": 31269,
+        "registrationFunction": "func_80211870_670820",
+        "overlay": ".file_17"
+      },
+      {
+        "symbol": "D_80217F94_676F44",
+        "address": "0x80217F94",
+        "resource": "0x800E",
+        "tableLine": 31270,
+        "registrationFunction": "func_80211870_670820",
+        "overlay": ".file_17"
+      },
+      {
+        "symbol": "D_80217F98_676F48",
+        "address": "0x80217F98",
+        "resource": "0x800F",
+        "tableLine": 31271,
+        "registrationFunction": "func_80211870_670820",
+        "overlay": ".file_17"
+      },
+      {
+        "symbol": "D_80217F9C_676F4C",
+        "address": "0x80217F9C",
+        "resource": "0x8010",
+        "tableLine": 31272,
+        "registrationFunction": "func_80211870_670820",
+        "overlay": ".file_17"
+      },
+      {
+        "symbol": "D_80217FA0_676F50",
+        "address": "0x80217FA0",
+        "resource": "0x8011",
+        "tableLine": 31273,
+        "registrationFunction": "func_80211870_670820",
+        "overlay": ".file_17"
+      },
+      {
+        "symbol": "D_80217FAC_676F5C",
+        "address": "0x80217FAC",
+        "resource": "0x8016",
+        "tableLine": 31276,
+        "registrationFunction": "func_80211870_670820",
+        "overlay": ".file_17"
+      },
+      {
+        "symbol": "D_80217FA4_676F54",
+        "address": "0x80217FA4",
+        "resource": "0x8018",
+        "tableLine": 31274,
+        "registrationFunction": "func_80211870_670820",
+        "overlay": ".file_17"
+      },
+      {
+        "symbol": "D_80217FA8_676F58",
+        "address": "0x80217FA8",
+        "resource": "0x8019",
+        "tableLine": 31275,
+        "registrationFunction": "func_80211870_670820",
+        "overlay": ".file_17"
+      },
+      {
+        "symbol": "D_80217F10_676EC0",
+        "address": "0x80217F10",
+        "resource": "0x868F",
+        "tableLine": 31237,
+        "registrationFunction": "func_80211870_670820",
+        "overlay": ".file_17"
+      },
+      {
+        "symbol": "D_80217F14_676EC4",
+        "address": "0x80217F14",
+        "resource": "0x8691",
+        "tableLine": 31238,
+        "registrationFunction": "func_80211870_670820",
+        "overlay": ".file_17"
+      },
+      {
+        "symbol": "D_80217F18_676EC8",
+        "address": "0x80217F18",
+        "resource": "0x8692",
+        "tableLine": 31239,
+        "registrationFunction": "func_80211870_670820",
+        "overlay": ".file_17"
+      },
+      {
+        "symbol": "D_80217F1C_676ECC",
+        "address": "0x80217F1C",
+        "resource": "0x8693",
+        "tableLine": 31240,
+        "registrationFunction": "func_80211870_670820",
+        "overlay": ".file_17"
+      },
+      {
+        "symbol": "D_80217F20_676ED0",
+        "address": "0x80217F20",
+        "resource": "0x8694",
+        "tableLine": 31241,
+        "registrationFunction": "func_80211870_670820",
+        "overlay": ".file_17"
+      },
+      {
+        "symbol": "D_80217F24_676ED4",
+        "address": "0x80217F24",
+        "resource": "0x8695",
+        "tableLine": 31242,
+        "registrationFunction": "func_80211870_670820",
+        "overlay": ".file_17"
+      },
+      {
+        "symbol": "D_80217F28_676ED8",
+        "address": "0x80217F28",
+        "resource": "0x8696",
+        "tableLine": 31243,
+        "registrationFunction": "func_80211870_670820",
+        "overlay": ".file_17"
+      },
+      {
+        "symbol": "D_80217F2C_676EDC",
+        "address": "0x80217F2C",
+        "resource": "0x8697",
+        "tableLine": 31244,
+        "registrationFunction": "func_80211870_670820",
+        "overlay": ".file_17"
+      },
+      {
+        "symbol": "D_80217F30_676EE0",
+        "address": "0x80217F30",
+        "resource": "0x8698",
+        "tableLine": 31245,
+        "registrationFunction": "func_80211870_670820",
+        "overlay": ".file_17"
+      },
+      {
+        "symbol": "D_80217F34_676EE4",
+        "address": "0x80217F34",
+        "resource": "0x8699",
+        "tableLine": 31246,
+        "registrationFunction": "func_80211870_670820",
+        "overlay": ".file_17"
+      },
+      {
+        "symbol": "D_80217F38_676EE8",
+        "address": "0x80217F38",
+        "resource": "0x869A",
+        "tableLine": 31247,
+        "registrationFunction": "func_80211870_670820",
+        "overlay": ".file_17"
+      },
+      {
+        "symbol": "D_80217F3C_676EEC",
+        "address": "0x80217F3C",
+        "resource": "0x869B",
+        "tableLine": 31248,
+        "registrationFunction": "func_80211870_670820",
+        "overlay": ".file_17"
+      },
+      {
+        "symbol": "D_80217F40_676EF0",
+        "address": "0x80217F40",
+        "resource": "0x869C",
+        "tableLine": 31249,
+        "registrationFunction": "func_80211870_670820",
+        "overlay": ".file_17"
+      },
+      {
+        "symbol": "D_80217F44_676EF4",
+        "address": "0x80217F44",
+        "resource": "0x869D",
+        "tableLine": 31250,
+        "registrationFunction": "func_80211870_670820",
+        "overlay": ".file_17"
+      },
+      {
+        "symbol": "D_80217F48_676EF8",
+        "address": "0x80217F48",
+        "resource": "0x869E",
+        "tableLine": 31251,
+        "registrationFunction": "func_80211870_670820",
+        "overlay": ".file_17"
+      },
+      {
+        "symbol": "D_80217F4C_676EFC",
+        "address": "0x80217F4C",
+        "resource": "0x869F",
+        "tableLine": 31252,
+        "registrationFunction": "func_80211870_670820",
+        "overlay": ".file_17"
+      },
+      {
+        "symbol": "D_80217F50_676F00",
+        "address": "0x80217F50",
+        "resource": "0x86A0",
+        "tableLine": 31253,
+        "registrationFunction": "func_80211870_670820",
+        "overlay": ".file_17"
+      },
+      {
+        "symbol": "D_80217F54_676F04",
+        "address": "0x80217F54",
+        "resource": "0x86A1",
+        "tableLine": 31254,
+        "registrationFunction": "func_80211870_670820",
+        "overlay": ".file_17"
+      },
+      {
+        "symbol": "D_80217F58_676F08",
+        "address": "0x80217F58",
+        "resource": "0x86A2",
+        "tableLine": 31255,
+        "registrationFunction": "func_80211870_670820",
+        "overlay": ".file_17"
+      },
+      {
+        "symbol": "D_80217F5C_676F0C",
+        "address": "0x80217F5C",
+        "resource": "0x86A3",
+        "tableLine": 31256,
+        "registrationFunction": "func_80211870_670820",
+        "overlay": ".file_17"
+      },
+      {
+        "symbol": "D_80217F60_676F10",
+        "address": "0x80217F60",
+        "resource": "0x86A4",
+        "tableLine": 31257,
+        "registrationFunction": "func_80211870_670820",
+        "overlay": ".file_17"
+      },
+      {
+        "symbol": "D_80217F64_676F14",
+        "address": "0x80217F64",
+        "resource": "0x86A5",
+        "tableLine": 31258,
+        "registrationFunction": "func_80211870_670820",
+        "overlay": ".file_17"
+      }
+    ]
+  }
+}

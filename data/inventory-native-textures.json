@@ -1,0 +1,317 @@
+{
+  "scope": "Ghidra-verified native texture storage, supplemental to scanned project usage.",
+  "symbols": [
+    {
+      "name": "D_80217F6C_676F1C",
+      "kind": "variable",
+      "address": "0x80217F6C",
+      "romAddress": null,
+      "section": ".file_17 runtime storage",
+      "size": null
+    },
+    {
+      "name": "D_80217F70_676F20",
+      "kind": "variable",
+      "address": "0x80217F70",
+      "romAddress": null,
+      "section": ".file_17 runtime storage",
+      "size": null
+    },
+    {
+      "name": "D_80217F74_676F24",
+      "kind": "variable",
+      "address": "0x80217F74",
+      "romAddress": null,
+      "section": ".file_17 runtime storage",
+      "size": null
+    },
+    {
+      "name": "D_80217F78_676F28",
+      "kind": "variable",
+      "address": "0x80217F78",
+      "romAddress": null,
+      "section": ".file_17 runtime storage",
+      "size": null
+    },
+    {
+      "name": "D_80217F7C_676F2C",
+      "kind": "variable",
+      "address": "0x80217F7C",
+      "romAddress": null,
+      "section": ".file_17 runtime storage",
+      "size": null
+    },
+    {
+      "name": "D_80217F80_676F30",
+      "kind": "variable",
+      "address": "0x80217F80",
+      "romAddress": null,
+      "section": ".file_17 runtime storage",
+      "size": null
+    },
+    {
+      "name": "D_80217F84_676F34",
+      "kind": "variable",
+      "address": "0x80217F84",
+      "romAddress": null,
+      "section": ".file_17 runtime storage",
+      "size": null
+    },
+    {
+      "name": "D_80217F88_676F38",
+      "kind": "variable",
+      "address": "0x80217F88",
+      "romAddress": null,
+      "section": ".file_17 runtime storage",
+      "size": null
+    },
+    {
+      "name": "D_80217F8C_676F3C",
+      "kind": "variable",
+      "address": "0x80217F8C",
+      "romAddress": null,
+      "section": ".file_17 runtime storage",
+      "size": null
+    },
+    {
+      "name": "D_80217F90_676F40",
+      "kind": "variable",
+      "address": "0x80217F90",
+      "romAddress": null,
+      "section": ".file_17 runtime storage",
+      "size": null
+    },
+    {
+      "name": "D_80217F94_676F44",
+      "kind": "variable",
+      "address": "0x80217F94",
+      "romAddress": null,
+      "section": ".file_17 runtime storage",
+      "size": null
+    },
+    {
+      "name": "D_80217F98_676F48",
+      "kind": "variable",
+      "address": "0x80217F98",
+      "romAddress": null,
+      "section": ".file_17 runtime storage",
+      "size": null
+    },
+    {
+      "name": "D_80217F9C_676F4C",
+      "kind": "variable",
+      "address": "0x80217F9C",
+      "romAddress": null,
+      "section": ".file_17 runtime storage",
+      "size": null
+    },
+    {
+      "name": "D_80217FA0_676F50",
+      "kind": "variable",
+      "address": "0x80217FA0",
+      "romAddress": null,
+      "section": ".file_17 runtime storage",
+      "size": null
+    },
+    {
+      "name": "D_80217FAC_676F5C",
+      "kind": "variable",
+      "address": "0x80217FAC",
+      "romAddress": null,
+      "section": ".file_17 runtime storage",
+      "size": null
+    },
+    {
+      "name": "D_80217FA4_676F54",
+      "kind": "variable",
+      "address": "0x80217FA4",
+      "romAddress": null,
+      "section": ".file_17 runtime storage",
+      "size": null
+    },
+    {
+      "name": "D_80217FA8_676F58",
+      "kind": "variable",
+      "address": "0x80217FA8",
+      "romAddress": null,
+      "section": ".file_17 runtime storage",
+      "size": null
+    },
+    {
+      "name": "D_80217F10_676EC0",
+      "kind": "variable",
+      "address": "0x80217F10",
+      "romAddress": null,
+      "section": ".file_17 runtime storage",
+      "size": null
+    },
+    {
+      "name": "D_80217F14_676EC4",
+      "kind": "variable",
+      "address": "0x80217F14",
+      "romAddress": null,
+      "section": ".file_17 runtime storage",
+      "size": null
+    },
+    {
+      "name": "D_80217F18_676EC8",
+      "kind": "variable",
+      "address": "0x80217F18",
+      "romAddress": null,
+      "section": ".file_17 runtime storage",
+      "size": null
+    },
+    {
+      "name": "D_80217F1C_676ECC",
+      "kind": "variable",
+      "address": "0x80217F1C",
+      "romAddress": null,
+      "section": ".file_17 runtime storage",
+      "size": null
+    },
+    {
+      "name": "D_80217F20_676ED0",
+      "kind": "variable",
+      "address": "0x80217F20",
+      "romAddress": null,
+      "section": ".file_17 runtime storage",
+      "size": null
+    },
+    {
+      "name": "D_80217F24_676ED4",
+      "kind": "variable",
+      "address": "0x80217F24",
+      "romAddress": null,
+      "section": ".file_17 runtime storage",
+      "size": null
+    },
+    {
+      "name": "D_80217F28_676ED8",
+      "kind": "variable",
+      "address": "0x80217F28",
+      "romAddress": null,
+      "section": ".file_17 runtime storage",
+      "size": null
+    },
+    {
+      "name": "D_80217F2C_676EDC",
+      "kind": "variable",
+      "address": "0x80217F2C",
+      "romAddress": null,
+      "section": ".file_17 runtime storage",
+      "size": null
+    },
+    {
+      "name": "D_80217F30_676EE0",
+      "kind": "variable",
+      "address": "0x80217F30",
+      "romAddress": null,
+      "section": ".file_17 runtime storage",
+      "size": null
+    },
+    {
+      "name": "D_80217F34_676EE4",
+      "kind": "variable",
+      "address": "0x80217F34",
+      "romAddress": null,
+      "section": ".file_17 runtime storage",
+      "size": null
+    },
+    {
+      "name": "D_80217F38_676EE8",
+      "kind": "variable",
+      "address": "0x80217F38",
+      "romAddress": null,
+      "section": ".file_17 runtime storage",
+      "size": null
+    },
+    {
+      "name": "D_80217F3C_676EEC",
+      "kind": "variable",
+      "address": "0x80217F3C",
+      "romAddress": null,
+      "section": ".file_17 runtime storage",
+      "size": null
+    },
+    {
+      "name": "D_80217F40_676EF0",
+      "kind": "variable",
+      "address": "0x80217F40",
+      "romAddress": null,
+      "section": ".file_17 runtime storage",
+      "size": null
+    },
+    {
+      "name": "D_80217F44_676EF4",
+      "kind": "variable",
+      "address": "0x80217F44",
+      "romAddress": null,
+      "section": ".file_17 runtime storage",
+      "size": null
+    },
+    {
+      "name": "D_80217F48_676EF8",
+      "kind": "variable",
+      "address": "0x80217F48",
+      "romAddress": null,
+      "section": ".file_17 runtime storage",
+      "size": null
+    },
+    {
+      "name": "D_80217F4C_676EFC",
+      "kind": "variable",
+      "address": "0x80217F4C",
+      "romAddress": null,
+      "section": ".file_17 runtime storage",
+      "size": null
+    },
+    {
+      "name": "D_80217F50_676F00",
+      "kind": "variable",
+      "address": "0x80217F50",
+      "romAddress": null,
+      "section": ".file_17 runtime storage",
+      "size": null
+    },
+    {
+      "name": "D_80217F54_676F04",
+      "kind": "variable",
+      "address": "0x80217F54",
+      "romAddress": null,
+      "section": ".file_17 runtime storage",
+      "size": null
+    },
+    {
+      "name": "D_80217F58_676F08",
+      "kind": "variable",
+      "address": "0x80217F58",
+      "romAddress": null,
+      "section": ".file_17 runtime storage",
+      "size": null
+    },
+    {
+      "name": "D_80217F5C_676F0C",
+      "kind": "variable",
+      "address": "0x80217F5C",
+      "romAddress": null,
+      "section": ".file_17 runtime storage",
+      "size": null
+    },
+    {
+      "name": "D_80217F60_676F10",
+      "kind": "variable",
+      "address": "0x80217F60",
+      "romAddress": null,
+      "section": ".file_17 runtime storage",
+      "size": null
+    },
+    {
+      "name": "D_80217F64_676F14",
+      "kind": "variable",
+      "address": "0x80217F64",
+      "romAddress": null,
+      "section": ".file_17 runtime storage",
+      "size": null
+    }
+  ]
+}

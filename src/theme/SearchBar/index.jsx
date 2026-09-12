@@ -14,7 +14,7 @@ export default function SearchBar() {
   const hits = useMemo(() => {
     const q = normalize(query);
     if (!q) return [];
-    return api.filter(s => q.split(/\s+/).every(word => normalize(`${s.name} ${s.title} ${s.summary} ${s.address || ''} ${s.romAddress || ''} ${s.values || ''}`).includes(word)))
+    return api.filter(s => q.split(/\s+/).every(word => normalize(`${s.name} ${s.title} ${s.summary} ${s.address || ''} ${s.romAddress || ''} ${s.values || ''} ${s.textures || ''}`).includes(word)))
       .sort((a, b) => {
         const rank = s => normalize(s.name) === q ? 0 : normalize(s.name).includes(q) ? 1 : 2;
         return rank(a) - rank(b) || a.name.localeCompare(b.name);

@@ -25,6 +25,7 @@ const config = {
       title: 'Mystical Ninja Starring Goemon Recompiled',
       items: [
         {to: '/reference', label: 'API reference', position: 'left'},
+        {to: '/textures', label: 'Textures', position: 'left'},
         {to: '/getting-started', label: 'Getting started', position: 'left'},
         {href: 'https://github.com/klorfmorf/Goemon64Recomp', label: 'Game source', position: 'left'},
         {type: 'search', position: 'right'},

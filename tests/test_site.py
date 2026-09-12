@@ -143,7 +143,7 @@ class BuiltSiteTests(unittest.TestCase):
         self.assertTrue(any(item.get("type") == "search" for item in home.search_inputs))
 
     def test_complete_native_catalog_and_search_without_public_source_data(self):
-        inventory = json.loads((ROOT / "data/inventory.json").read_text())
+        inventory = validator.load_inventory(ROOT / "data")
         self.assertEqual(self.report["symbols"], len(inventory["symbols"]))
         self.assertEqual(self.report["functionPages"] + self.report["variablePages"], len(inventory["symbols"]))
         self.assertEqual(self.report["searchEntries"], len(inventory["symbols"]))
