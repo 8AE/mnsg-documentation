@@ -127,8 +127,11 @@ def load_textures(known):
                 raise ValueError(f'Texture symbol address mismatch: {row["id"]}')
     for icon in catalog['icons']:
         source = resources[icon['resource']]
-        if min(icon['x'], icon['y']) < 0 or min(icon['width'], icon['height']) <= 0 or icon['x'] + icon['width'] > source['width'] or icon['y'] + icon['height'] > source['height']:
+        crop_width = icon.get('cropWidth', icon['width'])
+        if min(icon['x'], icon['y']) < 0 or min(crop_width, icon['height']) <= 0 or icon['x'] + crop_width > source['width'] or icon['y'] + icon['height'] > source['height']:
             raise ValueError(f'Invalid texture crop: {icon["name"]}')
+        if icon['width'] != crop_width * (2 if icon.get('mirrorX') else 1):
+            raise ValueError(f'Invalid texture output width: {icon["name"]}')
         if icon['romAddress'] != source['romAddress']:
             raise ValueError(f'Texture ROM address mismatch: {icon["name"]}')
         if any(symbol not in known for symbol in icon['symbols']):

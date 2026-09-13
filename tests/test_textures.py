@@ -50,10 +50,21 @@ class TextureTests(unittest.TestCase):
             sheet = sheets[crop['resource']]
             self.assertEqual(crop.get('nativeSymbol'), sheet.get('nativeSymbol'))
             self.assertEqual(crop['romAddress'], sheet['romAddress'])
-            self.assertLessEqual(crop['x'] + crop['width'], sheet['width'])
+            crop_width = crop.get('cropWidth', crop['width'])
+            self.assertLessEqual(crop['x'] + crop_width, sheet['width'])
+            self.assertEqual(crop['width'], crop_width * (2 if crop.get('mirrorX') else 1))
             self.assertLessEqual(crop['y'] + crop['height'], sheet['height'])
             for symbol in crop['symbols']:
                 self.assertIn(crop['image'], (ROOT / 'docs/variables' / f'{symbol}.md').read_text())
+
+    def test_pickup_icons_use_native_mirrored_halves(self):
+        catalog = json.loads((ROOT / 'data/textures.json').read_text())
+        mirrored = {r['name']: r for r in catalog['icons'] if r.get('mirrorX')}
+        self.assertEqual(set(mirrored), {'MR_ELLY_FANT', 'MR_ARROW'})
+        for icon in mirrored.values():
+            self.assertEqual((icon['x'], icon['y'], icon['cropWidth'], icon['height']), (0, 0, 16, 32))
+            self.assertEqual(icon['width'], 32)
+            self.assertTrue(icon['flipY'])
 
     def test_supplemental_inventory_does_not_silently_override_scanned_symbols(self):
         with tempfile.TemporaryDirectory() as directory:

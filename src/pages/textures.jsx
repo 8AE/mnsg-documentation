@@ -30,7 +30,7 @@ export default function Textures() {
       <h1>Texture gallery</h1>
       <p className="reference-lead">Original game textures, with the addresses that identify them.</p>
       <p>Browse {catalog.icons.length} verified item and character crops and {catalog.resources.length} decoded sheets.
-        Each sheet is shown in stored pixel order; crops reproduce its displayed orientation.
+        Each sheet is shown in stored pixel order; crops reproduce its displayed orientation and mirroring.
         Resources are ROM assets, while texture handles are runtime storage in the named overlay.</p>
       <p>Load these assets with <Link to="/functions/func_800144E8_150E8/">the native resource decoder</Link>.
         Matched <code>D_…</code> names are the exact texture-handle variables from the recomp symbol table.
@@ -54,7 +54,8 @@ export default function Textures() {
           {row.addressNote && <p>{row.addressNote}</p>}
           {catalog.icons.filter(icon => icon.resource === row.id).map(icon => <div className="texture-crop" key={icon.name}>
             <TextureImage image={icon.image} label={icon.label} />
-            <div><strong>{icon.label}</strong><div>Crop ({icon.x}, {icon.y}, {icon.width}, {icon.height}){icon.flipY ? ' · flip vertically' : ''}</div>
+            <div><strong>{icon.label}</strong><div>Crop ({icon.x}, {icon.y}, {icon.cropWidth ?? icon.width}, {icon.height}){icon.flipY ? ' · flip vertically' : ''}</div>
+              {icon.mirrorX && <div>Append a horizontally mirrored half → {icon.width} × {icon.height} complete image</div>}
               {icon.symbols.map(symbol => <Link key={symbol} to={`/variables/${symbol}/#native-textures`}><code>{symbol}</code></Link>)}
             </div>
           </div>)}

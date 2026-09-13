@@ -41,7 +41,57 @@
       "0x829D",
       "0x829E"
     ],
-    "pickupOrientation": "Left 32x32 cells, vertical flip established by model UVs and 0x8000 texture scale."
+    "pickupOrientation": "Left 16x32 half, vertically flipped and followed by its horizontal reflection, producing a 32x32 complete image. The prior 32x32 source crop incorrectly included adjacent artwork.",
+    "pickupMirroring": {
+      "modelRomAddresses": [
+        "0x010402B0",
+        "0x01040390"
+      ],
+      "renderTileOffset": "0x70",
+      "renderTileCommand": [
+        "0xF5102000",
+        "0x00094140"
+      ],
+      "sAddressMode": 1,
+      "sMask": 4,
+      "tAddressMode": 2,
+      "tMask": 5,
+      "textureScaleCommand": [
+        "0xBB000001",
+        "0x80008000"
+      ],
+      "quadUvs": [
+        [
+          "0x0000",
+          "0x0800"
+        ],
+        [
+          "0x0800",
+          "0x0800"
+        ],
+        [
+          "0x0800",
+          "0x0000"
+        ],
+        [
+          "0x0000",
+          "0x0000"
+        ]
+      ],
+      "sourceCrop": [
+        0,
+        0,
+        16,
+        32
+      ],
+      "outputSize": [
+        32,
+        32
+      ],
+      "columnOrder": "0..15, 15..0",
+      "rowOrder": "31..0",
+      "validation": "Verified both model files through the native ROM file table and decoded their render-tile/scale commands and UVs. Host-compiled runtime C output with actual decoded ROM sheets matches all 39 exporter hashes; all 37 other icon hashes are unchanged. Mirroring, alpha, ROM guards and buffer canaries pass ASan/UBSan tests. Reconstructed previews inspected; fresh in-game toast rendering remains unverified."
+    }
   },
   "scope": "368 decoded original-game sheets are preserved. 39 labeled crops have a verified item/character interpretation. Exact recomp variable names are matched for native pause texture-handle storage; unmatched resources retain their ROM identity without an invented D_ name.",
   "validation": "Independent PIC0000 decode, native draw/disassembly, visual comparison with supplied screenshots, crop canaries and ROM guards, release/debug builds. Live game rendering remains unverified.",

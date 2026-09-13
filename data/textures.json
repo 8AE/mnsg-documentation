@@ -5591,10 +5591,12 @@
       "symbols": [],
       "nativeHandle": null,
       "nativeOverlay": null,
-      "rgba32Sha256": "9deb8f76fab4a4a7e0c295bea178536fdc92cb1d54c8007f34fb354c9243d1d2",
+      "rgba32Sha256": "a4633fd5a629b128348f5ae1959cff83cd7567e98464a22ceb923a73cc90243e",
       "stateSymbols": [
         "D_8015C608_15D208"
-      ]
+      ],
+      "cropWidth": 16,
+      "mirrorX": true
     },
     {
       "name": "MR_ARROW",
@@ -5610,10 +5612,12 @@
       "symbols": [],
       "nativeHandle": null,
       "nativeOverlay": null,
-      "rgba32Sha256": "d47c6c4e7b1545fbf5ab36e43338d9e7975fded958063e2846e0fda50db6c456",
+      "rgba32Sha256": "1e90d6f42b8ac68063732e39a7e438c81ba704feca3567c1fd2ea9823e712f99",
       "stateSymbols": [
         "D_8015C608_15D208"
-      ]
+      ],
+      "cropWidth": 16,
+      "mirrorX": true
     },
     {
       "name": "SILVER_GOEMON",
