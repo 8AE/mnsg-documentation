@@ -13,11 +13,12 @@
   },
   "coverage": {
     "packedIds": 197,
-    "namedPackedIds": 185,
-    "unresolvedPackedIds": 12,
+    "namedPackedIds": 197,
+    "unresolvedPackedIds": 0,
     "structuredRows": 62,
     "unassignedFieldRows": 17,
-    "publicTables": 9
+    "publicTables": 9,
+    "publicKnownFlagRows": 200
   },
   "sources": [
     {
@@ -422,7 +423,12 @@
       "internalKey": "ky_s_oc_tile",
       "comment": "KEY_SILVER_OEDO_CASTLE_1F_TILE",
       "display": "OC: Falling Platforms Silver Key",
-      "displayLine": 534
+      "displayLine": 534,
+      "nativeReview": {
+        "meaning": "Silver dungeon key pickup",
+        "definitionRomAddress": "0x012A2080",
+        "evidence": "value-evidence-dungeon-key-icons.json"
+      }
     },
     {
       "id": "0x10c",
@@ -436,7 +442,12 @@
       "internalKey": "ky_s_oc_1f",
       "comment": "KEY_SILVER_OEDO_CASTLE_1F",
       "display": "OC: Silver Key Room Near Congos Hand",
-      "displayLine": 535
+      "displayLine": 535,
+      "nativeReview": {
+        "meaning": "Silver dungeon key pickup",
+        "definitionRomAddress": "0x012A3450",
+        "evidence": "value-evidence-dungeon-key-icons.json"
+      }
     },
     {
       "id": "0x10e",
@@ -450,7 +461,12 @@
       "internalKey": "ky_g_oc_1f",
       "comment": "KEY_GOLD_OEDO_CASTLE_1F",
       "display": "OC: Gold Key(1F)",
-      "displayLine": 536
+      "displayLine": 536,
+      "nativeReview": {
+        "meaning": "Gold dungeon key pickup",
+        "definitionRomAddress": "0x012A4570",
+        "evidence": "value-evidence-dungeon-key-icons.json"
+      }
     },
     {
       "id": "0x110",
@@ -464,7 +480,12 @@
       "internalKey": "ky_s_oc_cp",
       "comment": "KEY_SILVER_OEDO_CASTLE_1F_CHAIN_PIPE",
       "display": "OC: Silver (Chain Pipe)",
-      "displayLine": 537
+      "displayLine": 537,
+      "nativeReview": {
+        "meaning": "Silver dungeon key pickup",
+        "definitionRomAddress": "0x012A43B0",
+        "evidence": "value-evidence-dungeon-key-icons.json"
+      }
     },
     {
       "id": "0x112",
@@ -478,7 +499,12 @@
       "internalKey": "ky_s_oc_crsh",
       "comment": "KEY_SILVER_OEDO_CASTLE_2F_CRUSHER",
       "display": "OC: Floor Panel Room Silver Key",
-      "displayLine": 538
+      "displayLine": 538,
+      "nativeReview": {
+        "meaning": "Silver dungeon key pickup",
+        "definitionRomAddress": "0x012A4A30",
+        "evidence": "value-evidence-dungeon-key-icons.json"
+      }
     },
     {
       "id": "0x114",
@@ -492,91 +518,126 @@
       "internalKey": "ky_s_oc_2f",
       "comment": "KEY_SILVER_OEDO_CASTLE_2F",
       "display": "OC: First Fight Silver Key",
-      "displayLine": 539
+      "displayLine": 539,
+      "nativeReview": {
+        "meaning": "Silver dungeon key pickup",
+        "definitionRomAddress": "0x012A5790",
+        "evidence": "value-evidence-dungeon-key-icons.json"
+      }
     },
     {
       "id": "0x1ad",
       "byteOffset": "0x35",
       "bit": 5,
       "mask": "0x20",
-      "status": "unresolved",
+      "status": "named",
       "project": "mnsg-recomp-example",
       "path": "src/item_sync.c",
       "line": 299,
       "internalKey": "ky_s_gt_flwr",
       "comment": "KEY_SILVER_GHOST_TOYS_1F_FLOWER",
       "display": "Ghost Toys Ghost and Bean fight room Silver Key",
-      "displayLine": 543
+      "displayLine": 543,
+      "nativeReview": {
+        "meaning": "Silver dungeon key pickup",
+        "definitionRomAddress": "0x012A7CB0",
+        "evidence": "value-evidence-dungeon-key-icons.json"
+      }
     },
     {
       "id": "0x1af",
       "byteOffset": "0x35",
       "bit": 7,
       "mask": "0x80",
-      "status": "unresolved",
+      "status": "named",
       "project": "mnsg-recomp-example",
       "path": "src/item_sync.c",
       "line": 300,
       "internalKey": "ky_s_gt_crn",
       "comment": "KEY_SILVER_GHOST_TOYS_1F_CRANE",
       "display": "Ghost Toys Picture floor room Gold Key",
-      "displayLine": 544
+      "displayLine": 544,
+      "nativeReview": {
+        "meaning": "Silver dungeon key pickup",
+        "definitionRomAddress": "0x012A7070",
+        "evidence": "value-evidence-dungeon-key-icons.json"
+      }
     },
     {
       "id": "0x1b1",
       "byteOffset": "0x36",
       "bit": 1,
       "mask": "0x2",
-      "status": "unresolved",
+      "status": "named",
       "project": "mnsg-recomp-example",
       "path": "src/item_sync.c",
       "line": 301,
       "internalKey": "ky_s_gt_inv",
       "comment": "KEY_SILVER_GHOST_TOYS_1F_INVISIBLE",
       "display": "Festival Temple Boss Fight Boss Beaten",
-      "displayLine": 545
+      "displayLine": 545,
+      "nativeReview": {
+        "meaning": "Silver dungeon key pickup",
+        "definitionRomAddress": "0x012A8720",
+        "evidence": "value-evidence-dungeon-key-icons.json"
+      }
     },
     {
       "id": "0x1b3",
       "byteOffset": "0x36",
       "bit": 3,
       "mask": "0x8",
-      "status": "unresolved",
+      "status": "named",
       "project": "mnsg-recomp-example",
       "path": "src/item_sync.c",
       "line": 302,
       "internalKey": "ky_s_gt_spin",
       "comment": "KEY_SILVER_GHOST_TOYS_2F_SPINNING",
       "display": "Festival Temple Miracle Item Received",
-      "displayLine": 546
+      "displayLine": 546,
+      "nativeReview": {
+        "meaning": "Silver dungeon key pickup",
+        "definitionRomAddress": "0x012A8BA0",
+        "evidence": "value-evidence-dungeon-key-icons.json"
+      }
     },
     {
       "id": "0x1b5",
       "byteOffset": "0x36",
       "bit": 5,
       "mask": "0x20",
-      "status": "unresolved",
+      "status": "named",
       "project": "mnsg-recomp-example",
       "path": "src/item_sync.c",
       "line": 303,
       "internalKey": "ky_s_gt_dar",
       "comment": "KEY_SILVER_GHOST_TOYS_2F_DARUMANYO",
       "display": "Ghost Toys Flower Pot Room Silver Key",
-      "displayLine": 547
+      "displayLine": 547,
+      "nativeReview": {
+        "meaning": "Silver dungeon key pickup",
+        "definitionRomAddress": "0x012A90D0",
+        "evidence": "value-evidence-dungeon-key-icons.json"
+      }
     },
     {
       "id": "0x1b7",
       "byteOffset": "0x36",
       "bit": 7,
       "mask": "0x80",
-      "status": "unresolved",
+      "status": "named",
       "project": "mnsg-recomp-example",
       "path": "src/item_sync.c",
       "line": 304,
       "internalKey": "ky_g_gt_ff",
       "comment": "KEY_GOLD_GHOST_TOYS_2F_FALSE_FLOOR",
       "display": "Ghost Toys Crane Game Room Silver Key",
-      "displayLine": 548
+      "displayLine": 548,
+      "nativeReview": {
+        "meaning": "Gold dungeon key pickup",
+        "definitionRomAddress": "0x012A9510",
+        "evidence": "value-evidence-dungeon-key-icons.json"
+      }
     },
     {
       "id": "0x1b9",
@@ -590,21 +651,31 @@
       "internalKey": "ky_d_gt_sc",
       "comment": "KEY_DIAMOND_GHOST_TOYS_2F_SPIKE_CANNON",
       "display": "GTC: Diamond (2F Spike Cannon)",
-      "displayLine": 549
+      "displayLine": 549,
+      "nativeReview": {
+        "meaning": "Diamond dungeon key pickup",
+        "definitionRomAddress": "0x012A9A80",
+        "evidence": "value-evidence-dungeon-key-icons.json"
+      }
     },
     {
       "id": "0x1bb",
       "byteOffset": "0x37",
       "bit": 3,
       "mask": "0x8",
-      "status": "unresolved",
+      "status": "named",
       "project": "mnsg-recomp-example",
       "path": "src/item_sync.c",
       "line": 306,
       "internalKey": "ky_s_gt_bil",
       "comment": "KEY_SILVER_GHOST_TOYS_2F_BILLIARDS",
       "display": "Get Camera",
-      "displayLine": 550
+      "displayLine": 550,
+      "nativeReview": {
+        "meaning": "Silver dungeon key pickup",
+        "definitionRomAddress": "0x012A9920",
+        "evidence": "value-evidence-dungeon-key-icons.json"
+      }
     },
     {
       "id": "0x16e",
@@ -618,7 +689,12 @@
       "internalKey": "ky_g_ft_hot",
       "comment": "KEY_GOLD_FESTIVAL_TEMPLE_HOT",
       "display": "FTC: Gold Key",
-      "displayLine": 554
+      "displayLine": 554,
+      "nativeReview": {
+        "meaning": "Gold dungeon key pickup",
+        "definitionRomAddress": "0x012AAAE0",
+        "evidence": "value-evidence-dungeon-key-icons.json"
+      }
     },
     {
       "id": "0x171",
@@ -632,7 +708,12 @@
       "internalKey": "ky_s_ft_ring",
       "comment": "KEY_SILVER_FESTIVAL_TEMPLE_RING",
       "display": "FTC: Silver Key",
-      "displayLine": 555
+      "displayLine": 555,
+      "nativeReview": {
+        "meaning": "Silver dungeon key pickup",
+        "definitionRomAddress": "0x012AC9A0",
+        "evidence": "value-evidence-dungeon-key-icons.json"
+      }
     },
     {
       "id": "0x17b",
@@ -646,7 +727,12 @@
       "internalKey": "ky_s_gs_baz",
       "comment": "KEY_SILVER_GOURMET_SUB_2F_BAZOOKA",
       "display": "GS: Silver (2F Bazooka)",
-      "displayLine": 559
+      "displayLine": 559,
+      "nativeReview": {
+        "meaning": "Silver dungeon key pickup",
+        "definitionRomAddress": "0x012AE000",
+        "evidence": "value-evidence-dungeon-key-icons.json"
+      }
     },
     {
       "id": "0x17d",
@@ -660,7 +746,12 @@
       "internalKey": "ky_g_gs_jet",
       "comment": "KEY_GOLD_GOURMET_SUB_2F_JETPACK",
       "display": "GS: Gold Key (2F Jetpack)",
-      "displayLine": 560
+      "displayLine": 560,
+      "nativeReview": {
+        "meaning": "Gold dungeon key pickup",
+        "definitionRomAddress": "0x012AE1E0",
+        "evidence": "value-evidence-dungeon-key-icons.json"
+      }
     },
     {
       "id": "0x17f",
@@ -674,7 +765,12 @@
       "internalKey": "ky_s_gs_lava",
       "comment": "KEY_SILVER_GOURMET_SUB_2F_LAVA",
       "display": "GS: Silver Key (2F Lava)",
-      "displayLine": 561
+      "displayLine": 561,
+      "nativeReview": {
+        "meaning": "Silver dungeon key pickup",
+        "definitionRomAddress": "0x012AE7C0",
+        "evidence": "value-evidence-dungeon-key-icons.json"
+      }
     },
     {
       "id": "0x181",
@@ -688,7 +784,12 @@
       "internalKey": "ky_s_gs_uw",
       "comment": "KEY_SILVER_GOURMET_SUB_2F_UNDERWATER",
       "display": "GS: Silver Key (2F Underwater)",
-      "displayLine": 562
+      "displayLine": 562,
+      "nativeReview": {
+        "meaning": "Silver dungeon key pickup",
+        "definitionRomAddress": "0x012AF2D0",
+        "evidence": "value-evidence-dungeon-key-icons.json"
+      }
     },
     {
       "id": "0x183",
@@ -702,7 +803,12 @@
       "internalKey": "ky_s_gs_swd",
       "comment": "KEY_SILVER_GOURMET_SUB_3F_SWORD",
       "display": "GS: Silver Key (3F Sword)",
-      "displayLine": 563
+      "displayLine": 563,
+      "nativeReview": {
+        "meaning": "Silver dungeon key pickup",
+        "definitionRomAddress": "0x012AFE30",
+        "evidence": "value-evidence-dungeon-key-icons.json"
+      }
     },
     {
       "id": "0x185",
@@ -716,7 +822,12 @@
       "internalKey": "ky_d_gs_inv",
       "comment": "KEY_DIAMOND_GOURMET_SUB_3F_INVISIBLE",
       "display": "GS: Diamond Key (3F Invisible)",
-      "displayLine": 564
+      "displayLine": 564,
+      "nativeReview": {
+        "meaning": "Diamond dungeon key pickup",
+        "definitionRomAddress": "0x012AF710",
+        "evidence": "value-evidence-dungeon-key-icons.json"
+      }
     },
     {
       "id": "0x187",
@@ -730,49 +841,69 @@
       "internalKey": "ky_s_gs_sus",
       "comment": "KEY_SILVER_GOURMET_SUB_3F_SUSHI",
       "display": "GS: Silver Key (3F Sushi)",
-      "displayLine": 565
+      "displayLine": 565,
+      "nativeReview": {
+        "meaning": "Silver dungeon key pickup",
+        "definitionRomAddress": "0x012B0760",
+        "evidence": "value-evidence-dungeon-key-icons.json"
+      }
     },
     {
       "id": "0x189",
       "byteOffset": "0x31",
       "bit": 1,
       "mask": "0x2",
-      "status": "unresolved",
+      "status": "named",
       "project": "mnsg-recomp-example",
       "path": "src/item_sync.c",
       "line": 322,
       "internalKey": "ky_g_mc_fan",
       "comment": "KEY_GOLD_MUSICAL_CASTLE_1_FAN",
       "display": "Gorgeous Musical Castle Spinning Block Platforming Diamond Key",
-      "displayLine": 569
+      "displayLine": 569,
+      "nativeReview": {
+        "meaning": "Gold dungeon key pickup",
+        "definitionRomAddress": "0x012B1DD0",
+        "evidence": "value-evidence-dungeon-key-icons.json"
+      }
     },
     {
       "id": "0x18b",
       "byteOffset": "0x31",
       "bit": 3,
       "mask": "0x8",
-      "status": "unresolved",
+      "status": "named",
       "project": "mnsg-recomp-example",
       "path": "src/item_sync.c",
       "line": 323,
       "internalKey": "ky_s_mc_tall",
       "comment": "KEY_SILVER_MUSICAL_CASTLE_1_TALL",
       "display": "Gorgeous Musical Castle Raising Platform Diamond Key",
-      "displayLine": 570
+      "displayLine": 570,
+      "nativeReview": {
+        "meaning": "Silver dungeon key pickup",
+        "definitionRomAddress": "0x012B18F0",
+        "evidence": "value-evidence-dungeon-key-icons.json"
+      }
     },
     {
       "id": "0x18c",
       "byteOffset": "0x31",
       "bit": 4,
       "mask": "0x10",
-      "status": "unresolved",
+      "status": "named",
       "project": "mnsg-recomp-example",
       "path": "src/item_sync.c",
       "line": 324,
       "internalKey": "ky_g_mc_hj",
       "comment": "KEY_GOLD_MUSICAL_CASTLE_1_HIGH_JUMP",
       "display": "Gorgeous Musical Castle Conveyor Belt Room Switch Hit",
-      "displayLine": 571
+      "displayLine": 571,
+      "nativeReview": {
+        "meaning": "Gold dungeon key pickup",
+        "definitionRomAddress": "0x012B2000",
+        "evidence": "value-evidence-dungeon-key-icons.json"
+      }
     },
     {
       "id": "0x18f",
@@ -786,35 +917,50 @@
       "internalKey": "ky_g_mc_mini",
       "comment": "KEY_GOLD_MUSICAL_CASTLE_1_MINI",
       "display": "MC: Gold (1F Mini)",
-      "displayLine": 572
+      "displayLine": 572,
+      "nativeReview": {
+        "meaning": "Gold dungeon key pickup",
+        "definitionRomAddress": "0x012B2D40",
+        "evidence": "value-evidence-dungeon-key-icons.json"
+      }
     },
     {
       "id": "0x191",
       "byteOffset": "0x32",
       "bit": 1,
       "mask": "0x2",
-      "status": "unresolved",
+      "status": "named",
       "project": "mnsg-recomp-example",
       "path": "src/item_sync.c",
       "line": 326,
       "internalKey": "ky_d_mc_cube",
       "comment": "KEY_DIAMOND_MUSICAL_CASTLE_1_CUBE",
       "display": "Gorgeous Musical Castle Fan Room Gold Key",
-      "displayLine": 573
+      "displayLine": 573,
+      "nativeReview": {
+        "meaning": "Diamond dungeon key pickup",
+        "definitionRomAddress": "0x012B2B80",
+        "evidence": "value-evidence-dungeon-key-icons.json"
+      }
     },
     {
       "id": "0x193",
       "byteOffset": "0x32",
       "bit": 3,
       "mask": "0x8",
-      "status": "unresolved",
+      "status": "named",
       "project": "mnsg-recomp-example",
       "path": "src/item_sync.c",
       "line": 327,
       "internalKey": "ky_d_mc2",
       "comment": "KEY_DIAMOND_MUSICAL_CASTLE_2",
       "display": "Gorgeous Musical Castle First Climb Silver Key",
-      "displayLine": 574
+      "displayLine": 574,
+      "nativeReview": {
+        "meaning": "Diamond dungeon key pickup",
+        "definitionRomAddress": "0x012B4AA0",
+        "evidence": "value-evidence-dungeon-key-icons.json"
+      }
     },
     {
       "id": "0x109",
@@ -3289,84 +3435,84 @@
       "id": "0x1ad",
       "commentClaim": "KEY_SILVER_GHOST_TOYS_1F_FLOWER",
       "displayClaim": "Ghost Toys Ghost and Bean fight room Silver Key",
-      "resolution": "Public raw ID retained, native meaning unresolved."
+      "resolution": "Native actor 0x193 at ROM 0x012A7CB0 establishes a silver dungeon key pickup. Exact room descriptions remain unverified; see value-evidence-dungeon-key-icons.json."
     },
     {
       "kind": "flag-meaning",
       "id": "0x1af",
       "commentClaim": "KEY_SILVER_GHOST_TOYS_1F_CRANE",
       "displayClaim": "Ghost Toys Picture floor room Gold Key",
-      "resolution": "Public raw ID retained, native meaning unresolved."
+      "resolution": "Native actor 0x193 at ROM 0x012A7070 establishes a silver dungeon key pickup. Exact room descriptions remain unverified; see value-evidence-dungeon-key-icons.json."
     },
     {
       "kind": "flag-meaning",
       "id": "0x1b1",
       "commentClaim": "KEY_SILVER_GHOST_TOYS_1F_INVISIBLE",
       "displayClaim": "Festival Temple Boss Fight Boss Beaten",
-      "resolution": "Public raw ID retained, native meaning unresolved."
+      "resolution": "Native actor 0x193 at ROM 0x012A8720 establishes a silver dungeon key pickup. Exact room descriptions remain unverified; see value-evidence-dungeon-key-icons.json."
     },
     {
       "kind": "flag-meaning",
       "id": "0x1b3",
       "commentClaim": "KEY_SILVER_GHOST_TOYS_2F_SPINNING",
       "displayClaim": "Festival Temple Miracle Item Received",
-      "resolution": "Public raw ID retained, native meaning unresolved."
+      "resolution": "Native actor 0x193 at ROM 0x012A8BA0 establishes a silver dungeon key pickup. Exact room descriptions remain unverified; see value-evidence-dungeon-key-icons.json."
     },
     {
       "kind": "flag-meaning",
       "id": "0x1b5",
       "commentClaim": "KEY_SILVER_GHOST_TOYS_2F_DARUMANYO",
       "displayClaim": "Ghost Toys Flower Pot Room Silver Key",
-      "resolution": "Public raw ID retained, native meaning unresolved."
+      "resolution": "Native actor 0x193 at ROM 0x012A90D0 establishes a silver dungeon key pickup. Exact room descriptions remain unverified; see value-evidence-dungeon-key-icons.json."
     },
     {
       "kind": "flag-meaning",
       "id": "0x1b7",
       "commentClaim": "KEY_GOLD_GHOST_TOYS_2F_FALSE_FLOOR",
       "displayClaim": "Ghost Toys Crane Game Room Silver Key",
-      "resolution": "Public raw ID retained, native meaning unresolved."
+      "resolution": "Native actor 0x193 at ROM 0x012A9510 establishes a gold dungeon key pickup. Exact room descriptions remain unverified; see value-evidence-dungeon-key-icons.json."
     },
     {
       "kind": "flag-meaning",
       "id": "0x1bb",
       "commentClaim": "KEY_SILVER_GHOST_TOYS_2F_BILLIARDS",
       "displayClaim": "Get Camera",
-      "resolution": "Public raw ID retained, native meaning unresolved."
+      "resolution": "Native actor 0x193 at ROM 0x012A9920 establishes a silver dungeon key pickup. Exact room descriptions remain unverified; see value-evidence-dungeon-key-icons.json."
     },
     {
       "kind": "flag-meaning",
       "id": "0x189",
       "commentClaim": "KEY_GOLD_MUSICAL_CASTLE_1_FAN",
       "displayClaim": "Gorgeous Musical Castle Spinning Block Platforming Diamond Key",
-      "resolution": "Public raw ID retained, native meaning unresolved."
+      "resolution": "Native actor 0x193 at ROM 0x012B1DD0 establishes a gold dungeon key pickup. Exact room descriptions remain unverified; see value-evidence-dungeon-key-icons.json."
     },
     {
       "kind": "flag-meaning",
       "id": "0x18b",
       "commentClaim": "KEY_SILVER_MUSICAL_CASTLE_1_TALL",
       "displayClaim": "Gorgeous Musical Castle Raising Platform Diamond Key",
-      "resolution": "Public raw ID retained, native meaning unresolved."
+      "resolution": "Native actor 0x193 at ROM 0x012B18F0 establishes a silver dungeon key pickup. Exact room descriptions remain unverified; see value-evidence-dungeon-key-icons.json."
     },
     {
       "kind": "flag-meaning",
       "id": "0x18c",
       "commentClaim": "KEY_GOLD_MUSICAL_CASTLE_1_HIGH_JUMP",
       "displayClaim": "Gorgeous Musical Castle Conveyor Belt Room Switch Hit",
-      "resolution": "Public raw ID retained, native meaning unresolved."
+      "resolution": "Native actor 0x193 at ROM 0x012B2000 establishes a gold dungeon key pickup. Exact room descriptions remain unverified; see value-evidence-dungeon-key-icons.json."
     },
     {
       "kind": "flag-meaning",
       "id": "0x191",
       "commentClaim": "KEY_DIAMOND_MUSICAL_CASTLE_1_CUBE",
       "displayClaim": "Gorgeous Musical Castle Fan Room Gold Key",
-      "resolution": "Public raw ID retained, native meaning unresolved."
+      "resolution": "Native actor 0x193 at ROM 0x012B2B80 establishes a diamond dungeon key pickup. Exact room descriptions remain unverified; see value-evidence-dungeon-key-icons.json."
     },
     {
       "kind": "flag-meaning",
       "id": "0x193",
       "commentClaim": "KEY_DIAMOND_MUSICAL_CASTLE_2",
       "displayClaim": "Gorgeous Musical Castle First Climb Silver Key",
-      "resolution": "Public raw ID retained, native meaning unresolved."
+      "resolution": "Native actor 0x193 at ROM 0x012B4AA0 establishes a diamond dungeon key pickup. Exact room descriptions remain unverified; see value-evidence-dungeon-key-icons.json."
     },
     {
       "kind": "flag-description",
@@ -3402,6 +3548,7 @@
   ],
   "publicationReview": [
     "Normalized public spelling Dharmanyo to Dharumanyo to match existing encounter pages and room table.",
-    "Known-save-flags description explicitly distinguishes native callback behavior from inferred exact pickup locations whose room actor data has not been verified. No raw values changed."
+    "Known-save-flags description explicitly distinguishes native callback behavior from inferred exact pickup locations whose room actor data has not been verified. No raw values changed.",
+    "2026-09-12: Verified 29 dungeon key colors and pickup flags against native actor definitions, resolving 12 conflicting meanings. Retained original source claims above as historical evidence; nativeReview gives the current finding. Preserved the unresolved-save-flags public anchor for the expanded native key table."
   ]
 }

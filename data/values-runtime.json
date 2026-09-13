@@ -752,6 +752,11 @@
             "Flying Tile"
           ],
           [
+            "`0x193`",
+            "`403`",
+            "Dungeon key (silver, gold or diamond)"
+          ],
+          [
             "`0x198`",
             "`408`",
             "Spike Chain"
@@ -830,6 +835,76 @@
             "`0x3FC`",
             "`1020`",
             "Floor Flamethrower"
+          ]
+        ]
+      },
+      {
+        "id": "dungeon-key-definition-fields",
+        "title": "Dungeon key definition fields",
+        "description": "Applies to actor ID 0x193 only. Definition offsets are relative to the record pointed to by D_8015CDE0 during initialization; task offsets are relative to the initialized actor. func_80218A54_5D3F24 copies the definition payload as 32-bit words, preserving the big-endian byte and halfword fields below. The file_43 entry func_080001BC_6F369C checks the pickup flag and removes an already collected key. Its pickup callback func_0800058C_6F3A6C sets the same flag through func_80024038_24C38. [Verified pickup records](./D_8015C608_15D208.md#unresolved-save-flags) list all 29 mapped definitions.",
+        "columns": [
+          "Definition offset",
+          "Task offset",
+          "Storage type",
+          "Meaning"
+        ],
+        "rows": [
+          [
+            "`+0x00`",
+            "`+0x5C`",
+            "`uint16_t`",
+            "Actor ID 0x193 (403)."
+          ],
+          [
+            "`+0x05`",
+            "`+0xD1`",
+            "`uint8_t`",
+            "Key color: 0 silver, 1 gold, 2 diamond."
+          ],
+          [
+            "`+0x08`",
+            "`+0xD4`",
+            "`uint16_t`",
+            "Packed save-flag ID recording this key pickup; not a byte offset or key count."
+          ]
+        ]
+      },
+      {
+        "id": "dungeon-key-colors",
+        "title": "Dungeon key colors and textures",
+        "description": "Native key color values correspond to the original game artwork below. Resource IDs and ROM offsets identify texture sheets. A verified D_ symbol identifies a mutable native texture-handle word, not the pixel address. Every crop is 24 by 24 pixels from a 64 by 32 RGBA5551 sheet. The silver and diamond sheet has no verified D_ handle mapping yet.",
+        "columns": [
+          "Color value",
+          "Key",
+          "Resource ID",
+          "Texture ROM offset",
+          "Crop origin (x, y)",
+          "Native texture handle"
+        ],
+        "rows": [
+          [
+            "`0`",
+            "[Silver key](/textures/?q=0x868E)",
+            "`0x868E`",
+            "`0x013F4A80`",
+            "`(0, 0)`",
+            "Unresolved"
+          ],
+          [
+            "`1`",
+            "[Gold key](/textures/?q=0x868F)",
+            "`0x868F`",
+            "`0x013F4F60`",
+            "`(32, 0)`",
+            "[D_80217F10_676EC0](./D_80217F10_676EC0.md)"
+          ],
+          [
+            "`2`",
+            "[Diamond key](/textures/?q=0x868E)",
+            "`0x868E`",
+            "`0x013F4A80`",
+            "`(24, 0)`",
+            "Unresolved"
           ]
         ]
       }
@@ -1779,7 +1854,7 @@
       {
         "id": "selected-actor-callbacks",
         "title": "Selected actor entry addresses",
-        "description": "The array index is an actor ID. These are stored entry addresses from the US actor table; 0x08000000-region addresses belong to dynamically loaded actor code and require the matching resident overlay. See [`D_8015CDE0`](./D_8015CDE0.md#known-actor-ids) for more actor IDs.",
+        "description": "The array index is an actor ID. These are stored entry addresses from the US actor table; 0x08000000-region addresses belong to dynamically loaded actor code and require the matching resident overlay. See [`D_8015CDE0`](./D_8015CDE0.md#known-actor-ids) for more actor IDs. Actor 0x193 selects file_43 entry func_080001BC_6F369C; its definition payload provides the key color and pickup flag.",
         "columns": [
           "Actor ID (hex)",
           "Actor ID (decimal)",
@@ -1834,6 +1909,12 @@
             "`321`",
             "Ninja",
             "`0x08001508`"
+          ],
+          [
+            "`0x193`",
+            "`403`",
+            "Dungeon key (file_43)",
+            "`0x080001BC`"
           ],
           [
             "`0x365`",
