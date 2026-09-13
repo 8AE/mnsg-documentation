@@ -737,5 +737,15 @@
     "7": "Y > -115: 2; else Y > -372: 1; else 0",
     "8": "Y > -120: 2 else 1",
     "9": "Y > 100: 3 else 2"
+  },
+  "graphicsPointerCorrection": {
+    "reportedBehavior": "Remote dots sampled fragmented multicolored pixels in the user-provided 2026-09-12 23:09 recording.",
+    "previousPixelAddress": "0x8106D928 (mod BSS in the reported package build)",
+    "nativeReader": "FUN_80009548 (mnsg.us.0.z64): file-zero bank entry forwards +8 pointer to G_SETTIMG without rebasing.",
+    "runtimeReader": "Goemon64Recomp/lib/rt64/src/hle/rt64_rsp.cpp: RSP::fromSegmented uses segments[(address >> 24) & 15] plus the low 24 bits unless extended RDRAM is enabled.",
+    "runtimeMode": "Goemon64Recomp/patches/main.c: func_800012FC_1EFC enables extended GBI but its gEXSetRDRAMExtended call is commented out.",
+    "fix": "Allocate sixteen 8x8 RGBA5551 crops (2048 bytes) through the scene registry sentinel below 0x80800000 after normal assets and before render scratch. Use zero UV origin and S/T masks three. Rebuild per scene.",
+    "checks": "AddressSanitizer/UndefinedBehaviorSanitizer tests verify the old extended address is rejected, bank pointers preserve physical addresses, crop pixels and texture masks match, boundaries remain intact, and scene reload invalidates old buffers.",
+    "runtimeStatus": "User recording verifies the original failure. Corrected two-client visuals have not yet been recorded."
   }
 }
