@@ -10,12 +10,14 @@
       "height": 32,
       "image": "/img/textures/resource-8004.png",
       "packedSha256": "7e9f2817ef76fed55862e62b9352a67f7237c3b5baa5a2c597f0ee233a2e1fcc",
-      "label": "Silver Goemon",
+      "label": "Silver Goemon, Minimap position dot",
       "identified": true,
       "nativeHandle": "0x80217F6C",
       "nativeOverlay": ".file_17",
       "symbols": [
-        "D_80217F6C_676F1C"
+        "D_80217F6C_676F1C",
+        "D_80209BC8",
+        "D_80209CA0"
       ],
       "nativeSymbol": "D_80217F6C_676F1C"
     },
@@ -6112,6 +6114,26 @@
         "D_8015C608_15D208"
       ],
       "nativeSymbol": "D_80217F2C_676EDC"
+    },
+    {
+      "name": "MINIMAP_DOT",
+      "label": "Minimap position dot",
+      "resource": "0x8004",
+      "romAddress": "0x007E6C00",
+      "x": 24,
+      "y": 24,
+      "width": 8,
+      "height": 8,
+      "flipY": false,
+      "image": "/img/textures/minimap-dot.png",
+      "nativeSymbol": "D_80217F6C_676F1C",
+      "nativeHandle": "0x80217F6C",
+      "symbols": [
+        "D_80217F6C_676F1C",
+        "D_80209BC8",
+        "D_80209CA0"
+      ],
+      "rgba32Sha256": "8a7aaf1f72cd201a8dd613bfa24bfbb161c62af7b98c28563bd282b2d5537df5"
     }
   ],
   "symbolTable": "Goemon64RecompSyms/mnsg.datasyms.toml"

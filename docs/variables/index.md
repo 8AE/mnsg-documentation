@@ -4,12 +4,13 @@ slug: "/variables"
 description: "Native variables for the US recompilation of Mystical Ninja Starring Goemon."
 ---
 
-102 variables with C interfaces, behavior, and usage examples. Use the search bar to look up an exact symbol, address, or purpose.
+106 variables with C interfaces, behavior, and usage examples. Use the search bar to look up an exact symbol, address, or purpose.
 
 Value tables decode established raw values and document known field layouts. Select **Tables** to jump to a variable’s mappings.
 
 | Symbol | Purpose | Known values |
 | --- | --- | --- |
+| [`D_800657CC_663CC`](D_800657CC_663CC.md) | HUD file resource-to-segment list | — |
 | [`D_8006B780_6C380`](D_8006B780_6C380.md) | Room default start transform table | [Tables](D_8006B780_6C380.md#known-values) |
 | [`D_8006D320_6DF20`](D_8006D320_6DF20.md) | Optional record recycling owner | [Tables](D_8006D320_6DF20.md#known-values) |
 | [`D_8006D328_6DF28`](D_8006D328_6DF28.md) | Native task-list state | — |
@@ -64,6 +65,9 @@ Value tables decode established raw values and document known field layouts. Sel
 | [`D_80204020_5BFF30`](D_80204020_5BFF30.md) | Broad character resource IDs | [Tables](D_80204020_5BFF30.md#known-values) |
 | [`D_80204028_5BFF38`](D_80204028_5BFF38.md) | Raw action-model file IDs | [Tables](D_80204028_5BFF38.md#known-values) |
 | [`D_80204048_5BFF58`](D_80204048_5BFF58.md) | Player appearance replacement tables | [Tables](D_80204048_5BFF58.md#known-values) |
+| [`D_80209B9C_5C5AAC`](D_80209B9C_5C5AAC.md) | Dungeon room-to-floor table pointers | [Tables](D_80209B9C_5C5AAC.md#known-values) |
+| [`D_80209BC8`](D_80209BC8.md) | Minimap position-dot sprite descriptor | — |
+| [`D_80209CA0`](D_80209CA0.md) | Minimap native texture bank | — |
 | [`D_8020CBF0_5C8B00`](D_8020CBF0_5C8B00.md) | Scene sound-state buffer | [Tables](D_8020CBF0_5C8B00.md#known-values) |
 | [`D_8020D1C0_5C90D0`](D_8020D1C0_5C90D0.md) | Camera vector used for projection | [Tables](D_8020D1C0_5C90D0.md#known-values) |
 | [`D_8020D1D0_5C90E0`](D_8020D1D0_5C90E0.md) | Camera radius used for projection | [Tables](D_8020D1D0_5C90E0.md#known-values) |

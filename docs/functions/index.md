@@ -4,7 +4,7 @@ slug: "/functions"
 description: "Native functions for the US recompilation of Mystical Ninja Starring Goemon."
 ---
 
-192 functions with C interfaces, behavior, and usage examples. Use the search bar to look up an exact symbol, address, or purpose.
+198 functions with C interfaces, behavior, and usage examples. Use the search bar to look up an exact symbol, address, or purpose.
 
 | Symbol | Purpose |
 | --- | --- |
@@ -184,8 +184,14 @@ description: "Native functions for the US recompilation of Mystical Ninja Starri
 | [`func_801EFBDC_5ABAEC`](func_801EFBDC_5ABAEC.md) | Update the Sasuke kunai effect |
 | [`func_801F6C4C_62202C`](func_801F6C4C_62202C.md) | Dispatch Thaisamba collision and damage |
 | [`func_801F77F4_5B3704`](func_801F77F4_5B3704.md) | Run scene contacts and player-state maintenance |
+| [`func_801FB2D0_5B71E0`](func_801FB2D0_5B71E0.md) | Height-dependent dungeon floor update |
 | [`func_8020D6BC_5C8B8C`](func_8020D6BC_5C8B8C.md) | Load normal stage resources |
 | [`func_8020D848_5C8D18`](func_8020D848_5C8D18.md) | Stage room actor data and spawn definitions |
+| [`func_80215150_674100`](func_80215150_674100.md) | Dungeon floor-row spacing |
+| [`func_80215198_674148`](func_80215198_674148.md) | Dungeon floor-panel update |
+| [`func_802155F4_6745A4`](func_802155F4_6745A4.md) | Dungeon map floor-panel constructor |
+| [`func_80215CA4_5D1174`](func_80215CA4_5D1174.md) | Room minimap update and lifecycle |
+| [`func_80216228_5D16F8`](func_80216228_5D16F8.md) | Minimap local-marker projection |
 | [`func_8021664C_5D1B1C`](func_8021664C_5D1B1C.md) | Select and restart an actor animation |
 | [`func_80216AB8_5D1F88`](func_80216AB8_5D1F88.md) | Advance actor model animation |
 | [`func_80216E1C_5D22EC`](func_80216E1C_5D22EC.md) | Initialize object model and default scale |

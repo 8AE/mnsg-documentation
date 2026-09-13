@@ -1,0 +1,85 @@
+{
+  "scope": "Verified native dungeon floor and minimap routines, layouts and texture descriptors.",
+  "symbols": [
+    {
+      "name": "func_801FB2D0_5B71E0",
+      "kind": "function",
+      "address": "0x801FB2D0",
+      "romAddress": "0x005B71E0",
+      "section": ".file_11",
+      "size": 1636
+    },
+    {
+      "name": "func_80215CA4_5D1174",
+      "kind": "function",
+      "address": "0x80215CA4",
+      "romAddress": "0x005D1174",
+      "section": ".file_12",
+      "size": 1240
+    },
+    {
+      "name": "func_80216228_5D16F8",
+      "kind": "function",
+      "address": "0x80216228",
+      "romAddress": "0x005D16F8",
+      "section": ".file_12",
+      "size": 1036
+    },
+    {
+      "name": "func_80215150_674100",
+      "kind": "function",
+      "address": "0x80215150",
+      "romAddress": "0x00674100",
+      "section": ".file_17",
+      "size": 72
+    },
+    {
+      "name": "func_80215198_674148",
+      "kind": "function",
+      "address": "0x80215198",
+      "romAddress": "0x00674148",
+      "section": ".file_17",
+      "size": 732
+    },
+    {
+      "name": "func_802155F4_6745A4",
+      "kind": "function",
+      "address": "0x802155F4",
+      "romAddress": "0x006745A4",
+      "section": ".file_17",
+      "size": 1052
+    },
+    {
+      "name": "D_800657CC_663CC",
+      "kind": "variable",
+      "address": "0x800657CC",
+      "romAddress": "0x000663CC",
+      "section": ".main",
+      "size": null
+    },
+    {
+      "name": "D_80209B9C_5C5AAC",
+      "kind": "variable",
+      "address": "0x80209B9C",
+      "romAddress": "0x005C5AAC",
+      "section": ".file_11",
+      "size": null
+    },
+    {
+      "name": "D_80209BC8",
+      "kind": "variable",
+      "address": "0x80209BC8",
+      "romAddress": "0x005C5AD8",
+      "section": ".file_0C",
+      "size": null
+    },
+    {
+      "name": "D_80209CA0",
+      "kind": "variable",
+      "address": "0x80209CA0",
+      "romAddress": "0x005C5BB0",
+      "section": ".file_0C",
+      "size": null
+    }
+  ]
+}

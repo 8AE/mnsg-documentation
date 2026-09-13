@@ -142,7 +142,12 @@ def render_textures(name, catalog):
     if not icons and not sheets:
         return ''
     body = '\n## Native textures\n\n'
-    body += ('This variable holds the native texture handle for the sheet below. ' if sheets else 'These images correspond to the character or item state stored here. This variable stores state, not texture pixels. ')
+    if sheets:
+        body += 'This variable holds the native texture handle for the sheet below. '
+    elif any(name in icon.get('stateSymbols', []) for icon in icons):
+        body += 'These images correspond to the character or item state stored here. This variable stores state, not texture pixels. '
+    else:
+        body += 'The native sprite descriptors documented here select these images. The pause-overlay texture handle identifies another native interface to the same source sheet. '
     body += 'Browse the [texture gallery](/textures/) for original sheets, ROM resource addresses, and matched recomp texture variables.\n\n'
     for sheet in sheets:
         body += f'![Resource {sheet["id"]} sheet]({sheet["image"]})\n\n[{sheet["id"]} in the gallery](/textures/?q={name}) · {sheet["width"]} × {sheet["height"]} pixels · packed ROM address `{sheet["romAddress"]}`.\n\n'

@@ -1,0 +1,162 @@
+{
+  "func_802155F4_6745A4": {
+    "title": "Dungeon map floor-panel constructor",
+    "summary": "Creates the dungeon pause-map floor panel, floor labels and the local character head.",
+    "behavior": [
+      "The file_17 constructor creates a child task whose update callback is func_80215198_674148 and finalizer is func_80215474_674424. Allocation failure returns null after cleanup.",
+      "The character, dungeon index and actual floor are stack arguments at entry offsets 0x1C, 0x20 and 0x24. Arguments at 0x10 through 0x18 are unused by the inspected implementation.",
+      "Task words +0x90, +0x94 and +0x98 hold dungeon index, selected floor and floor count. The selected floor can change independently of the local character head.",
+      "The local head is a kind-2 display record using model 0x48000040 + character*0xE0, animation 0xA0216AE0, file 0x04D1, scale 3.0 and rotation sentinels 0x8000. Its layer is the panel layer plus two.",
+      "The head uses relative screen X 53 and Y 53 + (112/(floor_count+1))*(floor_count-floor). Integer division occurs before multiplication. func_800115E0_121E0 writes the relative position into the record at +0x80/+0x84."
+    ],
+    "example": "#include \"modding.h\"\n\nstatic int observed_floor;\nRECOMP_HOOK(\"func_802155F4_6745A4\")\nvoid observe_floor_panel(void *owner, int x, int y, int layer,\n    unsigned int unused4, unsigned int unused5, unsigned int unused6,\n    int character, int dungeon, int floor)\n{\n    observed_floor = floor;\n}",
+    "cautions": [
+      "Only access this layout while its owning overlay and task are active. Task-pool addresses can be reused after destruction.",
+      "Keep display records owned by this task so native cleanup can reclaim them. Do not retain their pointers across panel creation."
+    ],
+    "confidence": "decompiled",
+    "declaration": "extern void *func_802155F4_6745A4(void *owner, int x, int y, int layer, unsigned int unused4, unsigned int unused5, unsigned int unused6, int character, int dungeon, int floor);"
+  },
+  "func_80215198_674148": {
+    "title": "Dungeon floor-panel update",
+    "summary": "Updates the dungeon map floor panel and resolves its relative display positions.",
+    "behavior": [
+      "This file_17 callback belongs to the task created by func_802155F4_6745A4. The callback resolves parent-relative positions with func_8001136C_11F6C before drawing the panel.",
+      "Task +0x90 is the dungeon index, +0x94 the selected floor and +0x98 the floor count, all 32-bit words. +0x6C/+0x70 are the resolved screen origin.",
+      "The floor rows use func_80215150_674100. Existing display-object links and cached panel buffers must remain intact."
+    ],
+    "example": "#include \"modding.h\"\n\nstatic int selected_floor;\nRECOMP_HOOK(\"func_80215198_674148\")\nvoid observe_floor_selection(unsigned char *task)\n{\n    selected_floor = *(int *)(task + 0x94);\n}",
+    "cautions": [
+      "Only access this layout while its owning overlay and task are active. Task-pool addresses can be reused after destruction."
+    ],
+    "confidence": "decompiled",
+    "declaration": "extern void func_80215198_674148(void *task);"
+  },
+  "func_80215150_674100": {
+    "title": "Dungeon floor-row spacing",
+    "summary": "Calculates a dungeon floor row Y coordinate using native integer spacing.",
+    "behavior": [
+      "Returns 37 + (112/(floor_count+1))*ordinal, with integer division. The top row has ordinal one.",
+      "For a zero-based gameplay floor, ordinal is floor_count-floor. The native character head adds 16 to this return value.",
+      "The five dungeon definitions contain 3, 4, 4, 4 and 2 floors, respectively."
+    ],
+    "example": "extern int func_80215150_674100(int ordinal, int floor_count);\n\nint floor_head_y(int floor, int floor_count)\n{\n    if (floor_count < 1 || floor_count > 4 || floor < 0 || floor >= floor_count)\n        return -1;\n    return func_80215150_674100(floor_count - floor, floor_count) + 16;\n}",
+    "cautions": [
+      "The function belongs to file_17. A floor_count of -1 divides by zero."
+    ],
+    "confidence": "decompiled",
+    "declaration": "extern int func_80215150_674100(int ordinal, int floor_count);"
+  },
+  "func_80215CA4_5D1174": {
+    "title": "Room minimap update and lifecycle",
+    "summary": "Initializes, opens and fades the native in-game room minimap.",
+    "behavior": [
+      "The file_0D callback uses task +0xDC as a 32-bit state: zero initializes, one is hidden, two is open and three fades out.",
+      "Initialization reads origin X/Y from object floats +0x08/+0x0C and world extent from object u16 +0x14. These become system +0x3B000/+0x3B004/+0x3B008. Room 0x0132 overrides extent with 6900.",
+      "Initialization releases the task's old display records and appends compass, local marker and map background as kind-1 records. Task +0xE0 points to the local marker, +0xE8 to the compass; +0xE4 is a 32-bit shape selector (zero rectangular, nonzero square).",
+      "In states two and three it calls func_80216228_5D16F8 for the local marker. It obtains the map background by following the first link of that marker, so inserting between them breaks native fading.",
+      "The map background and compass fade between alpha zero and 160. The local marker blinks independently. Sprite alpha is byte +0x10; screen coordinates are signed shorts +0x1C/+0x20.",
+      "All attached records belong to the native task. Additional records may be appended after the background without changing the local-to-background link."
+    ],
+    "example": "#include \"modding.h\"\n\nstatic int minimap_state;\nRECOMP_HOOK(\"func_80215CA4_5D1174\")\nvoid observe_minimap(unsigned char *task, void *object)\n{\n    minimap_state = *(int *)(task + 0xDC);\n}",
+    "cautions": [
+      "Only access this layout while its owning overlay and task are active. Task-pool addresses can be reused after destruction.",
+      "State zero may invalidate every previously retained display pointer. An allocation failure can destroy the task before initialization finishes."
+    ],
+    "confidence": "decompiled",
+    "declaration": "extern void func_80215CA4_5D1174(void *task, void *object);"
+  },
+  "func_80216228_5D16F8": {
+    "title": "Minimap local-marker projection",
+    "summary": "Projects the local player into the room minimap and updates its blinking directional marker.",
+    "behavior": [
+      "The scale is 128.0 divided by unsigned system word +0x3B008. World X/Z are read from the local player display record.",
+      "For system u16 orientation +0xCF88E equal to 0, 0x100 and 0x200, projected axes are (-X,-Z), (Z,-X) and (X,Z), respectively. The remaining branch uses (-Z,X). Multiply both axes by the scale.",
+      "Truncate each scaled offset toward zero, add the corresponding origin at system +0x3B000/+0x3B004 and add 13. Clamp X to 8..144. Clamp Y to 8..80 for task +0xE4 equal to zero, otherwise 8..144.",
+      "The function also changes task +0xD8 and sprite alpha for the local blink, and selects one of sixteen direction descriptors according to orientation and local heading. It is not a pure coordinate helper."
+    ],
+    "example": "/* Pure projection for the orientation-zero case, using already validated\n * room metadata and ordinary in-room coordinates. */\nint project_minimap_x(float world_x, unsigned int extent, int origin_x)\n{\n    int pixel;\n    if (!extent) return -1;\n    pixel = (short)origin_x + (int)(-world_x * (128.0f / extent)) + 13;\n    if (pixel < 8) return 8;\n    if (pixel > 144) return 144;\n    return pixel;\n}",
+    "cautions": [
+      "Only access this layout while its owning overlay and task are active. Task-pool addresses can be reused after destruction.",
+      "Calling this routine for another player still reads the local player and mutates the local blink state. Use its verified projection formula for independent markers."
+    ],
+    "confidence": "decompiled",
+    "declaration": "extern void func_80216228_5D16F8(void *task, void *sprite);"
+  },
+  "func_801FB2D0_5B71E0": {
+    "title": "Height-dependent dungeon floor update",
+    "summary": "Resolves floors in vertical dungeon rooms and updates native exploration state.",
+    "behavior": [
+      "The file_0C updater switches on the room's special-floor rule. Its vertical comparisons are strict greater-than tests against local world Y.",
+      "Rules 1..9 respectively use thresholds -150, -80, 130, 120, 305, 392, (-115 and -372), -120, and 100. Rule seven selects floor two above -115, floor one above -372, otherwise floor zero.",
+      "Other branches also distinguish subrooms using X or Z and update visited-room flags. Replaying this routine to locate another player would alter local exploration state."
+    ],
+    "example": "#include \"modding.h\"\n\nstatic unsigned int floor_updates;\nRECOMP_HOOK(\"func_801FB2D0_5B71E0\")\nvoid observe_floor_update(void)\n{\n    ++floor_updates;\n}",
+    "cautions": [
+      "This is an observation hook, not a recovered callable prototype. For read-only floor classification, use the decoded room and height rules without invoking the updater."
+    ],
+    "confidence": "decompiled"
+  },
+  "D_80209B9C_5C5AAC": {
+    "title": "Dungeon room-to-floor table pointers",
+    "summary": "Five file_0C pointers select native room, floor and vertical-rule tables.",
+    "behavior": [
+      "Each table contains three-byte records: raw room ID, zero-based floor and special vertical-rule ID. A room byte of 0xFF ends the table.",
+      "Some rooms appear more than once because they span floors. Native lookup starts with the first matching record; the height updater then resolves the actual floor. There are 116 distinct dungeon/room pairs.",
+      "The initial table pointers are 0x80209A00, 0x80209A50, 0x80209AA4, 0x80209AF4 and 0x80209B48. These are overlay data, not save-state pointers."
+    ],
+    "example": "extern const unsigned char *D_80209B9C_5C5AAC[5];\n\nint initial_room_floor(unsigned int dungeon, unsigned int room)\n{\n    const unsigned char *row;\n    if (dungeon >= 5 || room >= 255) return -1;\n    for (row = D_80209B9C_5C5AAC[dungeon]; row[0] != 255; row += 3)\n        if (row[0] == room) return row[1];\n    return -1;\n}",
+    "cautions": [
+      "Only access this layout while its owning overlay and task are active. Task-pool addresses can be reused after destruction.",
+      "This example reads only the first matching floor. Apply its special height rule for rooms spanning floors."
+    ],
+    "confidence": "decompiled",
+    "declaration": "extern const unsigned char *D_80209B9C_5C5AAC[5];"
+  },
+  "D_80209BC8": {
+    "title": "Minimap position-dot sprite descriptor",
+    "summary": "Native 12-byte descriptor selecting the 8 by 8 position dot from resource 0x8004.",
+    "behavior": [
+      "The descriptor is six big-endian halfwords: C003, 0808, 0000, 0000, 0300, 0300. C003 loads texture-bank entry three and ends the sprite command sequence.",
+      "The dimensions are 8 by 8. Texture coordinates are stored in thirty-seconds of a pixel; 0x0300 selects X=24, Y=24 in the 64 by 32 sheet.",
+      "D_80209CA0 entry three refers to loaded file 0x007F and segmented address 0x0A000000. Its original pixels come from PIC resource 0x8004, not from the descriptor itself.",
+      "The minimap constructor initially selects this round red dot. Open-map updates select directional descriptors from the same native texture system."
+    ],
+    "example": "extern unsigned short D_80209BC8[6];\n\nunsigned int minimap_dot_width(void)\n{\n    return D_80209BC8[1] >> 8;\n}",
+    "cautions": [
+      "Only access this layout while its owning overlay and task are active. Task-pool addresses can be reused after destruction."
+    ],
+    "confidence": "decompiled",
+    "declaration": "extern unsigned short D_80209BC8[6];"
+  },
+  "D_80209CA0": {
+    "title": "Minimap native texture bank",
+    "summary": "Six 16-byte texture descriptors supply the room minimap, compass and local marker.",
+    "behavior": [
+      "Each entry stores u16 width at +0, u16 height at +2, format byte at +4, texture address at +8 and file ID at +0x0C.",
+      "Entry three is a 64 by 32 RGBA5551 sheet: format 0x10, segmented address 0x0A000000 and file 0x007F. It supplies the round position dot and some directional markers.",
+      "Entries four and five use the same dimensions and file, at 0x0A00B000 and 0x0A00D000. Their resources are 0x800F and 0x8011. Entries one and two are modified when a room map is initialized.",
+      "File zero means a direct texture pointer. A nonzero file requires the file's loaded base and segment mapping; do not interpret a segmented address as a CPU pointer."
+    ],
+    "example": "extern unsigned char D_80209CA0[6][16];\n\nunsigned int minimap_marker_file(void)\n{\n    return *(unsigned short *)(D_80209CA0[3] + 12);\n}",
+    "cautions": [
+      "Only access this layout while its owning overlay and task are active. Task-pool addresses can be reused after destruction.",
+      "The table stores texture descriptors, not the opaque texture handles used by the pause-menu image system."
+    ],
+    "confidence": "decompiled",
+    "declaration": "extern unsigned char D_80209CA0[6][16];"
+  },
+  "D_800657CC_663CC": {
+    "title": "HUD file resource-to-segment list",
+    "summary": "Pairs of resource IDs and destination addresses populate native loaded file 0x007F.",
+    "behavior": [
+      "This list maps image resources 0x8004 through 0x8019 to decoded 0x1000-byte slots beginning at segmented address 0x0A000000.",
+      "The first pair is (0x8004, 0x0A000000), resource 0x800F maps to 0x0A00B000 and 0x8011 maps to 0x0A00D000. A zero resource ID ends the list.",
+      "The native resource loader decodes each PIC image into the loaded file's destination. File 0x007F therefore refers to the populated runtime allocation, not a single packed texture at the same file-table index."
+    ],
+    "example": "extern unsigned int D_800657CC_663CC[];\n\nunsigned int hud_image_destination(unsigned int resource)\n{\n    const unsigned int *pair = D_800657CC_663CC;\n    for (; pair[0]; pair += 2)\n        if (pair[0] == resource) return pair[1];\n    return 0;\n}",
+    "cautions": [],
+    "confidence": "decompiled",
+    "declaration": "extern unsigned int D_800657CC_663CC[];"
+  }
+}
