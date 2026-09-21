@@ -1,0 +1,897 @@
+{
+  "date": "2026-09-16",
+  "romSha256": "e40bee20508c2e29e651dca4e47504e40f908f0a2186e34a582784bf5a64be4c",
+  "method": "ROM table lookup, symbol-table overlay identity, and local Ghidra decompilation",
+  "roomsObserved": [
+    "0x161",
+    "0x15F",
+    "0x12D",
+    "0x12E"
+  ],
+  "functions": {
+    "placement": "func_80218A54_5D3F24",
+    "npcSetup": "func_80221A90_5DCF60",
+    "pathInit": "func_80226840_5E1D10",
+    "pathStep": "func_802268A8_5E1D78",
+    "platformSetup": "func_080013AC_6FC5AC",
+    "containerBreak": "func_08000150_6B30F0",
+    "emitterSetup": "func_080006EC_6D4A2C",
+    "childSetup": "func_80218C28_5D40F8",
+    "childCreation": "func_802171A8_5D2678",
+    "shadow": "func_80219E70_5D5340",
+    "textureAnimation": "func_80224ABC_5DFF8C",
+    "modelSphere": "func_80218DCC_5D429C",
+    "animationLength": "func_8001B5AC_1C1AC",
+    "doorControl": "func_801FB240_5B7150",
+    "staticObjectBinder": "func_80216CE0_5D21B0",
+    "linkedStaticObject": "func_80216E54_5D2324",
+    "coinDrop": "func_80214314_5CF7E4",
+    "healthDrop": "func_802141AC_5CF67C"
+  },
+  "findings": [
+    "Actor file IDs are 16-bit entries, distinct from the category-byte table.",
+    "Platform variant 8 includes 08000ADC and 08000A98 continuations; variant 10 includes 0800091C. Omitting these loses an entire leg of motion.",
+    "The large-food cleanup calls 80221FB0, which resets local player controls. Do not replay the full cleanup for remote collection.",
+    "Path indices are instruction positions, not arbitrary byte offsets.",
+    "The common NPC initializer also covers signposts; animals may use only the path initializer.",
+    "Common child setup uses +08 pre, +0C AI, +10 post; +75 is gravity coefficient, not a distance-culling interval.",
+    "func_8001B5AC_1C1AC returns float animation length. Resident model/clip assets and the 0x152 common wave must be checked before native reconstruction binding.",
+    "Full food cleanup calls local control reset; shine-child retirement is a separate local flag write.",
+    "File_44 0800204C uses endpoint and player Y to call the elevator even without a rider; 080022E8 waits for departure from its footprint.",
+    "File_43 08004524,080041C0,080046C8 start door travel; 08002254 waits for animation completion, resets local control and writes destination fields.",
+    "Native coin/health reward callbacks, drop/hazard continuations and common post were inspected separately from construction; a current live checkpoint does not require constructor replay.",
+    "func_80218D7C_5D424C clears +48, func_80218DA8_5D4278 writes FFFFFFFF, and func_80218DCC_5D429C binds a local model entry. func_8021C444_5D7914 uses byte +75 and auxiliary bit 1000 to select the vertical-velocity clamp.",
+    "Drop constructors bind coin slot 4 or health slot 3 before creating a shadow. Shadow setup 80219E70 temporarily writes model 1, calls 80216E54(task,0), and restores the model. 80216E54 allocates a separate linked object and calls 80216CE0(task,linked_object,0). Observing all binder calls as primary appearance incorrectly overwrites coin/health slots with shadow slot 0. Verified with Ghidra decompilation and 80214314 disassembly; stale Ghidra call overrides at 80214370 incorrectly name 8021B158, while the actual T9 target is 80216E1C.",
+    "Coin/health/food constructors call 8021A310 to write exact halfwords 8000 at object +14/+16/+18. Capture masking to 03FF loses these values; known loot reconstruction must restore the native recipe. Confirmed coin second variant 802147A4 via T9 target 8021A310 at 8021484C, other constructors via decompilation/80214314 disassembly. No broader renderer interpretation is claimed.",
+    "Coin spin: 80224560 initializes +AB speed and +AC/+AD/+AE selector/index/delay; sets task +60 bit 4 for loop mode. Common 80218E7C calls 80224B88, which checks bit 2 and runs 80224834. At sequence end a cleared loop bit makes 80224834 clear the selector. Removing bit 4 in a replicated flags mask stops the spin after one cycle; no lifetime timer adjustment is involved.",
+    "Door reversal: 80216AB8 tests task +60 bit 1, selects reverse using bit 01000000, and steps frame by unsigned object +7E times 2/256. Nonlooping reverse clamps to 0 and sets object +7C bit 2. 8021664C only initializes the primary object. File43 ordinary travel idles 0800010C,08002190,08002C00,08002F60,080041C0,08004524,080046C8,0800496C use local +DA and 801FB240; 08002254 performs player-control/destination work at completion, so observer closure must not replay it. Entity23A entry08003A14 includes progression barrier callbacks and is excluded from travel-door auto-closing."
+  ],
+  "limits": [
+    "Native decompilation and host tests are not a two-client game verification.",
+    "These reviewed layouts do not establish universal coverage of scene controllers, minigames, or every room-specific actor."
+  ],
+  "additionalEvidence": {
+    "romInventory": {
+      "metadataSlots": 800,
+      "roomsWithMetadata": 374,
+      "roomsWithActorDataFile": 333,
+      "roomsWithPlacedActors": 292,
+      "placedEntityTypes": 255,
+      "maximumUniquePlacedSources": 57,
+      "placedSourceCount": 3888,
+      "residentPlacements": [
+        {
+          "index": 26,
+          "entity": 508,
+          "sourceKind": "resident",
+          "sourceRom": 6184128,
+          "definitionRom": 6183104,
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "room": 48
+        },
+        {
+          "index": 27,
+          "entity": 508,
+          "sourceKind": "resident",
+          "sourceRom": 6184148,
+          "definitionRom": 6183120,
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "room": 48
+        },
+        {
+          "index": 7,
+          "entity": 254,
+          "sourceKind": "resident",
+          "sourceRom": 6187328,
+          "definitionRom": 6183136,
+          "position": [
+            145,
+            -40,
+            450
+          ],
+          "room": 305
+        },
+        {
+          "index": 8,
+          "entity": 252,
+          "sourceKind": "resident",
+          "sourceRom": 6187348,
+          "definitionRom": 6183152,
+          "position": [
+            135,
+            -40,
+            190
+          ],
+          "room": 305
+        },
+        {
+          "index": 9,
+          "entity": 254,
+          "sourceKind": "resident",
+          "sourceRom": 6187368,
+          "definitionRom": 6183136,
+          "position": [
+            145,
+            -40,
+            -30
+          ],
+          "room": 305
+        },
+        {
+          "index": 10,
+          "entity": 252,
+          "sourceKind": "resident",
+          "sourceRom": 6187388,
+          "definitionRom": 6183152,
+          "position": [
+            -125,
+            -40,
+            -30
+          ],
+          "room": 305
+        },
+        {
+          "index": 11,
+          "entity": 254,
+          "sourceKind": "resident",
+          "sourceRom": 6187408,
+          "definitionRom": 6183136,
+          "position": [
+            -370,
+            -40,
+            -50
+          ],
+          "room": 305
+        }
+      ]
+    },
+    "programs": [
+      "mnsg.us.0.z64",
+      "world_file_26.elf",
+      "world_file_28.elf",
+      "world_file_30.elf",
+      "world_file_34.elf",
+      "world_file_43.elf",
+      "world_file_44.elf",
+      "world_file_59.elf"
+    ],
+    "nativeCallbacks": [
+      "08005988_6C50D8",
+      "08005A0C_6C515C",
+      "08005BC0_6C5310",
+      "08005C34_6C5384",
+      "08005CA8_6C53F8",
+      "0800204C_6FD24C",
+      "08002180_6FD380",
+      "0800220C_6FD40C",
+      "08002298_6FD498",
+      "080022E8_6FD4E8",
+      "08001C70_6FCE70",
+      "08000108_6BF858",
+      "08000760_6BFEB0",
+      "08004F74_6C46C4",
+      "08004FDC_6C472C"
+    ]
+  },
+  "continuationAudit": {
+    "method": "Local Ghidra File_59 full native continuation audit, File_30 motion callbacks, raw US ROM route bounds and symbol-table suffix validation",
+    "mechanisms": {
+      "0x356": [
+        "func_080054A4_6C4BF4",
+        "func_0800551C_6C4C6C"
+      ],
+      "0x3B4": [
+        "func_08006968_6C60B8",
+        "func_080069C8_6C6118",
+        "func_08006A38_6C6188",
+        "func_08006AA8_6C61F8",
+        "func_08006B00_6C6250"
+      ]
+    },
+    "correction": "0x2C4 is the pickpocket, as shown by the native ryo theft, coin release and suri tousou text. Earlier mod prose called it a dog.",
+    "temporaryFlags": "func_80023DF0_249F0, func_80023E40_24A40, func_80023E94_24A94 operate on 80168E90. func_80023EE4_24AE4 clears 100 bytes at actor-manager initialization. The bank is also used by shop, quest and scripted scene controllers; it is not safe to replicate wholesale while camera/dialogue remains local.",
+    "stillUnimplemented": "Custom scene-controller graph reconstruction and puzzle controllers outside the explicit native adapters."
+  },
+  "switchControllerAudit": {
+    "nativePrograms": [
+      "world_file_50.elf",
+      "world_file_30.elf",
+      "mnsg.us.0.z64"
+    ],
+    "placedSwitchModes": [
+      0,
+      1
+    ],
+    "placedSwitchFlagIds": [
+      0,
+      404,
+      405,
+      413
+    ],
+    "switchRooms": [
+      178,
+      182,
+      186,
+      187,
+      189,
+      333,
+      336
+    ],
+    "mechanisms": {
+      "0x324": {
+        "variants": [
+          0,
+          11
+        ],
+        "rooms": [
+          178,
+          182
+        ]
+      },
+      "0x326": {
+        "variants": [
+          0,
+          7
+        ],
+        "rooms": [
+          186,
+          187,
+          189
+        ]
+      }
+    },
+    "evidence": [
+      "File_50 full 24-function decompilation; initializer disassembly confirms distinct byte/word mode comparisons",
+      "File_30 continuations 08003418,080036E0,08003A74,08003B48,08003C7C,08003EE0,080040B8",
+      "Main 8021EC1C disassembly confirms fifth integer duration argument and velocity-only writes",
+      "Native room-actor inventory contains four distinct 0x226 definitions, all one-way modes 0/1"
+    ],
+    "limits": [
+      "No fresh in-game two-client run"
+    ]
+  },
+  "linkedPlatformAudit": {
+    "program": "world_file_44.elf",
+    "entrypoints": [
+      "080001B8",
+      "08002600",
+      "080026D0",
+      "08002788",
+      "08002820",
+      "080028B4",
+      "08002DBC",
+      "08002E28",
+      "08003074",
+      "08003148",
+      "0800321C",
+      "0800329C"
+    ],
+    "mainHelper": "func_8021DF60_5D9430",
+    "evidence": "Ghidra decompilation and caller disassembly; native ROM constants 6.375 and 0.99609375 checked directly. Model selector argument and fifth tint-helper stack argument verified.",
+    "placedRecords": {
+      "0x1F4": 33,
+      "0x228": 19,
+      "0x1FE": 17
+    },
+    "limits": [
+      "Native simulation routines are substituted in host tests.",
+      "No fresh two-client game verification.",
+      "Dynamic invocation of the 0x1F4 gated branch remains unaudited."
+    ]
+  },
+  "physicsPuzzleAudit": {
+    "program": "world_file_30.elf",
+    "entity": "0x3D0",
+    "room": "0x35",
+    "functions": [
+      "08006B40",
+      "08006C18",
+      "08006F48",
+      "08007040",
+      "08007094",
+      "080070E4",
+      "080072C4"
+    ],
+    "mainProgram": "mnsg.us.0.z64",
+    "mainHelpers": [
+      "8021DA1C",
+      "8021DDE8",
+      "802171A8",
+      "801E53E0",
+      "801E54A8",
+      "801E55A0",
+      "801E55D4",
+      "801DAD68",
+      "8021C518",
+      "8021A328",
+      "80218F30",
+      "80214314",
+      "802141AC",
+      "802192B4"
+    ],
+    "verified": [
+      "D_8015C5E4 is runtime current health, not character identity; compare reference-gameplay.json and values-runtime.json",
+      "Reward phase initializes timer 200, emits at unsigned timer modulo 10 equal zero, and tests the old zero value before switching to empty continuation",
+      "8021DDE8 calls the common parented child builder 802171A8",
+      "06C18 disassembly confirms LHU for +DC and fifth 8021DA1C argument zero at stack+0x10",
+      "801E54A8 writes the held pointer and 0x8000 bit; 801E55A0 clears both",
+      "8021C518 writes contact bits 0x1000/0x2000; 8021A328 clears source+70 for proximity culling",
+      "80218F30 replaces removed placed actors with a proximity cooldown, not a timer",
+      "File30 ROM+8A78 double 0.95, +8A80 double 0.05, +8A88 float 0.2; +8A90/+8A98/+8AA0/+8AA8 double 0.9",
+      "802192B4 mixes local input with RNG state, so native reward replay does not choose stable children across machines"
+    ],
+    "unresolved": [
+      "No fresh native two-client runtime verification"
+    ],
+    "implementation": "Protocol 8 typed adapter, native carry/animation helpers, deterministic per-slot choice and existing native loot identity/claim path.",
+    "reviewNotes": [
+      "Common post 80218F30 calls 80218E7C then deletes/schedules a cooldown task; no direct recursive common-post call in the inspected path.",
+      "Shared completion retention across proximity culling is adapter policy, not proof that native completed actors cannot respawn. Production-C host test covers retained phase74 re-placement with no second rewards and release on scope reset.",
+      "Reward callback 080070E4 rechecked: RNG, sound, child allocation/launch, timer and continuation only; no camera, progression, or personal award calls."
+    ]
+  },
+  "switchInitializerReachability": {
+    "program": "world_file_50.elf",
+    "function": "func_08000000_70C820",
+    "disassembly": {
+      "0800006C": "lbu v0,0xd4(a0)",
+      "08000074": "beq v0,zero,0x08000084",
+      "0800007C": "bnel v0,at,0x0800009c (at=1)",
+      "08000080": "lw v0,0xd4(a0) in taken likely delay slot",
+      "080000A4": "bne v0,at,0x080000c0 (at=2)",
+      "080000C4": "bne v0,at,0x080000dc (at=3)"
+    },
+    "conclusion": "The timed/rearming branches cannot be selected through the entity initializer on big-endian US-ROM, regardless of static or dynamic definition origin.",
+    "localReferences": {
+      "080003B8": [
+        "constructor 080000B4",
+        "self rearm 0800062C"
+      ],
+      "08000644": [
+        "constructor 080000D8"
+      ]
+    },
+    "limits": [
+      "Does not rule out an external mod injecting a continuation directly.",
+      "Does not classify the separate File44 gated branch."
+    ]
+  },
+  "craneRoomAudit": {
+    "room": "0x31",
+    "program": "world_file_30.elf",
+    "mainProgram": "mnsg.us.0.z64",
+    "entries": {
+      "0x1B9": "func_0800097C_6C00CC",
+      "0x1BA": "func_0800211C_6C186C",
+      "0x1BB": "func_080024F0_6C1C40",
+      "0x1BF": "func_08002D98_6C24E8",
+      "0x3D3": "func_080074D4_6C6C24"
+    },
+    "verified": [
+      "Root constructors and explicit +DC parent links from decompilation and caller disassembly",
+      "Pad entry at 08002848 compares its object with local player task+A0 and requires save15A",
+      "Pad movement constants from File30 080089B0 through 08008A1F",
+      "func_8021A26C_5D573C fifth argument 50 confirmed at stack+10 in 08001D20 through 08001D38",
+      "Local camera/scenario side effects in 1BA, 1BB parent, 1BF and 3D3 contact callbacks",
+      "Pad disassembly uses timer old-value zero before decrement: initial ten produces eleven movement updates in 08002930, 08002A20, 08002BF8 and 08002CEC.",
+      "Whole-ROM native helper-call and scenario VM flag scans find only the observed writes to saves15E/15F; File30 has no temporary8 reader. actor_manager_initialize calls 80023EE4 to clear the 100-byte temporary bank.",
+      "Scenario83 resolves through 8003D310 to file005D ptr08003834. Direct assignments at 0800394C..08003968 write 1 to 8015C6D0 and 8015C6E0 (save+C8,+D8). Dialogue awards Ebisumaru the Wind-up Camera; 1A3 is only actor consumption.",
+      "802171A8 installs the child initializer before 80218C28; the latter installs common pre/post and copies parent generation. Native root calls use kind3 for main/pads. ROM category table at5E54B4 gives3D3 kind9.",
+      "Main/pad/reward initializers bind model1B9/1BB/3D3 at task+5E; power1BA retains placed model. Model IDs are not inferred generically from entity IDs.",
+      "80034A10 clears the pool task, including callbacks and object; bookkeeping must release old child bindings before reuse. Callback disable bit00800000 must survive wrapper restoration."
+    ],
+    "limits": [
+      "Local-player +A0 semantic name not proved",
+      "Status bit0x200 native name unproved; exact reward trigger verified",
+      "No fresh two-client game verification"
+    ],
+    "worklist": "mnsg-recomp-example/docs/world-crane-audit-2026-09-19.md",
+    "implementation": "Protocol9 typed crane adapter and camera charging scalar; production C host tests and isolated loopback transport probes, not live game proof."
+  },
+  "shutterRobotAudit": {
+    "date": "2026-09-19",
+    "programs": [
+      "world_file_30.elf",
+      "world_file_32.elf",
+      "mnsg.us.0.z64"
+    ],
+    "room": "0xB2",
+    "entity": "0x354",
+    "child": "0xFC",
+    "initializer": "func_08001EA4_6D0F84",
+    "damageCallPC": "0x80218524",
+    "claimBoundary": "Entry of 80218350, before native damage; its return is after immediate death/drop.",
+    "findings": [
+      "File_30 binds model 0x23F and animation 0xE; entity identity remains 0x354. Signed timer +0x8A starts at 60, opens on its old zero value, waits for animation completion, then counts 90 before closing. At old timer 30, immutable word +0xD0 equal to one creates an effect and category-6 entity 0xFC; zero disables emission. The loop has no existing-child guard. Continuations are 08005624, 08005684, 080056FC and 080057D0.",
+      "File_32 initializer func_08001EA4_6D0F84 binds model 0xFB. Word +0xD4 equal to one skips ground placement; +0xD0=0x39 selects route 57 through its low halfword +0xD2. The common child setup gives one HP at byte +0x8D. Base flags are 0x002E8261 plus local shadow bit 0x08000000 only when shadow allocation succeeds. The sole continuation func_08001FF4_6D10D4 advances a finite route with four movement legs and no timeout, then removes the actor without a death reward. Several generations may overlap. Route +0xC4, timer +0xC6, origin +0xC8/+0xCA/+0xCC, substate +0xCE, PC +0xCF, facing +0xAA and status bit 0x400 are scalar state. Pointer +0x9C is the local actor itself; shadow and display lists remain local.",
+      "func_80218350_5D3820 calls func_80218548_5D3A18 immediately when damage reaches zero HP; a return hook runs after death and loot side effects. For the dynamic route-57 robot, an accepted ordinary hit requires status +0x68 bit 0x80, non-null local hitter +0x38 and clear status bit 1. Fast damage uses status bit 0x40000 and subtracts one HP first. Native surviving-hit bookkeeping clears 0x80, sets status bit 1 and byte +0x8C to 60. Fast death ignores +0x90, sets removal bit 2, and rolls at most one coin or health child. Word +0x64 bit 0x8000 suppresses only loot. Route completion bypasses this death path."
+    ],
+    "limits": [
+      "Movement lifetime depends on geometry and scheduler cadence; no fixed despawn duration is claimed.",
+      "No fresh two-client gameplay validation."
+    ],
+    "presentation": {
+      "fastBranch": "18548 jumps to802187E4 after optional loot without222/fragments",
+      "constructors": [
+        "func_802130C8_5CE598",
+        "func_8021332C_5CE7FC"
+      ],
+      "ABI": "Scheduled task initializers (void *child, void *childObject), allocated using802171A8 category8; selector bytes8E3/8F4 written after allocation.",
+      "childEntityWriters": [
+        "80218CB8 loads parent5C",
+        "80218CC4 writes child5C",
+        "802141F8 health writes5E only",
+        "80214354 coin writes5E only"
+      ]
+    }
+  },
+  "residentActorAudit": {
+    "date": "2026-09-19",
+    "program": "mnsg.us.0.z64",
+    "manager": "func_8020D848_5C8D18",
+    "partitionManager": "func_8020D36C_5C883C",
+    "entryTableReferences": [
+      "8020D560 partition",
+      "8020DAB0 resident",
+      "8020DBCC normal",
+      "80217408 and 802174C8 entity-child allocator"
+    ],
+    "residentRegistration": "8020DA60 stores descriptor to D_8015CDDC; 8020DA68 stores its raw definition to D_8015CDE0. 8020DAFC calls80218A54 with the descriptor in delay-slot8020DB00. 8020DA78 directly reads actor ID without a resolver. The source loop index is an unsigned byte.",
+    "room0x30": {
+      "indices": [
+        26,
+        27
+      ],
+      "entities": [
+        "0x1FC",
+        "0x1FC"
+      ]
+    },
+    "room0x131": {
+      "indices": [
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "entities": [
+        "0xFE",
+        "0xFC",
+        "0xFE",
+        "0xFC",
+        "0xFE"
+      ]
+    },
+    "limits": [
+      "Inventory establishes source coverage, not universal native behavior or live multiplayer correctness."
+    ]
+  },
+  "superPassBridgeAudit": {
+    "date": "2026-09-19",
+    "programs": [
+      "world_file_51.elf",
+      "mnsg.us.0.z64"
+    ],
+    "room": "0x15E",
+    "overlayRom": "0x70D740..0x70DFF0",
+    "actorDataFile": "0x408",
+    "guardSources": [
+      "0x12D9F74",
+      "0x12D9F88"
+    ],
+    "gateSource": "0x12D9EFC",
+    "blockerSource": "0x12D9F60",
+    "dialogSave1Writes": [
+      "0x756FE4 opcode8020 with argument1 at0x756FE8",
+      "0x75719C opcode8020 with argument1 at0x7571A0"
+    ],
+    "routePrograms": {
+      "0x43": "file0x493 segmented08000000",
+      "0x44": "file0x493 segmented0800004C"
+    },
+    "portableRouteFields": [
+      "C4",
+      "C6",
+      "C8",
+      "CA",
+      "CC",
+      "CE",
+      "CF",
+      "AA",
+      "object pose/animation",
+      "task velocity78/7C/80",
+      "task playback bit0",
+      "status bit400"
+    ],
+    "restoreAudit": {
+      "stableCallbacks": [
+        "func_08000174_70D8B4 PRE",
+        "func_08000088_70D7C8 ROUTE",
+        "func_08000000_70D740 POST"
+      ],
+      "stableApplyGate": "Underlying task+C must be a stable File_51 PRE/ROUTE/POST callback and task+68 bits0x100 and0x4000 must both be clear. func_802210AC clears conversation bit0x100 before func_80221164 sets0x4400 and restores saved callback+B4, leaving a frame where File_51 still must consume accepted-result bit0x4000.",
+      "commonNpcInitializer": "func_80221A90_5DCF60 writes W60 base0x12800761, W64=0x20, B4C=2, W68=0x400 and H+A4=low16(WD4); nonzero pose invokes func_8021C654_5D7B24, which may lower object Y. It then always calls func_80219E70_5D5340(actor,5,0); func_80216E54_5D2324 allocates and appends a fresh model1 shadow without a reuse check. Successful allocation ORs W60 bit0x08000000, producing full0x1A800761; allocation failure clears that bit and leaves base0x12800761. The call consumes no RNG but is not idempotent and is unsafe as an existing-actor restore helper.",
+      "scalarCompletion": "Without replaying route-wrapper return1, set yaw0x200, zero task velocity78/7C/80, restore W60 base0x12800761 while preserving the receiver's existing local shadow bit0x08000000, then restore W64=0x20, B4C=2, W68=0x400, H+A4=low16(WD4), W48=0xFFFFFFFF, S16+4E=100, H50=100 and H52=0; bind clip1 rate0.25 loop1 once and schedule func_08000000_70D740 only while D_8016DAB4 is this guard task. func_80218DA8_5D4278(actor,1000,100,0) reproduces the collision scalar tail without allocating another shadow.",
+      "faceAndRoutePointer": "func_80224CE0_5E01B0 initially stores selectors +90=09001000,+9C=09002000,+A0=09003000. func_80226840_5E1D10 overwrites +9C with actor self. Routes43/44 contain no opcode that reads +9C; func_80224D50_5E0220 reads only +90/+A0, so native live POST safely leaves +9C=self. Extra blink calls consume RNG and must not be added by restore.",
+      "localShadowBit": "W60 mask0x08000000 is the result of this actor's own local shadow allocation. With a shadow, route-start removal of bit0x10000000 yields midroute W60=0x0A800760 or0x0A800761; allocation failure yields0x02800760 or0x02800761. Preserve the receiver's existing bit across route and completed base-state reconstruction; do not transmit it as route state.",
+      "liveTargetsBeforeGroundProbe": {
+        "route0x43 d8=1": "origin(-451,0,29), first(-451,0,89), final(-451,0,69)",
+        "route0x44 d8=0": "origin(-431,0,29), first(-431,0,89), final(-408,0,69)"
+      },
+      "save1EntryTargets": {
+        "route0x43 d8=1": "(-466,0,49)",
+        "route0x44 d8=0": "(-416,0,49)"
+      },
+      "localLockOwnership": "func_8022125C_5DC72C writes D_800C7AE2=1 only after accepted local contact. File_51 return1 is the native release for a tracked local bridge acquisition. Remote or otherwise unowned route completion must preserve the pre-call byte. Other verified direct writers include func_8022075C_5DBC2C and func_80221F70_5DD440 (set) plus func_80221FB0_5DD480 and func_8000B4A0_C0A0 (clear)."
+    },
+    "localOnly": "DialogueB4/BC/EC; self pointer9C; face/shadow resources; blink76; sequence lockD_800C7AE2; unused placed DA!=0 transition branches",
+    "findings": [
+      "File_51 binds model0x2CC. Low halfword of task+D4, copied from definition+8, supplies dialogue0x10E or0x110; H+D8 selects route0x44 or0x43. Save0 is the Super Pass prerequisite; save1 records bridge opening. Accepted local pass dialogue sets temporary bit0, starting both movement routes. Route return2 sets temporary bit1. Return1 unconditionally clears local sequence lock D_800C7AE2 before rebuilding common NPC state; it must not be replayed on behalf of another player. Dialogue pointers+B4/+BC/+EC and blink byte+76 are local.",
+      "File_51 initializer func_08000600_70DD40 binds clip0/model0x240 at scale0.1010000035. The sole placed definition has H+D8=1 and H+DA=0. Temporary bit1 enables native animation and plays sound0x15E once. A save1-at-entry constructor chooses its inert completed continuation without replaying that presentation. All local player/travel branches require H+DA nonzero and are unreachable for this placed definition.",
+      "File_51 initializer func_080006F8_70DE38 binds model0x311, slot0, scale1 and object position(0,0,-9). It deletes the current task immediately if save1 is set; otherwise func_080006B4_70DDF4 deletes on temporary bit1. This graph creates no children, rewards, loot or damage tasks. Save1 is committed by native guard dialogue opcode0x8020, not by the overlay callbacks."
+    ],
+    "limits": [
+      "Native research only; graph adapter and fresh two-client gameplay remain outstanding."
+    ]
+  },
+  "mtFearWeaponObstacleAudit": {
+    "date": "2026-09-19",
+    "program": "/codex-temp/world_file_64.elf",
+    "romRange": [
+      "0x724C10",
+      "0x725C30"
+    ],
+    "source": "/Users/ahmad/git/mnsg-recomp-example/src/anchor_world_gate64.c",
+    "rawEvidenceSha256": "4688b037e986545d45d58dbf40c2d9a473a9eb48ba777663b50850af6196a05d",
+    "functions": [
+      "func_08000000_724C10",
+      "func_080001BC_724DCC",
+      "func_0800033C_724F4C",
+      "func_0800037C_724F8C",
+      "func_0800042C_72503C",
+      "func_08000AD8_7256E8",
+      "func_08000B9C_7257AC",
+      "func_08000C0C_72581C",
+      "func_08000C18_725828",
+      "func_08000DE4_7259F4",
+      "func_80220410_5DB8E0",
+      "func_80216CE0_5D21B0",
+      "func_80216E1C_5D22EC",
+      "func_80034ED4_35AD4"
+    ],
+    "findings": [
+      "All ten File_64 native functions decompiled. Hit-qualification and child-allocation caller disassembly checked for branch and stack-argument ambiguity.",
+      "Root+D4 owns the child pointer; the child does not store a self-pointer at+D4. Root task-hierarchy deletion retires descendants.",
+      "Native resource files and static slots must be resident before reconstruction; the original root initializer does not check child allocation failure.",
+      "Timer30 split motion belongs to both additive intervals, producing five units before trigonometric direction scaling."
+    ],
+    "limits": [
+      "Verified static US-ROM native behavior and production-C host harness; fresh two-client gameplay remains outstanding."
+    ]
+  },
+  "travelEntranceSceneAudit": {
+    "date": "2026-09-19",
+    "programs": [
+      "/codex-temp/world_file_67.elf",
+      "/codex-temp/world_file_70.elf"
+    ],
+    "romRanges": [
+      [
+        "0x7295A0",
+        "0x72AA30"
+      ],
+      [
+        "0x72E260",
+        "0x72F890"
+      ]
+    ],
+    "source": "/Users/ahmad/git/mnsg-recomp-example/src/item_sync.c",
+    "rawEvidenceSha256": "fde9c6b5dc29817b7b594e53b3d48811cdf66af25663a6022091c85a89f6dd24",
+    "scenarioFollowupSha256": "a5feb677b230812897dd0cd661490336b08a29b718a7e41328ff1756945068ea",
+    "functions": [
+      "func_08000000_7295A0",
+      "func_08000090_729630",
+      "func_08000DA4_72A344",
+      "func_08000F7C_72A51C",
+      "func_08001090_72A630",
+      "func_08000000_72E260",
+      "func_0800017C_72E3DC",
+      "func_0800037C_72E5DC",
+      "func_08000B54_72EDB4",
+      "func_80037548_38148",
+      "func_8021804C_5D351C",
+      "func_80212020_5CD4F0"
+    ],
+    "findings": [
+      "All functions in both overlays decompiled; allocation, terminal cleanup and stack arguments checked in native disassembly.",
+      "File70 C4 only suppresses a future entry. Active callbacks do not branch on the bit and must finish their own local cleanup.",
+      "Added missing C4 to existing durable item flag table; no transient scene, pointer, player pose, warp, temp0 or particle replication added."
+    ],
+    "limits": [
+      "Canonical game-facing label for C4 and external invoker of File70 variant1 remain unresolved.",
+      "File102 scenario1F9 positive choice reaches save6B set at ROM77E140; its negative branch does not clear an existing6B. Existing File67 6B/6C transport needs separate semantic review.",
+      "Static native evidence only; fresh two-client gameplay remains outstanding."
+    ]
+  },
+  "nestedDollContainerAudit": {
+    "date": "2026-09-19",
+    "programs": [
+      "/codex-temp/world_file_62.elf",
+      "/codex-temp/world_file_26.elf",
+      "/mnsg.us.0.z64"
+    ],
+    "evidenceSha256": "d27ef81b80fa415e4fd169df1ab28fe5b99705357c2543d8d5e1d418a15bf29e",
+    "findings": [
+      "Native allocation/termination ABI checked in disassembly. Helper removal does not retire the category9 Doll.",
+      "Placed indices7/2 in rooms16A/182; both source positions(-10,21,-126). Helper/Doll identities stay zero.",
+      "Existing world dynamic hook sees context copy but cannot classify this File26 callback/model layout; implementation remains open."
+    ],
+    "limits": [
+      "Static native evidence; no fresh two-client game or task-list memory capture.",
+      "Scheduler adjacency decides whether the mover unlinks immediately or enters delayed cleanup."
+    ],
+    "allocationContextFollowup": {
+      "date": "2026-09-19",
+      "program": "/mnsg.us.0.z64",
+      "functions": [
+        "80218C28",
+        "80220410",
+        "80034A10"
+      ],
+      "finding": "80218C28 inherits body/dimension/mask context; 80220410 allocates a zeroed helper without that copier. 80034A10 zeros task fields through +EF. Standalone Doll allocation through a player context must clear the inherited zero-helper fields before scheduled 00514."
+    }
+  },
+  "gatewayCoupledSceneAudit": {
+    "date": "2026-09-19",
+    "programs": [
+      "/codex-temp/world_file_53.elf",
+      "/mnsg.us.0.z64"
+    ],
+    "romRange": "0x70E0B0..0x710660",
+    "placedRoot": {
+      "room": "0x153",
+      "index": 4,
+      "entity": "0x316",
+      "sourceRom": "0x12D8E80",
+      "definitionRom": "0x12D8DF0"
+    },
+    "method": "All16 File53 functions, direct main helpers, caller disassembly, ROM route/dialogue/model tables",
+    "durableCommit": {
+      "dialogue": "0x2F4",
+      "file": 116,
+      "instructionRom": "0x7A7BDC",
+      "opcode": "0x8020",
+      "argument": "0x17",
+      "handler": "func_8003D68C_3E28C"
+    },
+    "auditPath": "/tmp/mnsg-world-sync/file53-coupled-native-audit-2026-09-19.txt",
+    "auditSha256": "3ddc9f259a3baa5a53a30108236d3c66cdcd69c3cfc9df57a49a974aa9f05627",
+    "limitations": [
+      "No fresh two-client game run",
+      "Model semantic names and non-XYZ placement words unresolved",
+      "Shared visual adapter and safe scene ownership/handoff remain unimplemented"
+    ]
+  },
+  "travelGatewayFollowupAudit": {
+    "date": "2026-09-19",
+    "romSha256": "e40bee20508c2e29e651dca4e47504e40f908f0a2186e34a582784bf5a64be4c",
+    "programs": [
+      "/codex-temp/world_file_53.elf",
+      "/codex-temp/world_file_67.elf",
+      "/mnsg.us.0.z64"
+    ],
+    "auditPath": "/tmp/mnsg-world-sync/file53-scene-gates-followup-2026-09-19.txt",
+    "auditSha256": "221bdbc09662abb11ea16f33780715657ce8f32970ef99ca69d68a8100523dab",
+    "file67Correction": "func_08000090_729630 disassembly080000D0..08000148: any zero Miracle word branches0800011C, frees private state via80014B74_15774 and deletes implicit current task via80035020_35C20; all four nonzero advances at08000114/118. Earlier wording that phase0 waits was incorrect.",
+    "file53Cleanup": "80024888_25488 clears object+2C, sets task+DC=5 and installs80024848_25448; fifth update calls80024734_25334 and deletes task. Player0800037C_70E42C phase15 restores input and emits temp17 after dialogue2F4 is inactive.",
+    "limitations": [
+      "Static native evidence; no fresh two-client game run",
+      "Private mesh0x80-byte state ownership after array teardown unresolved",
+      "Scene ownership and shared visual handoff unimplemented"
+    ]
+  },
+  "spikeFloorAudit": {
+    "date": "2026-09-19",
+    "romSha256": "e40bee20508c2e29e651dca4e47504e40f908f0a2186e34a582784bf5a64be4c",
+    "programs": [
+      "/codex-temp/world_file_24.elf",
+      "/mnsg.us.0.z64"
+    ],
+    "callback": {
+      "symbol": "func_08000980_6ACED0",
+      "vram": "0x08000980",
+      "rom": "0x006ACED0",
+      "size": "0x384",
+      "abi": "void(void *task, void *object)",
+      "basis": "a0/a1 use and every call checked in disassembly"
+    },
+    "auditPath": "/tmp/mnsg-world-sync/file24-spike-native-audit-2026-09-19.txt",
+    "auditSha256": "ee2e858de150b3d4153062483ea8948b4f7963754f116e85743a1b37e084f384",
+    "placements": {
+      "count": 46,
+      "rooms": {
+        "0x32": 21,
+        "0x34": 17,
+        "0x3A": 8
+      },
+      "definitionsRereadFromRom": true
+    },
+    "resource": {
+      "file": "0x24F",
+      "romStart": "0x115CA00",
+      "romEnd": "0x115F290",
+      "clipHeaders": {
+        "0x50": "0x80000103",
+        "0xB4": "0x80000103"
+      }
+    },
+    "inventoryPreview": {
+      "symbols": 1097,
+      "sourceFiles": 190,
+      "addedNames": 840,
+      "removedNamesRetained": [
+        "D_8016DADC_16E6DC",
+        "D_8020D220_5C9130"
+      ],
+      "adopted": [
+        "func_08000980_6ACED0"
+      ],
+      "snapshotAdopted": "mnsg-recomp-example/src/anchor_world.c",
+      "unresolvedSymbols": [],
+      "unresolvedHooks": [],
+      "projectTableGaps": [],
+      "metadataConflicts": [],
+      "sourceDeclarationDifferenceCount": 81,
+      "scopeNote": "Unrelated declaration differences remain preview findings. The added symbol has one two-pointer declaration, verified against native registers."
+    },
+    "limitations": [
+      "Static native evidence; no fresh two-client game run.",
+      "Command-slot internals were not semantically decoded beyond their verified native binding.",
+      "The callback audit does not independently decompile the animation engine reverse-endpoint step."
+    ]
+  },
+  "jumpRopeAudit": {
+    "date": "2026-09-19",
+    "romSha256": "e40bee20508c2e29e651dca4e47504e40f908f0a2186e34a582784bf5a64be4c",
+    "programs": [
+      "/codex-temp/world_file_24.elf",
+      "/mnsg.us.0.z64"
+    ],
+    "callback": {
+      "name": "func_0800074C_6ACC9C",
+      "vram": "0x0800074C",
+      "rom": "0x006ACC9C",
+      "size": "0x14",
+      "abi": "void(void *task, void *object)"
+    },
+    "initializer": {
+      "name": "func_08000760_6ACCB0",
+      "size": "0x9C",
+      "stackArguments": "None; each callee argument verified in registers."
+    },
+    "placements": {
+      "count": 6,
+      "room": "0x41",
+      "indices": [
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "definitionRom": "0x12A9250",
+      "definitionWords": [
+        "0x01AA0000",
+        "0x0000000A",
+        "0",
+        "0"
+      ]
+    },
+    "auditPath": "/tmp/mnsg-world-sync/file24-rope-native-audit-2026-09-19.txt",
+    "auditSha256": "10b376ad030a139e22490dcc59a6ae6facad0a1e5787916c115d7e9d44282a66",
+    "inventoryPreview": {
+      "symbols": 1098,
+      "sourceFiles": 190,
+      "newAdoptedSymbols": [
+        "func_0800074C_6ACC9C"
+      ],
+      "refreshedSymbols": [
+        "func_08000980_6ACED0"
+      ],
+      "unresolvedSymbols": [],
+      "unresolvedHooks": [],
+      "projectTableGaps": [],
+      "metadataConflicts": [],
+      "sourceDeclarationDifferenceCount": 81,
+      "declarationReview": "The new continuation uses one two-pointer ABI verified from its five instructions. Unrelated preview declaration differences remain outside this scoped refresh."
+    },
+    "limitations": [
+      "No fresh two-client game run.",
+      "Slot1 geometry/primitive internals were not decoded beyond binding and ownership.",
+      "Verified low10 render and common attachment consumers do not prove every possible reader ignores upper angle bits."
+    ]
+  },
+  "file40EquipmentAudit": {
+    "date": "2026-09-19",
+    "baseCommit": "40a500150db2ff8ebfc7f55f0d320ebedbac9a4e",
+    "romSha256": "e40bee20508c2e29e651dca4e47504e40f908f0a2186e34a582784bf5a64be4c",
+    "programs": [
+      "/codex-temp/world_file_40.elf",
+      "/codex-temp/world_file_30.elf",
+      "/mnsg.us.0.z64"
+    ],
+    "newSymbols": [
+      "func_080018E4_6EAA34",
+      "func_08001CC4_6EAE14",
+      "func_080073BC_6C6B0C",
+      "func_080075DC_6C6D2C",
+      "func_080077C8_6C6F18",
+      "func_802139E0_5CEEB0",
+      "func_80213A9C_5CEF6C",
+      "func_80218DA8_5D4278"
+    ],
+    "sourceSha256": {
+      "src/anchor_world.c": "c3f2af92a789e21ce1be4453846ede569dec2649b112bc502a664e1660e7603b",
+      "src/anchor_world_equipment.c": "8df860f0408a9b15eec8a0e74ccd7e19ba8f2b744e7ff185fc00ed52f8c67071",
+      "src/item_sync.c": "b704b9c535107f844d972840d0d525bda9264f42d774a91e5a72e9c9bfe3fc8f",
+      "src/ui/debug.c": "33270ed1d891f482f054a5782dd0826292ef9ee2a7e4216802cfc3a6e9544698"
+    },
+    "nativeEvidence": {
+      "file40-mechanism-native-audit-2026-09-19.txt": "71d6e9ee006ec59a4be5a1dc26124e6dfc9a29769fc28f07e4dcfc7c5617fdea",
+      "file30-continuation-audit-2026-09-19.txt": "60b6f3f3742db69967402d5b1a1e996deeb0b54d857c6207357bcb8b5e5f9fc6"
+    },
+    "previewAudit": {
+      "documentedSymbolCount": 1106,
+      "sourceFileCount": 191,
+      "unresolvedSymbols": [],
+      "unresolvedHooks": [],
+      "projectTableGaps": [],
+      "metadataConflicts": []
+    },
+    "sourceDeclarationDifferenceCount": 81,
+    "declarationReview": "Eight new symbols verified against native decompilation/disassembly. Attack cylinder radius is signed int divided by10; both File40 continuations use task/object in a0/a1. Existing unrelated declaration variants are not resolved by this scoped update.",
+    "limitations": [
+      "No fresh in-game renderer/contact/dialogue run.",
+      "Static descriptor+C tables are not named collision tables without further evidence.",
+      "File40 bomb-block cause-dependent children and other File30 spawners remain outside this implementation."
+    ]
+  },
+  "worldChildLifetimes20260921": {
+    "date": "2026-09-21",
+    "programs": [
+      "/codex-temp/world_file_30.elf",
+      "/codex-temp/world_file_40.elf",
+      "/codex-temp/world_file_46.elf",
+      "/codex-temp/world_file_53.elf",
+      "/codex-temp/world_file_62.elf",
+      "/codex-temp/world_file_74.elf",
+      "/codex-temp/world_file_75.elf",
+      "/mnsg.us.0.z64"
+    ],
+    "evidenceSha256": {
+      "file30-slicer-native-audit-2026-09-19.txt": "bccdb52f9e8e9250faeab72301b8f1cd27b95d5cf461899b795bc414e7aa8348",
+      "bomb-native-2026-09-21.txt": "0245bbea11c377595bbaac5cd0eafabd4eba8e03a8936d775969b1b779b479bc",
+      "quest-adapter-recipes-2026-09-21.txt": "17c70a001d8755457ea0ffae909b57d8ba361f9a96932595c2fc1db30492a46b"
+    },
+    "corrections": [
+      "Task+0x84 references the target OBJECT directly; do not dereference task+0x18 a second time.",
+      "Display-list helper returns use object+0x30 with pointer tag0x20000000 for bomb roots/rings and0x60000000 for particles. They are not RGBA words.",
+      "Koryuta constructor writes eleven explicit body-part pointers. Code overlay selection and model descriptor resource files are separate tables.",
+      "Model resource files and clip commands were read from the decompressed US ROM descriptor table D_80236984."
+    ],
+    "limits": [
+      "Native decompilation, disassembly and host harness evidence only; no fresh two-client game certification.",
+      "Quest scene reconstruction must preserve the original local control, camera and dialogue lifecycle."
+    ]
+  }
+}

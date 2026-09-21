@@ -4,7 +4,7 @@
       {
         "id": "known-room-ids",
         "title": "Known room IDs",
-        "description": "201 known native room/scene IDs. Read each value as the complete unsigned 16-bit room ID; hexadecimal and decimal columns represent the same value. Repeated area names refer to distinct rooms. Some IDs are identified only to their area, and unknown IDs are omitted rather than assigned guessed names. Congo battle room 0x0016 is distinct from its preceding approach room 0x001A.",
+        "description": "203 known native room/scene IDs. Read each value as the complete unsigned 16-bit room ID; hexadecimal and decimal columns represent the same value. Repeated area names refer to distinct rooms. Some IDs are identified only to their area, and unknown IDs are omitted rather than assigned guessed names. Congo battle room 0x0016 is distinct from its preceding approach room 0x001A.",
         "columns": [
           "Raw value (hex)",
           "Raw value (decimal)",
@@ -1015,6 +1015,26 @@
             "`0x0226`",
             "`550`",
             "World Map"
+          ],
+          [
+            "`0x0260`",
+            "`608`",
+            "Impact boss rush — Kashiwagi"
+          ],
+          [
+            "`0x0261`",
+            "`609`",
+            "Impact boss rush — Taisamba 2"
+          ],
+          [
+            "`0x0262`",
+            "`610`",
+            "Impact boss rush — Balberra"
+          ],
+          [
+            "`0x0263`",
+            "`611`",
+            "Impact boss rush — D'Etoile"
           ]
         ]
       }

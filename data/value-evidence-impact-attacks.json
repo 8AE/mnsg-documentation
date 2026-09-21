@@ -1,0 +1,46 @@
+{
+  "date": "2026-09-13",
+  "programs": [
+    "file_13_raw.bin",
+    "mnsg.us.0.z64"
+  ],
+  "findings": [
+    {
+      "symbols": [
+        "func_8000DBF0_E7F0"
+      ],
+      "native": [
+        "0x80014218",
+        "0x80035964"
+      ],
+      "verified": "File-zero bindings are skipped; inactive base pointers are not cleared on object reuse."
+    },
+    {
+      "symbols": [
+        "D_8020EED0_63A2B0"
+      ],
+      "native": [
+        "0x801D0260",
+        "0x801D7670",
+        "0x801D7BC8",
+        "0x801D8878",
+        "0x801D9730",
+        "0x801DD394",
+        "0x801D9940",
+        "0x801DAEC8"
+      ],
+      "verified": "Input-task ownership, deferred action fields, native uppercut extension model 0x18000248 in file 0x4A8, and separate guard/fist controller readers."
+    },
+    {
+      "native": [
+        "0x80038C30"
+      ],
+      "verified": "Disassembly: a0 masked u16, a1 masked u8, a2 masked u8; 8-entry queue, low16 cue dedupe, pan only 1..127, volume highbyte, C09C9 set FF during queue mutation then zero. Zero cue returns unchanged. Impact looping cue stop pairs: 122,130,152,23E,240,241 and their 8000-tagged stops."
+    }
+  ],
+  "validation_limitations": [
+    "Native addresses and queue ABI inspected in Ghidra; no new two-client game run.",
+    "Supplied solo video has no audio track; it cannot establish which audible cues were absent on a remote client."
+  ],
+  "implementation": "mnsg-recomp-example impact_syncing; native audio queue tests, attack-input fixtures, texture binding fixture, local Anchor transport validation."
+}

@@ -1,0 +1,42 @@
+{
+  "func_0800074C_6ACC9C": {
+    "title": "Rotate a jump rope",
+    "summary": "Advances the jump-rope actor by its immutable pitch increment while preserving the full native 16-bit rotation accumulator.",
+    "confidence": "decompiled",
+    "declaration": "extern void func_0800074C_6ACC9C(void *task, void *object);",
+    "parameters": [
+      {
+        "name": "task",
+        "type": "void *",
+        "description": "Initialized entity 0x1AA task, with the pitch increment stored as a word at +0xD0."
+      },
+      {
+        "name": "object",
+        "type": "void *",
+        "description": "The native object at task +0x18. Its unsigned pitch halfword is at +0x14."
+      }
+    ],
+    "returns": "No return value.",
+    "behavior": [
+      "The complete continuation reads object unsigned halfword +0x14, adds task word +0xD0, and stores the low 16 bits. It makes no calls and has no private phase, timer, child, award, audio, flag, camera, or player-control path.",
+      "All six placements in room 0x41 use increment 10 from definition word +0x04. Their initial pitch and roll are zero; yaw alternates between 0 and 0x200. The full stored pitch wraps modulo 65536. Verified render and common attachment transforms use its low 10 bits.",
+      "The native initializer func_08000760_6ACCB0 binds model 0x1AA, resource pair 0x1DF/0 and common resource 0x152. Animation slot 0 is a ten-frame clip bound at rate 2.0 with looping enabled; command slot 1 supplies the local binding. Unit scale and task flags 0xE0 are installed before this continuation.",
+      "The looping clip stays at frame zero: task flags 0xE0 leave play bit 0x1 clear, and the common animation step returns while it is clear. Object animation step remains 512 and status low bits remain 1. The whole-object pitch change supplies the visible rotation.",
+      "Native func_8003521C_35E1C installs this callback on the current task. The separately scheduled common post callback still owns animation admission, contact and collision."
+    ],
+    "cautions": [
+      "Use the full ROM-qualified File24 symbol and an initialized actor. Other overlays share the virtual address range.",
+      "Do not call this continuation to observe it: each call advances the pitch by one increment. Keep the common contact callback at its normal single-pass cadence.",
+      "Preserve local resource and command pointers. Replaying the initializer resets model bindings and is not a restoration shortcut.",
+      "Do not start clip playback to reproduce the native rope motion; native rotation is the object pitch update."
+    ],
+    "example": "#include \"modding.h\"\n\nstatic volatile unsigned short rope_pitch;\n\nRECOMP_HOOK(\"func_0800074C_6ACC9C\")\nvoid observe_rope_pitch(void *task, void *object)\n{\n    if (!task || !object) return;\n    if (*(volatile unsigned short *)((char *)task + 0x5C) != 0x1AA) return;\n    rope_pitch = *(volatile unsigned short *)((char *)object + 0x14);\n}\n",
+    "exampleExplanation": "The hook samples the complete unsigned pitch without changing it. The native continuation then advances through its ordinary scheduler call.",
+    "related": [
+      "D_8015CDE0",
+      "func_8003521C_35E1C",
+      "func_8021664C_5D1B1C",
+      "func_80216AB8_5D1F88"
+    ]
+  }
+}

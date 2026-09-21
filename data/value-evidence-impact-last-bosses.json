@@ -1,0 +1,26 @@
+{
+  "date": "2026-09-13",
+  "game": "MNSG USA",
+  "overlay": "file_13_raw.bin",
+  "overlay_sha1": "6ea0ed71032ce08fc2745f412d84936382197494",
+  "main_program": "mnsg.us.0.z64",
+  "native_functions": [
+    "80200200",
+    "80201C7C",
+    "802085B0",
+    "80203F5C",
+    "80205FC8",
+    "802061B8",
+    "801FAEB0",
+    "801FF528",
+    "801FE66C",
+    "801FE964",
+    "801FED3C",
+    "802065B8",
+    "8020679C",
+    "8000E030"
+  ],
+  "evidence": "Ghidra decompilation; 8000E030 MIPS disassembly verifies six stack arguments and two independent RGBA writes. New functions were defined in the same verified file_13 overlay. Supplied all-boss rush logs observe native constructors at stages 610 and 611.",
+  "correction": "Auxiliary +14..+813 is pose history, not task pointers. 801FED3C is D'Etoile's reeling reader, not Balberra's. Story selector increments before same-root D'Etoile initialization.",
+  "runtime_limit": "No fresh live two-gameplay-client run; native host fixtures and isolated local TCP transport checks are separate evidence."
+}

@@ -1,0 +1,21 @@
+{
+  "game": "MNSG USA decompressed ROM",
+  "sha1": "6ea0ed71032ce08fc2745f412d84936382197494",
+  "overlay": "file_13_raw.bin",
+  "source": "mnsg-extra-options/src/hyper_taisamba.c and file_13 native analysis",
+  "evidence": {
+    "arena": [
+      "801F1788",
+      "801D0C70",
+      "801F71DC",
+      "801F7214"
+    ],
+    "references": [
+      "801F3950 disassembly lw +9C then lhu +5C",
+      "801F6660 disassembly 801F66F8..801F67FC",
+      "801F6C4C collision reaction"
+    ],
+    "root": "801EF2E0 initializer, ID 0x5A; state +1D8 task / +1E0 model"
+  },
+  "limitations": "Host fixtures and MIPS builds are not a live two-client Taisamba fight."
+}

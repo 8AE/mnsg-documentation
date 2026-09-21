@@ -1,0 +1,22 @@
+{
+  "date": "2026-09-13",
+  "programs": [
+    "mnsg.us.0.z64",
+    "file_13_raw.bin"
+  ],
+  "findings": {
+    "frame_order": [
+      "80000AD8",
+      "80002040",
+      "801CB518",
+      "80034734",
+      "8000AA00",
+      "80016950",
+      "800087C4"
+    ],
+    "repeated_punch_aim": "801D93D4..801D9448 reads state+4/+8 before E68C; decompiler omitted these arguments",
+    "allocation": "80034B58 -> 80034A10; result parent.next before 80034D24",
+    "task_boundary": "80034734 is the only native caller of 8001481C; task in a0 before pre/update/post"
+  },
+  "validation": "Ghidra native disassembly and callers; mod host fixtures and compiled hook sections. No fresh in-game two-client validation."
+}

@@ -1,0 +1,29 @@
+{
+  "date": "2026-09-13",
+  "symbol": "D_800C7AB2",
+  "native_program": "mnsg.us.0.z64",
+  "native_evidence": {
+    "800370B0": "destination_stage=0x260; FUN_80003728(0xC)",
+    "80037000": "current stage <0x263: destination=current+1; otherwise 0x25F; FUN_80003728(0xC)"
+  },
+  "runtime_evidence": [
+    {
+      "attachment": "3ccfea3f-ea1f-406a-980b-339c15f85029",
+      "lines": [
+        1019,
+        1022
+      ],
+      "observation": "Kashiwagi sync deactivates; encounter 2 binds at stage 609."
+    },
+    {
+      "attachment": "c644e0ce-452a-45f4-ad74-fe1a07ff4494",
+      "lines": [
+        969,
+        972
+      ],
+      "observation": "Same transition on remote client, with different local task address."
+    }
+  ],
+  "correction": "0x260 is only the first boss-rush stage. The prior single-stage sync whitelist excluded Taisamba 2.",
+  "runtime_after_fix": "Not observed; regression fixtures and local transport are separate from a fresh in-game run."
+}

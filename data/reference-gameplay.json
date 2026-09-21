@@ -4,7 +4,8 @@
     "summary": "Dispatches the current system-state handler selected by the system step byte.",
     "behavior": [
       "Copies the handler table at 0x80058908 into local storage, then calls the entry indexed by system->stepw through D_8015C5C8_15D1C8.",
-      "The selected handler depends on the current system phase, so this function is a useful boundary for observing state changes across menus, transitions and gameplay. A return hook observes state after that handler completes."
+      "The selected handler depends on the current system phase, so this function is a useful boundary for observing state changes across menus, transitions and gameplay. A return hook observes state after that handler completes.",
+      "The Impact gameplay handler at 0x801CB518 calls the task scheduler at 0x80034734 inside this dispatch. After 0x80002040 returns, game_thread_entrypoint clears draw buckets with 0x8000AAE8, collects objects by mode with 0x8000AA00, initializes rendering with 0x80016950, then sorts and draws each bucket through 0x8000A99C and 0x800087C4. A scheduler return hook precedes a dispatcher return hook; object births and mode changes must precede draw-list collection."
     ],
     "cautions": [
       "This dispatcher is not specific to gameplay. Check that player/save state is loaded before reading gameplay fields."
@@ -420,10 +421,28 @@
   },
   "D_8020EED0_63A2B0": {
     "title": "Impact battle state pointer",
-    "summary": "Pointer to the shared Impact-battle state used by Thaisamba.",
+    "summary": "Shared state for the four dedicated Impact boss encounters, including camera aim, grappling-hook control and reeling.",
     "behavior": [
-      "Known offsets are signed 32-bit boss HP at +0x60, boss task pointer at +0x1D8, model task pointer at +0x1E0 and combat-paused byte at +0x2C0.",
-      "A live battle requires a current state instance, the expected boss task, a model task, positive boss health and no combat pause. This state belongs to the dedicated Impact-battle overlay, separate from the ordinary room-actor pipeline."
+      "Known offsets include signed 32-bit boss HP at +0x60, ammunition at +0x64 and mech HP at +0x68; the battle-manager task at +0x1BC, world/HUD task at +0x1C4, native input task at +0x1C8, boss task at +0x1D8, boss model object at +0x1E0 and combat-paused byte at +0x2C0.",
+      "Active combat requires a current state instance, the expected boss task and model, positive boss health and no combat pause. The native task graph also remains live during introductions and victory sequences. This state belongs to the dedicated Impact-battle overlay, separate from the ordinary room-actor pipeline.",
+      "During ordinary active combat, file_13 FUN_801CC10C smooths local aim angles at +0x04/+0x08 into +0x74/+0x78, then computes camera position at +0xA0/+0xA4/+0xA8 and target at +0xAC/+0xB0/+0xB4. The field at +0xBA is the native projection/FOV halfword. These are camera presentation fields, distinct from the boss and mech world poses.",
+      "The native input interpreter reads held and newly pressed controller buttons separately. Attack requests at +0x141 and +0x145 can remain pending across callbacks before the dispatcher creates their native limb or projectile task. The primary cursor is at +0x00 and the shooting cursor is at +0x0C; they refer to the same task in the ordinary one-controller configuration.",
+      "Native guard release and special-fist controls read controller state again from their own task callbacks, outside the main input interpreter. A display-only model does not supply an attack collider or a projectile interception contact.",
+      "The grappling arm opens through FUN_801D9704/FUN_801D9730; only later does FUN_801D9DA8 launch its child hook. That launch reads the primary cursor task at +0x00 and its object X/Y rotation at +0x14/+0x16. The child hook keeps its arm-task pointer at +0x90; the arm keeps its child at +0x88.",
+      "A latched hook stores the target boss task at state +0x174. The boss reeling callbacks FUN_801E9624, FUN_801F5F0C and FUN_801FED3C read primary-controller pressed bits at system +0x3B07C with 0x18-byte stride, independently of the mech input interpreter. The accepted mash mask is 0xC030 (A/B/L/R); R also ends the struggle timer. Each tick subtracts 0.5 from task +0xA0, a press adds 9 or 11 depending on the native stick-direction check, and the meter is clamped to 0..100 then exposed as an integer at state +0x70.",
+      "FUN_801DA3CC rebuilds the visible grappling chain with native model commands from table 0x80209CF0: 0x4800A380, 0x4800A460, 0x4800A540, 0x4800A620, 0x4800A700, 0x4800A7E0, 0x4800A8C0 and 0x4800A9A0, all in file 0x4A8.",
+      "Aim is not consumed only at input dispatch. The punch/arm updater FUN_801D9030 rereads yaw and pitch at state +0x04/+0x08 on every animation update (MIPS 0x801D93D4..0x801D9448), despite those reads being omitted from incomplete pseudocode. Guard placement FUN_801DD3DC and delayed laser initialization FUN_801DC194 also read shared aim. The Ryo constructor FUN_801DAFCC reads the secondary cursor task at state +0x0C. A task can therefore read aim after its creating input callback has returned.",
+      "Taisamba 2 uses encounter selector 2 and boss task ID 0x5A. Arena displacement is accumulated as float X/Y/Z at state +0x178/+0x17C/+0x180 and integrated into the arena origin at +0x184/+0x188/+0x18C by FUN_801D0C70. The integrator clears pending displacement each update; the vertical origin is clamped to 0..400 before integration. These world fields are separate from camera aim and projection.",
+      "Taisamba 2 ascent callback FUN_801F1788 writes +0x17C = 1.0 until the arena height reaches 400, then clears the ascent request at +0x2C5 and enters aerial combat. FUN_801F71DC selects ground or air behavior from whether +0x188 is zero. The root movement helper FUN_801F7214 applies pending arena displacement to its model.",
+      "The Taisamba 2 root task private area mixes scalar fields and pointers. Root +0x74 is vertical velocity. Root +0x9C holds a returning-weapon task pointer during FUN_801F3950, which reads weapon task ID +0x5C, but contains an angle in the grappling setup. Root +0xDC holds the last collision task; FUN_801F6660 reads that task's +0x18 model, +0x70/+0x74/+0x78 velocity, model XYZ position and Y rotation. Copying these pointer words between task graphs is invalid.",
+      "Taisamba 2 combo-grab callback FUN_801F5710 positions the boss from state yaw +0x04 and waits for the action timer byte +0x14F to reach zero. Its release callback FUN_801F58AC reads yaw/pitch +0x04/+0x08 to initialize knockback velocity. These aim reads occur on the boss task, separately from the attacking limb updater.",
+      "Taisamba 2 ground/air death reactions FUN_801F4B4C and FUN_801F5550 set the completion byte at state +0x2C4 to 1 before switching to the outro callback FUN_801EF924. The completion signal and phase transition are separate native writes.",
+      "Balberra uses encounter selector 3 and task ID 0x78. Its root constructor func_80200200_62B5E0 creates body parts and two sliding missile pods. Actual root HP is a signed word at task +0xAC; func_8020407C_62F45C republishes it at state +0x60. Separate gun, beam, deck-cannon and rocket-tube tasks also have HP at +0xAC, damage flash at +0xB0 and native destruction callbacks. The rocket index at task +0x90 distinguishes the six tubes; multiple tubes share task ID 0x71.",
+      "Attachment helper func_80203F5C_62F33C stores a local parent task at child +0xB4 and parent model at +0xB8, followed by float local offsets at +0xBC/+0xC0/+0xC4. These parent pointers are not scalar pose fields. Sliding missile pods own their own cannon and rocket descendants.",
+      "Balberra and D'Etoile allocate an auxiliary block through D_8020EF40_63A320. Bytes +0x04..+0x12 contain part commands, destroyed-part flags and drone state. For D'Etoile, +0x14..+0x813 contains 64 pose-history records of 32 bytes, not a task-pointer list: position XYZ, rotation XYZ encoded as floats, segmented model ID and animation frame. Byte +0x814 is the local circular write index. Bytes +0x815/+0x816/+0x817 control afterimages, shield commands and charge glow. func_80205FC8_6313A8 writes history; func_802061B8_631598 reads delayed records for the afterimages.",
+      "In the standard story handoff, Balberra callback func_80201C7C_62D05C invokes func_802085B0_633990, which clears completion byte +0x2C4 and increments the native encounter selector at system +0x3ADF4. It then removes old children and assigns func_801FAEB0_626290 to the existing root task. That initializer assigns D'Etoile task ID 0x64. The root address can therefore remain unchanged while the encounter changes.",
+      "D'Etoile keeps the last collision task at root +0xDC. Carry callback func_801FF528_62A908 dereferences that task's +0x18 model and consumes its position, velocity and Y rotation. Release callback func_801FE66C_629A4C reads global aim. Initial grapple callback func_801FE964_629D44 reads normalized primary-controller X at system +0x3B084 with stride 0x18; func_801FED3C_62A11C performs the subsequent A/B reeling. Balberra has no equivalent A/B reeling reader.",
+      "D'Etoile shield callback func_802065B8_631998 consumes the +0x816 command each update and normally clears it. A deflection instead writes 0xFF, disables collision, sets a 28-tick timer and switches to func_8020679C_631B7C. That callback animates a detached spin before restoring the shield attachment. The resulting child state remains meaningful after the command pulse is gone."
     ],
     "cautions": [
       "Do not dereference a retained state pointer after the Impact overlay is unloaded."
@@ -565,7 +584,8 @@
     "behavior": [
       "Loads the object pointer from task +0x18, then writes 16-bit values at object +0x14/+0x16/+0x18.",
       "The native Ryo popup setup uses this orientation. This function alone does not establish a universal billboard or camera-facing interpretation for every renderer.",
-      "The Dharumanyo travelling-projectile initializer func_08002620_6CA830 and Tsurami travelling-attack initializer func_080049A4_6B7C44 also call this helper. Their initialized rotation state therefore includes the exact 0x8000 value."
+      "The Dharumanyo travelling-projectile initializer func_08002620_6CA830 and Tsurami travelling-attack initializer func_080049A4_6B7C44 also call this helper. Their initialized rotation state therefore includes the exact 0x8000 value.",
+      "The common coin constructors func_80214314_5CF7E4, func_80214654_5CFB24 and func_802147A4_5CFC74, health constructors func_802141AC_5CF67C and func_80214A34_5CFF04, and food constructor func_08000378_6AEB58 call this helper. Preserve the exact 0x8000 fields when rebuilding these objects; masking them to a 10-bit angle produces zero."
     ],
     "cautions": [
       "The object must already exist; this routine performs no allocation."
@@ -638,7 +658,8 @@
     "summary": "Advances the animation frame of each object in an actor object chain.",
     "behavior": [
       "Returns unless task flags at +0x60 contain mask 0x01. For each active object, changes frame +0x28 by the unsigned rate at +0x7E multiplied by 2/256, using the reverse direction when requested.",
-      "Playback flag mask 0x02 marks stopped/completed clips, 0x01 controls looping and 0x04 records a loop crossing. Nonlooping clips clamp at their endpoint."
+      "Playback flag mask 0x02 marks stopped/completed clips, 0x01 controls looping and 0x04 records a loop crossing. Nonlooping clips clamp at their endpoint.",
+      "Task flag 0x01000000 selects reverse direction. A nonlooping reverse clip stops at frame zero; forward playback stops at clip length minus one. Clearing object +0x7C completion bit 0x02 allows an already completed clip to advance again without rebinding its resources. The common actor post calls this step once, so normal playback needs no extra call."
     ],
     "cautions": [
       "Extra calls advance completion and loop signals as well as visual frames, which can affect state transitions."
@@ -3372,12 +3393,12 @@
   },
   "func_8020D848_5C8D18": {
     "title": "Stage room actor data and spawn definitions",
-    "summary": "Selects the current room's actor-data wave and stages its static actor spawn definitions.",
+    "summary": "Selects room actor data and allocates actors from its resident and normal source lists.",
     "behavior": [
       "Indexes the per-room metadata table at D_80231300_5EC7D0 with the current room id and resolves the actor-data file that supplies the room's actor instances.",
       "Runs before the static actor initializers and is retried while the actor-data wave is still loading. A hook here precedes every static actor initialization for the room.",
-      "Each metadata record exposes the normal actor-instance array, the partitioned/proximity actor lists and the actor-data file id. A zero instance definition terminates a list.",
-      "The stage only reads the room tables; the per-instance actor initialization is performed later by func_80218A54_5D3F24."
+      "Each record exposes three source paths: the raw resident list at +0x00, the normal list at +0x08 and partition grid/configuration at +0x0C/+0x10. A null source-definition pointer terminates a list. The raw list is walked before the normal list; later proximity updates enumerate partitions.",
+      "This routine allocates tasks and calls func_80218A54_5D3F24 for each resident/normal instance; it does not merely read the room tables. Source descriptors remain distinct even when several instances share the same definition."
     ],
     "example": "#include \"modding.h\"\n\nextern unsigned short D_800C7AB2;\nextern void *D_80231300_5EC7D0[];\n\n/* Observe the room actor-data staging point. */\nRECOMP_HOOK(\"func_8020D848_5C8D18\")\nvoid observe_room_actor_stage(void)\n{\n    void *metadata = D_80231300_5EC7D0[D_800C7AB2];\n    if (metadata)\n    {\n        /* The room's actor-data record is present; native spawn may proceed. */\n    }\n}\n",
     "exampleExplanation": "The entry hook observes the actor-data staging step and checks that the current room's actor-data record is present before the native spawn uses it.",
@@ -3416,17 +3437,19 @@
   },
   "D_80231300_5EC7D0": {
     "title": "Per-room actor-data metadata table",
-    "summary": "Table of per-room records that describe each room's static actor-data wave.",
+    "summary": "Per-room metadata for resident actor instances, wave-backed normal instances and proximity partitions.",
     "behavior": [
-      "Indexed by the raw room id (D_800C7AB2). Each entry describes a room's normal actor-instance array, its partitioned/proximity actor lists and the actor-data file id that supplies the instances.",
-      "Read by the actor-data spawn stage func_8020D848_5C8D18. A null record or a not-yet-resolved actor-data file means the room's actor wave is unavailable and spawning is deferred.",
-      "The instance and list pointers are segmented and must be resolved through the active actor-data file id; they are not raw RAM addresses."
+      "Indexed by the raw room id (D_800C7AB2), with 800 slots in the US table. Each non-null record supplies an already-resident actor-instance list at +0x00, normal instances at +0x08, proximity partitions at +0x0C and the actor-data file id at +0x14.",
+      "func_8020D848_5C8D18 first walks the resident list and then the normal list. Partition-based spawning is handled by func_8020D36C_5C883C. A zero definition pointer terminates each 0x14-byte source list.",
+      "The +0x00 list and its definition pointers are used directly by the manager. Wave-backed +0x08/+0x0C/+0x10 pointers resolve through the record's own actor-data file. A resident list must not be mistaken for a segmented pointer.",
+      "The US ROM has seven resident-list placements: two 0x1FC platforms in room 0x30 and five 0xFC/0xFE enemies in room 0x131. A scan of all three lists finds 3,888 unique placements across 292 nonempty rosters; 333 records select actor-data waves, and 374 table slots contain metadata."
     ],
     "example": "#include \"modding.h\"\n\nextern unsigned short D_800C7AB2;\nextern void *D_80231300_5EC7D0[];\n\n/* Look up the current room's actor-data record. */\nvoid *room_actor_metadata(void)\n{\n    return D_80231300_5EC7D0[D_800C7AB2];\n}\n",
     "exampleExplanation": "The table is indexed by the raw current-room id; a null entry means the room has no actor-data record.",
     "cautions": [
-      "Index only with a valid room id; the table has no bounds checking.",
-      "Resolve the record's segmented pointers with its own actor-data file id. Resolving them with an unrelated or unloaded file faults."
+      "Index only with a valid room id below 800; the native table has no bounds checking.",
+      "Resolve segmented pointers with the record's own loaded file. Already-resident lists and definitions have different pointer semantics.",
+      "Actor task +0x70 is not a universal placement backlink: the resident/normal initialization clears it, while partition spawning explicitly assigns the source afterward. Observe the source argument of func_80218A54_5D3F24 when identifying every placed actor."
     ],
     "related": [
       "func_8020D848_5C8D18",
@@ -3434,7 +3457,7 @@
       "D_8015CDDC",
       "D_8015CDE0"
     ],
-    "confidence": "source-reviewed"
+    "confidence": "decompiled"
   },
   "func_80002F54_3B54": {
     "title": "Run the game-over step",

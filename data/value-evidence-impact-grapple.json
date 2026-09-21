@@ -1,0 +1,51 @@
+{
+  "date": "2026-09-13",
+  "programs": [
+    "file_13_raw.bin",
+    "mnsg.us.0.z64"
+  ],
+  "findings": [
+    {
+      "symbols": [
+        "func_80034E08_35A08"
+      ],
+      "native": [
+        "0x80034B58",
+        "0x80034D24"
+      ],
+      "verified": "Special self/tail backlink at the native scheduler head. Reciprocal predecessor validation does not apply to the head."
+    },
+    {
+      "symbols": [
+        "func_8000DBF0_E7F0"
+      ],
+      "native": [
+        "0x80014218",
+        "0x801D32D4",
+        "0x801D34D0",
+        "0x80209CE0"
+      ],
+      "verified": "Unbound slot is not always unused. Native animation writes slots 3,4,5 directly. Table is [3,4,5,0]."
+    },
+    {
+      "symbols": [
+        "D_8020EED0_63A2B0"
+      ],
+      "native": [
+        "0x801D9704",
+        "0x801D9730",
+        "0x801D9DA8",
+        "0x801DA3CC",
+        "0x80209CF0",
+        "0x801E9624",
+        "0x801F5F0C",
+        "0x801FED3C"
+      ],
+      "verified": "Delayed hook cursor read confirmed in disassembly at 801D9DC8..801D9E0C. Native arm-child linkage, latched-target pointer, chain model table, and separate reeling controller reads traced."
+    }
+  ],
+  "limitations": [
+    "The supplied 25.87-second two-player recording confirms missing remote attack presentation; it has no per-task/packet trace. The list-head rejection is a reproduced code defect; its activation in that recording was not observed through runtime memory.",
+    "Native host fixtures and local transport tests do not certify a fresh two-player run."
+  ]
+}

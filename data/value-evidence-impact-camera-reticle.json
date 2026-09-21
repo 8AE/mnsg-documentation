@@ -1,0 +1,20 @@
+{
+  "date": "2026-09-12",
+  "program": "file_13_raw.bin",
+  "camera": {
+    "function": "0x801CC10C",
+    "evidence": "Native decompilation, active-combat branch reads local aim +4/+8, smooths +74/+78, writes camera position and target +A0..B4; debug-camera branch writes FOV +BA.",
+    "scope": "USA overlay; no new live game execution in this pass"
+  },
+  "cursor": {
+    "material": "D_8020A728_635B08",
+    "combiner_address": "0x8020A768",
+    "command": [
+      "FCFFFFFF",
+      "FFFCF279"
+    ],
+    "decoded": "RGB D0=D1=TEXEL0 and alpha D0=D1=TEXEL0; other combiner inputs zero.",
+    "verification": "Live Ghidra read_memory at 0x8020A728, length 80; local PR/gbi.h GCCc* definitions.",
+    "application": "Remote material uses RGB PRIMITIVE with TEXEL0 alpha, FCFFFFFF FFFDF2F9. Native render fixture checks both cycles; no new GPU runtime certification."
+  }
+}

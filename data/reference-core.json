@@ -99,7 +99,8 @@
     "behavior": [
       "Compare this value with a known room constant before applying room-specific behavior. Store it alongside cached actors or pending effects and revalidate that state when the value changes.",
       "Room identity does not establish that actor initialization has completed. Loaded resources, task generation, and encounter phase need their own checks.",
-      "The storage is accessed as a 16-bit short. Use unsigned short for room identifiers and keep declarations consistent within your project. The complete surrounding system structure is not required for a read-only room check."
+      "The storage is accessed as a 16-bit short. Use unsigned short for room identifiers and keep declarations consistent within your project. The complete surrounding system structure is not required for a read-only room check.",
+      "The title-menu Impact boss rush advances through stages 0x0260..0x0263. Kashiwagi uses 0x0260 (608), and Taisamba 2 uses 0x0261 (609). FUN_800370B0 selects the first stage; FUN_80037000 advances the current stage by one through 0x0263, then returns to 0x025F. The live Impact task and encounter selector must still be checked after each transition."
     ],
     "cautions": [
       "Reading a new room ID does not prove that its actor data has finished loading. Check native lifecycle and resource readiness separately.",

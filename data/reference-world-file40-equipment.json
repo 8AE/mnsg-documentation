@@ -1,0 +1,285 @@
+{
+  "func_080073BC_6C6B0C": {
+    "title": "Update the idle Meat Hammer pickup",
+    "summary": "Rotates the Meat Hammer equipment pickup and starts its native acquisition scenario when local player contact is reported.",
+    "confidence": "decompiled",
+    "declaration": "extern void func_080073BC_6C6B0C(void *task, void *object);",
+    "parameters": [
+      {
+        "name": "task",
+        "type": "void *",
+        "description": "Initialized File30 entity 0x3D2 task in room 0x62."
+      },
+      {
+        "name": "object",
+        "type": "void *",
+        "description": "The native object stored at task +0x18."
+      }
+    ],
+    "returns": "No return value.",
+    "behavior": [
+      "Each normal update adds 4 to object yaw halfword +0x16, masked to 0x3FF.",
+      "Task status word +0x68 bit 0x200 admits the local acquisition branch. It acquires local player control, starts scenario 0x86, and sets collection flag 0x1A6. The idle callback does not reread that flag.",
+      "The acquisition branch disables the attack shape, hides the root, creates its native local poof and sets byte +0xD0 of the shine child linked at root +0xE4.",
+      "The task then installs func_08007494_6C6BE4. That continuation waits for the scenario to finish before releasing local control. It must remain scheduled for a pickup that has already begun.",
+      "The constructor tests collection flag 0x1A6 before creating the equipment and its shine. The flag controls whether a new root should appear; it is separate from the scenario continuation."
+    ],
+    "cautions": [
+      "Do not replay this callback for visual catch-up: its contact branch changes progression, allocates effects and acquires player control.",
+      "Keep task pointers, shine pointers and scenario/control ownership local. An already-collected flag alone does not prove the active local scenario has finished.",
+      "Fire Ryo is the equipment upgrade; this collection flag does not encode the current ryo balance."
+    ],
+    "example": "#include \"modding.h\"\n\nstatic volatile unsigned short observed_value;\n\nRECOMP_HOOK(\"func_080073BC_6C6B0C\")\nvoid observe_native_state(void *task, void *object)\n{\n    if (!object) return;\n    observed_value = *(volatile unsigned short *)((char *)object + 0x16);\n}\n",
+    "exampleExplanation": "The entry hook observes yaw without running the native acquisition branch a second time.",
+    "related": [
+      "D_8015C608_15D208",
+      "func_800240DC_24CDC",
+      "func_80218DA8_5D4278",
+      "func_80213A9C_5CEF6C",
+      "func_80221F70_5DD440",
+      "func_80221FB0_5DD480"
+    ]
+  },
+  "func_080075DC_6C6D2C": {
+    "title": "Update the idle Fire Ryo pickup",
+    "summary": "Rotates the Fire Ryo equipment pickup and starts its native acquisition scenario when local player contact is reported.",
+    "confidence": "decompiled",
+    "declaration": "extern void func_080075DC_6C6D2C(void *task, void *object);",
+    "parameters": [
+      {
+        "name": "task",
+        "type": "void *",
+        "description": "Initialized File30 entity 0x3D4 task in room 0x6E."
+      },
+      {
+        "name": "object",
+        "type": "void *",
+        "description": "The native object stored at task +0x18."
+      }
+    ],
+    "returns": "No return value.",
+    "behavior": [
+      "Each normal update adds 4 to object yaw halfword +0x16, masked to 0x3FF.",
+      "Task status word +0x68 bit 0x200 admits the local acquisition branch. It acquires local player control, starts scenario 0x84, and sets collection flag 0x1A4. The idle callback does not reread that flag.",
+      "The acquisition branch disables the attack shape, hides the root, creates its native local poof and sets byte +0xD0 of the shine child linked at root +0xE4.",
+      "The task then installs func_080076B4_6C6E04. That continuation waits for the scenario to finish before releasing local control. It must remain scheduled for a pickup that has already begun.",
+      "The constructor tests collection flag 0x1A4 before creating the equipment and its shine. The flag controls whether a new root should appear; it is separate from the scenario continuation."
+    ],
+    "cautions": [
+      "Do not replay this callback for visual catch-up: its contact branch changes progression, allocates effects and acquires player control.",
+      "Keep task pointers, shine pointers and scenario/control ownership local. An already-collected flag alone does not prove the active local scenario has finished.",
+      "Fire Ryo is the equipment upgrade; this collection flag does not encode the current ryo balance."
+    ],
+    "example": "#include \"modding.h\"\n\nstatic volatile unsigned short observed_value;\n\nRECOMP_HOOK(\"func_080075DC_6C6D2C\")\nvoid observe_native_state(void *task, void *object)\n{\n    if (!object) return;\n    observed_value = *(volatile unsigned short *)((char *)object + 0x16);\n}\n",
+    "exampleExplanation": "The entry hook observes yaw without running the native acquisition branch a second time.",
+    "related": [
+      "D_8015C608_15D208",
+      "func_800240DC_24CDC",
+      "func_80218DA8_5D4278",
+      "func_80213A9C_5CEF6C",
+      "func_80221F70_5DD440",
+      "func_80221FB0_5DD480"
+    ]
+  },
+  "func_080077C8_6C6F18": {
+    "title": "Update the idle Bazooka pickup",
+    "summary": "Rotates the Bazooka equipment pickup and starts its native acquisition scenario when local player contact is reported.",
+    "confidence": "decompiled",
+    "declaration": "extern void func_080077C8_6C6F18(void *task, void *object);",
+    "parameters": [
+      {
+        "name": "task",
+        "type": "void *",
+        "description": "Initialized File30 entity 0x3D5 task in room 0x81."
+      },
+      {
+        "name": "object",
+        "type": "void *",
+        "description": "The native object stored at task +0x18."
+      }
+    ],
+    "returns": "No return value.",
+    "behavior": [
+      "Each normal update adds 4 to object yaw halfword +0x16, masked to 0x3FF.",
+      "Task status word +0x68 bit 0x200 admits the local acquisition branch. It acquires local player control, starts scenario 0x85, and sets collection flag 0x1A5. The idle callback does not reread that flag.",
+      "The acquisition branch disables the attack shape, hides the root, creates its native local poof and sets byte +0xD0 of the shine child linked at root +0xE4.",
+      "The task then installs func_080078A0_6C6FF0. That continuation waits for the scenario to finish before releasing local control. It must remain scheduled for a pickup that has already begun.",
+      "The constructor tests collection flag 0x1A5 before creating the equipment and its shine. The flag controls whether a new root should appear; it is separate from the scenario continuation."
+    ],
+    "cautions": [
+      "Do not replay this callback for visual catch-up: its contact branch changes progression, allocates effects and acquires player control.",
+      "Keep task pointers, shine pointers and scenario/control ownership local. An already-collected flag alone does not prove the active local scenario has finished.",
+      "Fire Ryo is the equipment upgrade; this collection flag does not encode the current ryo balance."
+    ],
+    "example": "#include \"modding.h\"\n\nstatic volatile unsigned short observed_value;\n\nRECOMP_HOOK(\"func_080077C8_6C6F18\")\nvoid observe_native_state(void *task, void *object)\n{\n    if (!object) return;\n    observed_value = *(volatile unsigned short *)((char *)object + 0x16);\n}\n",
+    "exampleExplanation": "The entry hook observes yaw without running the native acquisition branch a second time.",
+    "related": [
+      "D_8015C608_15D208",
+      "func_800240DC_24CDC",
+      "func_80218DA8_5D4278",
+      "func_80213A9C_5CEF6C",
+      "func_80221F70_5DD440",
+      "func_80221FB0_5DD480"
+    ]
+  },
+  "func_80218DA8_5D4278": {
+    "title": "Set an actor attack cylinder",
+    "summary": "Stores a cylinder-style attack shape using a signed radius input scaled by ten, a height and a vertical offset.",
+    "confidence": "decompiled",
+    "declaration": "extern void func_80218DA8_5D4278(void *task, int radius_times_ten, unsigned short height, short offset);",
+    "parameters": [
+      {
+        "name": "task",
+        "type": "void *",
+        "description": "Initialized native actor task."
+      },
+      {
+        "name": "radius_times_ten",
+        "type": "int",
+        "description": "Signed radius numerator; native signed division by 10 precedes the halfword store."
+      },
+      {
+        "name": "height",
+        "type": "unsigned short",
+        "description": "Raw height halfword."
+      },
+      {
+        "name": "offset",
+        "type": "short",
+        "description": "Signed vertical-offset halfword."
+      }
+    ],
+    "returns": "No return value.",
+    "behavior": [
+      "Writes 0xFFFFFFFF to task word +0x48 to select this shape representation.",
+      "Stores the low halfword of signed radius_times_ten / 10 at +0x4E, height at +0x50 and offset at +0x52. It makes no calls.",
+      "Equipment constructors pass (500,25,0), producing radius50. Their acquisition branches pass (0,0,0) to disable the shape."
+    ],
+    "cautions": [
+      "The radius argument is a signed 32-bit integer, not a pre-scaled halfword.",
+      "This setter changes shape data; it does not perform a contact or damage pass and does not clear previously latched task contact status."
+    ],
+    "example": "#include \"modding.h\"\n\nextern void func_80218DA8_5D4278(void *, int, unsigned short, short);\n\nvoid disable_actor_attack_shape(void *task)\n{\n    if (task) func_80218DA8_5D4278(task, 0, 0, 0);\n}\n",
+    "exampleExplanation": "Use on an initialized actor when its own lifecycle has ended attack admission. Previously latched contact remains a separate concern.",
+    "related": [
+      "func_80218DCC_5D429C",
+      "func_80218C28_5D40F8"
+    ]
+  },
+  "func_802139E0_5CEEB0": {
+    "title": "Initialize an equipment shine child",
+    "summary": "Binds the native billboard shine model and looping texture animation for an already-allocated child task.",
+    "confidence": "decompiled",
+    "declaration": "extern void func_802139E0_5CEEB0(void *task, void *object);",
+    "behavior": [
+      "The effect allocator selects this initializer for its category13 shine branch. The child starts with inherited entity identity and generation.",
+      "Sets model1 and task flags0x22A, binds static slot5 and billboard state, and starts texture clip1 at rate0.5 with looping enabled. It sets byte+D5 to1, adds task flags+64 bit2, and installs func_80213A9C_5CEF6C.",
+      "The initializer does not clear byte+D0, the continuation termination signal."
+    ],
+    "cautions": [
+      "Only the native constructor path should initialize this child. Replaying it may rebind resources and reset the local visual state.",
+      "The parent-to-child pointer is local and can become stale after task-slot reuse; entity, generation, object and callback identity must be checked before accessing a linked child."
+    ],
+    "example": "#include \"modding.h\"\n\nstatic volatile unsigned char observed_value;\n\nRECOMP_HOOK(\"func_802139E0_5CEEB0\")\nvoid observe_native_state(void *task, void *object)\n{\n    (void)object;\n    if (!task) return;\n    observed_value = *(volatile unsigned char *)((char *)task + 0xD0);\n}\n",
+    "exampleExplanation": "Observes the termination byte at entry without clearing it or replaying construction.",
+    "related": [
+      "func_80213A9C_5CEF6C",
+      "func_80218C28_5D40F8"
+    ]
+  },
+  "func_80213A9C_5CEF6C": {
+    "title": "Animate and retire an equipment shine",
+    "summary": "Advances local shine color state and deletes the current effect task when its termination byte is nonzero.",
+    "confidence": "decompiled",
+    "declaration": "extern void func_80213A9C_5CEF6C(void *task);",
+    "behavior": [
+      "Updates the shine using its local color/cycle bytes +0xD4 and +0xD5.",
+      "A nonzero byte at task +0xD0 triggers deletion through the current-task lifecycle. Equipment pickup callbacks signal this byte on their own shine."
+    ],
+    "cautions": [
+      "This continuation depends on the current scheduled task. Do not call it directly to retire a different effect.",
+      "Preserve local color and texture-animation state; the termination byte is a lifecycle signal, not an animation phase."
+    ],
+    "example": "#include \"modding.h\"\n\nstatic volatile unsigned char observed_value;\n\nRECOMP_HOOK(\"func_80213A9C_5CEF6C\")\nvoid observe_native_state(void *task)\n{\n    if (!task) return;\n    observed_value = *(volatile unsigned char *)((char *)task + 0xD0);\n}\n",
+    "exampleExplanation": "The normal scheduler still performs animation and deletion once.",
+    "related": [
+      "func_802139E0_5CEEB0"
+    ]
+  },
+  "func_080018E4_6EAA34": {
+    "title": "Advance a giant spinning top",
+    "summary": "Advances the top yaw and cosine travel phase from immutable placement parameters.",
+    "confidence": "decompiled",
+    "declaration": "extern void func_080018E4_6EAA34(void *task, void *object);",
+    "parameters": [
+      {
+        "name": "task",
+        "type": "void *",
+        "description": "Initialized File40 entity 0x365 task."
+      },
+      {
+        "name": "object",
+        "type": "void *",
+        "description": "Native object pointer from task +0x18."
+      }
+    ],
+    "returns": "No return value.",
+    "behavior": [
+      "Adds4 to yaw halfword+0x16 and masks to0x3FF. Subtypes0/1 set X=originX+cos(phase)*radius; subtypes2/3 set Z=originZ+cos(phase)*radius. It then adds the signed low halfword of step to phase and masks to0x3FF.",
+      "Task words+D0/+D4/+D8 hold immutable subtype/radius/step. Floats+DC/+E0 hold initial X/Z. Unsigned halfword+E4 holds the travel phase. The constructor starts phase0 for subtypes0/2 and0x200 for1/3.",
+      "All seven placed tops use subtype/radius/step (2,160,1), (3,160,1), (0,130,2) or (0,80,4). The first two occur in room0x3E and the latter two in room0x3F.",
+      "The constructor binds static slot0 of model0x365 with primary0x1E9, secondary0x168 and common0x152, command0x48000348 and uniform scale0.1. No animation clock drives the motion.",
+      "The only called helper is native cosine. This continuation has no child allocation, player mutation, sound, reward or damage dispatch.",
+      "Both mechanism constructors set task flags+64 bit0x4000. The separately scheduled native common post owns support/contact behavior and moves only the local player whose support pointer names this object."
+    ],
+    "cautions": [
+      "Use the full File40 ROM-qualified symbol and initialized resident resources. A static model still owns local command/resource pointers.",
+      "Each invocation advances motion. Observation hooks must not call the continuation again or replay the constructor.",
+      "Do not duplicate the common post or copy another player's support pointer."
+    ],
+    "example": "#include \"modding.h\"\n\nstatic volatile unsigned short observed_value;\n\nRECOMP_HOOK(\"func_080018E4_6EAA34\")\nvoid observe_native_state(void *task, void *object)\n{\n    if (!object) return;\n    observed_value = *(volatile unsigned short *)((char *)object + 0x16);\n}\n",
+    "exampleExplanation": "Samples yaw at the normal callback boundary; native motion and local contact remain scheduled once.",
+    "related": [
+      "D_8015CDE0",
+      "func_8003521C_35E1C",
+      "func_80216E1C_5D22EC"
+    ]
+  },
+  "func_08001CC4_6EAE14": {
+    "title": "Rotate a File40 platform",
+    "summary": "Advances the platform yaw by two native angle units in its configured direction.",
+    "confidence": "decompiled",
+    "declaration": "extern void func_08001CC4_6EAE14(void *task, void *object);",
+    "parameters": [
+      {
+        "name": "task",
+        "type": "void *",
+        "description": "Initialized File40 entity 0x366 task."
+      },
+      {
+        "name": "object",
+        "type": "void *",
+        "description": "Native object pointer from task +0x18."
+      }
+    ],
+    "returns": "No return value.",
+    "behavior": [
+      "Reads immutable task word+D0. Zero subtracts2 from yaw; nonzero adds2. The result is masked to0x3FF. The complete callback makes no calls.",
+      "All five placements are in room0x3F and use direction0 or1. Initial yaw is0 or0x200.",
+      "The constructor binds static slot0 of model0x366 with primary0x1EA, secondary0x168 and common0x152, command0x48000258 and uniform scale0.1. No animation clock drives the motion.",
+      "Both mechanism constructors set task flags+64 bit0x4000. The separately scheduled native common post owns support/contact behavior and moves only the local player whose support pointer names this object."
+    ],
+    "cautions": [
+      "Use the full File40 ROM-qualified symbol and initialized resident resources. A static model still owns local command/resource pointers.",
+      "Each invocation advances motion. Observation hooks must not call the continuation again or replay the constructor.",
+      "Do not duplicate the common post or copy another player's support pointer."
+    ],
+    "example": "#include \"modding.h\"\n\nstatic volatile unsigned short observed_value;\n\nRECOMP_HOOK(\"func_08001CC4_6EAE14\")\nvoid observe_native_state(void *task, void *object)\n{\n    if (!object) return;\n    observed_value = *(volatile unsigned short *)((char *)object + 0x16);\n}\n",
+    "exampleExplanation": "Samples yaw at the normal callback boundary; native motion and local contact remain scheduled once.",
+    "related": [
+      "D_8015CDE0",
+      "func_8003521C_35E1C",
+      "func_80216E1C_5D22EC"
+    ]
+  }
+}

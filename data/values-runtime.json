@@ -256,7 +256,7 @@
       {
         "id": "graphics-bank-layout",
         "title": "Graphics-bank layout",
-        "description": "Offsets are relative to one bank, beginning at full system base + bank_index × 0x1D6D8. There are two banks; these fixed arrays are distinct from CPU task and display-record storage.",
+        "description": "Offsets are relative to one bank, beginning at full system base + bank_index \u00d7 0x1D6D8. There are two banks; these fixed arrays are distinct from CPU task and display-record storage.",
         "columns": [
           "Bank-relative offset",
           "Storage",
@@ -485,12 +485,12 @@
         "rows": [
           [
             "`+0x00 / +0x02 / +0x04`",
-            "`int16_t` × 3",
+            "`int16_t` \u00d7 3",
             "Spawn position X, Y and Z."
           ],
           [
             "`+0x06 / +0x08 / +0x0A`",
-            "`int16_t` × 3",
+            "`int16_t` \u00d7 3",
             "Spawn rotation: pitch, yaw and roll."
           ],
           [
@@ -531,7 +531,7 @@
           ],
           [
             "`+0x04 / +0x08 / +0x0C`",
-            "`uint32_t` × 3",
+            "`uint32_t` \u00d7 3",
             "Three actor data words copied to task offsets +0xD0, +0xD4 and +0xD8 by the native initializer."
           ]
         ]
@@ -835,6 +835,16 @@
             "`0x3FC`",
             "`1020`",
             "Floor Flamethrower"
+          ],
+          [
+            "`0x192`",
+            "`402`",
+            "Breakable item container"
+          ],
+          [
+            "`0x3E0`",
+            "`992`",
+            "Moving platform family"
           ]
         ]
       },
@@ -905,6 +915,926 @@
             "`0x013F4A80`",
             "`(24, 0)`",
             "Unresolved"
+          ]
+        ]
+      },
+      {
+        "id": "moving-platform-variants",
+        "title": "Moving platform variants",
+        "description": "Actor 0x3E0 uses the byte at definition +0x04, copied to task +0xD0, to choose file_44 platform setup. The setup callback then repurposes several task data fields; the definition variant must be retained separately when interpreting live state.",
+        "columns": [
+          "Variant (hex)",
+          "Variant (decimal)",
+          "Native behavior"
+        ],
+        "rows": [
+          [
+            "`0x00`",
+            "`0`",
+            "Alternates a pause with a half-turn in pitch; definition +0x08 selects rotation direction."
+          ],
+          [
+            "`0x01`",
+            "`1`",
+            "Timed pitch rotation; definition +0x05 is a nonzero duration byte and is used as a divisor."
+          ],
+          [
+            "`0x02`",
+            "`2`",
+            "Continuous pitch rotation at -8 angle units per native update."
+          ],
+          [
+            "`0x03`",
+            "`3`",
+            "Translates and rotates, periodically reversing its route."
+          ],
+          [
+            "`0x04`",
+            "`4`",
+            "Translates along a second route using the same state-machine family as variant 3."
+          ],
+          [
+            "`0x05`",
+            "`5`",
+            "Translates and rotates with alternating vertical direction."
+          ],
+          [
+            "`0x06`",
+            "`6`",
+            "Half-turn rotor with its initial delay read from definition +0x05."
+          ],
+          [
+            "`0x07`",
+            "`7`",
+            "Continuous pitch rotor using the same updater as variant 2."
+          ],
+          [
+            "`0x08`",
+            "`8`",
+            "Horizontal rectangular motion with four directional legs."
+          ],
+          [
+            "`0x09`",
+            "`9`",
+            "Sine-wave vertical motion; creates a moving child hazard each time the phase wraps."
+          ],
+          [
+            "`0x0A`",
+            "`10`",
+            "Vertical rectangular motion with four directional legs."
+          ],
+          [
+            "`0x0B`",
+            "`11`",
+            "Sine-wave motion; subtype definition +0x05 values 0 and 1 choose render/collision setup. Other subtypes enter the falling-platform setup."
+          ],
+          [
+            "`0x0C`",
+            "`12`",
+            "Player-triggered falling platform; native standing-object and player-motion checks arm the fall. Restores its saved origin after a timer."
+          ],
+          [
+            "`0x0D`",
+            "`13`",
+            "Orbit in the X/Y plane using stored origin, radius and angle."
+          ]
+        ]
+      },
+      {
+        "id": "npc-path-state",
+        "title": "NPC path task fields",
+        "description": "These offsets belong to actors initialized with func_80226840_5E1D10 and stepped by func_802268A8_5E1D78. Route scripts can invoke dialogue and camera behavior; copying these scalar fields does not make executing a route safe in an unrelated actor or dialogue context.",
+        "columns": [
+          "Task offset",
+          "Storage",
+          "Meaning"
+        ],
+        "rows": [
+          [
+            "`+0xC4`",
+            "`uint16_t`",
+            "Path route ID; the US path table contains 163 entries."
+          ],
+          [
+            "`+0xC6`",
+            "`int16_t`",
+            "Path-operation countdown."
+          ],
+          [
+            "`+0xC8 / +0xCA / +0xCC`",
+            "Three `int16_t` values",
+            "Stored path origin coordinates."
+          ],
+          [
+            "`+0xCE`",
+            "`uint8_t`",
+            "Substate of the active path operation."
+          ],
+          [
+            "`+0xCF`",
+            "`uint8_t`",
+            "Instruction position measured in 16-bit words, not bytes. Only instruction boundaries are valid."
+          ],
+          [
+            "`+0xAA`",
+            "`uint8_t`",
+            "Facing value used by the path updater."
+          ],
+          [
+            "`+0x9C`",
+            "32-bit pointer",
+            "Native path initialization stores a self pointer; this is not transferable scalar state."
+          ]
+        ]
+      },
+      {
+        "id": "world-actor-event-boundaries",
+        "title": "World actor event boundaries",
+        "description": "Events below distinguish a real collection, break or emission from ordinary actor distance culling. They describe native behavior; callback entry alone is insufficient when the listed status or timer condition is absent.",
+        "columns": [
+          "Actor",
+          "Native condition",
+          "Result"
+        ],
+        "rows": [
+          [
+            "`0x082 / 0x083`",
+            "func_802145F0_5CFAC0 executes",
+            "Awards 5 ryo and arms status +0x68 bit 0x2 for removal."
+          ],
+          [
+            "`0x084`",
+            "func_80214AEC_5CFFBC observes status +0x68 bit 0x200",
+            "Heals by 2 and installs a removal continuation."
+          ],
+          [
+            "`0x085`",
+            "func_08000434_6AEC14 observes status +0x68 bit 0x200",
+            "Heals by 40. The following cleanup signals the shine child at task +0xE4 and resets local player controls."
+          ],
+          [
+            "`0x192`",
+            "func_08000150_6B30F0 executes after the hit transition",
+            "Spawns definition-selected contents and proceeds to broken-container cleanup."
+          ],
+          [
+            "`0x19A`",
+            "File_34 update observes its old task +0x8A countdown equal to zero",
+            "Emits one hazard and resets the countdown. Subtype byte at definition +0x08 selects the 150-tick or 50-tick cycle."
+          ]
+        ]
+      },
+      {
+        "id": "child-actor-common-state",
+        "title": "Child actor common state",
+        "description": "Fields initialized or consumed by func_80218C28_5D40F8 and the common actor update. Offsets are relative to a live task, not its placed definition. A child can inherit its parent's entity number, so that number alone does not identify its behavior.",
+        "columns": [
+          "Task offset",
+          "Native width",
+          "Meaning"
+        ],
+        "rows": [
+          [
+            "`+0x08 / +0x0C / +0x10`",
+            "Local function pointers",
+            "Pre-update, AI continuation and post-update callbacks. Preserve disabled-callback tagging."
+          ],
+          [
+            "`+0x18`",
+            "Local object pointer",
+            "Primary display/transform object. func_80216CE0_5D21B0(task, object, model_slot) also binds linked objects, so its object argument must equal this pointer when observing the primary appearance."
+          ],
+          [
+            "`+0x34 / +0x38 / +0x90`",
+            "Local task/contact pointers",
+            "Collision or target references; they are not portable scalar state."
+          ],
+          [
+            "`+0x48`",
+            "32-bit sphere binding",
+            "Zero selects the ordinary body-only setup; 0xFFFFFFFF selects scalar attack dimensions. Otherwise func_80218DCC_5D429C binds an entry from the local model resource list. These modes must remain distinct."
+          ],
+          [
+            "`+0x5C / +0x5E`",
+            "Unsigned 16-bit",
+            "Entity and model identities. Native child setup initially inherits these from the parent."
+          ],
+          [
+            "`+0x60 / +0x64 / +0x68`",
+            "32-bit words",
+            "Behavior flags, auxiliary flags and transient status; status bit 0x2 requests removal and 0x200 marks pickup contact."
+          ],
+          [
+            "`+0x6E / +0x6F`",
+            "Unsigned 8-bit",
+            "Shadow scale and offset. func_80219E70_5D5340 temporarily selects model 1 and calls func_80216E54_5D2324 with slot 0 to allocate and bind a separate linked shadow object, then restores the task model. Copying flags alone does not create the shadow."
+          ],
+          [
+            "`+0x70`",
+            "Local placed-source pointer",
+            "Zero for ordinary child actors. Grouped placed actors use this for distance-culling and later respawn."
+          ],
+          [
+            "`+0x74 / +0x75 / +0x76 / +0x77`",
+            "Unsigned 8-bit",
+            "Task generation, gravity coefficient, grouped-culling delay and actor category respectively. Gravity subtracts coefficient / 50 from vertical velocity."
+          ],
+          [
+            "`+0x78 / +0x7C / +0x80`",
+            "32-bit floats",
+            "Motion velocity; the common motion step adds twice each component when flag 0x200 is enabled."
+          ],
+          [
+            "`+0x8A`",
+            "Signed 16-bit",
+            "Continuation-specific countdown; meaning must be checked against the active native callback."
+          ],
+          [
+            "`+0xB4`",
+            "Local function pointer for NPC dialogue",
+            "The talk helper saves the current AI continuation here. A temporary wrapper must not become the dialogue return target."
+          ],
+          [
+            "`+0xE4` for food 0x85",
+            "Local child pointer",
+            "Persistent shine child; setting its byte +0xD0 retires the shine. Full food cleanup also resets local player controls."
+          ],
+          [
+            "`+0xAB / +0xAC / +0xAD / +0xAE`",
+            "Unsigned 8-bit",
+            "Texture speed, sequence selector, current index and frame delay for the first texture-animation track. func_80224ABC_5DFF8C initializes this track; common post steps it when task +0x60 bit 0x2 is set. Bit 0x4 loops at the end instead of clearing the selector. Coin lifetime uses the separate task +0x8A timer."
+          ]
+        ]
+      },
+      {
+        "id": "world-mechanism-state",
+        "title": "Additional world mechanism state",
+        "description": "Native families with distinct continuation and private-state layouts. A platform-family layout must not be applied to unrelated mechanisms merely because they also move.",
+        "columns": [
+          "Entity",
+          "Native behavior",
+          "Private-state constraints"
+        ],
+        "rows": [
+          [
+            "`0x197`",
+            "Falling trap: wait, fall, delay, rise and rearm continuations in File_30.",
+            "Signed task +0xA0 retains the immutable return height; gravity coefficient +0x75 is initialized to 10."
+          ],
+          [
+            "`0x1FC`",
+            "Elevator in File_44, including calls from the opposite floor.",
+            "Task +0xE0 is a local route-table pointer. Idle compares endpoint Y and player Y against table values; riding alone is not its only trigger."
+          ],
+          [
+            "`0x1FD`",
+            "Tilting platform in File_44.",
+            "Signed +0xE4 is the oscillation amplitude (within -50 through 50). +0xE0 retains its native yaw reference."
+          ],
+          [
+            "`0x1F7`",
+            "Pushable/path-driven crate in File_30.",
+            "Definition subtype 2 enables the common path VM using the route at +0xD6; validated path state must accompany a motion checkpoint."
+          ],
+          [
+            "`0x245`",
+            "Pushable block in File_30.",
+            "Public position/velocity are distinct from +0xD0 through +0xDC local previous-position/contact work used for sound."
+          ],
+          [
+            "`0x34A`",
+            "Rising platform in File_30.",
+            "Wait reads temporary room flag 0, then switches to the rising continuation and mechanical sound."
+          ],
+          [
+            "`0x23D`, subtypes 1, 3, 4",
+            "Breakable wall in File_43.",
+            "func_08003410_6F68F0 arms removal only after the actual break. Subtypes 3 and 4 also set persistent flags 0x1C2 and 0x1C3."
+          ],
+          [
+            "Native travel doors",
+            "Opening animation and mesh state accompany local travel logic.",
+            "func_801FB240_5B7150 locks local player control. The animation-complete continuation can set destination/travel fields; do not invoke it merely to reproduce another door's appearance. Task +0x60 bit 0x01000000 reverses skeletal playback; bit 0x1 enables the common animation step. Clear object +0x7C completion bit 0x2 to resume a completed clip. Nonlooping reverse playback clamps object +0x28 to zero. Entity 0x23A instead includes progression barriers with deletion callbacks."
+          ],
+          [
+            "`0x356`",
+            "Indexed rotor in File_30.",
+            "Float task +0xDC is an integer cycle index 1 through 8. Rotation adds two angle units per update; at index * 128 it masks the angle to 10 bits and waits 30 updates before incrementing the index, wrapping 8 to 1. The signed +0x8A timer and continuation distinguish motion from waiting."
+          ],
+          [
+            "`0x3B4`",
+            "Ride-triggered platform in File_30.",
+            "Idle compares its object with the local player task +0xA0 ground-object pointer. It moves along Z at -4 to -404, waits 60 updates, returns at +4 to Z=396, waits another 60 updates, then rearms. Native callbacks use exact endpoint equality."
+          ],
+          [
+            "`0x324`",
+            "Flag-driven staircase pieces in File_30; variants 0 through 11.",
+            "Task +0xD0 byte selects a native endpoint; +0xD4 unsigned halfword selects the temporary flag. func_08003418_6C2B68 starts motion with duration argument 120; func_080036E0_6C2E30 detects arrival and func_08003A74_6C31C4 clears velocity."
+          ],
+          [
+            "`0x326`",
+            "Save-flag-driven puzzle pieces in File_30; variants 0 through 7.",
+            "Task +0xD0 byte selects the endpoint; +0xD4 unsigned halfword selects the save flag. Variants 0/1 use distance-normalized velocity; variants 2\u20137 initialize linear motion with duration 121. func_080040B8_6C3808 writes the fixed endpoint and zeroes velocity. The initializer reads the save flag and schedules the endpoint continuation immediately when it is already set; this differs from arriving there through the motion continuation."
+          ],
+          [
+            "`0x32A`",
+            "Static tinted geometry in File_30.",
+            "The initializer selects one of six local geometry slots. func_0800435C_6C3AAC only refreshes its native tint; it does not move a puzzle piece."
+          ],
+          [
+            "`0x228`",
+            "Gated moving platform in File_44.",
+            "Byte +0xD8 zero starts immediately; otherwise wait for temporary bit (D8-1). 080026D0 selects static model using byte +0xD9, saves XYZ as +0xC8/+0xCA/+0xCC and subtracts 0x8000 from definition halfwords +0xD0/+0xD2/+0xD4/+0xD6 once. 08002788 and 08002820 alternate between origin and destination using speed D6/20. Byte +0xDA controls local start sound."
+          ],
+          [
+            "`0x1FE`",
+            "Fire-reactive moving platform with a child collider in File_44.",
+            "Word +0xD8 bit 2 gates the constructor on save flag 0x1A4; bit 1 starts its inactive mode. +0x9C is a local child task pointer. The child runs 08002DBC, follows its private float XYZ at +0xD0/+0xD4/+0xD8 and copies the local hitter pointer +0x38 into +0xDC. Parent +0xE2 states 0-5 track normal, fade, brighten, wait, reform and inactive; +0x8A holds 40/40/256/40 phase timers, and +0xEE holds the 10-update shake. +0xEC retains direction; +0xE0 supplies the tint angle. Floats +0xDC and +0xE4 supply red and green work. 08003074/08003148 move, 0800321C shakes, 0800329C advances melt/recovery."
+          ],
+          [
+            "Native tint display list",
+            "func_8021DF60_5D9430(actor, alpha, red, green, blue).",
+            "Writes a local six-word display list at object +0x80 and packed RGBA at +0x8C, flushes its cache and returns object+0x80. Parent object +0x30 retains that local address. Fire-platform phases 2/3 do not update the tint, so their scalar color work alone cannot recover the visible tint. Rebuild the local list from the captured RGBA value; never transmit the list pointer."
+          ],
+          [
+            "`0x1F4`",
+            "Static File_44 geometry in all 33 examined placed records.",
+            "The sole placed definition has gate byte +0xD4 zero and flag-index byte +0xD5 four. 080001B8 binds the geometry with helper 08000000; its separate gated branch is not exercised by these placed records. Dynamic/script invocation of the gated branch remains separate audit work."
+          ],
+          [
+            "`0x3D0`",
+            "Rolling physics puzzle and reward producer in File_30.",
+            "Task +0xD0/+0xD4 retain prior X/Z velocity and unsigned halfword +0xDC is a throw countdown. 08006C18 skips its rolling/completion body when current health D_8015C5E4 is zero. Reaching -4<X<18, 103<Z<120, Y=8 zeroes velocity, sets status 0x80000 and enters shrink callback 08006F48, followed by animation 1, animation 2, then a 200-count reward callback 080070E4. That callback attempts a randomized native child each time the unsigned timer is divisible by 10, including zero before decrement, then schedules empty continuation 080072C4. Shrink multiplies all scales by 0.95 until X scale is at most 0.05, then resets scale to 0.2. Reward children use initializer 80214314 (coin) for random values below 80, otherwise 802141AC (health); launch speed is Y=5 and horizontal magnitude 0.9. The native parent/child builder owns local resources."
+          ],
+          [
+            "Native carried-object state",
+            "Task status +0x68 bit 0x8000 and local player work +0x8C.",
+            "func_801E54A8_5A13B8 stores the object task in player task +0x5C -> +0x8C and sets its held bit. func_801E55A0_5A14B0 clears both. func_801E55D4_5A14E4 sets throw velocity and pose before releasing. Carry callbacks can dereference the held task on throw; detaching alone does not end the player carry action. The pickup search also excludes task status 0x80000, which the completed puzzle sets."
+          ],
+          [
+            "Native geometry and proximity deletion",
+            "Task +0x68 contact bits and +0x70 placed-source pointer.",
+            "func_8021C518_5D79E8 clears and recomputes status 0x1000/0x2000 from geometry results. func_8021A328_5D57F8 clears source +0x70 before proximity removal. Actual throw-break deletion retains the source. func_80218F30_5D4400 creates an empty cooldown task whose +0x76 enlarges the proximity box by five tenths; it releases the source only after leaving that box, rather than after a countdown."
+          ],
+          [
+            "Crane room 0x31: 0x1B9 / 0x1BB",
+            "File_30 root 0x1B9 creates four children, including the moving crane; root 0x1BB creates two pressure pads. The moving child has a nested X-position follower.",
+            "Children store their local parent task pointer at +0xDC; resource ID 0x1E and its local pointer are at +0x28/+0x2C. Roots do not retain a child-pointer array. Do not interpret these pointers as private scalar state."
+          ],
+          [
+            "Crane pressure pads",
+            "Power flag 0x15A gates activation. Each pad lowers Y by 0.3 for eleven updates, waits for departure, and rises by 0.3 for eleven updates. The timer starts at ten and checks its old value before decrementing, so zero also moves.",
+            "The native trigger compares the pad object against local-player task +0xA0. Temporary bits 0/1 track held pads and 2/3 mark their return. These local-player comparisons do not describe another player standing on a pad."
+          ],
+          [
+            "Crane motion milestones",
+            "Temporary bits 6/7/8/9 mark target, animation and return boundaries; bit 0xB marks the low crane region and bit 0xE latches a cycle.",
+            "Temporary bits 0xC/0xF instead select local occupancy and a one-time scene. Save bits 0x15B/0x15C are a reversible scene/camera handshake. Temporary 8 is write-only in File_30. Save 0x15E is written after animation completion and 0x15F at the upper Y clamp; no readers or clearers were found in the native helper-call and scenario-flag scan. They are historical milestones, not phase selectors."
+          ],
+          [
+            "Crane room 0x1BA / 0x1BF / 0x3D3",
+            "The power switch sets save 0x15A through a local scenario/fade path. The camera controller owns a camera task at +0xD0. Placed 0x3D3 is the Wind-up Camera reward: it consumes temporary bits 6/7/9, then waits for task status +0x68 bit 0x200 before starting scenario 0x83 and setting consumed flag 0x1A3.",
+            "The 0x3D3 initializer deletes itself when 0x1A3 is already set. Scenario 0x83 independently writes one to save-base +0xC8 (camera owned) and +0xD8 (camera chargeable). The consumed flag alone does not grant those capabilities. Contact also starts local letterboxing and collision/model teardown; its final callback waits for local scenario cleanup. Task +0xDC is a local byte on 0x1BF, unlike the child-parent pointer there."
+          ],
+          [
+            "Timed shutter 0x354, room 0xB2",
+            "File_30 binds model 0x23F and animation 0xE; entity identity remains 0x354.",
+            "Signed timer +0x8A starts at 60, opens on its old zero value, waits for animation completion, then counts 90 before closing. At old timer 30, immutable word +0xD0 equal to one creates an effect and category-6 entity 0xFC; zero disables emission. The loop has no existing-child guard. Continuations are 08005624, 08005684, 080056FC and 080057D0."
+          ],
+          [
+            "Shutter robot 0xFC, route 57",
+            "File_32 initializer func_08001EA4_6D0F84 binds model 0xFB. Word +0xD4 equal to one skips ground placement; +0xD0=0x39 selects route 57 through its low halfword +0xD2.",
+            "The common child setup gives one HP at byte +0x8D. Base flags are 0x002E8261 plus local shadow bit 0x08000000 only when shadow allocation succeeds. The sole continuation func_08001FF4_6D10D4 advances a finite route with four movement legs and no timeout, then removes the actor without a death reward. Several generations may overlap. Route +0xC4, timer +0xC6, origin +0xC8/+0xCA/+0xCC, substate +0xCE, PC +0xCF, facing +0xAA and status bit 0x400 are scalar state. Pointer +0x9C is the local actor itself; shadow and display lists remain local."
+          ],
+          [
+            "One-HP robot damage boundary",
+            "func_80218350_5D3820 calls func_80218548_5D3A18 immediately when damage reaches zero HP; a return hook runs after death and loot side effects.",
+            "For the dynamic route-57 robot, an accepted ordinary hit requires status +0x68 bit 0x80, non-null local hitter +0x38 and clear status bit 1. Fast damage uses status bit 0x40000 and subtracts one HP first. Native surviving-hit bookkeeping clears 0x80, sets status bit 1 and byte +0x8C to 60. Fast death ignores +0x90, sets removal bit 2, and rolls at most one coin or health child. Word +0x64 bit 0x8000 suppresses only loot. Route completion bypasses this death path."
+          ],
+          [
+            "Robot death fragment constructors",
+            "func_802130C8_5CE598 and func_8021332C_5CE7FC take (child task, child object), not an effect selector.",
+            "Create each with func_802171A8_5D2678(parent, initializer, 8), copy parent scale to its child object, then write selector byte +0x8E=3 or +0x8F=4 before its scheduled initializer. These non-attacking visual tasks live at most 25 updates and create short-lived smoke/trails. The ordinary branch plays sound 0x222; fast death skips this presentation. Coin and health children inherit entity +0x5C=0xFC and change only model +0x5E to one, so clip 4 versus 3 distinguishes their item kind."
+          ],
+          [
+            "Super Pass Bridge guards 0x2D0, room0x15E",
+            "File_51 binds model0x2CC. Low halfword of task+D4, copied from definition+8, supplies dialogue0x10E or0x110; H+D8 selects route0x44 or0x43. Save0 is the Super Pass prerequisite; save1 records bridge opening.",
+            "Accepted local pass dialogue sets temporary bit0, starting both movement routes. Route return2 sets temporary bit1. Return1 unconditionally clears local sequence lock D_800C7AE2 before rebuilding common NPC state; it must not be replayed on behalf of another player. Dialogue pointers+B4/+BC/+EC and blink byte+76 are local."
+          ],
+          [
+            "Super Pass Bridge guard restore boundary",
+            "Routes0x43/0x44 retain C4/C6/C8/CA/CC/CE/CF/AA, object pose and velocity, task +0x60 bit0 and status +0x68 bit0x400. Their exact live X/Z targets before the completion ground probe are route0x43 (-451,69) and route0x44 (-408,69); save1-at-entry instead places route0x43 at (-466,49) and route0x44 at (-416,49). Carry actual Y because common ground placement may lower it.",
+            "Apply a route checkpoint only from a stable File_51 callback with local conversation bit0x100 and accepted-result bit0x4000 clear. func_80221A90_5DCF60 is not an idempotent restore helper: it probes Y and appends a new shadow on every successful allocation. Reconstruct completed common-NPC scalars directly. Preserve the receiver's existing local shadow-allocation bit +0x60 mask0x08000000 over base0x12800761; do not copy that bit from another actor. Preserve an unowned D_800C7AE2 lock, and let return1 clear it only after a tracked successful local func_8022125C_5DC72C acquisition. Route init changes +0x9C from the middle-face selector to actor self; routes0x43/0x44 do not read it, while client-local blink reads only +0x90/+0xA0."
+          ],
+          [
+            "Super Pass Bridge opening object0x240",
+            "File_51 initializer func_08000600_70DD40 binds clip0/model0x240 at scale0.1010000035. The sole placed definition has H+D8=1 and H+DA=0.",
+            "Temporary bit1 enables native animation and plays sound0x15E once. A save1-at-entry constructor chooses its inert completed continuation without replaying that presentation. All local player/travel branches require H+DA nonzero and are unreachable for this placed definition."
+          ],
+          [
+            "Super Pass Bridge blocker0x311",
+            "File_51 initializer func_080006F8_70DE38 binds model0x311, slot0, scale1 and object position(0,0,-9).",
+            "It deletes the current task immediately if save1 is set; otherwise func_080006B4_70DDF4 deletes on temporary bit1. This graph creates no children, rewards, loot or damage tasks. Save1 is committed by native guard dialogue opcode0x8020, not by the overlay callbacks."
+          ]
+        ]
+      },
+      {
+        "id": "town-npc-continuations",
+        "title": "Town NPC continuation state",
+        "description": "File_59 NPC state beyond the common path checkpoint. Offsets belong to native tasks; callback, texture and route pointers retain their local resource identity.",
+        "columns": [
+          "Native field or family",
+          "Meaning",
+          "Constraints"
+        ],
+        "rows": [
+          [
+            "Task `+0xB4`",
+            "Saved AI continuation during common dialogue.",
+            "func_80220FF0_5DC4C0 saves task +0x0C here. Dialogue task/target pointers at +0xBC and +0xEC belong to the local conversation."
+          ],
+          [
+            "Tasks `0x2BD`, `0x2C6`: word `+0xD8`",
+            "Gated town-arrival effect counter.",
+            "Native idle increments nonzero values; at three it plays the entry effect and clears the word. This is not an allocation or scene pointer."
+          ],
+          [
+            "Task `0x2C4`",
+            "Town pickpocket: path idle, approach, return, delay and escape continuations.",
+            "The approach callback can remove 50 ryo from the local player. The escape callback can release native coin drops when hit; replaying it merely to draw another actor can duplicate gameplay effects."
+          ],
+          [
+            "Pickpocket `+0xD8`, `+0xDA`, `+0xDC`",
+            "Signed saved X/Z and chase countdown.",
+            "The idle state also temporarily interprets +0xD8 as a word-sized entry counter."
+          ],
+          [
+            "Pickpocket pointer `+0xE0`",
+            "One of two immutable escape-route tables.",
+            "D_08001C50_71D6D0 contains 20 halfwords; D_08001C78_71D6F8 contains 28. A leading pair and final pair are sentinels. Native table selection is local, never a transferable memory address."
+          ],
+          [
+            "Pickpocket `+0xE4`, `+0xE6`, `+0xE8`, `+0xEA`",
+            "Halfword waypoint index, signed step, hit/escape state and stolen-ryo checkpoint.",
+            "Live waypoint indices are even: 2 through 16 for the short route, 2 through 24 for the long route; step is +2 or -2. Hit/escape state is 0 or 1."
+          ],
+          [
+            "Task `+0x90`, `+0x9C`, `+0xA0` after face setup",
+            "Segmented open-eye, mouth and blink texture selectors.",
+            "func_80224CE0_5E01B0 installs these then binds the open-eye selector. This intentionally replaces the path initializer's self-target at +0x9C; do not unconditionally overwrite it with a task pointer afterward."
+          ],
+          [
+            "Task byte `+0x76`",
+            "Local blinking countdown.",
+            "func_80224D50_5E0220 chooses a blink and restores the open-eye selector. func_8021A764_5D5C34 resolves selectors against object segment bases: bank 2 uses +0x38/segment 8; bank 1 uses +0x40/segment 9; bank 0 uses +0x48/segment A."
+          ],
+          [
+            "Task status `+0x68`, bit `0x400`",
+            "Path-controlled pose/animation state.",
+            "Path instructions set or clear this bit before advancing their substate; a continuation requires the matching bit without replacing local collision/contact or dialogue bits."
+          ]
+        ]
+      },
+      {
+        "id": "room-switch-continuations",
+        "title": "Room switch continuations",
+        "description": "File_50 entity 0x226 one-way modes used by the US-ROM placed actor definitions. Temporary and save flags have distinct lifetimes.",
+        "columns": [
+          "Field or phase",
+          "Native meaning",
+          "Constraints"
+        ],
+        "rows": [
+          [
+            "Task +0xD0 / +0xD4",
+            "Unsigned halfword flag ID / unsigned byte mode.",
+            "Mode 0 sets a temporary room bit; mode 1 sets a save bit. The examined placed IDs are temporary 0 and save 0x194, 0x195 and 0x19D."
+          ],
+          [
+            "func_08000000_70C820: unreachable mode branches",
+            "The initializer tests the unsigned byte at +0xD4 for 0/1 before comparing the entire big-endian word at that offset against 2/3.",
+            "Any word equal to 2 or 3 has a zero first byte, so it has already selected the one-way path. The separate timed/rearming continuations cannot be reached through this initializer, including with dynamically supplied definitions."
+          ],
+          [
+            "func_08000204_70CA24",
+            "Wait for task +0x68 bit 0x80.",
+            "The local collision producer owns the hitter pointer at +0x38 and its attack type. A remote visual update must not fabricate that pointer."
+          ],
+          [
+            "func_08000298_70CAB8",
+            "Bind clip 0 in reverse, select pressed mesh state 1 at +0x6C and disable playback.",
+            "Task +0x60 bit 0x01000000 selects the reverse endpoint; mask 0x1 is cleared after binding. The native scale is 0.15."
+          ],
+          [
+            "func_0800032C_70CB4C",
+            "Set the definition-selected temporary or save flag.",
+            "Task +0xBC is assigned the local settled continuation before the spark burst. It is a callback pointer, not an integer phase or counter."
+          ],
+          [
+            "func_08000A8C_70D2AC",
+            "Create six native entity 0x227 sparks, then continue through +0xBC.",
+            "The children have local angles spaced by 0xAA. Their fade continuation changes tint/scale and deletes them; it awards no health or currency."
+          ],
+          [
+            "func_080003AC_70CBCC",
+            "Settled switch.",
+            "Empty native continuation; the pressed mesh and flag remain set until their normal lifecycle changes."
+          ],
+          [
+            "Temporary room bank 0x80168E90",
+            "func_80023DF0_249F0 sets; func_80023E40_24A40 clears; func_80023E94_24A94 reads.",
+            "The reader returns a mask, not Boolean 1. func_80023EE4_24AE4 clears 100 bytes during actor-manager initialization. Bank copying also affects unrelated local controllers."
+          ],
+          [
+            "func_8021EC1C_5DA0EC",
+            "Initialize linear XYZ velocity toward a target over an integer duration.",
+            "The fifth argument is read from stack +0x10. Only task +0x78/+0x7C/+0x80 are written: each becomes (target - object position) / duration. Preserve a nonzero duration and the native stack argument ABI."
+          ]
+        ]
+      },
+      {
+        "id": "mt-fear-weapon-obstacle",
+        "title": "Mt. Fear weapon obstacle",
+        "description": "US-ROM entity 0x325 in room 0x14B uses File_64. Its root and one child form a two-piece obstacle; camera state belongs to the activating local player.",
+        "columns": [
+          "Field or phase",
+          "Native meaning",
+          "Constraints"
+        ],
+        "rows": [
+          [
+            "Save flag 0xA1",
+            "Completion deletes the root and its descendants; an already-set flag suppresses construction.",
+            "The flag ID is not a task offset. Local camera/control cleanup precedes native deletion."
+          ],
+          [
+            "Root task +0xD4",
+            "Local child task pointer created by func_80220410_5DB8E0.",
+            "The allocator uses the task hierarchy rather than common NPC child setup. It takes float Z as its fifth argument at stack +0x10 and unsigned-halfword yaw as its sixth at +0x14."
+          ],
+          [
+            "Model 0x24F slots 1 / 2 / 3",
+            "Initial root / rising root / child static geometry.",
+            "Native scale is 0.15 on all axes. Root position initializes to (-515,-230,-49), yaw719. The child has an empty motion callback; its parent moves both pieces."
+          ],
+          [
+            "Root task +0x38 / +0x68 bit1",
+            "Local hitter pointer and pending contact bit.",
+            "Types 0x16/0x17/0x23/0x24 qualify if any unsigned word at save-base 0x8015C608 +0xA4/+0xA8/+0xAC/+0xB0 equals1 or2. Do not fabricate a hitter pointer."
+          ],
+          [
+            "Root task +0x8A",
+            "Signed halfword phase timer.",
+            "Rejected hits start7; accepted hits start60. Their delay callbacks test the old value before decrementing. The multi-phase motion callback increments at its end."
+          ],
+          [
+            "Root task byte +0xD0: 0 \u2192 2 \u2192 1 \u2192 3 \u2192 4",
+            "Camera alignment, shake, rise, split, camera return.",
+            "The byte is not monotone progress. Root +0xD8/+0xDC are local camera handle/output pointers, not portable scalar state."
+          ],
+          [
+            "Shake / rise",
+            "Shake X by \u00b11 through timer60; rise by20 Y and64 yaw units per update through timer48.",
+            "Rise changes root model slot to2 and sets child task +0x60 bit0x20. Angles wrap modulo1024."
+          ],
+          [
+            "Split",
+            "Opposite sine/cosine motion:3 units at timers20\u201330, plus2 from30 onward; roll changes by \u00b15 from30.",
+            "Timer30 moves5 units. Timer90 ends this stage. Failure to allocate the local effect at20 skips that update movement while the timer still increments."
+          ],
+          [
+            "func_08000DE4_7259F4 / func_08000C18_725828",
+            "Rise and split particle producers.",
+            "These effects grant no health or currency. Their allocations and render resources are local."
+          ]
+        ]
+      },
+      {
+        "id": "travel-entrance-scene-lifetimes",
+        "title": "Travel and entrance scene lifetimes",
+        "description": "US-ROM File_67 entity 0x335 and File_70 entity 0x344 own local player and camera cinematics. Their private pointers and temporary scene bits have different lifetimes from durable inventory and completion flags.",
+        "columns": [
+          "Controller or field",
+          "Native behavior",
+          "Lifetime boundary"
+        ],
+        "rows": [
+          [
+            "File_67 entity 0x335, rooms 0x14C / 0x158",
+            "Root task +0xD0 points to 24 bytes: signed phase/timer at +0/+4, helper/prop/camera/output pointers at +8/+0xC/+0x10/+0x14.",
+            "Phase0 requires all four Miracle inventory words. If any is zero, it frees the private controller and deletes the current task; otherwise it advances. Later phases reposition the local player and eventually transition to stage0xA8; copying phase alone cannot reconstruct a safe scene."
+          ],
+          [
+            "File_67 child model 0x336",
+            "Cinematic prop with local jitter, velocity, scale and animation. The scene explicitly retires it before its final transition.",
+            "Its inspected callbacks contain no reward, contact or damage behavior. Entity0x289 fade children and the terminal two-plane visual are finite presentation."
+          ],
+          [
+            "File_67 save IDs 0x6B / 0x6C / 0xA2",
+            "Dialogue0x1F9 sets0x6B on its affirmative travel choice; the negative branch leaves it unchanged. The scene then reads0x6B to select departure, reads and clears0x6C, and clears0xA2 at its end.",
+            "These are flag IDs, not task offsets. Stored state can influence the local dialogue outcome; do not equate these scene decisions with an instruction to move another player."
+          ],
+          [
+            "File_70 entry task +0xD0, copied to +0xEC",
+            "Variant0 checks save0xC4 and destination marker D_8015C848; variant1 checks save0xC3 and D_8015C844. A completed entry returns before acquiring controls.",
+            "The placed entity in room0x14D uses variant0. The markers select local entrance behavior, not model residency."
+          ],
+          [
+            "File_70 active task +0xD0",
+            "After accepted entry, this field holds a 24-byte heap pointer: phase byte+0, latest particle pointer+4, camera track+0x10 and camera output+0x14.",
+            "Do not interpret the active heap pointer as the constructor variant. Local cleanup releases camera/control, frees this allocation and retires the task."
+          ],
+          [
+            "File_70 save IDs 0xC3 / 0xC4",
+            "Phase3 timer10 sets the matching one-time completion bit and starts dialogue0x1D4 / 500.",
+            "Only entry reads these completion bits. Setting one during an active scene does not replace its native dialogue/camera cleanup."
+          ],
+          [
+            "File_70 temporary bit0 and particles",
+            "Variant0 sets temporary bit0 on scene entry and clears it during cleanup. The opening burst makes up to21 randomized category8 particle attempts.",
+            "Each initialized particle subtracts12 from alpha0xFC per update and retires at zero. These local visuals do not grant rewards or persist as world objects."
+          ]
+        ]
+      },
+      {
+        "id": "nested-doll-container-lifetime",
+        "title": "Nested Silver Doll container lifetime",
+        "description": "File_62 entity0x3D6 in rooms0x16A and0x182 is a repeatable opening container. Its reward is a separately scheduled File_26 task, so placed-actor identity alone does not describe the whole lifecycle.",
+        "columns": [
+          "Object or field",
+          "Native behavior",
+          "Lifetime constraint"
+        ],
+        "rows": [
+          [
+            "Placed root0x3D6",
+            "Wait for local hit0x80 and a non-null hitter; open pitch by8 to70, attempt reward birth, close by16 to0 and rearm. HP100 is reset on a valid hit.",
+            "The root is a repeatable trigger, not a100-HP enemy. Keep hitter and contact pointers local."
+          ],
+          [
+            "Temporary bit2 / save0xEE",
+            "The root emits only while both are clear. The helper sets temporary2 only after successful Doll allocation; collection sets persistent0xEE.",
+            "Room reload clears the temporary bank. An unsuccessful allocation does not consume the birth."
+          ],
+          [
+            "Mover +0xEC",
+            "Local pointer to a separately allocated category9 Doll. The mover changes its Y from125 to34 by subtracting1 for91 updates.",
+            "func_80220410_5DB8E0 inserts the mover under the placed root. The Doll allocator instead selects the category9 task list; context copying does not create a parent pointer."
+          ],
+          [
+            "func_80035020_35C20",
+            "Removes the implicit current task, with delayed unlinking if deeper adjacent tasks remain. It does not execute the descendant-removal loop.",
+            "The mover terminates through this path while the Doll survives. Do not invoke this implicit-current operation to remove a different task."
+          ],
+          [
+            "Nested Doll task +0x5C / +0x5E",
+            "Entity/model identities remain0/0. File_26 initializer temporarily selects model1 to bind static slot2, then restores model zero.",
+            "Write File26 resource state, XYZ and packed +0xD0=0x00EE0000 before its scheduled initializer. Allocation does not call that initializer synchronously."
+          ],
+          [
+            "Nested Doll allocation context",
+            "func_80218C28_5D40F8 copies parent dimensions +0x98..0x9B, collision mask +0x96, body dimensions +0x3C/+0x3E/+0x40 and context pointer +0x84. It derives object radius/height from the parent dimensions.",
+            "The native mover is zero-initialized and supplies zero in these fields. If using a different category-list parent, preserve that zero context instead of inheriting the parent player collision dimensions. The Doll initializer only replaces its attack collider."
+          ],
+          [
+            "Nested Doll task +0x60 / object rotations",
+            "Initialized base flags0x004006E0 gain local shadow bit0x08000000 only if allocation succeeds. Native rotations become0x8000 on all axes.",
+            "Preserve local shadow allocation and native rotation sentinels; do not copy another task shadow pointer or infer identity from model zero."
+          ],
+          [
+            "File_26 pickup / cleanup",
+            "func_080005F8_6AEDD8 consumes local contact0x200, acquires controls, sets the packed save flag and starts dialogue. func_080006E0_6AEEC0 waits for dialogue, applies native Doll progress and releases controls.",
+            "Remote visual removal must not replay either pickup or cleanup. An already-active local pickup must finish its own cleanup before retirement."
+          ]
+        ]
+      },
+      {
+        "id": "gateway-coupled-scene-lifetime",
+        "title": "Gateway coupled scene lifetime",
+        "description": "US-ROM File_53 entity0x316 in room0x153 creates several visible children alongside local dialogue, player, camera and fade tasks. Their identities and allocation lifetimes differ from the durable completion flag.",
+        "columns": [
+          "Role or field",
+          "Native behavior",
+          "Lifetime constraint"
+        ],
+        "rows": [
+          [
+            "Root save0x40 / save0x17",
+            "Before save0x40, create decoration and two visible children and remain inert. With0x40 set and0x17 clear, arm proximity. With0x17 set, delete before child creation.",
+            "A fresh completed-room constructor and an already-running scene have different cleanup requirements."
+          ],
+          [
+            "Dialogue0x2F4",
+            "Its script executes opcode0x8020 with argument0x17; func_8003D68C_3E28C passes that flag ID to func_80024038_24C38.",
+            "Durable completion can commit before local cleanup. Player-task phase15 still waits for dialogue inactivity, restores input and emits temporary17 so camera release, HUD restoration and root retirement can finish."
+          ],
+          [
+            "Visible child identity +0x5C",
+            "A, B, NPC, mesh and decoration inherit entity0x316 through func_80218C28_5D40F8. Their callbacks may subsequently replace model +0x5E.",
+            "Entity ID alone does not distinguish roles in this graph. Root and child pointers remain local."
+          ],
+          [
+            "Child A / B",
+            "Both use model0x24E. A starts at static slot1, shakes and switches to looping clip0. B starts at static slot2, shakes for60 updates, rises0.74 for270 and2.5 for900.",
+            "Phase +0xD0 and shake counter +0xD8 are scalars; B also uses timer +0xD4. B creates the mesh without retaining a child pointer."
+          ],
+          [
+            "NPC model0x31B",
+            "Uses routes0x41 and0x42, then moves through three explicit endpoints. Its pre-callback also opens dialogues, changes temporary flags and installs a dialogue continuation.",
+            "Replaying func_080007F4_70E8A4 is not a side-effect-free way to restore an existing visible NPC. Preserve locally allocated shadow state."
+          ],
+          [
+            "NPC route fields",
+            "+0xC4 is unsigned-halfword route ID; +0xC6 signed timer; +0xC8/+0xCA/+0xCC signed origins; +0xCE/+0xCF state/program-counter bytes; +0xAA facing selector.",
+            "The +0x9C self pointer, +0xD8 root-phase pointer and +0xB4 continuation are local addresses, not route scalars."
+          ],
+          [
+            "Mesh task +0xD0 / +0xE0 / +0xE4",
+            "+0xD0 holds private0x80-byte state; phase/timer are +0xE0/+0xE4. Private byte +0x27 is alpha. The common mesh path allocates arrays at private +0x40..+0x60.",
+            "Run func_08001BD0_70FC80 once in the owning scheduler slot. Common teardown clears object+0x2C, installs a five-update delay, then frees the mesh arrays and deletes the task. Ownership of the separate private0x80-byte allocation remains unresolved."
+          ],
+          [
+            "Temporary bits0\u201317",
+            "The visible NPC, A/B and mesh exchange these cues with local player scripts, dialogue, camera, HUD and screen fade.",
+            "This bank is a scene handshake. Copying it wholesale can advance local player control. Freezing a cue producer without resolving its local consumer can strand cleanup."
+          ],
+          [
+            "Player task and camera links",
+            "The root discards the player task pointer; observe it at func_0800037C_70E42C. It waits for visible milestones3 and16. Camera+0xE4 points into the root until phase2 caches the NPC object; camera+0xE0 remains dereferenced through phase6.",
+            "Do not delete an active root merely because save0x17 arrived. Root+0xC0 is integer10000 and configures signed halfword1000 at+0x4E."
+          ]
+        ]
+      },
+      {
+        "id": "spike-floor-cycle",
+        "title": "Spike-floor cycle",
+        "description": "Entity 0x3CA uses File 24 and the same callback for initialization and its repeating cycle. Offsets below distinguish task fields, object fields, and immutable placement parameters.",
+        "columns": [
+          "Field or resource",
+          "Storage and values",
+          "Native meaning"
+        ],
+        "rows": [
+          [
+            "Subtype and seed",
+            "Definition unsigned halfwords +0x04/+0x06 become task +0xD0/+0xD2",
+            "Placed subtype 0 seeds 0..24; subtype 1 seeds 0..23; subtype 2 seeds 0..20. The seed offsets the initial wait."
+          ],
+          [
+            "Phase",
+            "Task unsigned byte +0xD4: 0, 1, 3, 4",
+            "Initialize once; wait; extend; retract. Phase 2 is unused."
+          ],
+          [
+            "Wait and reset",
+            "Task unsigned halfword +0x8A; signed halfword +0xD6",
+            "Reset 155 for subtype 0 and 90 for subtypes 1/2. Waiting tests the old countdown before decrement; a zero transition stores 0xFFFF."
+          ],
+          [
+            "Animation",
+            "Object float +0x28; completion byte +0x7C bit 0x02; signed step halfword +0x7E",
+            "Step is 12, representing the native fixed-point truncation of rate 0.05. Both clips have three frames; retraction starts at frame 2.0."
+          ],
+          [
+            "Playback flags",
+            "Task word +0x60 masks 0x1 and 0x01000000",
+            "Play during extension/retraction; reverse during retraction."
+          ],
+          [
+            "Local collision admission",
+            "Task word +0x60 mask 0xC0",
+            "Subtype 2 recomputes these bits from absolute local-player Z distance less than 30.0. These are not portable cycle state."
+          ],
+          [
+            "Model resources",
+            "Task model halfword +0x5E remains 0x3CA; file pair 0x24F/0; common file 0x152",
+            "Subtype 0/2 bind animation slot 0 and command slot 1; subtype 1 binds animation slot 2 and command slot 3. The actor code selector 0x18 identifies File 24, not the model."
+          ],
+          [
+            "Subtype geometry",
+            "Object scale floats +0x1C/+0x20/+0x24 and yaw halfword +0x16",
+            "Subtype 0 Z scale is 1.2; other scales are 1.0. Subtype 2 initializes yaw to 0x0100."
+          ]
+        ]
+      },
+      {
+        "id": "jump-rope-cycle",
+        "title": "Jump-rope rotation",
+        "description": "Entity 0x1AA in File24 has six placed roots in room 0x41. The object rotates continuously; the bound animation clip remains stopped.",
+        "columns": [
+          "Field or resource",
+          "Storage and values",
+          "Native meaning"
+        ],
+        "rows": [
+          [
+            "Pitch increment",
+            "Definition word +0x04 copied to task word +0xD0; value 10",
+            "Immutable for all six placed ropes."
+          ],
+          [
+            "Pitch accumulator",
+            "Object unsigned halfword +0x14",
+            "Adds 10 once per update and wraps modulo 65536; render and common attachment transforms mask to 10 bits."
+          ],
+          [
+            "Initial orientation",
+            "Object pitch/yaw/roll halfwords +0x14/+0x16/+0x18",
+            "Pitch and roll start at zero. Yaw alternates between 0 and 0x200."
+          ],
+          [
+            "Animation state",
+            "Object frame +0x28 = 0.0; step halfword +0x7E = 512; status byte +0x7C low bits = 1",
+            "The ten-frame looping clip is bound but never advanced, because task word +0x60 = 0xE0 leaves play bit 1 clear."
+          ],
+          [
+            "Resources",
+            "Model 0x1AA; primary file 0x1DF; secondary 0; common 0x152",
+            "Slot 0 is segmented animation 0x08000064; slot 1 is local command binding 0x080000F0. The code selector 0x18 identifies File24."
+          ]
+        ]
+      },
+      {
+        "id": "file40-mechanism-fields",
+        "title": "Spinning tops and rotating platforms",
+        "description": "File40 static models have native scalar motion, independent of any animation clock. Task and object offsets refer to their separate local allocations.",
+        "columns": [
+          "Family",
+          "Field or resource",
+          "Native meaning"
+        ],
+        "rows": [
+          [
+            "Top0x365",
+            "Task words+D0/+D4/+D8",
+            "Subtype, radius, step; placed tuples (2,160,1)/(3,160,1) in room0x3E and (0,130,2)/(0,80,4) in room0x3F."
+          ],
+          [
+            "Top0x365",
+            "Task floats+DC/+E0; unsigned halfword+E4",
+            "Original X/Z and cosine phase. Phase wraps to10 bits; only X for subtype0/1 or Z for2/3 changes."
+          ],
+          [
+            "Top0x365",
+            "Object yaw halfword+16",
+            "Adds4 and wraps to10 bits. Seven placements."
+          ],
+          [
+            "Platform0x366",
+            "Task word+D0; object yaw halfword+16",
+            "Direction0 subtracts2; direction1 adds2; yaw wraps to10 bits. Five placements in room0x3F."
+          ],
+          [
+            "Both",
+            "Static slot0, scale0.1; task flags+64 bit0x4000",
+            "Native static bindings and local support handling. No animation frame/rate is needed for motion."
+          ],
+          [
+            "Resources",
+            "Top primary0x1E9/command0x48000348; platform primary0x1EA/command0x48000258",
+            "Both use secondary0x168, common0x152 and loaded code file40. Keep local pointers intact."
+          ]
+        ]
+      },
+      {
+        "id": "world-child-lifecycle-recipes",
+        "title": "Emitter and mechanism child lifetimes",
+        "description": "The US native actor graphs below couple a placed task to independently scheduled children. Each constructor, common post-update path and removal cause participates in the room state. Offsets refer to the task unless explicitly identified as object offsets.",
+        "columns": [
+          "Actor family",
+          "Native state and behavior",
+          "Reconstruction constraint"
+        ],
+        "rows": [
+          [
+            "File_30 entity 0x19D, rooms 0xAB and 0xAC",
+            "The placed emitter counts down before creating flying blades with its subtype and speed bytes. Both emitter and blades have one-hit incoming damage and may produce death loot. A blade flight timeout removes it without the kill reward.",
+            "Preserve successful-birth ordinals and distinguish damage from expiry. A child must not dereference a culled or reused parent task. Bind the model and animation only when the child is scheduled."
+          ],
+          [
+            "File_30 entity 0x3EF, room 0x91",
+            "An invisible scheduler tests a random emission period. Successful births create model 0x12F children with a 90-tick lifetime, animation rate 64/256, and horizontal velocity 7.5. Facing uses the target object referenced by task+0x84.",
+            "The target is an object pointer, not a task pointer or portable identity. Keep local addresses local. Allocation failure does not create a child or advance the successful-birth sequence."
+          ],
+          [
+            "File_40 entity 0x1A9, rooms 0x65 and 0x66",
+            "A falling block arms within radius 80, transitions through falling and fuse callbacks, and explodes on an accepted hit or fuse/proximity trigger. The explosion allocates four model 0x7E rings and eight particles. Its no-loot flag excludes the generic reward path.",
+            "Variants 4 and 8 are damaging rings; variants 1 and 2 are visual. The local sound and twelve-child fan-out belong to one explosion, including when a replica is reconstructed."
+          ],
+          [
+            "Bomb ring and particle counters",
+            "Visual rings subtract 0x30 alpha and scale by 1.2. Damaging rings subtract 2 alpha with minimum 2, scale by 1.005 and delete when the old 90-tick counter is zero. Every ring turns yaw by 32. Particles subtract 0x10 alpha and do not use ring yaw.",
+            "The counter post-decrement produces 91 updates from 90. Preserve double multiplication followed by float storage for the ring scales. Colour helper returns are local display-list pointers with tag bits, never network colour values."
+          ],
+          [
+            "File_40 entity 0x3CB, room 0x6B",
+            "Each of three placed roots creates six static model parts. Standing on an upper or lower part sets its root support bit; the highest selected slot determines speed. Upper and lower groups move in opposite directions within their native Y bounds.",
+            "Reconstruct all six child slots before accepting a restored root checkpoint. Preserve local standing/contact pointers, and combine scalar rider masks instead of copying pointers."
+          ],
+          [
+            "Custom quest scene graphs",
+            "Gateway, Koryuta, Kihachi and the Gorgeous Music Castle scripts mix visible actors with private camera, dialogue and temporary-bit handshakes. Koryuta also emits damaging model 0x12D and 0xFA waves.",
+            "A visible pose is not the local scene controller. Keep dialogue, camera and handshake execution local; reconstruct visual models using verified resource recipes. Treat damaging waves separately from decorative presentation."
           ]
         ]
       }
@@ -1052,7 +1982,7 @@
         "rows": [
           [
             "`uint16_t`",
-            "`0x0000`–`0xFFFF` (`0`–`65535`)",
+            "`0x0000`\u2013`0xFFFF` (`0`\u2013`65535`)",
             "Numeric counter, not an enum or bitmask. The broader reset interval is not established."
           ]
         ]
@@ -1073,7 +2003,7 @@
         "rows": [
           [
             "`uint16_t`",
-            "`0x0000`–`0xFFFF` (`0`–`65535`)",
+            "`0x0000`\u2013`0xFFFF` (`0`\u2013`65535`)",
             "Numeric counter, not an enum or bitmask. The broader reset interval is not established."
           ]
         ]
@@ -1373,17 +2303,17 @@
           ],
           [
             "`+0x08 / +0x0C / +0x10`",
-            "`float` × 3",
+            "`float` \u00d7 3",
             "Position X, Y and Z."
           ],
           [
             "`+0x14 / +0x16 / +0x18`",
-            "`int16_t` × 3",
+            "`int16_t` \u00d7 3",
             "Rotation: pitch, yaw and roll."
           ],
           [
             "`+0x1C / +0x20 / +0x24`",
-            "`float` × 3",
+            "`float` \u00d7 3",
             "Scale X, Y and Z."
           ],
           [
@@ -1423,7 +2353,7 @@
           ],
           [
             "`+0x50 / +0x58`",
-            "32-bit pointer × 2",
+            "32-bit pointer \u00d7 2",
             "Auxiliary character-resource data bases selected by descriptor values 3 and 4."
           ],
           [
@@ -1445,7 +2375,7 @@
       {
         "id": "character-action-tables",
         "title": "Character action-table pointers",
-        "description": "The outer array is indexed by character ID. The stored values below are the native US overlay addresses of each character’s action-record table; they are meaningful only while that overlay is resident.",
+        "description": "The outer array is indexed by character ID. The stored values below are the native US overlay addresses of each character\u2019s action-record table; they are meaningful only while that overlay is resident.",
         "columns": [
           "Character index (hex)",
           "Character index (decimal)",
@@ -1482,7 +2412,7 @@
       {
         "id": "action-record-fields",
         "title": "Action metadata record",
-        "description": "Select a character table, then add action_id × 0x1C. The record is 28 bytes long. Only interpreted fields are listed; gaps must not be assumed unused.",
+        "description": "Select a character table, then add action_id \u00d7 0x1C. The record is 28 bytes long. Only interpreted fields are listed; gaps must not be assumed unused.",
         "columns": [
           "Offset",
           "Storage type",
@@ -1550,7 +2480,7 @@
       {
         "id": "initial-descriptor-values",
         "title": "Initial auxiliary descriptors",
-        "description": "The established portion contains two byte pairs. The second byte selects an object base slot using +0x38 + selector × 8. The first byte of each pair is preserved as uninterpreted data.",
+        "description": "The established portion contains two byte pairs. The second byte selects an object base slot using +0x38 + selector \u00d7 8. The first byte of each pair is preserved as uninterpreted data.",
         "columns": [
           "Byte index",
           "Channel / field",
@@ -1596,7 +2526,7 @@
       {
         "id": "timed-descriptor-values",
         "title": "Timed auxiliary descriptors",
-        "description": "The array stores 16-bit descriptors. The low byte selects the object base slot using +0x38 + selector × 8; the meaning of the upper byte is not established.",
+        "description": "The array stores 16-bit descriptors. The low byte selects the object base slot using +0x38 + selector \u00d7 8; the meaning of the upper byte is not established.",
         "columns": [
           "Channel index",
           "Stored descriptor (hex)",
@@ -1628,7 +2558,7 @@
       {
         "id": "known-resource-ids",
         "title": "Broad character resource IDs",
-        "description": "The array index is a character ID (0–3). The stored 16-bit value is a native file ID, not an address or a character ID. These are the initial US overlay values.",
+        "description": "The array index is a character ID (0\u20133). The stored 16-bit value is a native file ID, not an address or a character ID. These are the initial US overlay values.",
         "columns": [
           "Character index",
           "Character",
@@ -1674,7 +2604,7 @@
       {
         "id": "known-resource-ids",
         "title": "Action-model resource IDs",
-        "description": "The array index is a character ID (0–3). The stored 16-bit value is a native file ID, not an address or a character ID. These are the initial US overlay values.",
+        "description": "The array index is a character ID (0\u20133). The stored 16-bit value is a native file ID, not an address or a character ID. These are the initial US overlay values.",
         "columns": [
           "Character index",
           "Character",
@@ -1732,13 +2662,13 @@
             "`0x01`",
             "`1`",
             "`0x80204030`",
-            "Replace Goemon’s normal hair display pointers with Sudden Impact variants."
+            "Replace Goemon\u2019s normal hair display pointers with Sudden Impact variants."
           ],
           [
             "`0x02`",
             "`2`",
             "`0x8020403C`",
-            "Reverse the substitution and restore Goemon’s normal hair display pointers."
+            "Reverse the substitution and restore Goemon\u2019s normal hair display pointers."
           ]
         ]
       }
@@ -1838,12 +2768,27 @@
           [
             "`+0x1E0`",
             "32-bit pointer",
-            "Boss model task."
+            "Boss model/display object (the boss task is at +0x1D8)."
           ],
           [
             "`+0x2C0`",
             "`uint8_t`",
             "Combat pause gate: zero means not paused by this gate; nonzero means paused."
+          ],
+          [
+            "`+0x178/+0x17C/+0x180`",
+            "`float[3]`",
+            "Pending arena displacement (X/Y/Z); integrated and cleared each native world update."
+          ],
+          [
+            "`+0x184/+0x188/+0x18C`",
+            "`float[3]`",
+            "Arena origin (X/Y/Z). Taisamba 2 uses Y height to select ground versus aerial behavior."
+          ],
+          [
+            "`+0x2C5`",
+            "`uint8_t`",
+            "Taisamba 2 ascent request. Set by the low-health ground reaction and cleared when ascent reaches its upper height."
           ]
         ]
       }
@@ -2140,6 +3085,57 @@
             "`0x3DCCCCCD`",
             "`0.10000000149011612` (approximately `0.1f`)",
             "Uniform X/Y/Z scale passed by the native actor manager when creating ordinary actor model objects."
+          ]
+        ]
+      }
+    ]
+  },
+  "D_80231300_5EC7D0": {
+    "tables": [
+      {
+        "id": "room-actor-source-lists",
+        "title": "Room actor source lists",
+        "description": "Partial native 32-bit room metadata and source layouts used by the resident, normal and partition spawn paths.",
+        "columns": [
+          "Record offset",
+          "Native storage",
+          "Meaning"
+        ],
+        "rows": [
+          [
+            "+0x00",
+            "ActorInstance *",
+            "Already-resident source list; source and definition pointers are read directly by the actor manager."
+          ],
+          [
+            "+0x04",
+            "const char **",
+            "Actor-definition names."
+          ],
+          [
+            "+0x08",
+            "ActorInstance *",
+            "Normal source list, resolved through the actor-data file."
+          ],
+          [
+            "+0x0C",
+            "ActorPartition *",
+            "Partition grid whose entries resolve to proximity source lists."
+          ],
+          [
+            "+0x10",
+            "ActorPartitionConfiguration *",
+            "Partition dimensions and cell counts; resolved through the actor-data file."
+          ],
+          [
+            "+0x14",
+            "unsigned short",
+            "Actor-data file id used for segmented resolution."
+          ],
+          [
+            "Source +0x0C",
+            "ActorDefinition *",
+            "Definition pointer; zero terminates the 0x14-byte source list. Distinct source descriptors may share a definition."
           ]
         ]
       }

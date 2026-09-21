@@ -4,7 +4,7 @@ slug: "/functions"
 description: "Native functions for the US recompilation of Mystical Ninja Starring Goemon."
 ---
 
-198 functions with C interfaces, behavior, and usage examples. Use the search bar to look up an exact symbol, address, or purpose.
+212 functions with C interfaces, behavior, and usage examples. Use the search bar to look up an exact symbol, address, or purpose.
 
 | Symbol | Purpose |
 | --- | --- |
@@ -15,7 +15,9 @@ description: "Native functions for the US recompilation of Mystical Ninja Starri
 | [`func_08000224_6AC774`](func_08000224_6AC774.md) | Initialize a Dango wiper child |
 | [`func_08000388_6B3628`](func_08000388_6B3628.md) | Process Tsurami root pipeline and damage |
 | [`func_080005DC_6ACB2C`](func_080005DC_6ACB2C.md) | Rotate an active spike chain |
+| [`func_0800074C_6ACC9C`](func_0800074C_6ACC9C.md) | Rotate a jump rope |
 | [`func_08000970_6C8B80`](func_08000970_6C8B80.md) | Enter Dharumanyo neutral combat |
+| [`func_08000980_6ACED0`](func_08000980_6ACED0.md) | Advance a spike floor |
 | [`func_080009C4_6B3C64`](func_080009C4_6B3C64.md) | Fade and remove a Congo spin ray |
 | [`func_08000AA8_6F3F88`](func_08000AA8_6F3F88.md) | Initialize a locked doorway |
 | [`func_08000B98_70ABD8`](func_08000B98_70ABD8.md) | Benkei live battle controller |
@@ -23,6 +25,8 @@ description: "Native functions for the US recompilation of Mystical Ninja Starri
 | [`func_08001020_6F4500`](func_08001020_6F4500.md) | Update a live locked doorway |
 | [`func_08001464_70B4A4`](func_08001464_70B4A4.md) | Update Benkei bridge encounter topology |
 | [`func_080017F4_6B4A94`](func_080017F4_6B4A94.md) | Initialize Tsurami health-bearing root |
+| [`func_080018E4_6EAA34`](func_080018E4_6EAA34.md) | Advance a giant spinning top |
+| [`func_08001CC4_6EAE14`](func_08001CC4_6EAE14.md) | Rotate a File40 platform |
 | [`func_08001D54_6B4FF4`](func_08001D54_6B4FF4.md) | Enter Tsurami neutral combat |
 | [`func_08001DB0_6B5050`](func_08001DB0_6B5050.md) | Tsurami combat AI state 0x1DB0 |
 | [`func_08001DF0_6B5090`](func_08001DF0_6B5090.md) | Tsurami combat AI state 0x1DF0 |
@@ -87,6 +91,9 @@ description: "Native functions for the US recompilation of Mystical Ninja Starri
 | [`func_08006CC8_6B9F68`](func_08006CC8_6B9F68.md) | Initialize Congo model part 4 |
 | [`func_08006ED0_6BA170`](func_08006ED0_6BA170.md) | Initialize Congo model part 5 |
 | [`func_080070D8_6BA378`](func_080070D8_6BA378.md) | Initialize Congo model part 6 |
+| [`func_080073BC_6C6B0C`](func_080073BC_6C6B0C.md) | Update the idle Meat Hammer pickup |
+| [`func_080075DC_6C6D2C`](func_080075DC_6C6D2C.md) | Update the idle Fire Ryo pickup |
+| [`func_080077C8_6C6F18`](func_080077C8_6C6F18.md) | Update the idle Bazooka pickup |
 | [`func_080079E4_6BAC84`](func_080079E4_6BAC84.md) | Enter Congo damage-triggered spin |
 | [`func_08007B58_6BADF8`](func_08007B58_6BADF8.md) | Prepare Congo active spinning |
 | [`func_08007BB0_6BAE50`](func_08007BB0_6BAE50.md) | Advance one Congo spin revolution |
@@ -109,6 +116,7 @@ description: "Native functions for the US recompilation of Mystical Ninja Starri
 | [`func_8000A5C4_B1C4`](func_8000A5C4_B1C4.md) | Reset a kind-2 display record |
 | [`func_8000B2A0_BEA0`](func_8000B2A0_BEA0.md) | Consume saved spawn configuration |
 | [`func_8000B364_BF64`](func_8000B364_BF64.md) | Prepare destination scene loading |
+| [`func_8000B4A0_C0A0`](func_8000B4A0_C0A0.md) | Reset global player-control bytes |
 | [`func_8000B5D0_C1D0`](func_8000B5D0_C1D0.md) | Activate and mirror initialized save state |
 | [`func_8000B640_C240`](func_8000B640_C240.md) | Initialize a fresh save |
 | [`func_8000C260_CE60`](func_8000C260_CE60.md) | Allocate and configure a native message window |
@@ -187,6 +195,8 @@ description: "Native functions for the US recompilation of Mystical Ninja Starri
 | [`func_801FB2D0_5B71E0`](func_801FB2D0_5B71E0.md) | Height-dependent dungeon floor update |
 | [`func_8020D6BC_5C8B8C`](func_8020D6BC_5C8B8C.md) | Load normal stage resources |
 | [`func_8020D848_5C8D18`](func_8020D848_5C8D18.md) | Stage room actor data and spawn definitions |
+| [`func_802139E0_5CEEB0`](func_802139E0_5CEEB0.md) | Initialize an equipment shine child |
+| [`func_80213A9C_5CEF6C`](func_80213A9C_5CEF6C.md) | Animate and retire an equipment shine |
 | [`func_80215150_674100`](func_80215150_674100.md) | Dungeon floor-row spacing |
 | [`func_80215198_674148`](func_80215198_674148.md) | Dungeon floor-panel update |
 | [`func_802155F4_6745A4`](func_802155F4_6745A4.md) | Dungeon map floor-panel constructor |
@@ -199,6 +209,7 @@ description: "Native functions for the US recompilation of Mystical Ninja Starri
 | [`func_80218350_5D3820`](func_80218350_5D3820.md) | Process actor damage and hit reactions |
 | [`func_80218548_5D3A18`](func_80218548_5D3A18.md) | Handle an actor reaching zero health |
 | [`func_80218A54_5D3F24`](func_80218A54_5D3F24.md) | Apply a room actor spawn instance |
+| [`func_80218DA8_5D4278`](func_80218DA8_5D4278.md) | Set an actor attack cylinder |
 | [`func_80218E7C_5D434C`](func_80218E7C_5D434C.md) | Run the common actor update pipeline |
 | [`func_80218F30_5D4400`](func_80218F30_5D4400.md) | Common actor post-processing and removal |
 | [`func_802197D8_5D4CA8`](func_802197D8_5D4CA8.md) | Turn an actor toward its target object |
@@ -206,3 +217,6 @@ description: "Native functions for the US recompilation of Mystical Ninja Starri
 | [`func_8021A310_5D57E0`](func_8021A310_5D57E0.md) | Set object rotation fields to 0x8000 |
 | [`func_8021B808_5D6CD8`](func_8021B808_5D6CD8.md) | Integrate actor velocity |
 | [`func_8021DDE8_5D92B8`](func_8021DDE8_5D92B8.md) | Spawn a child at an owner-relative offset |
+| [`func_8022075C_5DBC2C`](func_8022075C_5DBC2C.md) | Accept an alternate NPC conversation |
+| [`func_80221F70_5DD440`](func_80221F70_5DD440.md) | Enter a local player-control lock |
+| [`func_80221FB0_5DD480`](func_80221FB0_5DD480.md) | Leave a local player-control lock |

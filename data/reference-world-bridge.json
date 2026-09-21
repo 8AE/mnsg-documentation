@@ -1,0 +1,110 @@
+{
+  "func_8022075C_5DBC2C": {
+    "title": "Accept an alternate NPC conversation",
+    "summary": "Tests a local NPC interaction and, when accepted, transfers the task into the native conversation sequence.",
+    "declaration": "extern int func_8022075C_5DBC2C(void *task, int value_x, int value_z);",
+    "parameters": [
+      {
+        "name": "task",
+        "type": "void *",
+        "description": "Live NPC task participating in the local interaction."
+      },
+      {
+        "name": "value_x",
+        "type": "int",
+        "description": "Signed scalar converted to float and stored for the accepted conversation sequence."
+      },
+      {
+        "name": "value_z",
+        "type": "int",
+        "description": "Second signed scalar converted to float and stored for the accepted conversation sequence."
+      }
+    ],
+    "returns": "One when the native contact test accepts the interaction; zero otherwise.",
+    "behavior": [
+      "Calls the native local-contact acceptance helper first. A rejected contact returns zero without installing the conversation handoff.",
+      "On acceptance, stores the two integer arguments as floating-point conversation scalars, sets D_800C7AE2 to one, saves the task's current +0x0C callback at +0xB4, and clears velocity at +0x78, +0x7C and +0x80.",
+      "The accepted path also records the local facing value, configures the conversation animation, stores the next conversation continuation at task +0xBC, and schedules the native follow-up through the current-task scheduler."
+    ],
+    "cautions": [
+      "This routine acquires client-local player control and stores live task pointers. Do not call it to reconstruct a remote NPC or a shared world checkpoint.",
+      "A set D_800C7AE2 byte does not identify which native sequence owns the lock. Observe the accepted transition that acquired it before treating a later clear as its release.",
+      "Use a live compatible NPC task in its scheduler slot. The saved callbacks and conversation fields are local pointers."
+    ],
+    "confidence": "decompiled",
+    "related": [
+      "D_800C7AE2",
+      "func_80221F70_5DD440",
+      "func_80221FB0_5DD480"
+    ],
+    "example": "#include \"modding.h\"\n\nstatic volatile unsigned short observed_entity;\n\nRECOMP_HOOK(\"func_8022075C_5DBC2C\")\nvoid observe_alternate_npc_talk(void *task, int value_x, int value_z)\n{\n    (void)value_x;\n    (void)value_z;\n    if (task)\n        observed_entity = *(volatile unsigned short *)((char *)task + 0x5C);\n}\n",
+    "exampleExplanation": "Observes the interaction attempt at entry and leaves acceptance, control ownership and callback installation to the original native routine."
+  },
+  "func_80221F70_5DD440": {
+    "title": "Enter a local player-control lock",
+    "summary": "Starts a native local-control state by setting the input lock and resetting its player-control fields.",
+    "declaration": "extern void func_80221F70_5DD440(void);",
+    "returns": "No return value.",
+    "behavior": [
+      "Writes one to D_800C7AE2, clears the pointed local-player control halfword, and resets four related halfwords in the full system structure.",
+      "Sets the companion local-control state byte to one after clearing those fields. The routine takes no task argument, so its effects apply to the current local player and system state."
+    ],
+    "cautions": [
+      "This is a client-local control transition, not a portable world-state setter. Do not replay it for a remote actor.",
+      "The function overwrites several local-player control fields. Call it only as part of the native sequence that owns those fields."
+    ],
+    "confidence": "decompiled",
+    "related": [
+      "D_800C7AE2",
+      "func_80221FB0_5DD480",
+      "func_8000B4A0_C0A0"
+    ],
+    "example": "#include \"modding.h\"\n\nstatic volatile unsigned int local_control_entries;\n\nRECOMP_HOOK(\"func_80221F70_5DD440\")\nvoid observe_local_control_entry(void)\n{\n    ++local_control_entries;\n}\n",
+    "exampleExplanation": "Observes entry without invoking the control transition a second time or altering its local-player fields."
+  },
+  "func_80221FB0_5DD480": {
+    "title": "Leave a local player-control lock",
+    "summary": "Ends a native local-control state by clearing the input lock and its companion player-control state.",
+    "declaration": "extern void func_80221FB0_5DD480(void);",
+    "returns": "No return value.",
+    "behavior": [
+      "Writes zero to D_800C7AE2 and to the companion local-control state byte.",
+      "Also clears the pointed local-player control halfword. The function performs the release directly and does not receive an owner token or task pointer."
+    ],
+    "cautions": [
+      "The routine does not prove that the caller owns the current lock. A delayed or replayed call can clear control state acquired by a newer native sequence.",
+      "Use it only at the matching native release boundary; a remote actor's phase change is not sufficient ownership evidence."
+    ],
+    "confidence": "decompiled",
+    "related": [
+      "D_800C7AE2",
+      "func_80221F70_5DD440",
+      "func_8000B4A0_C0A0"
+    ],
+    "example": "#include \"modding.h\"\n\nstatic volatile unsigned int local_control_exits;\n\nRECOMP_HOOK(\"func_80221FB0_5DD480\")\nvoid observe_local_control_exit(void)\n{\n    ++local_control_exits;\n}\n",
+    "exampleExplanation": "Observes the native release without issuing another global unlock."
+  },
+  "func_8000B4A0_C0A0": {
+    "title": "Reset global player-control bytes",
+    "summary": "Clears three resident player-control state bytes during a system reset.",
+    "declaration": "extern void func_8000B4A0_C0A0(void);",
+    "returns": "No return value.",
+    "behavior": [
+      "Clears D_800C7AE3, D_800C7AE2 and D_800C7AE0 to zero.",
+      "This resident system routine resets the three bytes together. It is broader than releasing one conversation or interaction lock."
+    ],
+    "cautions": [
+      "Do not call this routine as a convenient unlock helper. It also clears other player-control and scripted-state bytes.",
+      "Observe the native reset lifecycle rather than using one cleared byte as proof that a particular actor sequence completed."
+    ],
+    "confidence": "decompiled",
+    "related": [
+      "D_800C7AE0",
+      "D_800C7AE2",
+      "D_800C7AE3",
+      "func_80221FB0_5DD480"
+    ],
+    "example": "#include \"modding.h\"\n\nstatic volatile unsigned int control_resets;\n\nRECOMP_HOOK(\"func_8000B4A0_C0A0\")\nvoid observe_control_reset(void)\n{\n    ++control_resets;\n}\n",
+    "exampleExplanation": "Observes the native system reset while leaving all three control-byte writes to the original routine."
+  }
+}

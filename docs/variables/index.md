@@ -114,5 +114,5 @@ Value tables decode established raw values and document known field layouts. Sel
 | [`D_80217FAC_676F5C`](D_80217FAC_676F5C.md) | Flute texture handle | — |
 | [`D_802287BC_5E3C8C`](D_802287BC_5E3C8C.md) | Actor entry callback table | [Tables](D_802287BC_5E3C8C.md#known-values) |
 | [`D_802297D6_5E4CA6`](D_802297D6_5E4CA6.md) | Actor model and category metadata base | [Tables](D_802297D6_5E4CA6.md#known-values) |
-| [`D_80231300_5EC7D0`](D_80231300_5EC7D0.md) | Per-room actor-data metadata table | — |
+| [`D_80231300_5EC7D0`](D_80231300_5EC7D0.md) | Per-room actor-data metadata table | [Tables](D_80231300_5EC7D0.md#known-values) |
 | [`D_80239AFC_5F4FCC`](D_80239AFC_5F4FCC.md) | Stage actor allocation scale | [Tables](D_80239AFC_5F4FCC.md#known-values) |

@@ -1,0 +1,19 @@
+{
+  "scope": "USA Impact cursor and retained render-task findings, 2026-09-12",
+  "nativeEvidence": {
+    "func_80034E08_35A08": [
+      "Main-program MIPS disassembly preserves created task in V0. 80034B58/80034D24 insertion and 80034734 scheduler establish links, depth and callbacks."
+    ],
+    "func_8000DBF0_E7F0": [
+      "Main-program decompilation at 8000DBF0; file_13 801CCA5C and 801CCF74 establish true cursor recipe and aim rotations. 801D131C/801D1424 establish contrasting damage-flash object.",
+      "8000DDF0 and 8000DF10 write task+D0 three-command material/color wrappers; 801D32D4/801D3324 animate segment bases.",
+      "800141C4 returns zero for file 0 and -1 for an unloaded file. 80013B14 appends an aligned next-entry asset boundary."
+    ]
+  },
+  "validation": "Native reverse engineering and host regression tests; no new live battle or two-client visual certification.",
+  "sourceFiles": [
+    "/Users/ahmad/git/mnsg-recomp-example/src/anchor_impact_players.c",
+    "/Users/ahmad/git/mnsg-recomp-example/src/anchor_impact_visuals.c"
+  ],
+  "sourceRevision": "impact_syncing working tree; native USA file_13 ROM 0x5F6840, VRAM 0x801CB460"
+}
