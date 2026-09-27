@@ -1,0 +1,125 @@
+{
+  "date": "2026-09-26",
+  "romSha256": "e40bee20508c2e29e651dca4e47504e40f908f0a2186e34a582784bf5a64be4c",
+  "scope": "Native player-thaw shard, burst, and positional sound effects in the US image.",
+  "confidence": "Ghidra-verified call sequence, effect count, velocity expressions, sound IDs, and object offsets; no full prototype is claimed for the .file_12 thaw routines.",
+  "evidenceSource": "mnsg.us.0.z64, .file_12, inspected through Ghidra decompilation and disassembly.",
+  "symbols": {
+    "func_80212CA0_5CE170": {
+      "nativeAddress": "0x80212CA0",
+      "romAddress": "0x005CE170",
+      "finding": "Native player-thaw path allocates seven kind-8 child tasks through func_802171A8_5D2678(parent, func_802127EC_5CDCBC, 8). The shard velocity expressions use sin(i * 0xAA), 2.5, and cos(i * 0xAA). It also invokes the scale-3 burst effect through func_80212088_5CD558, then plays spatial sounds 0x26E and 0x299 in sequence.",
+      "soundCallInstructions": [
+        {
+          "address": "0x80212E30",
+          "instruction": "li a0, 0x26E"
+        },
+        {
+          "address": "0x80212E34",
+          "instruction": "jalr s0"
+        },
+        {
+          "address": "0x80212E40",
+          "instruction": "li a0, 0x299"
+        },
+        {
+          "address": "0x80212E48",
+          "instruction": "jalr s0"
+        }
+      ]
+    },
+    "func_80212EA8_5CE378": {
+      "nativeAddress": "0x80212EA8",
+      "romAddress": "0x005CE378",
+      "finding": "Alternate native player-thaw path likewise allocates seven kind-8 child tasks through func_802171A8_5D2678(parent, func_802127EC_5CDCBC, 8), using velocity expressions sin(i * 0xAA), 2.5, and cos(i * 0xAA). It invokes the scale-3 burst effect through func_80212088_5CD558, then plays spatial sounds 0x26E and 0x299 in sequence.",
+      "soundCallInstructions": [
+        {
+          "address": "0x80213048",
+          "instruction": "li a0, 0x26E"
+        },
+        {
+          "address": "0x8021304C",
+          "instruction": "jalr s0"
+        },
+        {
+          "address": "0x80213058",
+          "instruction": "li a0, 0x299"
+        },
+        {
+          "address": "0x80213060",
+          "instruction": "jalr s0"
+        }
+      ]
+    },
+    "func_802127EC_5CDCBC": {
+      "nativeAddress": "0x802127EC",
+      "romAddress": "0x005CDCBC",
+      "finding": "Kind-8 shard initializer copies native actor fields from its parent task. It is not an initializer for an arbitrary display-only task."
+    },
+    "func_80212088_5CD558": {
+      "nativeAddress": "0x80212088",
+      "romAddress": "0x005CD558",
+      "finding": "The thaw paths invoke this burst effect with scale 3 through func_80219E08_5D52D8."
+    },
+    "func_80219E08_5D52D8": {
+      "nativeAddress": "0x80219E08",
+      "romAddress": "0x005D52D8",
+      "finding": "Receives the separate burst-effect call with scale argument 3 from both observed thaw paths; full argument semantics are not recorded here."
+    },
+    "func_802171A8_5D2678": {
+      "nativeAddress": "0x802171A8",
+      "romAddress": "0x005D2678",
+      "finding": "Called by both thaw paths with the live actor task as parent, callback func_802127EC_5CDCBC, and task kind 8."
+    },
+    "func_8000F420_10020": {
+      "nativeAddress": "0x8000F420",
+      "romAddress": "0x00010020",
+      "finding": "Spatial sound helper reads object floats X/Y/Z from +0x08/+0x0C/+0x10 and forwards them to the sound routine. The two thaw call sites pass D_8020CBF0_5C8B00, the native actor object, and range 400.0f."
+    }
+  },
+  "soundCalls": [
+    {
+      "caller": "func_80212CA0_5CE170",
+      "sequence": 1,
+      "soundId": "0x026E",
+      "soundState": "D_8020CBF0_5C8B00",
+      "positionSource": "native actor object",
+      "range": "400.0f"
+    },
+    {
+      "caller": "func_80212CA0_5CE170",
+      "sequence": 2,
+      "soundId": "0x0299",
+      "soundState": "D_8020CBF0_5C8B00",
+      "positionSource": "native actor object",
+      "range": "400.0f"
+    },
+    {
+      "caller": "func_80212EA8_5CE378",
+      "sequence": 1,
+      "soundId": "0x026E",
+      "soundState": "D_8020CBF0_5C8B00",
+      "positionSource": "native actor object",
+      "range": "400.0f"
+    },
+    {
+      "caller": "func_80212EA8_5CE378",
+      "sequence": 2,
+      "soundId": "0x0299",
+      "soundState": "D_8020CBF0_5C8B00",
+      "positionSource": "native actor object",
+      "range": "400.0f"
+    }
+  ],
+  "limits": [
+    "The .file_12 thaw entry points are not present in the current public symbol inventory, so no standalone public pages or guessed declarations were added for them.",
+    "The native thaw routines mutate/remove their actor, and the kind-8 child initializer reads/copies actor fields. Do not call these routines with a display-only task.",
+    "The sine/cosine expressions are preserved as observed; no angle unit, velocity unit, or full thunk ABI is inferred."
+  ],
+  "sharedSoundCallRegisters": {
+    "s0": "func_8000F420_10020",
+    "s1": "D_8020CBF0_5C8B00",
+    "a2": "native actor object",
+    "a3": "400.0f"
+  }
+}

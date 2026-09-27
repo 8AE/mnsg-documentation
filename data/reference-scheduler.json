@@ -5,10 +5,12 @@
     "declaration": "extern void func_80034734_35334(void);",
     "behavior": [
       "Starts at the root task list and updates D_8016DAB4_16E6B4 as it visits tasks. A live task carries its next pointer at +0x00, an unsigned 16-bit hierarchy depth at +0x20 and unsigned 16-bit execution flags at +0x22.",
+      "The scheduler list is flat and depth-first: +0x00 links the next task, +0x04 is the backlink, and +0x20 is an unsigned 16-bit depth. A manager subtree ends at the first following task whose depth is less than or equal to the manager depth; do not treat the next pointer as a child pointer.",
       "The execution gate tests task flags against the unsigned 16-bit system mask at full-system +0x3AE24, limited to the low three bits: (task_flags & system_mask & 7) != 0 skips the task. A skipped task also suppresses every following descendant whose depth is greater; iteration resumes at a peer or ancestor.",
       "For an eligible task, the scheduler restores its resource context, then invokes non-null enabled callbacks at task +0x08, +0x0C and +0x10 in order. Each callback receives the current task and its object pointer from task +0x18. Callback addresses carrying bit 0x00800000 are inhibited.",
       "The native Start pause sequence adds mask bit 0x0001 to suspend matching gameplay task subtrees. The separate unsigned 16-bit field at full-system +0x3AE26 selects the Start menu state machine; setting it is not a generic way to pause an unrelated dialog.",
-      "This function does not stop the game loop, input sampling, rendering, VI counter or frame counter. Systems outside its task hierarchy require their own pause policy."
+      "This function does not stop the game loop, input sampling, rendering, VI counter or frame counter. Systems outside its task hierarchy require their own pause policy.",
+      "The task +0x10 post callback runs after the +0x0C update callback with the same (task, task +0x18 object) arguments. The scheduler reloads the current task between callbacks and does not inspect effect state byte +0x65 before the post callback; a retirement-marking update can therefore still receive its post step during that scheduler pass."
     ],
     "example": "#include \"modding.h\"\n\nextern unsigned char *D_8015C5C8_15D1C8;\n\n/* Observe the scheduler mask without changing native ownership. */\nstatic unsigned short last_task_mask;\n\nRECOMP_HOOK(\"func_80034734_35334\")\nvoid observe_task_execution_mask(void)\n{\n    if (D_8015C5C8_15D1C8)\n        last_task_mask = *(unsigned short *)(D_8015C5C8_15D1C8 + 0x3AE24);\n}\n",
     "exampleExplanation": "The entry hook reads the established native mask while leaving task execution and ownership to the engine.",
@@ -17,7 +19,8 @@
       "Do not recurse into this scheduler from one of its callbacks; it depends on a shared current-task global and mutable linked hierarchy.",
       "A pause mask can suppress entire subtrees, including a desired interface task. Verify the selected task flags and ancestor relationships before changing it.",
       "Restore only state owned by the caller. A replacement native pause or scene can change the same mask during a callback.",
-      "Actor AI callbacks installed at task +0x0C are commonly self-modifying: a state transition rewrites +0x0C to the next callback. Code that temporarily replaces an actor callback must save the replaced value, invoke it, and restore only while +0x0C still holds the replacement, preserving the 0x00800000 inhibit tag."
+      "Actor AI callbacks installed at task +0x0C are commonly self-modifying: a state transition rewrites +0x0C to the next callback. Code that temporarily replaces an actor callback must save the replaced value, invoke it, and restore only while +0x0C still holds the replacement, preserving the 0x00800000 inhibit tag.",
+      "Task allocation resets +0x10 to null. Preserve any unexpected non-null post callback instead of replacing it, and keep any mirrored material buffer valid through graphics use and until the child is unlinked."
     ],
     "related": [
       "D_8016DAB4_16E6B4",

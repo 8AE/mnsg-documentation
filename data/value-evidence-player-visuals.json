@@ -1,0 +1,372 @@
+{
+  "date": "2026-09-26",
+  "romSha256": "3e16df0d00d2c4c7d75af3ff40c57d5ae937adb7c2976e35292758e2450a6670",
+  "symbolTableSha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77",
+  "scope": "Player-owned jetpack smoke and Sudden Impact visuals from file_11 in the US image.",
+  "confidence": "Decompiled native behavior; function identities and ROM addresses verified against the US symbol table. Live appearance has not been verified.",
+  "evidenceSource": "US ROM, file_11; native functions cross-checked against Goemon64RecompSyms/mnsg.syms.toml.",
+  "findings": [
+    {
+      "selector": "0x16",
+      "effect": "Sasuke jetpack smoke",
+      "emission": {
+        "emitters": 2,
+        "puffsPerEmitter": 7,
+        "periodTicks": 2,
+        "ownerAction": "0x9B"
+      },
+      "puff": {
+        "model": "0x490026B0",
+        "scale": 0.02,
+        "resource": "0x152",
+        "color": "white",
+        "alpha": "0xE8",
+        "scaleGrowthPerTick": 0.004,
+        "alphaFadePerTick": "0x10",
+        "descriptor": "D_80204AD0",
+        "material": "(native object + 0x80) | 0x20000000",
+        "activeYDrift": "-0.5 * (2.56410265 - owner task +0xA4)",
+        "cleanupYDrift": -2
+      },
+      "exitBehavior": {
+        "playerWorkOffset": "0x86",
+        "value": 0,
+        "globalSoundStop": "0x814F"
+      },
+      "limits": [
+        "The effect is owned by the local player action and has local player-work side effects.",
+        "Do not replay the callback remotely.",
+        "Exact callback symbol, native address range, and resource-lifecycle details remain to be tied to the symbol table."
+      ],
+      "constructor": "func_801EA860_5A6770",
+      "callback": "func_801EAE88_5A6D98",
+      "puffHelper": "func_801EDF2C_5A9E3C",
+      "callbackEffects": {
+        "clearPlayerWork": "+0x86 = 0",
+        "globalStop": "0x814F",
+        "emitterState": "+0x60 = 2"
+      },
+      "nativeFunctions": [
+        {
+          "name": "func_801EA860_5A6770",
+          "kind": "function",
+          "address": "0x801EA860",
+          "size": 964,
+          "section": ".file_11",
+          "romAddress": "0x005A6770"
+        },
+        {
+          "name": "func_801EAE88_5A6D98",
+          "kind": "function",
+          "address": "0x801EAE88",
+          "size": 200,
+          "section": ".file_11",
+          "romAddress": "0x005A6D98"
+        },
+        {
+          "name": "func_801EAF50_5A6E60",
+          "kind": "function",
+          "address": "0x801EAF50",
+          "size": 204,
+          "section": ".file_11",
+          "romAddress": "0x005A6E60"
+        },
+        {
+          "name": "func_801E8820_5A4730",
+          "kind": "function",
+          "address": "0x801E8820",
+          "size": 56,
+          "section": ".file_11",
+          "romAddress": "0x005A4730"
+        }
+      ],
+      "rotationHelper": "func_801EAF50_5A6E60",
+      "textureHelper": "func_801E8820_5A4730",
+      "textures": [
+        "0x802047A0",
+        "0x802047E0",
+        "0x802047E0",
+        "0x802047A0",
+        "0x802047E0",
+        "0x802047A0"
+      ],
+      "grayscale": [
+        "0xFF",
+        "0x80",
+        "0x90",
+        "0xFF",
+        "0xC0",
+        "0xFF"
+      ],
+      "childScaleSequence": {
+        "start": 0.03,
+        "growthTo0.13PerTick": 0.01,
+        "growthTo0.15PerTick": 0.002,
+        "alphaFadePerTick": "0x20"
+      }
+    },
+    {
+      "selector": "0x11",
+      "effect": "Sudden Impact aura",
+      "visuals": {
+        "mainModel": "0x190006B8",
+        "satelliteModel": "0x1900074C",
+        "satelliteCount": 5,
+        "resource": "0x152",
+        "characterAsset": "0x120"
+      },
+      "callbackBehavior": "Reads owner pose/action and updates effect visuals only.",
+      "limits": [
+        "The effect callback reads owner state and updates visuals; it does not establish a safe arbitrary remote-call interface.",
+        "Exact callback symbol and native address range remain to be tied to the symbol table."
+      ],
+      "constructor": "not identified in supplied evidence",
+      "callback": "func_801EC860_5A8770",
+      "satelliteCallback": "func_801F1CC4_5ADBD4",
+      "initializers": {
+        "main": "func_801F18CC_5AD7DC",
+        "satellite": "func_801F1BD0_5ADAE0"
+      },
+      "nativeFunctions": [
+        {
+          "name": "func_801EC860_5A8770",
+          "kind": "function",
+          "address": "0x801EC860",
+          "size": 1112,
+          "section": ".file_11",
+          "romAddress": "0x005A8770"
+        }
+      ],
+      "models": [
+        "0x1900012C",
+        "0x1900025C",
+        "0x1900037C"
+      ],
+      "growthPerTick": 0.01,
+      "alternatingCues": [
+        "0x024D",
+        "0x024E"
+      ],
+      "audioMustBeSuppressedForRemoteVisual": true
+    }
+  ],
+  "fluteMixer": {
+    "entry": "func_80038C30_39830",
+    "dispatcher": "func_80038F68_39B68",
+    "startCommand": "0x0170",
+    "startHandler": "func_800390D8_39CD8",
+    "stopCommand": "0x8170",
+    "stopHandler": "func_8003A24C_3AE4C",
+    "stopSlots": "D_801C09E8_1C15E8",
+    "storedStopKey": "low sound ID 0x0170",
+    "ownerHandle": "none",
+    "nativeFunctions": [
+      {
+        "name": "func_80038C30_39830",
+        "kind": "function",
+        "address": "0x80038C30",
+        "size": 228,
+        "section": ".main",
+        "romAddress": "0x00039830"
+      },
+      {
+        "name": "func_80038F68_39B68",
+        "kind": "function",
+        "address": "0x80038F68",
+        "size": 368,
+        "section": ".main",
+        "romAddress": "0x00039B68"
+      },
+      {
+        "name": "func_800390D8_39CD8",
+        "kind": "function",
+        "address": "0x800390D8",
+        "size": 872,
+        "section": ".main",
+        "romAddress": "0x00039CD8"
+      },
+      {
+        "name": "func_8003A24C_3AE4C",
+        "kind": "function",
+        "address": "0x8003A24C",
+        "size": 132,
+        "section": ".main",
+        "romAddress": "0x0003AE4C"
+      }
+    ]
+  },
+  "transformationSelector22": {
+    "constructor": {
+      "name": "func_801F11F0_5AD100",
+      "kind": "function",
+      "address": "0x801F11F0",
+      "size": 448,
+      "section": ".file_11",
+      "romAddress": "0x005AD100"
+    },
+    "childCallback": {
+      "name": "func_801F14BC_5AD3CC",
+      "kind": "function",
+      "address": "0x801F14BC",
+      "size": 292,
+      "section": ".file_11",
+      "romAddress": "0x005AD3CC"
+    },
+    "selector": "0x22",
+    "effect": "Mini Ebisumaru and Yae Mermaid transformation",
+    "visualChildren": 4,
+    "childBehavior": "reads owner pose and updates its own visual",
+    "liveAppearance": "not verified"
+  },
+  "weaponChargeModes": {
+    "function": {
+      "name": "func_801DC27C_59818C",
+      "kind": "function",
+      "address": "0x801DC27C",
+      "size": 540,
+      "section": ".file_11",
+      "romAddress": "0x0059818C"
+    },
+    "selector": "0x11",
+    "modes": {
+      "1": "Ebisumaru / camera",
+      "2": "Sasuke / ice kunai",
+      "3": "full-charge release"
+    },
+    "exclusions": [
+      "Mini transformation actions",
+      "state actions"
+    ],
+    "publicMapping": "internal evidence only; no public function page added"
+  },
+  "animatedTextureHelpers": {
+    "initializer": {
+      "name": "func_801E8820_5A4730",
+      "kind": "function",
+      "address": "0x801E8820",
+      "size": 56,
+      "section": ".file_11",
+      "romAddress": "0x005A4730"
+    },
+    "initHelper": {
+      "name": "func_801E8858_5A4768",
+      "kind": "function",
+      "address": "0x801E8858",
+      "size": 56,
+      "section": ".file_11",
+      "romAddress": "0x005A4768"
+    },
+    "frameSelector": {
+      "name": "func_801E8890_5A47A0",
+      "kind": "function",
+      "address": "0x801E8890",
+      "size": 212,
+      "section": ".file_11",
+      "romAddress": "0x005A47A0"
+    },
+    "descriptorOffsets": [
+      "+0x80",
+      "+0x84",
+      "+0x86"
+    ],
+    "initializerCalls": "func_801E8858_5A4768",
+    "frameSelection": {
+      "segment": 10,
+      "frameBaseSource": "object+0x48",
+      "output": "object+0x50"
+    }
+  },
+  "switchSmokeBillboarding": {
+    "scope": "US character-switch smoke model path only; do not generalize to all renderer models.",
+    "confidence": "Ghidra assembly/decompilation; symbol identities checked against US symbol and data-symbol tables. Live render appearance was not inspected.",
+    "switchSmokeConstructor": {
+      "symbol": "func_801EA860_5A6770",
+      "nativeAddress": "0x801EA860",
+      "romAddress": "0x005A6770",
+      "section": ".file_11",
+      "size": 964,
+      "disassembly": "0x801EAA54-0x801EAA9C",
+      "finding": "Passes 0x8000 in each of the three child object rotation halfwords."
+    },
+    "smokeModelPath": {
+      "modelBranch": "0x40000000",
+      "renderer": "func_80016C44_17844",
+      "nativeAddress": "0x80019D40",
+      "romAddress": "0x0001A940",
+      "section": ".main",
+      "size": 408,
+      "alignmentFunction": "func_80019D40_1A940",
+      "finding": "The model-specific branch checks its sentinel and builds a camera-facing alignment matrix using guAlign."
+    },
+    "cameraDirection": {
+      "setupFunction": "func_8001B6D4_1C2D4",
+      "nativeAddress": "0x8001B6D4",
+      "romAddress": "0x0001C2D4",
+      "section": ".main",
+      "size": 108,
+      "viewDirectionSymbols": [
+        "D_80168980_169580",
+        "D_80168984_169584",
+        "D_80168988_169588"
+      ],
+      "finding": "The active camera setup computes the local view-direction components consumed by the alignment path."
+    },
+    "rotationSentinel": {
+      "value": "0x8000",
+      "finding": "Renderer func_80016C44_17844 preserves this value rather than masking it to 10 bits in the verified path."
+    },
+    "jetSmokeRotation": {
+      "descriptor": "D_80204BF8_5C0B08",
+      "address": "0x80204BF8",
+      "offsets": [
+        "+0x20",
+        "+0x22",
+        "+0x24"
+      ],
+      "values": [
+        "0x8000",
+        "0x8000",
+        "0x8000"
+      ],
+      "callback": "func_801EDCE0_5A9BF0",
+      "nativeAddress": "0x801EDCE0",
+      "romAddress": "0x005A9BF0",
+      "section": ".file_11",
+      "size": 588,
+      "copyPath": [
+        "func_801EE750_5AA660",
+        "func_801EE688_5AA598",
+        "func_80034680_35280"
+      ],
+      "objectRotationOffsets": [
+        "+0x14",
+        "+0x16",
+        "+0x18"
+      ],
+      "limit": "The verified jet puff model uses this branch even with mode 10; do not generalize to every jet smoke model or all native renderers.",
+      "model": "0x490026B0",
+      "mode": 10,
+      "modelCommandBranch": "0x40000000",
+      "renderer": "func_80016C44_17844",
+      "alignmentFunction": "func_80019D40_1A940",
+      "disassembly": {
+        "modelStoredAt": "0x80034690",
+        "rotationsStored": "0x800346C0-0x800346D4",
+        "rendererModelMask": "0x80016C44 masks model+0x2C with 0x70000000",
+        "rendererBranch": "0x80016D64-0x80016D68",
+        "cameraAlignCall": "0x800173F4",
+        "sentinelTest": "0x80019DB0-0x80019DDC",
+        "guAlign": "0x80019E80",
+        "alignmentMatrix": "0x80019E9C-0x80019EB8"
+      }
+    },
+    "separateOffsetRotation": {
+      "function": "func_801EAF50_5A6E60",
+      "nativeAddress": "0x801EAF50",
+      "romAddress": "0x005A6E60",
+      "section": ".file_11",
+      "size": 204,
+      "finding": "Rotates smoke child position offsets toward the native local target; it is separate from the object rotation sentinels."
+    }
+  }
+}

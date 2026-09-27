@@ -1,0 +1,116 @@
+{
+  "date": "2026-09-26",
+  "romSha256": "3e16df0d00d2c4c7d75af3ff40c57d5ae937adb7c2976e35292758e2450a6670",
+  "symbolTableSha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77",
+  "scope": "US native particle task lifecycle, constructors, task-owned materials, and character-transition state.",
+  "confidence": "Ghidra decompilation/disassembly and US symbol-table metadata from supplied research reports. Live allocation addresses and rendered appearance were not inspected.",
+  "symbols": {
+    "func_801E8C44_5A4B54": {
+      "nativeAddress": "0x801E8C44",
+      "size": 84,
+      "section": ".file_11",
+      "romAddress": "0x005A4B54"
+    },
+    "func_801E0944_59C854": {
+      "nativeAddress": "0x801E0944",
+      "size": 692,
+      "section": ".file_11",
+      "romAddress": "0x0059C854"
+    },
+    "func_801EE4AC_5AA3BC": {
+      "nativeAddress": "0x801EE4AC",
+      "size": 52,
+      "section": ".file_11",
+      "romAddress": "0x005AA3BC"
+    },
+    "func_801DC554_598464": {
+      "nativeAddress": "0x801DC554",
+      "size": 212,
+      "section": ".file_11",
+      "romAddress": "0x00598464"
+    },
+    "func_801F13B0_5AD2C0": {
+      "nativeAddress": "0x801F13B0",
+      "size": 268,
+      "section": ".file_11",
+      "romAddress": "0x005AD2C0"
+    }
+  },
+  "flatTaskList": {
+    "next": "task+0x00",
+    "backlink": "task+0x04",
+    "depth": "unsigned u16 task+0x20",
+    "subtreeStop": "first task with depth less than or equal to manager depth",
+    "effectKind": "byte task+0x64",
+    "retirementState": "byte task+0x65",
+    "managerOwner": "pointer task+0x84",
+    "inheritedManagerWork": "task+0x5C = manager+0x5C",
+    "descendantScanner": "func_801E8C44_5A4B54",
+    "childInitializer": "func_801EE4AC_5AA3BC",
+    "scannerTestsRetirementState": false,
+    "countableBeforeFirstCallback": true
+  },
+  "constructorAbis": {
+    "func_801F11F0_5AD100": {
+      "declaration": "void (void *effect_manager, uint8_t selector)",
+      "selectorWidth": "8 bit",
+      "returns": "void"
+    },
+    "func_801F15E0_5AD4F0": {
+      "declaration": "void (void *effect_manager, uint32_t selector)",
+      "selectorMask": "low 8 bits",
+      "returns": "void"
+    }
+  },
+  "taskOwnedMaterial": {
+    "purpleAuraOffset": "0xA4",
+    "taggedPointer": "(child task+0xA4)|0x60000000",
+    "callbacksRefreshEachTick": true,
+    "gpuReadableRegion": "original 8 MiB RDRAM",
+    "extendedCpuAllocationMayExceedGpuRange": true,
+    "conditionalOnActualAddress": true
+  },
+  "materialHelper": {
+    "function": "func_801DC554_598464",
+    "commands": [
+      "material call",
+      "primitive/environment RGBA",
+      "end"
+    ],
+    "calls": "osWritebackDCache(material_address, byte_length)",
+    "cacheLineSize": 16
+  },
+  "recompWritebackImplementation": {
+    "path": "/Users/ahmad/git/Goemon64Recomp/lib/N64ModernRuntime/librecomp/src/ultra_translation.cpp",
+    "lines": "113-115",
+    "symbol": "osWritebackDCache_recomp",
+    "behavior": "explicit no-op",
+    "conclusion": "No claim that missing custom writeback causes rendering defects; effect remains unverified."
+  },
+  "schedulerPost": {
+    "function": "func_80034734_35334",
+    "order": [
+      "task+0x08",
+      "task+0x0C update",
+      "task+0x10 post"
+    ],
+    "callbackArguments": "(task, task+0x18 object)",
+    "reset": "func_80034A10_35610 clears task+0x10",
+    "effectConstructorsAndUpdatesWritePost": false,
+    "schedulerChecksRetirementStateBeforePost": false,
+    "postRunsOnFinalUpdatePass": true,
+    "preserveUnexpectedPost": true
+  },
+  "characterTransition": {
+    "enter": "func_801DD5C0_5994D0",
+    "update": "func_801E0944_59C854",
+    "targetCharacter": "task+0x60",
+    "playerWork": "(task+0x5C)+0x69",
+    "setValue": 1,
+    "action": "task+0xCC = 0xBA",
+    "case4Clears": true,
+    "case4KeepsAction": true,
+    "sameTaskObject": true,
+    "interpretation": "transition state, not general alive/dead state"
+  }
+}

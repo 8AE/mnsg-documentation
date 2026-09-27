@@ -1,0 +1,1866 @@
+{
+  "symbols": [
+    {
+      "name": "func_080000C4_6B3064",
+      "address": "0x080000C4",
+      "size": 88,
+      "section": ".file_28",
+      "romAddress": "0x006B3064",
+      "projects": [],
+      "roles": [],
+      "declarations": [],
+      "references": [],
+      "symbolSources": [
+        {
+          "project": "Goemon64Recomp",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 5858,
+          "kind": "function",
+          "address": "0x080000C4",
+          "size": 88,
+          "section": ".file_28",
+          "romAddress": "0x006B3064",
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x080000C4",
+          "size": 88,
+          "section": ".file_28",
+          "romAddress": "0x006B3064"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [],
+      "declarationReviewRequired": true,
+      "kind": "function"
+    },
+    {
+      "name": "func_0800010C_6F35EC",
+      "address": "0x0800010C",
+      "size": 176,
+      "section": ".file_43",
+      "romAddress": "0x006F35EC",
+      "projects": [],
+      "roles": [],
+      "declarations": [],
+      "references": [],
+      "symbolSources": [
+        {
+          "project": "Goemon64Recomp",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 10730,
+          "kind": "function",
+          "address": "0x0800010C",
+          "size": 176,
+          "section": ".file_43",
+          "romAddress": "0x006F35EC",
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x0800010C",
+          "size": 176,
+          "section": ".file_43",
+          "romAddress": "0x006F35EC"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [],
+      "declarationReviewRequired": true,
+      "kind": "function"
+    },
+    {
+      "name": "func_08000434_6AEC14",
+      "address": "0x08000434",
+      "size": 120,
+      "section": ".file_26",
+      "romAddress": "0x006AEC14",
+      "projects": [],
+      "roles": [],
+      "declarations": [],
+      "references": [],
+      "symbolSources": [
+        {
+          "project": "Goemon64Recomp",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 5508,
+          "kind": "function",
+          "address": "0x08000434",
+          "size": 120,
+          "section": ".file_26",
+          "romAddress": "0x006AEC14",
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x08000434",
+          "size": 120,
+          "section": ".file_26",
+          "romAddress": "0x006AEC14"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [],
+      "declarationReviewRequired": true,
+      "kind": "function"
+    },
+    {
+      "name": "func_080012C8_6F47A8",
+      "address": "0x080012C8",
+      "size": 360,
+      "section": ".file_43",
+      "romAddress": "0x006F47A8",
+      "projects": [],
+      "roles": [],
+      "declarations": [],
+      "references": [],
+      "symbolSources": [
+        {
+          "project": "Goemon64Recomp",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 10798,
+          "kind": "function",
+          "address": "0x080012C8",
+          "size": 360,
+          "section": ".file_43",
+          "romAddress": "0x006F47A8",
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x080012C8",
+          "size": 360,
+          "section": ".file_43",
+          "romAddress": "0x006F47A8"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [],
+      "declarationReviewRequired": true,
+      "kind": "function"
+    },
+    {
+      "name": "func_08002190_6F5670",
+      "address": "0x08002190",
+      "size": 196,
+      "section": ".file_43",
+      "romAddress": "0x006F5670",
+      "projects": [],
+      "roles": [],
+      "declarations": [],
+      "references": [],
+      "symbolSources": [
+        {
+          "project": "Goemon64Recomp",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 10818,
+          "kind": "function",
+          "address": "0x08002190",
+          "size": 196,
+          "section": ".file_43",
+          "romAddress": "0x006F5670",
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x08002190",
+          "size": 196,
+          "section": ".file_43",
+          "romAddress": "0x006F5670"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [],
+      "declarationReviewRequired": true,
+      "kind": "function"
+    },
+    {
+      "name": "func_08002254_6F5734",
+      "address": "0x08002254",
+      "size": 156,
+      "section": ".file_43",
+      "romAddress": "0x006F5734",
+      "projects": [],
+      "roles": [],
+      "declarations": [],
+      "references": [],
+      "symbolSources": [
+        {
+          "project": "Goemon64Recomp",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 10763,
+          "kind": "function",
+          "address": "0x08002254",
+          "size": 156,
+          "section": ".file_43",
+          "romAddress": "0x006F5734",
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x08002254",
+          "size": 156,
+          "section": ".file_43",
+          "romAddress": "0x006F5734"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [],
+      "declarationReviewRequired": true,
+      "kind": "function"
+    },
+    {
+      "name": "func_080022F0_6F57D0",
+      "address": "0x080022F0",
+      "size": 12,
+      "section": ".file_43",
+      "romAddress": "0x006F57D0",
+      "projects": [],
+      "roles": [],
+      "declarations": [],
+      "references": [],
+      "symbolSources": [
+        {
+          "project": "Goemon64Recomp",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 10693,
+          "kind": "function",
+          "address": "0x080022F0",
+          "size": 12,
+          "section": ".file_43",
+          "romAddress": "0x006F57D0",
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x080022F0",
+          "size": 12,
+          "section": ".file_43",
+          "romAddress": "0x006F57D0"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [],
+      "declarationReviewRequired": true,
+      "kind": "function"
+    },
+    {
+      "name": "func_80038C30_39830",
+      "kind": "function",
+      "address": "0x80038C30",
+      "size": 228,
+      "section": ".main",
+      "romAddress": "0x00039830",
+      "projects": [],
+      "roles": [],
+      "declarations": [],
+      "references": [],
+      "symbolSources": [
+        {
+          "project": "Goemon64Recomp",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 1150,
+          "kind": "function",
+          "address": "0x80038C30",
+          "size": 228,
+          "section": ".main",
+          "romAddress": "0x00039830",
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x80038C30",
+          "size": 228,
+          "section": ".main",
+          "romAddress": "0x00039830"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [],
+      "declarationReviewRequired": true
+    },
+    {
+      "name": "func_80038F68_39B68",
+      "kind": "function",
+      "address": "0x80038F68",
+      "size": 368,
+      "section": ".main",
+      "romAddress": "0x00039B68",
+      "projects": [],
+      "roles": [],
+      "declarations": [],
+      "references": [],
+      "symbolSources": [
+        {
+          "project": "Goemon64Recomp",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 1204,
+          "kind": "function",
+          "address": "0x80038F68",
+          "size": 368,
+          "section": ".main",
+          "romAddress": "0x00039B68",
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x80038F68",
+          "size": 368,
+          "section": ".main",
+          "romAddress": "0x00039B68"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [],
+      "declarationReviewRequired": true
+    },
+    {
+      "name": "func_800390D8_39CD8",
+      "kind": "function",
+      "address": "0x800390D8",
+      "size": 872,
+      "section": ".main",
+      "romAddress": "0x00039CD8",
+      "projects": [],
+      "roles": [],
+      "declarations": [],
+      "references": [],
+      "symbolSources": [
+        {
+          "project": "Goemon64Recomp",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 386,
+          "kind": "function",
+          "address": "0x800390D8",
+          "size": 872,
+          "section": ".main",
+          "romAddress": "0x00039CD8",
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x800390D8",
+          "size": 872,
+          "section": ".main",
+          "romAddress": "0x00039CD8"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [],
+      "declarationReviewRequired": true
+    },
+    {
+      "name": "func_8003A24C_3AE4C",
+      "kind": "function",
+      "address": "0x8003A24C",
+      "size": 132,
+      "section": ".main",
+      "romAddress": "0x0003AE4C",
+      "projects": [],
+      "roles": [],
+      "declarations": [],
+      "references": [],
+      "symbolSources": [
+        {
+          "project": "Goemon64Recomp",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 149,
+          "kind": "function",
+          "address": "0x8003A24C",
+          "size": 132,
+          "section": ".main",
+          "romAddress": "0x0003AE4C",
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x8003A24C",
+          "size": 132,
+          "section": ".main",
+          "romAddress": "0x0003AE4C"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [],
+      "declarationReviewRequired": true
+    },
+    {
+      "name": "func_801DC554_598464",
+      "kind": "function",
+      "address": "0x801DC554",
+      "size": 212,
+      "section": ".file_11",
+      "romAddress": "0x00598464",
+      "projects": [],
+      "roles": [],
+      "declarations": [],
+      "references": [],
+      "symbolSources": [
+        {
+          "project": "Goemon64Recomp",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 1995,
+          "kind": "function",
+          "address": "0x801DC554",
+          "size": 212,
+          "section": ".file_11",
+          "romAddress": "0x00598464",
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x801DC554",
+          "size": 212,
+          "section": ".file_11",
+          "romAddress": "0x00598464"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [],
+      "declarationReviewRequired": true
+    },
+    {
+      "name": "func_801E0944_59C854",
+      "kind": "function",
+      "address": "0x801E0944",
+      "size": 692,
+      "section": ".file_11",
+      "romAddress": "0x0059C854",
+      "projects": [],
+      "roles": [],
+      "declarations": [],
+      "references": [],
+      "symbolSources": [
+        {
+          "project": "Goemon64Recomp",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 1658,
+          "kind": "function",
+          "address": "0x801E0944",
+          "size": 692,
+          "section": ".file_11",
+          "romAddress": "0x0059C854",
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x801E0944",
+          "size": 692,
+          "section": ".file_11",
+          "romAddress": "0x0059C854"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [],
+      "declarationReviewRequired": true
+    },
+    {
+      "name": "func_801E8820_5A4730",
+      "kind": "function",
+      "address": "0x801E8820",
+      "size": 56,
+      "section": ".file_11",
+      "romAddress": "0x005A4730",
+      "projects": [],
+      "roles": [],
+      "declarations": [],
+      "references": [],
+      "symbolSources": [
+        {
+          "project": "Goemon64Recomp",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 1672,
+          "kind": "function",
+          "address": "0x801E8820",
+          "size": 56,
+          "section": ".file_11",
+          "romAddress": "0x005A4730",
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x801E8820",
+          "size": 56,
+          "section": ".file_11",
+          "romAddress": "0x005A4730"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [],
+      "declarationReviewRequired": true
+    },
+    {
+      "name": "func_801E8858_5A4768",
+      "kind": "function",
+      "address": "0x801E8858",
+      "size": 56,
+      "section": ".file_11",
+      "romAddress": "0x005A4768",
+      "projects": [],
+      "roles": [],
+      "declarations": [],
+      "references": [],
+      "symbolSources": [
+        {
+          "project": "Goemon64Recomp",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 2047,
+          "kind": "function",
+          "address": "0x801E8858",
+          "size": 56,
+          "section": ".file_11",
+          "romAddress": "0x005A4768",
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x801E8858",
+          "size": 56,
+          "section": ".file_11",
+          "romAddress": "0x005A4768"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [],
+      "declarationReviewRequired": true
+    },
+    {
+      "name": "func_801E8890_5A47A0",
+      "kind": "function",
+      "address": "0x801E8890",
+      "size": 212,
+      "section": ".file_11",
+      "romAddress": "0x005A47A0",
+      "projects": [],
+      "roles": [],
+      "declarations": [],
+      "references": [],
+      "symbolSources": [
+        {
+          "project": "Goemon64Recomp",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 1505,
+          "kind": "function",
+          "address": "0x801E8890",
+          "size": 212,
+          "section": ".file_11",
+          "romAddress": "0x005A47A0",
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x801E8890",
+          "size": 212,
+          "section": ".file_11",
+          "romAddress": "0x005A47A0"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [],
+      "declarationReviewRequired": true
+    },
+    {
+      "name": "func_801E8C44_5A4B54",
+      "kind": "function",
+      "address": "0x801E8C44",
+      "size": 84,
+      "section": ".file_11",
+      "romAddress": "0x005A4B54",
+      "projects": [],
+      "roles": [],
+      "declarations": [],
+      "references": [],
+      "symbolSources": [
+        {
+          "project": "Goemon64Recomp",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 1442,
+          "kind": "function",
+          "address": "0x801E8C44",
+          "size": 84,
+          "section": ".file_11",
+          "romAddress": "0x005A4B54",
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x801E8C44",
+          "size": 84,
+          "section": ".file_11",
+          "romAddress": "0x005A4B54"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [],
+      "declarationReviewRequired": true
+    },
+    {
+      "name": "func_801E8F50_5A4E60",
+      "kind": "function",
+      "address": "0x801E8F50",
+      "size": 852,
+      "section": ".file_11",
+      "romAddress": "0x005A4E60",
+      "projects": [],
+      "roles": [],
+      "declarations": [],
+      "references": [],
+      "symbolSources": [
+        {
+          "project": "Goemon64Recomp",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 1849,
+          "kind": "function",
+          "address": "0x801E8F50",
+          "size": 852,
+          "section": ".file_11",
+          "romAddress": "0x005A4E60",
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x801E8F50",
+          "size": 852,
+          "section": ".file_11",
+          "romAddress": "0x005A4E60"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [],
+      "declarationReviewRequired": true
+    },
+    {
+      "name": "func_801EA860_5A6770",
+      "kind": "function",
+      "address": "0x801EA860",
+      "size": 964,
+      "section": ".file_11",
+      "romAddress": "0x005A6770",
+      "projects": [],
+      "roles": [],
+      "declarations": [],
+      "references": [],
+      "symbolSources": [
+        {
+          "project": "Goemon64Recomp",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 1289,
+          "kind": "function",
+          "address": "0x801EA860",
+          "size": 964,
+          "section": ".file_11",
+          "romAddress": "0x005A6770",
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x801EA860",
+          "size": 964,
+          "section": ".file_11",
+          "romAddress": "0x005A6770"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [],
+      "declarationReviewRequired": true
+    },
+    {
+      "name": "func_801EAE88_5A6D98",
+      "kind": "function",
+      "address": "0x801EAE88",
+      "size": 200,
+      "section": ".file_11",
+      "romAddress": "0x005A6D98",
+      "projects": [],
+      "roles": [],
+      "declarations": [],
+      "references": [],
+      "symbolSources": [
+        {
+          "project": "Goemon64Recomp",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 1913,
+          "kind": "function",
+          "address": "0x801EAE88",
+          "size": 200,
+          "section": ".file_11",
+          "romAddress": "0x005A6D98",
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x801EAE88",
+          "size": 200,
+          "section": ".file_11",
+          "romAddress": "0x005A6D98"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [],
+      "declarationReviewRequired": true
+    },
+    {
+      "name": "func_801EAF50_5A6E60",
+      "kind": "function",
+      "address": "0x801EAF50",
+      "size": 204,
+      "section": ".file_11",
+      "romAddress": "0x005A6E60",
+      "projects": [],
+      "roles": [],
+      "declarations": [],
+      "references": [],
+      "symbolSources": [
+        {
+          "project": "Goemon64Recomp",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 1883,
+          "kind": "function",
+          "address": "0x801EAF50",
+          "size": 204,
+          "section": ".file_11",
+          "romAddress": "0x005A6E60",
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x801EAF50",
+          "size": 204,
+          "section": ".file_11",
+          "romAddress": "0x005A6E60"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [],
+      "declarationReviewRequired": true
+    },
+    {
+      "name": "func_801EC860_5A8770",
+      "kind": "function",
+      "address": "0x801EC860",
+      "size": 1112,
+      "section": ".file_11",
+      "romAddress": "0x005A8770",
+      "projects": [],
+      "roles": [],
+      "declarations": [],
+      "references": [],
+      "symbolSources": [
+        {
+          "project": "Goemon64Recomp",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 1726,
+          "kind": "function",
+          "address": "0x801EC860",
+          "size": 1112,
+          "section": ".file_11",
+          "romAddress": "0x005A8770",
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x801EC860",
+          "size": 1112,
+          "section": ".file_11",
+          "romAddress": "0x005A8770"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [],
+      "declarationReviewRequired": true
+    },
+    {
+      "name": "func_801ECCB8_5A8BC8",
+      "kind": "function",
+      "address": "0x801ECCB8",
+      "size": 56,
+      "section": ".file_11",
+      "romAddress": "0x005A8BC8",
+      "projects": [],
+      "roles": [],
+      "declarations": [],
+      "references": [],
+      "symbolSources": [
+        {
+          "project": "Goemon64Recomp",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 1785,
+          "kind": "function",
+          "address": "0x801ECCB8",
+          "size": 56,
+          "section": ".file_11",
+          "romAddress": "0x005A8BC8",
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x801ECCB8",
+          "size": 56,
+          "section": ".file_11",
+          "romAddress": "0x005A8BC8"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [],
+      "declarationReviewRequired": true
+    },
+    {
+      "name": "func_801ECCF0_5A8C00",
+      "kind": "function",
+      "address": "0x801ECCF0",
+      "size": 540,
+      "section": ".file_11",
+      "romAddress": "0x005A8C00",
+      "projects": [],
+      "roles": [],
+      "declarations": [],
+      "references": [],
+      "symbolSources": [
+        {
+          "project": "Goemon64Recomp",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 1834,
+          "kind": "function",
+          "address": "0x801ECCF0",
+          "size": 540,
+          "section": ".file_11",
+          "romAddress": "0x005A8C00",
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x801ECCF0",
+          "size": 540,
+          "section": ".file_11",
+          "romAddress": "0x005A8C00"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [],
+      "declarationReviewRequired": true
+    },
+    {
+      "name": "func_801ECF0C_5A8E1C",
+      "kind": "function",
+      "address": "0x801ECF0C",
+      "size": 328,
+      "section": ".file_11",
+      "romAddress": "0x005A8E1C",
+      "projects": [],
+      "roles": [],
+      "declarations": [],
+      "references": [],
+      "symbolSources": [
+        {
+          "project": "Goemon64Recomp",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 1592,
+          "kind": "function",
+          "address": "0x801ECF0C",
+          "size": 328,
+          "section": ".file_11",
+          "romAddress": "0x005A8E1C",
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x801ECF0C",
+          "size": 328,
+          "section": ".file_11",
+          "romAddress": "0x005A8E1C"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [],
+      "declarationReviewRequired": true
+    },
+    {
+      "name": "func_801ED054_5A8F64",
+      "kind": "function",
+      "address": "0x801ED054",
+      "size": 208,
+      "section": ".file_11",
+      "romAddress": "0x005A8F64",
+      "projects": [],
+      "roles": [],
+      "declarations": [],
+      "references": [],
+      "symbolSources": [
+        {
+          "project": "Goemon64Recomp",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 1707,
+          "kind": "function",
+          "address": "0x801ED054",
+          "size": 208,
+          "section": ".file_11",
+          "romAddress": "0x005A8F64",
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x801ED054",
+          "size": 208,
+          "section": ".file_11",
+          "romAddress": "0x005A8F64"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [],
+      "declarationReviewRequired": true
+    },
+    {
+      "name": "func_801ED1F0_5A9100",
+      "kind": "function",
+      "address": "0x801ED1F0",
+      "size": 124,
+      "section": ".file_11",
+      "romAddress": "0x005A9100",
+      "projects": [],
+      "roles": [],
+      "declarations": [],
+      "references": [],
+      "symbolSources": [
+        {
+          "project": "Goemon64Recomp",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 1812,
+          "kind": "function",
+          "address": "0x801ED1F0",
+          "size": 124,
+          "section": ".file_11",
+          "romAddress": "0x005A9100",
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x801ED1F0",
+          "size": 124,
+          "section": ".file_11",
+          "romAddress": "0x005A9100"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [],
+      "declarationReviewRequired": true
+    },
+    {
+      "name": "func_801ED26C_5A917C",
+      "address": "0x801ED26C",
+      "size": 436,
+      "section": ".file_11",
+      "romAddress": "0x005A917C",
+      "projects": [],
+      "roles": [],
+      "declarations": [],
+      "references": [],
+      "symbolSources": [
+        {
+          "project": "Goemon64Recomp",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 2091,
+          "kind": "function",
+          "address": "0x801ED26C",
+          "size": 436,
+          "section": ".file_11",
+          "romAddress": "0x005A917C",
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x801ED26C",
+          "size": 436,
+          "section": ".file_11",
+          "romAddress": "0x005A917C"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [],
+      "declarationReviewRequired": true,
+      "kind": "function"
+    },
+    {
+      "name": "func_801EDC08_5A9B18",
+      "kind": "function",
+      "address": "0x801EDC08",
+      "size": 216,
+      "section": ".file_11",
+      "romAddress": "0x005A9B18",
+      "projects": [],
+      "roles": [],
+      "declarations": [],
+      "references": [],
+      "symbolSources": [
+        {
+          "project": "Goemon64Recomp",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 1918,
+          "kind": "function",
+          "address": "0x801EDC08",
+          "size": 216,
+          "section": ".file_11",
+          "romAddress": "0x005A9B18",
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x801EDC08",
+          "size": 216,
+          "section": ".file_11",
+          "romAddress": "0x005A9B18"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [],
+      "declarationReviewRequired": true
+    },
+    {
+      "name": "func_801EDCE0_5A9BF0",
+      "kind": "function",
+      "address": "0x801EDCE0",
+      "size": 588,
+      "section": ".file_11",
+      "romAddress": "0x005A9BF0",
+      "projects": [],
+      "roles": [],
+      "declarations": [],
+      "references": [],
+      "symbolSources": [
+        {
+          "project": "Goemon64Recomp",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 1416,
+          "kind": "function",
+          "address": "0x801EDCE0",
+          "size": 588,
+          "section": ".file_11",
+          "romAddress": "0x005A9BF0",
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x801EDCE0",
+          "size": 588,
+          "section": ".file_11",
+          "romAddress": "0x005A9BF0"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [],
+      "declarationReviewRequired": true
+    },
+    {
+      "name": "func_801EDF2C_5A9E3C",
+      "kind": "function",
+      "address": "0x801EDF2C",
+      "size": 304,
+      "section": ".file_11",
+      "romAddress": "0x005A9E3C",
+      "projects": [],
+      "roles": [],
+      "declarations": [],
+      "references": [],
+      "symbolSources": [
+        {
+          "project": "Goemon64Recomp",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 2102,
+          "kind": "function",
+          "address": "0x801EDF2C",
+          "size": 304,
+          "section": ".file_11",
+          "romAddress": "0x005A9E3C",
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x801EDF2C",
+          "size": 304,
+          "section": ".file_11",
+          "romAddress": "0x005A9E3C"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [],
+      "declarationReviewRequired": true
+    },
+    {
+      "name": "func_801EE4AC_5AA3BC",
+      "kind": "function",
+      "address": "0x801EE4AC",
+      "size": 52,
+      "section": ".file_11",
+      "romAddress": "0x005AA3BC",
+      "projects": [],
+      "roles": [],
+      "declarations": [],
+      "references": [],
+      "symbolSources": [
+        {
+          "project": "Goemon64Recomp",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 1860,
+          "kind": "function",
+          "address": "0x801EE4AC",
+          "size": 52,
+          "section": ".file_11",
+          "romAddress": "0x005AA3BC",
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x801EE4AC",
+          "size": 52,
+          "section": ".file_11",
+          "romAddress": "0x005AA3BC"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [],
+      "declarationReviewRequired": true
+    },
+    {
+      "name": "func_801F11F0_5AD100",
+      "kind": "function",
+      "address": "0x801F11F0",
+      "size": 448,
+      "section": ".file_11",
+      "romAddress": "0x005AD100",
+      "projects": [],
+      "roles": [],
+      "declarations": [],
+      "references": [],
+      "symbolSources": [
+        {
+          "project": "Goemon64Recomp",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 2136,
+          "kind": "function",
+          "address": "0x801F11F0",
+          "size": 448,
+          "section": ".file_11",
+          "romAddress": "0x005AD100",
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x801F11F0",
+          "size": 448,
+          "section": ".file_11",
+          "romAddress": "0x005AD100"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [],
+      "declarationReviewRequired": true
+    },
+    {
+      "name": "func_801F13B0_5AD2C0",
+      "kind": "function",
+      "address": "0x801F13B0",
+      "size": 268,
+      "section": ".file_11",
+      "romAddress": "0x005AD2C0",
+      "projects": [],
+      "roles": [],
+      "declarations": [],
+      "references": [],
+      "symbolSources": [
+        {
+          "project": "Goemon64Recomp",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 2108,
+          "kind": "function",
+          "address": "0x801F13B0",
+          "size": 268,
+          "section": ".file_11",
+          "romAddress": "0x005AD2C0",
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x801F13B0",
+          "size": 268,
+          "section": ".file_11",
+          "romAddress": "0x005AD2C0"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [],
+      "declarationReviewRequired": true
+    },
+    {
+      "name": "func_801F14BC_5AD3CC",
+      "kind": "function",
+      "address": "0x801F14BC",
+      "size": 292,
+      "section": ".file_11",
+      "romAddress": "0x005AD3CC",
+      "projects": [],
+      "roles": [],
+      "declarations": [],
+      "references": [],
+      "symbolSources": [
+        {
+          "project": "Goemon64Recomp",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 1958,
+          "kind": "function",
+          "address": "0x801F14BC",
+          "size": 292,
+          "section": ".file_11",
+          "romAddress": "0x005AD3CC",
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x801F14BC",
+          "size": 292,
+          "section": ".file_11",
+          "romAddress": "0x005AD3CC"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [],
+      "declarationReviewRequired": true
+    },
+    {
+      "name": "func_801F15E0_5AD4F0",
+      "kind": "function",
+      "address": "0x801F15E0",
+      "size": 748,
+      "section": ".file_11",
+      "romAddress": "0x005AD4F0",
+      "projects": [],
+      "roles": [],
+      "declarations": [],
+      "references": [],
+      "symbolSources": [
+        {
+          "project": "Goemon64Recomp",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 2018,
+          "kind": "function",
+          "address": "0x801F15E0",
+          "size": 748,
+          "section": ".file_11",
+          "romAddress": "0x005AD4F0",
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x801F15E0",
+          "size": 748,
+          "section": ".file_11",
+          "romAddress": "0x005AD4F0"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [],
+      "declarationReviewRequired": true
+    },
+    {
+      "name": "func_801F18CC_5AD7DC",
+      "kind": "function",
+      "address": "0x801F18CC",
+      "size": 216,
+      "section": ".file_11",
+      "romAddress": "0x005AD7DC",
+      "projects": [],
+      "roles": [],
+      "declarations": [],
+      "references": [],
+      "symbolSources": [
+        {
+          "project": "Goemon64Recomp",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 2057,
+          "kind": "function",
+          "address": "0x801F18CC",
+          "size": 216,
+          "section": ".file_11",
+          "romAddress": "0x005AD7DC",
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x801F18CC",
+          "size": 216,
+          "section": ".file_11",
+          "romAddress": "0x005AD7DC"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [],
+      "declarationReviewRequired": true
+    },
+    {
+      "name": "func_801F19A4_5AD8B4",
+      "kind": "function",
+      "address": "0x801F19A4",
+      "size": 556,
+      "section": ".file_11",
+      "romAddress": "0x005AD8B4",
+      "projects": [],
+      "roles": [],
+      "declarations": [],
+      "references": [],
+      "symbolSources": [
+        {
+          "project": "Goemon64Recomp",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 1615,
+          "kind": "function",
+          "address": "0x801F19A4",
+          "size": 556,
+          "section": ".file_11",
+          "romAddress": "0x005AD8B4",
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x801F19A4",
+          "size": 556,
+          "section": ".file_11",
+          "romAddress": "0x005AD8B4"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [],
+      "declarationReviewRequired": true
+    },
+    {
+      "name": "func_801F1BD0_5ADAE0",
+      "kind": "function",
+      "address": "0x801F1BD0",
+      "size": 244,
+      "section": ".file_11",
+      "romAddress": "0x005ADAE0",
+      "projects": [],
+      "roles": [],
+      "declarations": [],
+      "references": [],
+      "symbolSources": [
+        {
+          "project": "Goemon64Recomp",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 1306,
+          "kind": "function",
+          "address": "0x801F1BD0",
+          "size": 244,
+          "section": ".file_11",
+          "romAddress": "0x005ADAE0",
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x801F1BD0",
+          "size": 244,
+          "section": ".file_11",
+          "romAddress": "0x005ADAE0"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [],
+      "declarationReviewRequired": true
+    },
+    {
+      "name": "func_801F1CC4_5ADBD4",
+      "kind": "function",
+      "address": "0x801F1CC4",
+      "size": 624,
+      "section": ".file_11",
+      "romAddress": "0x005ADBD4",
+      "projects": [],
+      "roles": [],
+      "declarations": [],
+      "references": [],
+      "symbolSources": [
+        {
+          "project": "Goemon64Recomp",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 1606,
+          "kind": "function",
+          "address": "0x801F1CC4",
+          "size": 624,
+          "section": ".file_11",
+          "romAddress": "0x005ADBD4",
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x801F1CC4",
+          "size": 624,
+          "section": ".file_11",
+          "romAddress": "0x005ADBD4"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [],
+      "declarationReviewRequired": true
+    },
+    {
+      "name": "func_801F50A4_5B0FB4",
+      "address": "0x801F50A4",
+      "size": 248,
+      "section": ".file_11",
+      "romAddress": "0x005B0FB4",
+      "projects": [],
+      "roles": [],
+      "declarations": [],
+      "references": [],
+      "symbolSources": [
+        {
+          "project": "Goemon64Recomp",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 2079,
+          "kind": "function",
+          "address": "0x801F50A4",
+          "size": 248,
+          "section": ".file_11",
+          "romAddress": "0x005B0FB4",
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x801F50A4",
+          "size": 248,
+          "section": ".file_11",
+          "romAddress": "0x005B0FB4"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [],
+      "declarationReviewRequired": true,
+      "kind": "function"
+    },
+    {
+      "name": "func_80211EF8_5CD3C8",
+      "address": "0x80211EF8",
+      "size": 120,
+      "section": ".file_12",
+      "romAddress": "0x005CD3C8",
+      "projects": [],
+      "roles": [],
+      "declarations": [],
+      "references": [],
+      "symbolSources": [
+        {
+          "project": "Goemon64Recomp",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 2869,
+          "kind": "function",
+          "address": "0x80211EF8",
+          "size": 120,
+          "section": ".file_12",
+          "romAddress": "0x005CD3C8",
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x80211EF8",
+          "size": 120,
+          "section": ".file_12",
+          "romAddress": "0x005CD3C8"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [],
+      "declarationReviewRequired": true,
+      "kind": "function"
+    },
+    {
+      "name": "func_80213FF0_5CF4C0",
+      "address": "0x80213FF0",
+      "size": 100,
+      "section": ".file_12",
+      "romAddress": "0x005CF4C0",
+      "projects": [],
+      "roles": [],
+      "declarations": [],
+      "references": [],
+      "symbolSources": [
+        {
+          "project": "Goemon64Recomp",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 2464,
+          "kind": "function",
+          "address": "0x80213FF0",
+          "size": 100,
+          "section": ".file_12",
+          "romAddress": "0x005CF4C0",
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x80213FF0",
+          "size": 100,
+          "section": ".file_12",
+          "romAddress": "0x005CF4C0"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [],
+      "declarationReviewRequired": true,
+      "kind": "function"
+    },
+    {
+      "name": "func_802145F0_5CFAC0",
+      "address": "0x802145F0",
+      "size": 100,
+      "section": ".file_12",
+      "romAddress": "0x005CFAC0",
+      "projects": [],
+      "roles": [],
+      "declarations": [],
+      "references": [],
+      "symbolSources": [
+        {
+          "project": "Goemon64Recomp",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 2849,
+          "kind": "function",
+          "address": "0x802145F0",
+          "size": 100,
+          "section": ".file_12",
+          "romAddress": "0x005CFAC0",
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x802145F0",
+          "size": 100,
+          "section": ".file_12",
+          "romAddress": "0x005CFAC0"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [],
+      "declarationReviewRequired": true,
+      "kind": "function"
+    },
+    {
+      "name": "func_80214AEC_5CFFBC",
+      "address": "0x80214AEC",
+      "size": 96,
+      "section": ".file_12",
+      "romAddress": "0x005CFFBC",
+      "projects": [],
+      "roles": [],
+      "declarations": [],
+      "references": [],
+      "symbolSources": [
+        {
+          "project": "Goemon64Recomp",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 2633,
+          "kind": "function",
+          "address": "0x80214AEC",
+          "size": 96,
+          "section": ".file_12",
+          "romAddress": "0x005CFFBC",
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x80214AEC",
+          "size": 96,
+          "section": ".file_12",
+          "romAddress": "0x005CFFBC"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [],
+      "declarationReviewRequired": true,
+      "kind": "function"
+    },
+    {
+      "name": "func_8021804C_5D351C",
+      "address": "0x8021804C",
+      "size": 68,
+      "section": ".file_12",
+      "romAddress": "0x005D351C",
+      "projects": [],
+      "roles": [],
+      "declarations": [],
+      "references": [],
+      "symbolSources": [
+        {
+          "project": "Goemon64Recomp",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 2532,
+          "kind": "function",
+          "address": "0x8021804C",
+          "size": 68,
+          "section": ".file_12",
+          "romAddress": "0x005D351C",
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x8021804C",
+          "size": 68,
+          "section": ".file_12",
+          "romAddress": "0x005D351C"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [],
+      "declarationReviewRequired": true,
+      "kind": "function"
+    },
+    {
+      "name": "func_8021A26C_5D573C",
+      "address": "0x8021A26C",
+      "size": 156,
+      "section": ".file_12",
+      "romAddress": "0x005D573C",
+      "projects": [],
+      "roles": [],
+      "declarations": [],
+      "references": [],
+      "symbolSources": [
+        {
+          "project": "Goemon64Recomp",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 2228,
+          "kind": "function",
+          "address": "0x8021A26C",
+          "size": 156,
+          "section": ".file_12",
+          "romAddress": "0x005D573C",
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x8021A26C",
+          "size": 156,
+          "section": ".file_12",
+          "romAddress": "0x005D573C"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [],
+      "declarationReviewRequired": true,
+      "kind": "function"
+    },
+    {
+      "name": "func_80211F70_5CD440",
+      "address": "0x80211F70",
+      "size": 176,
+      "section": ".file_12",
+      "romAddress": "0x005CD440",
+      "projects": [],
+      "roles": [],
+      "declarations": [],
+      "references": [],
+      "symbolSources": [
+        {
+          "project": "Goemon64Recomp",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 2389,
+          "kind": "function",
+          "address": "0x80211F70",
+          "size": 176,
+          "section": ".file_12",
+          "romAddress": "0x005CD440",
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x80211F70",
+          "size": 176,
+          "section": ".file_12",
+          "romAddress": "0x005CD440"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [],
+      "declarationReviewRequired": true,
+      "kind": "function"
+    },
+    {
+      "name": "func_80212020_5CD4F0",
+      "address": "0x80212020",
+      "size": 104,
+      "section": ".file_12",
+      "romAddress": "0x005CD4F0",
+      "projects": [],
+      "roles": [],
+      "declarations": [],
+      "references": [],
+      "symbolSources": [
+        {
+          "project": "Goemon64Recomp",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 2859,
+          "kind": "function",
+          "address": "0x80212020",
+          "size": 104,
+          "section": ".file_12",
+          "romAddress": "0x005CD4F0",
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x80212020",
+          "size": 104,
+          "section": ".file_12",
+          "romAddress": "0x005CD4F0"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [],
+      "declarationReviewRequired": true,
+      "kind": "function"
+    }
+  ]
+}

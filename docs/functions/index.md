@@ -4,16 +4,19 @@ slug: "/functions"
 description: "Native functions for the US recompilation of Mystical Ninja Starring Goemon."
 ---
 
-212 functions with C interfaces, behavior, and usage examples. Use the search bar to look up an exact symbol, address, or purpose.
+265 functions with C interfaces, behavior, and usage examples. Use the search bar to look up an exact symbol, address, or purpose.
 
 | Symbol | Purpose |
 | --- | --- |
 | [`func_08000000_732F30`](func_08000000_732F30.md) | Initialize Tsurami reward and story controller |
 | [`func_0800000C_6B32AC`](func_0800000C_6B32AC.md) | Congo private actor post |
 | [`func_08000090_732FC0`](func_08000090_732FC0.md) | Run Tsurami Miracle Star and story scene |
+| [`func_080000C4_6B3064`](func_080000C4_6B3064.md) | Break a pot with a spatial sound |
+| [`func_0800010C_6F35EC`](func_0800010C_6F35EC.md) | Open an unlocked travel door |
 | [`func_080001A4_6AC6F4`](func_080001A4_6AC6F4.md) | Emit a Dango-machine wiper |
 | [`func_08000224_6AC774`](func_08000224_6AC774.md) | Initialize a Dango wiper child |
 | [`func_08000388_6B3628`](func_08000388_6B3628.md) | Process Tsurami root pipeline and damage |
+| [`func_08000434_6AEC14`](func_08000434_6AEC14.md) | Collect a food pickup |
 | [`func_080005DC_6ACB2C`](func_080005DC_6ACB2C.md) | Rotate an active spike chain |
 | [`func_0800074C_6ACC9C`](func_0800074C_6ACC9C.md) | Rotate a jump rope |
 | [`func_08000970_6C8B80`](func_08000970_6C8B80.md) | Enter Dharumanyo neutral combat |
@@ -23,6 +26,7 @@ description: "Native functions for the US recompilation of Mystical Ninja Starri
 | [`func_08000B98_70ABD8`](func_08000B98_70ABD8.md) | Benkei live battle controller |
 | [`func_08000DCC_6B406C`](func_08000DCC_6B406C.md) | Initialize a Congo flame |
 | [`func_08001020_6F4500`](func_08001020_6F4500.md) | Update a live locked doorway |
+| [`func_080012C8_6F47A8`](func_080012C8_6F47A8.md) | Open a locked travel door |
 | [`func_08001464_70B4A4`](func_08001464_70B4A4.md) | Update Benkei bridge encounter topology |
 | [`func_080017F4_6B4A94`](func_080017F4_6B4A94.md) | Initialize Tsurami health-bearing root |
 | [`func_080018E4_6EAA34`](func_080018E4_6EAA34.md) | Advance a giant spinning top |
@@ -38,6 +42,9 @@ description: "Native functions for the US recompilation of Mystical Ninja Starri
 | [`func_080020D8_6B5378`](func_080020D8_6B5378.md) | Tsurami combat AI state 0x20D8 |
 | [`func_08002128_6B53C8`](func_08002128_6B53C8.md) | Tsurami combat AI state 0x2128 |
 | [`func_08002190_6B5430`](func_08002190_6B5430.md) | Tsurami combat AI state 0x2190 |
+| [`func_08002190_6F5670`](func_08002190_6F5670.md) | Open a second unlocked travel door |
+| [`func_08002254_6F5734`](func_08002254_6F5734.md) | Complete a travel-door interaction |
+| [`func_080022F0_6F57D0`](func_080022F0_6F57D0.md) | Update an idle travel door |
 | [`func_080023E0_6B5680`](func_080023E0_6B5680.md) | Tsurami combat AI state 0x23E0 |
 | [`func_08002460_6B5700`](func_08002460_6B5700.md) | Tsurami combat AI state 0x2460 |
 | [`func_080024A0_6B5740`](func_080024A0_6B5740.md) | Tsurami combat AI state 0x24A0 |
@@ -120,7 +127,11 @@ description: "Native functions for the US recompilation of Mystical Ninja Starri
 | [`func_8000B5D0_C1D0`](func_8000B5D0_C1D0.md) | Activate and mirror initialized save state |
 | [`func_8000B640_C240`](func_8000B640_C240.md) | Initialize a fresh save |
 | [`func_8000C260_CE60`](func_8000C260_CE60.md) | Allocate and configure a native message window |
+| [`func_8000C3EC_CFEC`](func_8000C3EC_CFEC.md) | Advance a native message-window text line |
+| [`func_8000C454_D054`](func_8000C454_D054.md) | Enable blinking for subsequent native glyphs |
+| [`func_8000C488_D088`](func_8000C488_D088.md) | Clear the native message-window text effect |
 | [`func_8000C878_D478`](func_8000C878_D478.md) | Release a native message window |
+| [`func_8000D060_DC60`](func_8000D060_DC60.md) | Insert a native message-window glyph |
 | [`func_8000DBF0_E7F0`](func_8000DBF0_E7F0.md) | Attach a model/display object to a task |
 | [`func_8000F420_10020`](func_8000F420_10020.md) | Play a sound at an object position |
 | [`func_80013B14_14714`](func_80013B14_14714.md) | Load a file into the scene registry |
@@ -170,6 +181,10 @@ description: "Native functions for the US recompilation of Mystical Ninja Starri
 | [`func_8003674C_3734C`](func_8003674C_3734C.md) | Release the cached child subtree |
 | [`func_80036798_37398`](func_80036798_37398.md) | Release the cached sibling subtree |
 | [`func_80038B98_39798`](func_80038B98_39798.md) | Queue a native audio command |
+| [`func_80038C30_39830`](func_80038C30_39830.md) | Manage native sound playback |
+| [`func_80038F68_39B68`](func_80038F68_39B68.md) | Dispatch native sound commands |
+| [`func_800390D8_39CD8`](func_800390D8_39CD8.md) | Start native sound playback |
+| [`func_8003A24C_3AE4C`](func_8003A24C_3AE4C.md) | Stop native sound playback |
 | [`func_8003CFD0_3DBD0`](func_8003CFD0_3DBD0.md) | Advance the scenario manager |
 | [`func_8003D468_3E068`](func_8003D468_3E068.md) | Initialize or reset the scenario interpreter |
 | [`func_8003E6C0_3F2C0`](func_8003E6C0_3F2C0.md) | Parse the native scenario choice list |
@@ -178,25 +193,61 @@ description: "Native functions for the US recompilation of Mystical Ninja Starri
 | [`func_801CD890_660740`](func_801CD890_660740.md) | Native gameplay/load scheduler callback |
 | [`func_801D21B8_665068`](func_801D21B8_665068.md) | File-select options and boss-rush menu |
 | [`func_801D9E9C_595DAC`](func_801D9E9C_595DAC.md) | Process native player damage and contact reactions |
+| [`func_801DC554_598464`](func_801DC554_598464.md) | Build a native effect material list |
 | [`func_801DCCF0_598C00`](func_801DCCF0_598C00.md) | Adjust the player Ryo balance |
 | [`func_801DCD48_598C58`](func_801DCD48_598C58.md) | Adjust player health |
 | [`func_801DD50C_59941C`](func_801DD50C_59941C.md) | Cycle the live player character |
 | [`func_801DD5C0_5994D0`](func_801DD5C0_5994D0.md) | Apply a live player character swap |
+| [`func_801E0944_59C854`](func_801E0944_59C854.md) | Advance a player character transition |
+| [`func_801E8820_5A4730`](func_801E8820_5A4730.md) | Configure an effect texture |
+| [`func_801E8858_5A4768`](func_801E8858_5A4768.md) | Initialize animated effect textures |
+| [`func_801E8890_5A47A0`](func_801E8890_5A47A0.md) | Select an animated effect texture frame |
+| [`func_801E8C44_5A4B54`](func_801E8C44_5A4B54.md) | Count effect descendants |
 | [`func_801E8E24_5A4D34`](func_801E8E24_5A4D34.md) | Cancel eligible player-owned projectiles |
+| [`func_801E8F50_5A4E60`](func_801E8F50_5A4E60.md) | Set up a Fire Ryo projectile |
 | [`func_801E936C_5A527C`](func_801E936C_5A527C.md) | Update an ordinary Goemon coin |
 | [`func_801EA0D8_5A5FE8`](func_801EA0D8_5A5FE8.md) | Update the charged Goemon coin |
+| [`func_801EA860_5A6770`](func_801EA860_5A6770.md) | Create character-switch smoke |
+| [`func_801EAE88_5A6D98`](func_801EAE88_5A6D98.md) | Update character-switch smoke |
+| [`func_801EAF50_5A6E60`](func_801EAF50_5A6E60.md) | Rotate a character-switch smoke child |
 | [`func_801EBAA8_5A79B8`](func_801EBAA8_5A79B8.md) | Update the Ebisumaru camera effect |
 | [`func_801EBF48_5A7E58`](func_801EBF48_5A7E58.md) | Update the Sasuke thrown bomb |
+| [`func_801EC860_5A8770`](func_801EC860_5A8770.md) | Update a weapon-charge effect |
+| [`func_801ECCB8_5A8BC8`](func_801ECCB8_5A8BC8.md) | Dispatch Fire Ryo action |
+| [`func_801ECCF0_5A8C00`](func_801ECCF0_5A8C00.md) | Update a Fire Ryo projectile |
+| [`func_801ECF0C_5A8E1C`](func_801ECF0C_5A8E1C.md) | Create a Fire Ryo impact effect |
+| [`func_801ED054_5A8F64`](func_801ED054_5A8F64.md) | Resolve Fire Ryo collision |
+| [`func_801ED1F0_5A9100`](func_801ED1F0_5A9100.md) | Create a Fire Ryo trail |
+| [`func_801ED26C_5A917C`](func_801ED26C_5A917C.md) | Create a periodic native projectile trail |
+| [`func_801EDC08_5A9B18`](func_801EDC08_5A9B18.md) | Create the Sasuke jetpack smoke effect |
+| [`func_801EDCE0_5A9BF0`](func_801EDCE0_5A9BF0.md) | Update Sasuke jetpack smoke |
+| [`func_801EDF2C_5A9E3C`](func_801EDF2C_5A9E3C.md) | Create a jetpack smoke puff |
+| [`func_801EE4AC_5AA3BC`](func_801EE4AC_5AA3BC.md) | Initialize an effect child task |
 | [`func_801EEDF8_5AAD08`](func_801EEDF8_5AAD08.md) | Update Yae projectile flight and impact |
 | [`func_801EF2E0_61A6C0`](func_801EF2E0_61A6C0.md) | Initialize the Thaisamba Impact boss task |
 | [`func_801EFBDC_5ABAEC`](func_801EFBDC_5ABAEC.md) | Update the Sasuke kunai effect |
+| [`func_801F11F0_5AD100`](func_801F11F0_5AD100.md) | Create the transformation visual effect |
+| [`func_801F13B0_5AD2C0`](func_801F13B0_5AD2C0.md) | Initialize a purple transformation child |
+| [`func_801F14BC_5AD3CC`](func_801F14BC_5AD3CC.md) | Update a transformation visual child |
+| [`func_801F15E0_5AD4F0`](func_801F15E0_5AD4F0.md) | Create the Sudden Impact aura |
+| [`func_801F18CC_5AD7DC`](func_801F18CC_5AD7DC.md) | Initialize the main Sudden Impact aura |
+| [`func_801F19A4_5AD8B4`](func_801F19A4_5AD8B4.md) | Update the Sudden Impact aura |
+| [`func_801F1BD0_5ADAE0`](func_801F1BD0_5ADAE0.md) | Initialize a Sudden Impact satellite |
+| [`func_801F1CC4_5ADBD4`](func_801F1CC4_5ADBD4.md) | Update a Sudden Impact aura satellite |
+| [`func_801F50A4_5B0FB4`](func_801F50A4_5B0FB4.md) | Select a Goemon projectile sound |
 | [`func_801F6C4C_62202C`](func_801F6C4C_62202C.md) | Dispatch Thaisamba collision and damage |
 | [`func_801F77F4_5B3704`](func_801F77F4_5B3704.md) | Run scene contacts and player-state maintenance |
 | [`func_801FB2D0_5B71E0`](func_801FB2D0_5B71E0.md) | Height-dependent dungeon floor update |
 | [`func_8020D6BC_5C8B8C`](func_8020D6BC_5C8B8C.md) | Load normal stage resources |
 | [`func_8020D848_5C8D18`](func_8020D848_5C8D18.md) | Stage room actor data and spawn definitions |
+| [`func_80211EF8_5CD3C8`](func_80211EF8_5CD3C8.md) | Initialize a native actor effect |
+| [`func_80211F70_5CD440`](func_80211F70_5CD440.md) | Update a native pickup visual child |
+| [`func_80212020_5CD4F0`](func_80212020_5CD4F0.md) | Fade a native pickup visual child |
 | [`func_802139E0_5CEEB0`](func_802139E0_5CEEB0.md) | Initialize an equipment shine child |
 | [`func_80213A9C_5CEF6C`](func_80213A9C_5CEF6C.md) | Animate and retire an equipment shine |
+| [`func_80213FF0_5CF4C0`](func_80213FF0_5CF4C0.md) | Collect a dynamic health pickup |
+| [`func_802145F0_5CFAC0`](func_802145F0_5CFAC0.md) | Collect a five-ryo pickup |
+| [`func_80214AEC_5CFFBC`](func_80214AEC_5CFFBC.md) | Collect a small health pickup |
 | [`func_80215150_674100`](func_80215150_674100.md) | Dungeon floor-row spacing |
 | [`func_80215198_674148`](func_80215198_674148.md) | Dungeon floor-panel update |
 | [`func_802155F4_6745A4`](func_802155F4_6745A4.md) | Dungeon map floor-panel constructor |
@@ -206,6 +257,7 @@ description: "Native functions for the US recompilation of Mystical Ninja Starri
 | [`func_80216AB8_5D1F88`](func_80216AB8_5D1F88.md) | Advance actor model animation |
 | [`func_80216E1C_5D22EC`](func_80216E1C_5D22EC.md) | Initialize object model and default scale |
 | [`func_802171A8_5D2678`](func_802171A8_5D2678.md) | Allocate a child actor task |
+| [`func_8021804C_5D351C`](func_8021804C_5D351C.md) | Create a native pickup visual child |
 | [`func_80218350_5D3820`](func_80218350_5D3820.md) | Process actor damage and hit reactions |
 | [`func_80218548_5D3A18`](func_80218548_5D3A18.md) | Handle an actor reaching zero health |
 | [`func_80218A54_5D3F24`](func_80218A54_5D3F24.md) | Apply a room actor spawn instance |
@@ -214,6 +266,7 @@ description: "Native functions for the US recompilation of Mystical Ninja Starri
 | [`func_80218F30_5D4400`](func_80218F30_5D4400.md) | Common actor post-processing and removal |
 | [`func_802197D8_5D4CA8`](func_802197D8_5D4CA8.md) | Turn an actor toward its target object |
 | [`func_80219CA0_5D5170`](func_80219CA0_5D5170.md) | Choose an actor task owner and enforce caps |
+| [`func_8021A26C_5D573C`](func_8021A26C_5D573C.md) | Build a native pickup material list |
 | [`func_8021A310_5D57E0`](func_8021A310_5D57E0.md) | Set object rotation fields to 0x8000 |
 | [`func_8021B808_5D6CD8`](func_8021B808_5D6CD8.md) | Integrate actor velocity |
 | [`func_8021DDE8_5D92B8`](func_8021DDE8_5D92B8.md) | Spawn a child at an owner-relative offset |

@@ -893,5 +893,53 @@
       "Native decompilation, disassembly and host harness evidence only; no fresh two-client game certification.",
       "Quest scene reconstruction must preserve the original local control, camera and dialogue lifecycle."
     ]
+  },
+  "worldWaveProducer20260922": {
+    "date": "2026-09-22",
+    "nativeSource": {
+      "path": "/Users/ahmad/git/Goemon64Recomp/RecompiledFuncs/funcs_130.c",
+      "sha256": "e56bef1897d234eaa2a5d25101293d3a6ec751ed8b3efba9318cca2e99d69d90",
+      "function": "func_0800370C_70480C",
+      "sourceLine": 1372,
+      "overlay": "File_46"
+    },
+    "findings": [
+      "The initializer calls func_80023FB8_24BB8 with argument zero. If its return value is nonzero it stores the halfword 1 at task+0x8A; if zero it stores 0x200 (512).",
+      "It schedules func_0800376C_70486C as the task update callback after storing the timer seed."
+    ],
+    "limits": [
+      "The predicate's semantic meaning and later timer transitions are not established by this initializer alone."
+    ]
+  },
+  "worldQuestPresentations20260922": {
+    "date": "2026-09-22",
+    "nativeCode": {
+      "program": "US Goemon64Recomp recompiled source and native overlays",
+      "sourceSnapshots": {
+        "RecompiledFuncs/funcs_39.c": "1aba9fba973ae571189b42b09b5ce55618a7d29637aa999cf2b4bba5850b7cc9",
+        "RecompiledFuncs/funcs_42.c": "8726bf23c57baab3a57c269b276c8605260fe34c244131f354fff04060e7b3ca",
+        "RecompiledFuncs/funcs_130.c": "e56bef1897d234eaa2a5d25101293d3a6ec751ed8b3efba9318cca2e99d69d90",
+        "RecompiledFuncs/funcs_137.c": "aa41e40868259a42a3bc217f12065fdc287fb8a25ba1b341df5171d1d7fc5956",
+        "RecompiledFuncs/funcs_142.c": "f941af917e2f1eeb1796ccd3a44f2cd4da0cbed646b605895d243519b6d075ad"
+      },
+      "romAddresses": [
+        "File_46: 0x0800370C, 0x080011FC",
+        "File_62: 0x08001C20",
+        "File_74: 0x08002BBC, 0x08002E04, 0x08003398, 0x08003470",
+        "File_75: 0x08002BBC, 0x08002E04, 0x08003398, 0x08003470",
+        "Shared child setup: 0x80220410, 0x802171A8, 0x80218C28, 0x80217360"
+      ]
+    },
+    "findings": [
+      "Koryuta File_46 creates one model-0x1B0 body and eleven entity-0x1B4 model-0x1B0 parts. Parts 1-4, 6, and 7 bind static slot 3; part 5 uses animated clip 2; parts 8-11 bind static slots 4-7. Native function 0x080011FC changes the model field without changing the child entity.",
+      "Kihachi File_62 visible children use entity 0x315 and models 0x315, 0x10D, and 1 for NPC, rising, and colour presentations, respectively.",
+      "Gorgeous Music Castle File_74 creates 22 zero-based children with entity 0 and resource file 0x4A. Model map: parts 0-1=0x36A, 2=0x351, 3=0x318, 4=0x352, 5=0x353, 6-13=0xFB, 14-16=0x367, 17=0x359, 18=0x35A, 19=0x35B, and 20-21=0x367. Parts 0-5 animate; static slots are 1 for part 16, 3 for part 20, and 2 for part 21; others use slot 0. Part 17 binds native texture channel 0.",
+      "Gorgeous Music Castle File_75 has three entity-0x35D children using resource file 0x4B, models 0x2DA/0x32C/0x2D6, clip 0, rate 0.25, and looping enabled. Roots 11 and 13 are invisible controllers.",
+      "File_74 children created by 0x80220410 retain entity 0: its child path reaches allocator 0x80034A10, which initializes +0x5C to zero, and those initializers only retag model +0x5E. Children created by 0x802171A8 inherit +0x5C through 0x80218C28. Koryuta parts created by 0x80217360 use entity 0x1B4."
+    ],
+    "limits": [
+      "These are verified visible-child resource and identity recipes. They do not establish complete scene timing, animation progress for every File_74 child, or the semantic meaning of every temporary handshake.",
+      "Native source analysis and host tests do not substitute for fresh two-client in-game verification."
+    ]
   }
 }

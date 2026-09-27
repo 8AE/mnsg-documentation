@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "scope": "Task-scoped native attack sphere observation, contact ownership and hit records; damage findings are appended separately.",
+  "scope": "Task-scoped native attack sphere observation, contact ownership and hit records; damage findings are appended separately. Projectile cleanup lifecycle and Sasuke weapon dispatch findings appended 2026-09-24.",
   "nativeEvidence": [
     {
       "symbols": [
@@ -122,15 +122,122 @@
         "0x8015C5E0"
       ],
       "finding": "MIPS signedbyte extension argument, integer clampindicatorreturn, whole32bithealth loads/stores. Belowzero clamp, positive maxclamp and heal sound. Corrects prior source-reviewed uncertainty without adding a directHP-write example."
+    },
+    {
+      "symbols": [
+        "func_801E8EC4_5A4DD4",
+        "func_801E8E24_5A4D34",
+        "func_801EE4AC_5AA3BC"
+      ],
+      "addresses": [
+        "0x801E8EC4",
+        "0x801E8E24",
+        "0x80204914",
+        "0x801EE4AC",
+        "0x80034EF8"
+      ],
+      "finding": "Ghidra decompilation in mnsg.us.0.z64 (.file_11) shows the projectile manager walks every child task independent of child kind. If child byte+0x65 is nonzero, it decrements byte+0x66 and invokes func_80034EF8_35AF8 when the prior countdown was zero. The cancellation routine writes +0x65=1 and +0x66=reason only when DAT_80204914[kind]==1; the table excludes kinds 0x17..0x1B. The shared constructor takes child,parent,u8 kind, stores kind at +0x64, zeros removal bytes +0x65/+0x66, copies the parent owner to child +0x5C, and records the parent task at parent +0x84. A direct mark +0x65=1,+0x66=0 is removed on the next manager pass for any kind; only the cancellation routine skips kinds absent from its table."
+    },
+    {
+      "symbols": [
+        "func_801E8964_5A4874",
+        "func_801EF87C_5AB78C",
+        "func_801F0408_5AC318",
+        "func_801EE228_5AA138",
+        "func_801E4624_5A0534",
+        "func_80218FE8_5D44B8",
+        "func_80218234_5D3704",
+        "func_80212A48_5CDF18",
+        "func_80212C5C_5CE12C",
+        "func_80212CA0_5CE170",
+        "func_80212EA8_5CE378",
+        "D_80236984_5F1E54",
+        "D_80234F28_5F03F8",
+        "D_8023210C_5ED5DC",
+        "D_80237AE8_5F2FB8"
+      ],
+      "addresses": [
+        "0x801E8964",
+        "0x801EF87C",
+        "0x801F0408",
+        "0x801EE228",
+        "0x801E4624",
+        "0x8015C604",
+        "0x8015C5E8",
+        "0x80218FE8",
+        "0x80218234",
+        "0x80212A48",
+        "0x80212C5C",
+        "0x80212CA0",
+        "0x80212EA8",
+        "0x80236984",
+        "0x80237AE8",
+        "0x005F1E54",
+        "0x005F03F8",
+        "0x005ED5DC",
+        "0x005F2FB8"
+      ],
+      "finding": "Ghidra decompilation in mnsg.us.0.z64 shows weapon dispatch cases 0x1A and 0x1B select the single and triple Sasuke kunai constructors; both set attacker byte +0x4C to hit kind 0x1A. In .file_11, for player byte +0x60==2 and DAT_8015C604==3 with ammo >0, selector values 0/1/2 map to actions 0x93/0x95/0x96; the enhanced condition work +0x68==3 and ammo >2 maps the same selectors to 0x97/0x98/0x99; inspected constructor use is for spawn offsets, and these action values do not establish an ice element. In .file_12, func_80218FE8_5D44B8 checks only attacker +0x4C==0x1A for the ordinary freeze branch, then calls func_80218234_5D3704 to create the enemy freeze child. Its constructor reads enemy-specific parent bytes +0x98..+0x9B and stores the parent at child +0xBC. The child starts with hold timer +0x8A=0xFA; its callback transitions to a 0x28 countdown before shattering. The alternate enemy-flag branch uses 0x0F and func_80212EA8_5CE378. The cube model value 0x48000500 comes from D_80236984_5F1E54[0x7E]; D_80234F28_5F03F8 is the cube resource entry and D_8023210C_5ED5DC is the resource file-ID array; image resources 0x191, 0x192 and 0x152 resolve through object offsets +0x34/+0x3C/+0x44 and pointers +0x38/+0x40/+0x48. Task +0x60 value 0x80208220 is flags, not a model. The material wrapper uses D_80237AE8_5F2FB8 and environment RGBA 0x00000078. The callback mutates enemy-specific state and is not a valid playable-task handler."
+    },
+    {
+      "symbols": [
+        "func_801D9E9C_595DAC"
+      ],
+      "addresses": [
+        "0x801D9E9C"
+      ],
+      "finding": "In the inspected .file_11 player damage intake, the switch on attacker byte +0x4C has cases 1, 2, and 4 through 11, with no case 0x1A. This establishes no native player reaction for the inspected hit kind; it does not establish behavior for remote visual actors or custom multiplayer handling."
+    },
+    {
+      "symbols": [
+        "func_801D9E9C_595DAC",
+        "func_80218FE8_5D44B8"
+      ],
+      "addresses": [
+        "0x801D9E9C",
+        "0x80218FE8"
+      ],
+      "finding": "The player intake switch has no case for hit kind 0x1A. Separately, the enemy hit callback recognizes 0x1A and starts native enemy freeze regardless of the attacker owner action. This confirms enemy freeze for the hit kind but does not establish native player damage or freeze handling."
+    },
+    {
+      "symbols": [
+        "func_80218350_5D3820",
+        "func_801E3834_59F744",
+        "D_802046BC_5C05CC",
+        "func_801EE228_5AA138",
+        "func_801E8964_5A4874",
+        "func_801E8F50_5A4E60",
+        "func_801ECCB8_5A8BC8",
+        "func_801D9E9C_595DAC",
+        "func_801DA758_596668",
+        "D_8015C6AC"
+      ],
+      "addresses": [
+        "0x80218350",
+        "0x80218400",
+        "0x801E3834",
+        "0x802046BC",
+        "0x801EE228",
+        "0x801E8964",
+        "0x801E8F50",
+        "0x801ECCB8",
+        "0x801D9E9C",
+        "0x801DA758",
+        "0x801DA79C",
+        "0x8015C6AC"
+      ],
+      "finding": "Ghidra inspection of the US image (mnsg.us.0.z64; SHA-256 e40bee20508c2e29e651dca4e47504e40f908f0a2186e34a582784bf5a64be4c) found func_80218350_5D3820 in .file_12 reading attacker byte +0x4C at 0x80218400 and selecting ordinary actor HP loss: kinds 0x15/0x19/0x1F -> 1, 0x16/0x23 -> 2, 0x17/0x24 -> 4, 0x1B -> 3, 0x22 -> 8, other -> 1. In .file_11, func_801E3834_59F744 uses D_8015C6AC[character] as tier 0/1/2 and table D_802046BC_5C05CC at 0x802046BC (bytes 15 16 17 15 16 17 19 23 24 19 23 24): character slots 0/1 map to attack kinds 0x15/0x16/0x17, slots 2/3 to 0x19/0x23/0x24. Goemon base/silver/gold kinds are 0x15/0x16/0x17. Constructors func_801E8F50_5A4E60 and func_801ECCB8_5A8BC8 use kind 0x1F for ordinary Ryo and 0x1B for Fire Ryo, corresponding to ordinary actor damage values 1 and 3. func_801EE228_5AA138 writes attack-kind byte +0x4C; byte +0x4D was unused in the analyzed ROM/static ELF. Separately, .file_11 player intake uses func_801DA758_596668, which reads attacker +0x6D at 0x801DA79C, defaults zero to 1, doubles under the Sudden Impact state, then applies a signed-byte HP delta. The inspected native outgoing attack setup does not populate attacker +0x6D. Actor-path values do not establish that every hit kind is accepted by the playable-player intake switch."
     }
   ],
   "limitations": [
     "No native two-client runtime certification; host tests cover copied sphere geometry and episode behavior only.",
     "Public task offset meanings apply to the inspected task type; projectile +0x5C owner differs from playable +0x5C work.",
-    "No guessed action-ID attack windows or complete weapon-kind enumeration was introduced."
+    "No guessed action-ID attack windows or complete weapon-kind enumeration was introduced.",
+    "The US game image loaded in Ghidra is mnsg.us.0.z64; the image hash is not available from the tool or a matching local file.",
+    "The enemy freeze callback requires enemy-specific task fields and must not be applied to playable tasks. No corresponding native player freeze reaction was established."
   ],
   "supportingSource": "mnsg-recomp-example/docs/remote-player-pvp-damage.md, native findings reviewed by the damage implementation agent and checked against current Ghidra decompilation.",
-  "generatedAt": "2026-09-05T16:35:12+00:00",
+  "generatedAt": "2026-09-26T13:17:55+00:00",
   "sourceFiles": [
     {
       "project": "mnsg-recomp-example",

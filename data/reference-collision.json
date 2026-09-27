@@ -6,7 +6,8 @@
     "behavior": [
       "This byte occupies full system-structure offset +0x3AE20, at runtime address 0x800C7AE0. It is stored directly; it is not a pointer.",
       "The late player update at 0x801CBAF8 tests (value & 3) before calling its world collision and contact handlers. Either low bit bypasses those handlers.",
-      "Bit 0x04 also suppresses selected player input actions, but does not by itself bypass the late collision handlers."
+      "Bit 0x04 also suppresses selected player input actions, but does not by itself bypass the late collision handlers.",
+      "In the inspected frozen-cube control path, mask 0x02 skips the late player collision and movement-commit block. This does not copy the held task's XYZ position into the player."
     ],
     "cautions": [
       "The byte is a control mask, not a universal cutscene boolean. Script-driven movement can continue to use world collision while this low-bit mask is clear; inspect D_800C7AE3 for that separate state.",
@@ -72,14 +73,16 @@
       "The output begins with the six input floats at offsets +0x00 through +0x14. Hit displacement from the query origin is stored as three floats at +0x18/+0x1C/+0x20; the hit surface normal is at +0x24/+0x28/+0x2C.",
       "The unsigned 16-bit hit field is at +0x38 and the float squared hit distance is at +0x3C. The two 32-bit pointer slots at +0x40/+0x44 identify dynamic collision object/task storage when supplied by that path.",
       "Recover a world-space hit point by adding the displacement to the original query origin. Native caller 0x801CF3A0 uses that exact operation.",
-      "The dynamic ray path initializes its nearest squared-distance threshold to 2000.0 independently of max_distance. Dynamic hits at distances beyond approximately 44.72 world units can therefore be omitted even when max_distance is larger."
+      "The dynamic ray path initializes its nearest squared-distance threshold to 2000.0 independently of max_distance. Dynamic hits at distances beyond approximately 44.72 world units can therefore be omitted even when max_distance is larger.",
+      "Native player movement uses this query for three distinct tests. Its short downward floor-height adjustment ray starts at the proposed feet position plus 2.1 world units; it only selects or adjusts floor height, does not set grounded-contact state, and can miss a floor crossed by more than 2.1 units in one tick. A separate downward contact ray starts at the proposed feet position plus normally 185 times player scale and sets grounded state on an accepted upward-facing hit. An upward head ray checks ceiling contact before its caller adjusts the proposed position."
     ],
     "cautions": [
       "For long casts that must include dynamic meshes, split the path into segments safely below sqrt(2000), such as 32 world units, and stop at the first hit. Normalize the nonzero direction before casting each segment. Increasing max_distance alone does not extend the dynamic nearest-hit threshold.",
       "Run only while the scene collision data and native dynamic actor lists are loaded and valid. The query reads scene-owned mesh resources and is not safe to treat as an independent geometry library during loading or teardown.",
       "The function copies 72 bytes even when there is no hit. Allocate the whole record, preserve its native layout, and check the hit field before using hit displacement, normal, distance or dynamic pointers.",
       "Bytes +0x30 through +0x37 and +0x3A through +0x3B have not been fully decoded. Preserve them as opaque storage. Dynamic pointers are scene-owned; do not retain them across task deletion or room changes.",
-      "This is a ray query, not a full swept cylinder or body solver. A single ray does not establish clearance for a character-sized volume."
+      "This is a ray query, not a full swept cylinder or body solver. A single ray does not establish clearance for a character-sized volume.",
+      "A visible display list does not by itself register dynamic collision. The query sees static level collision and dynamic geometry entered through the scene collision actor lists and resource slots."
     ],
     "confidence": "decompiled",
     "related": [
@@ -245,7 +248,8 @@
       "When player work +0x69 is zero, first runs the normal player update helper at 0x801DABDC.",
       "If (D_800C7AE0 & 3) is zero, calls the native world collision handler, resolves a pending rotation value, updates collision-dependent movement state, and handles player contacts. Either low control bit skips this block.",
       "After the gated block, refreshes the player transform and associated state, clears task +0x34/+0x38 contact pointers, and advances selected input-history fields.",
-      "A return hook observes position after the native collision block for this scheduler update, while an entry hook observes the proposed position before it."
+      "A return hook observes position after the native collision block for this scheduler update, while an entry hook observes the proposed position before it.",
+      "The frozen-cube control mask 0x02 bypasses this callback's collision and movement-commit block. A held object is not a substitute source for the playable player's world position."
     ],
     "cautions": [
       "This is a playable-player callback. It expects initialized player work, animation, camera and contact state and must not be applied to a standalone visual actor.",

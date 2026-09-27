@@ -1,0 +1,205 @@
+{
+  "date": "2026-09-25",
+  "romSha256": "e40bee20508c2e29e651dca4e47504e40f908f0a2186e34a582784bf5a64be4c",
+  "scope": "Native US message-window rendering, text insertion, and raw style-table mapping reviewed from Ghidra .main decompilation/disassembly.",
+  "confidence": "Verified structural behavior and scalar offsets from Ghidra; scene-specific style selection remains unverified.",
+  "symbols": {
+    "func_8000B8B0_C4B0": {
+      "nativeAddress": "0x8000B8B0",
+      "romAddress": "0x0000C4B0",
+      "finding": "Main message-window renderer visits all three slots and renders each non-null window independently of scenario-interpreter dispatch."
+    },
+    "func_8000C260_CE60": {
+      "nativeAddress": "0x8000C260",
+      "romAddress": "0x0000CE60",
+      "finding": "Allocates/configures a message window in the selected idle slot."
+    },
+    "func_8000C878_D478": {
+      "nativeAddress": "0x8000C878",
+      "romAddress": "0x0000D478",
+      "finding": "Releases the window allocation in the selected slot."
+    },
+    "func_8000D060_DC60": {
+      "nativeAddress": "0x8000D060",
+      "romAddress": "0x0000DC60",
+      "finding": "Inserts one glyph into the first free of 120 records and advances horizontal cursor +0x6E by glyph width plus one. US printable ASCII maps by subtracting 0x20.",
+      "palette": {
+        "recordFieldOffset": "0x06",
+        "selectorMask": "0x000F",
+        "renderer": {
+          "symbol": "func_8000B8F0_C4F0",
+          "nativeAddress": "0x8000B8F0",
+          "romAddress": "0x0000C4F0",
+          "instructionRange": "0x8000BE80-0x8000BE94",
+          "finding": "The renderer reads the low nibble of the per-glyph field at +0x06 for the G_SETTILE palette selector. Other bits in the field control glyph display effects and should be preserved."
+        },
+        "paletteBanks": [
+          {
+            "selectors": [
+              "6",
+              "7"
+            ],
+            "paletteAddress": "0x800633E0",
+            "appearance": "blue-violet",
+            "rgb5551": [
+              "0x003F",
+              "0x31BF",
+              "0x633F"
+            ]
+          },
+          {
+            "selectors": [
+              "8",
+              "9"
+            ],
+            "paletteAddress": "0x80063420",
+            "appearance": "green",
+            "rgb5551": [
+              "0x0401",
+              "0x0701",
+              "0x07C1"
+            ]
+          }
+        ],
+        "relatedNativeColorIds": {
+          "symbols": [
+            "func_800109A4_115A4",
+            "func_80010E9C_11A9C"
+          ],
+          "finding": "Native text color IDs 4 and 5 map to the same palette ranges. The specific file-select scene call path was not traced; no claim is made that it invokes these IDs."
+        }
+      }
+    },
+    "func_8000C3EC_CFEC": {
+      "nativeAddress": "0x8000C3EC",
+      "romAddress": "0x0000CFEC",
+      "finding": "Resets horizontal cursor and advances the current line position by the native line step."
+    },
+    "func_8000C454_D054": {
+      "nativeAddress": "0x8000C454",
+      "romAddress": "0x0000D054",
+      "finding": "Enables blink effect state for subsequently inserted glyph records."
+    },
+    "func_8000C488_D088": {
+      "nativeAddress": "0x8000C488",
+      "romAddress": "0x0000D088",
+      "finding": "Clears blink effect state for subsequently inserted glyph records."
+    },
+    "func_8000D180_DD80": {
+      "nativeAddress": "0x8000D180",
+      "romAddress": "0x0000DD80",
+      "finding": "Per-glyph insertion/render helper applies text insets +0x50/+0x54 and adjusts center coordinates.",
+      "uncertainty": "Full direct-call signature and behavior of scale values greater than one were not established; no public prototype or scale-range claim added."
+    }
+  },
+  "layouts": {
+    "windowGlyphRecords": {
+      "baseOffset": "0x198",
+      "count": 120,
+      "stride": "0x30",
+      "fields": {
+        "type": {
+          "offset": "0x04",
+          "type": "u16",
+          "value": "1 for glyph records"
+        },
+        "flags": {
+          "offset": "0x06",
+          "type": "u16"
+        },
+        "centerX": {
+          "offset": "0x08",
+          "type": "s16",
+          "coordinateSpace": "window-relative"
+        },
+        "centerY": {
+          "offset": "0x0A",
+          "type": "s16",
+          "coordinateSpace": "window-relative"
+        },
+        "scaleX": {
+          "offset": "0x14",
+          "type": "float"
+        },
+        "scaleY": {
+          "offset": "0x18",
+          "type": "float"
+        },
+        "copiedEffectMaskLow": {
+          "offset": "0x2C"
+        }
+      }
+    },
+    "textLayout": {
+      "horizontalCursor": "window+0x6E",
+      "lineStep": "window+0x76",
+      "insetX": "window+0x50",
+      "insetY": "window+0x54",
+      "insetsPixels": [
+        10,
+        7
+      ],
+      "screenPosition": "window+0x32/+0x34"
+    }
+  },
+  "styleTable": {
+    "runtimeAddress": "0x800627F0",
+    "recordSize": "0x24",
+    "style0": {
+      "pattern": "0x8005BB70",
+      "palette": "0x80062770",
+      "dimensionsPixels": [
+        256,
+        72
+      ],
+      "primitiveRGBA": [
+        192,
+        192,
+        192,
+        170
+      ]
+    },
+    "unknown": "The style-specific scene caller for the Sun God dialogue example was not traced. Its lack of a visible panel is consistent with styles 10 and 11 having panel primitive alpha 0, but the evidence does not identify which style index it selects.",
+    "style10": {
+      "recordAddress": "0x80062958",
+      "dimensionsPixels": [
+        256,
+        72
+      ],
+      "primitiveRGBA": [
+        192,
+        192,
+        192,
+        0
+      ],
+      "recordFields": "All nine 32-bit fields are byte-for-byte identical to style 11."
+    },
+    "style11": {
+      "recordAddress": "0x8006297C",
+      "dimensionsPixels": [
+        256,
+        72
+      ],
+      "primitiveRGBA": [
+        192,
+        192,
+        192,
+        0
+      ],
+      "recordFields": "All nine 32-bit fields are byte-for-byte identical to style 10."
+    }
+  },
+  "limits": [
+    "A standalone native window draw does not itself create a scenario VM or acquire a control lock; this is not a guarantee about other systems or conflicts on an occupied slot.",
+    "No scale values above 1.0 were documented because D180 direct-call ABI and scale semantics remain uncertain.",
+    "Styles 10 and 11 are identical in the inspected table, and no scene-specific allocator call identifies which index is used for the Sun God dialogue example.",
+    "The file-select scene call path was not traced. Native color IDs 4 and 5 were observed to map to the same palette ranges, but their use by that scene is unconfirmed."
+  ],
+  "modSourceSnapshot": {
+    "project": "mnsg-recomp-example",
+    "path": "src/ui/anchor_freeze_prompt.c",
+    "styleIndex": 10,
+    "sha256": "1ed7f2d67228c382b6e2a3d1c56fbd61a076a456686e81e09f78145e5634c345",
+    "note": "Internal source snapshot only; not evidence of the native scene-specific style choice."
+  }
+}

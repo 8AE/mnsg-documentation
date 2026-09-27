@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-04T22:34:01.837687+00:00",
+  "generatedAt": "2026-09-26T01:36:17.770121+00:00",
   "scope": "Internal evidence for native runtime values. Public tables contain no source project references. Original ROM and decompressed binaries are intentionally not committed.",
   "coverage": {
     "symbols": 29,
@@ -296,6 +296,24 @@
       "endLine": 32,
       "sha256": "b02812296572460d47843e8c97f000867af254090f984b6b058178358ce28797",
       "note": "Return hook on the game-over step handler; evidence for step 0x0E, its substate/completion bytes, and the goodbye-to-step-3 exit."
+    },
+    {
+      "id": "raw-pad-layout-impact",
+      "project": "mnsg-recomp-example",
+      "path": "src/bosses/impact/anchor_impact_players.c",
+      "line": 580,
+      "endLine": 602,
+      "sha256": "48f6785cb2558a7357cbc29bb25371b58b9695c22309dc15fbf2da9256d6bc26",
+      "note": "Reads raw held and newly pressed controller halfwords from full-system +0x3B07A/+0x3B07C with 0x18-byte pad stride."
+    },
+    {
+      "id": "raw-pad-pressed-skin",
+      "project": "mnsg-recomp-example",
+      "path": "src/player/alternative_ebisumaru/anchor_player_skin.c",
+      "line": 40,
+      "endLine": 49,
+      "sha256": "69423928170b5cf6033c19463d23cc413c7e094f2ea8ad42851c91868ed43fb1",
+      "note": "Identifies pad 0 newly pressed edge at full-system +0x3B07C and uses the system-state pointer."
     }
   ],
   "nativeVerification": [
@@ -391,6 +409,29 @@
         "Native starttag0x07000000; actionrecord+C start,+10 end.",
         "End0 substitutes selectedrawactionfileend, thenDMAcopies range.",
         "Selectedcharacter indexes80204028 halfwordfileIDs."
+      ]
+    },
+    {
+      "address": "0x801E3400",
+      "overlay": ".file11",
+      "romSha256": "e40bee20508c2e29e651dca4e47504e40f908f0a2186e34a582784bf5a64be4c",
+      "method": "Ghidra decompile and disassembly, US ROM",
+      "relatedAddresses": [
+        "0x801E3400",
+        "0x801E572C",
+        "0x801E5788",
+        "0x801E5B6C",
+        "0x801E5D2C",
+        "0x801E3DE0",
+        "0x801E5EC4"
+      ],
+      "established": [
+        "func_801E3400_59F310 selects contacted actor IDs 0x244, 0x245, and 0x329.",
+        "func_801E572C_5A163C stock actor 0x245 gate is Goemon-only and requires player work +0x86 to be neither zero nor 0xFFFF.",
+        "func_801E5788_5A1698 requires near-equal Y and a narrow face band.",
+        "func_801E5B6C_5A1A7C stores the target task in player work +0x90, sets target task +0x68 bit 0x10000, and selects action 0x46.",
+        "func_801E5D2C_5A1C3C calls func_801E3DE0_59FCF0, which caps commanded movement at 0.4 world units per tick; func_801E5EC4_5A1DD4 performs three-ray clearance.",
+        "Actions 0x46 through 0x4D exist for all characters; custom actor callback safety is unverified."
       ]
     }
   ],
@@ -610,12 +651,16 @@
     "D_8015C5C8_15D1C8": {
       "tableIds": [
         "system-fields",
-        "known-system-steps"
+        "known-system-steps",
+        "raw-controller-input",
+        "raw-controller-button-bits"
       ],
       "sourceIds": [
         "system-layout",
         "start-gate",
-        "game-over-step"
+        "game-over-step",
+        "raw-pad-layout-impact",
+        "raw-pad-pressed-skin"
       ],
       "nativeFunctions": [
         "0x80004170",
@@ -623,7 +668,8 @@
         "0x80003728",
         "0x80002F54",
         "0x8000383C",
-        "0x800374EC"
+        "0x800374EC",
+        "0x80004AF8"
       ],
       "romReads": [],
       "unknowns": [
@@ -709,15 +755,24 @@
       ],
       "nativeFunctions": [
         "0x80218A54",
-        "0x8020D848"
+        "0x8020D848",
+        "0x801E3400",
+        "0x801E572C",
+        "0x801E5788",
+        "0x801E5B6C",
+        "0x801E5D2C",
+        "0x801E3DE0",
+        "0x801E5EC4"
       ],
       "romReads": [],
       "unknowns": [
         "Actor-specificparameter/datawordmeanings.",
-        "Unknown actorIDs191/362 omitted rather than inventlabels."
+        "Unknown actorIDs191/362 omitted rather than inventlabels.",
+        "Custom push callback safety for a non-native actor such as a frozen-player cube is not established by the traced 0x245 path."
       ],
       "notes": [
-        "Actor descriptive names extractedfromcommentcatalog and cross-linkedwithtypedsourceactors; notclaimedcompleteofficialenum."
+        "Actor descriptive names extractedfromcommentcatalog and cross-linkedwithtypedsourceactors; notclaimedcompleteofficialenum.",
+        "The seven traced .file11 helper names and suffixes match Goemon64RecompSyms; these functions are absent from the current public symbol inventory and were not added in this scoped edit."
       ]
     },
     "D_80167FC0_168BC0": {

@@ -29,7 +29,8 @@
       "Binds the current object through D_801684A0 and dispatches the model command at +0x2C using the material/context word at +0x30 and segment bases beginning at +0x34.",
       "For case-6 model commands whose low bit is zero, sets transform-mode byte D_8016852D to 1. Only this dispatcher writes that mode byte in the inspected executable. The nested skeleton traversal does not recursively call this dispatcher.",
       "A case-6 header with bit 31 set reaches the cached model tree through its root pointer at header +0x08. Signed relative node indices at +0x04 and +0x05 use 24-byte nodes.",
-      "The native renderer advances command and matrix cursors without capacity checks. CPU model-cache capacity, final graphics-bank storage, and the 16-entry temporary transform stack are separate constraints."
+      "The native renderer advances command and matrix cursors without capacity checks. CPU model-cache capacity, final graphics-bank storage, and the 16-entry temporary transform stack are separate constraints.",
+      "For the verified character-switch smoke and jet-puff model paths, the dispatcher preserves 0x8000 rotation sentinels. Both models use the model-specific 0x40000000 branch for camera-facing alignment; the jet puff remains on this path with mode 10. This behavior is not established for every model or renderer path."
     ],
     "example": "extern int func_80016C44_17844(void *object);\n\n#include \"modding.h\"\n\nRECOMP_HOOK(\"func_80016C44_17844\")\nvoid observe_display_object(void *object) {\n    (void)object;\n    /* Observe only; the caller owns the active rendering lifecycle. */\n}",
     "cautions": [

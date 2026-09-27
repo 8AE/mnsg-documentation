@@ -47,7 +47,8 @@
       "Tasks use a flat depth-first scheduler list: +0x00 is the next task, +0x04 is the backlink and +0x20 is the 16-bit depth. A subtree ends when a following task has depth less than or equal to its parent. The halfword at +0x22 is scheduler flags, not an allocation generation counter.",
       "A retained display task must still have consistent scheduler links and its expected update callback before reuse. Hiding and retaining a live child avoids repeated allocation during a pause; the engine owns destruction of the parent subtree.",
       "The first task is named by the word at D_8006D328_6DF28. Its backlink may point to itself or cache the tail; it is not an ordinary predecessor link. Validate that head separately before applying a predecessor-next check to other tasks. FUN_80034B58 and FUN_80034D24 maintain these special head links.",
-      "The allocation leaf FUN_80034B58(parent, callback, file) resets a new record through FUN_80034A10, inserts it immediately at parent +0x00 with depth parent +1, and then returns; allocation failure leaves the link unchanged. The later insertion helper may reorder siblings. The scheduler FUN_80034734 calls FUN_8001481C(task) once before each runnable task: that helper selects the task file/segment, then the scheduler invokes pre/update/post callbacks at +0x08/+0x0C/+0x10. Callback changes within a task do not mean that its allocation lifetime changed."
+      "The allocation leaf FUN_80034B58(parent, callback, file) resets a new record through FUN_80034A10, inserts it immediately at parent +0x00 with depth parent +1, and then returns; allocation failure leaves the link unchanged. The later insertion helper may reorder siblings. The scheduler FUN_80034734 calls FUN_8001481C(task) once before each runnable task: that helper selects the task file/segment, then the scheduler invokes pre/update/post callbacks at +0x08/+0x0C/+0x10. Callback changes within a task do not mean that its allocation lifetime changed.",
+      "The generic task record is 0xF0 bytes. Native carry state uses task-specific fields within that record, including a held marker at +0x68; this marker does not disable scheduler callbacks or rendering."
     ],
     "cautions": [
       "Keep the owner valid and check allocation failure.",
@@ -904,7 +905,9 @@
     "summary": "Applies a playable-character swap to the live player task.",
     "behavior": [
       "Writes the selected character to task+0x60 and global 0x8015C5DC, updates the linked player state at task+0x5C, clears movement/action fields, marks character-change state, and sets action byte +0xCC to 0xBA.",
-      "Installs the native character-change callback. This mutates the authoritative live player and global character state; visual-only characters should use independent render tasks instead."
+      "Installs the native character-change callback. This mutates the authoritative live player and global character state; visual-only characters should use independent render tasks instead.",
+      "The native character-change path writes the target character to task +0x60, sets player-work +0x69 to 1, sets action +0xCC to 0xBA, and updates the same player task/object rather than replacing them.",
+      "During the transition, the case-4 update clears player-work +0x69 while action remains 0xBA; this byte is transition state, not a general alive/dead marker."
     ],
     "cautions": [
       "Use only on the actual live player and an enabled/recruited character.",
@@ -913,7 +916,8 @@
     "related": [
       "func_801DD50C_59941C",
       "D_8015C5D8_15D1D8",
-      "D_801FC604_5B8514"
+      "D_801FC604_5B8514",
+      "func_801E0944_59C854"
     ],
     "confidence": "decompiled",
     "example": "extern unsigned int D_8015C5D8_15D1D8[];\n\nextern void func_801DD5C0_5994D0(void *arg0, unsigned char value);\n\nvoid change_player_character(void *player_task, unsigned char character) {\n    if (!player_task || character >= 4) return;\n    D_8015C5D8_15D1D8[1] = character;\n    D_8015C5D8_15D1D8[0x2C / 4] = 1;\n    func_801DD5C0_5994D0(player_task, character);\n}",
@@ -1312,7 +1316,7 @@
     "title": "Process actor damage and hit reactions",
     "summary": "Consumes actor hit state, changes health and selects hit/death behavior.",
     "behavior": [
-      "Status bit 0x00040000 at actor+0x68 enables a fast one-point health subtraction at byte +0x8D without the usual attacker pointer. The normal path checks actor flags, hit bit 0x80, attacker data and damage type.",
+      "Status bit 0x00040000 at actor+0x68 enables a fast one-point health subtraction at byte +0x8D without the usual attacker pointer. The ordinary path checks actor flags, hit bit 0x80, attacker data and damage type, then reads the hit-kind byte at attacker +0x4C. For ordinary actors, kinds 0x15, 0x19 and 0x1F subtract 1 HP; 0x16 and 0x23 subtract 2; 0x17 and 0x24 subtract 4; 0x1B subtracts 3; 0x22 subtracts 8; other kinds default to 1. Native weapon-tier dispatch maps tier 0/1/2 to kinds 0x15/0x16/0x17 for character slots 0 and 1, and 0x19/0x23/0x24 for slots 2 and 3. Fire Ryo uses kind 0x1B and subtracts 3 HP on this actor path. These values describe ordinary actor damage, not the separate playable-player intake path.",
       "Nonzero health sets status bit 0 and may install/invoke the actor-specific +0x90 callback. Zero health enters generic death. The inner routine does not clear the synthetic pending-damage bit the same way the outer func_80218E7C wrapper does.",
       "Some bosses use generic health only as a damage carrier. Dharmanyo separately consumes lives at +0xD1, while Tsurami uses its custom remaining-health callback.",
       "The native zero-health entry is func_80218548_5D3A18, called immediately inside this damage routine. Scene unloads and distance culls do not call it. Health one with status bit 0x00040000 reaches native death, counters, optional loot and cleanup. This fast branch skips the ordinary death sound and fragment constructors; it does not reproduce every hit-specific visual effect."

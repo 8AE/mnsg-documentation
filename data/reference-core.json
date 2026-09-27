@@ -114,9 +114,11 @@
     ]
   },
   "D_8015C5C8_15D1C8": {
-    "title": "System-state pointer, graphics banks and world clock",
-    "summary": "Pointer to the complete native system structure, including two graphics banks and gameplay state.",
+    "title": "System-state pointer, controller input and world clock",
+    "summary": "Pointer to the complete native system structure, including raw controller state, graphics banks and gameplay state.",
     "behavior": [
+      "Four raw controller records begin at full-system offset +0x3B07A and are spaced 0x18 bytes apart. Each record has a 16-bit held-button mask at +0 and a 16-bit newly pressed mask at +2; the A and B button bits are 0x8000 and 0x4000.",
+      "The gameplay-controller input update reads native controller messages before updating the derived records at D_800C7DB0_C89B0. A return hook on func_80004AF8_56F8 observes the completed controller sample; use the raw system offsets when the one-frame pressed edge is needed.",
       "A 16-bit world-frame counter is stored at structure +0x3ADCE. It can identify the native frame for effects and state that must advance once per world update.",
       "Congo breath emission uses this counter modulo 15. The system step byte also chooses the handler dispatched by func_80002040_2C40.",
       "Used by system-step dispatch and scene-loading functions. The byte-pointer declaration allows access to selected recovered offsets, including the prepared destination at +0x3AFE0.",
@@ -134,7 +136,8 @@
       "Use named structure definitions when available; offset writes must match the exact game version.",
       "The full structure pointer and the interior D_800BCCC0 alias have different offset origins. Graphics-bank indices and gameplay state offsets must use the full pointer.",
       "World step/substate are only lifecycle checks. Existing pause, sequence, transition, dialog and player-control ownership must also be respected before presenting interactive UI or requesting a warp.",
-      "A nonnull overlay cursor, pointer equality or alpha 255 does not establish an active overlay: the cursor can still refer to a released record. Check active kind and membership in the intended owner task's display list before reading or releasing it. The task is the owner argument to release; the display-record pointer is a separate argument."
+      "A nonnull overlay cursor, pointer equality or alpha 255 does not establish an active overlay: the cursor can still refer to a released record. Check active kind and membership in the intended owner task's display list before reading or releasing it. The task is the owner argument to release; the display-record pointer is a separate argument.",
+      "Raw controller records at +0x3B07A are separate from the derived gameplay-controller records at +0x3B0F0. A pressed bit is a one-frame edge; read it at the intended post-collector boundary."
     ],
     "related": [
       "func_80002040_2C40",
@@ -144,11 +147,12 @@
       "D_800C7A72_C8672",
       "D_8015C5CC_15D1CC",
       "D_80168504_169104",
-      "func_08000388_6B3628"
+      "func_08000388_6B3628",
+      "func_80004AF8_56F8"
     ],
     "confidence": "source-reviewed",
-    "example": "extern unsigned char *D_8015C5C8_15D1C8;\n\nunsigned short world_frame(void)\n{\n    if (!D_8015C5C8_15D1C8) return 0;\n    return *(volatile unsigned short *)(D_8015C5C8_15D1C8 + 0x3ADCE);\n}\n",
-    "exampleExplanation": "The example shows the documented native data layout or call sequence. Use it only while the relevant game state and resources are valid.",
+    "example": "extern unsigned char *D_8015C5C8_15D1C8;\n\nunsigned short pad0_pressed_buttons(void)\n{\n    if (!D_8015C5C8_15D1C8) return 0;\n    return *(volatile unsigned short *)(D_8015C5C8_15D1C8 + 0x3B07C);\n}\n\nunsigned short pad0_pressed_ab(void)\n{\n    return pad0_pressed_buttons() & 0xC000u;\n}\n",
+    "exampleExplanation": "Reads pad 0's newly pressed button mask after the native controller update; the A/B mask is 0xC000. Pad n uses the same fields at offsets +0x3B07A + n*0x18 and +0x3B07C + n*0x18.",
     "declaration": "extern unsigned char *D_8015C5C8_15D1C8;"
   }
 }

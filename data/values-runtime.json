@@ -294,6 +294,47 @@
             "Final native workspace, ending at bank offset 0x1D6D8."
           ]
         ]
+      },
+      {
+        "id": "raw-controller-input",
+        "title": "Raw controller input records",
+        "description": "Four controller records are stored in the full system structure before the derived gameplay-controller buffer. Pad index n selects a record at a 0x18-byte stride. The pressed mask contains one-frame button edges.",
+        "columns": [
+          "Field offset for pad 0",
+          "Storage type",
+          "Meaning"
+        ],
+        "rows": [
+          [
+            "`0x3B07A`",
+            "`uint16_t`",
+            "Held button bitmask for pad n at `0x3B07A + n*0x18`."
+          ],
+          [
+            "`0x3B07C`",
+            "`uint16_t`",
+            "Newly pressed button bitmask for pad n at `0x3B07C + n*0x18`. Each set bit marks a one-frame press edge."
+          ]
+        ]
+      },
+      {
+        "id": "raw-controller-button-bits",
+        "title": "Raw controller A and B bits",
+        "description": "These masks apply to the 16-bit held and newly pressed button fields in each raw controller record.",
+        "columns": [
+          "Button",
+          "Bit mask"
+        ],
+        "rows": [
+          [
+            "A",
+            "`0x8000`"
+          ],
+          [
+            "B",
+            "`0x4000`"
+          ]
+        ]
       }
     ]
   },
@@ -1199,7 +1240,7 @@
           [
             "`0x245`",
             "Pushable block in File_30.",
-            "Public position/velocity are distinct from +0xD0 through +0xDC local previous-position/contact work used for sound."
+            "Stock push contact requires near-equal Y and a narrow face band. The push gate is Goemon-only and also requires player work +0x86 to be neither zero nor 0xFFFF. On acceptance, player work +0x90 stores the target task, target task +0x68 receives bit 0x10000, and player action 0x46 is selected. Commanded movement is capped at 0.4 world units per tick and a three-ray clearance test checks the path. Actions 0x46 through 0x4D exist for all characters, but custom push-callback safety for this actor is unverified."
           ],
           [
             "`0x34A`",
@@ -1832,9 +1873,34 @@
             "Reconstruct all six child slots before accepting a restored root checkpoint. Preserve local standing/contact pointers, and combine scalar rider masks instead of copying pointers."
           ],
           [
-            "Custom quest scene graphs",
-            "Gateway, Koryuta, Kihachi and the Gorgeous Music Castle scripts mix visible actors with private camera, dialogue and temporary-bit handshakes. Koryuta also emits damaging model 0x12D and 0xFA waves.",
-            "A visible pose is not the local scene controller. Keep dialogue, camera and handshake execution local; reconstruct visual models using verified resource recipes. Treat damaging waves separately from decorative presentation."
+            "Koryuta File_46 body and parts",
+            "The body uses model 0x1B0 and entity 0x1B0. Its eleven part children use model 0x1B0 and entity 0x1B4; parts 1-4, 6 and 7 use static slot 3, part 5 uses animated clip 2, and parts 8-11 use slots 4-7.",
+            "The part index is a native child ordinal. Keep the clip-2 animation state and each verified static slot with its corresponding part."
+          ],
+          [
+            "Kihachi File_62 visible scene children",
+            "The visible NPC uses model 0x315; the rising child uses model 0x10D; the colour presentation uses model 1. All three retain entity 0x315.",
+            "These are render children in the scene graph. Their shared entity value does not identify their distinct visual roles."
+          ],
+          [
+            "Gorgeous Music Castle File_74 children 0-21",
+            "Resource file 0x4A binds models 0x36A (parts 0-1), 0x351 (2), 0x318 (3), 0x352 (4), 0x353 (5), 0xFB (6-13), 0x367 (14-16), 0x359 (17), 0x35A (18), 0x35B (19), and 0x367 (20-21). Every child has entity 0.",
+            "Parts 0-5 animate, with parts 4 and 5 using clip 2. Parts 16, 20 and 21 use static slots 1, 3 and 2; other listed parts use slot 0. Part 17 binds native texture channel 0 separately. Keep these zero-based child ordinals stable."
+          ],
+          [
+            "Gorgeous Music Castle File_75 children 0-2",
+            "Resource file 0x4B binds models 0x2DA, 0x32C and 0x2D6 to parts 0, 1 and 2. Each uses animated clip 0 at rate 0.25 with looping enabled.",
+            "Roots 11 and 13 are invisible controllers and are not visible child rows. Preserve the three child animation loops independently of those controllers."
+          ],
+          [
+            "Custom quest scene controllers",
+            "Gateway, Koryuta, Kihachi and the Gorgeous Music Castle scripts pair visible actors with private camera, dialogue and temporary-bit handshakes. Koryuta also emits damaging model 0x12D and 0xFA waves.",
+            "A visible pose is not the local scene controller. Keep dialogue, camera and handshake execution local; treat damaging waves separately from decorative presentation."
+          ],
+          [
+            "Koryuta File_46 wave producer",
+            "Its initializer sets task timer +0x8A to 1 when the native predicate is nonzero, or 512 when it is zero, then schedules the wave update callback.",
+            "The timer seed is conditional native state. Preserve its selected value when reconstructing an already-running wave producer."
           ]
         ]
       }

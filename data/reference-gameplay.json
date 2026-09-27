@@ -188,7 +188,8 @@
     "summary": "Plays a spatial sound using coordinates read from a native object.",
     "behavior": [
       "Reads object xyz from +0x08/+0x0C/+0x10, then forwards the coordinates, sound ID, sound-state pointer and range argument to FUN_8000F6E8.",
-      "A concrete usage is sound 0x2B2, the scene sound-state buffer D_8020CBF0_5C8B00, the current player object and a range of 400.0f."
+      "A concrete usage is sound 0x2B2, the scene sound-state buffer D_8020CBF0_5C8B00, the current player object and a range of 400.0f.",
+      "Both observed native player-thaw routines play sound IDs 0x26E and 0x299 in sequence, using the scene sound-state buffer, the native actor object, and a spatial range of 400.0f."
     ],
     "cautions": [
       "Pass an object with the expected position layout. A task pointer is not interchangeable with its object pointer."
@@ -204,7 +205,7 @@
       {
         "name": "sound_id",
         "type": "unsigned short",
-        "description": "Native sound identifier; observed value 0x2B2."
+        "description": "Native sound identifier; observed values include 0x2B2, 0x26E, and 0x299."
       },
       {
         "name": "sound_state",
@@ -459,11 +460,14 @@
       "Selects an owner/list through func_80219CA0_5D5170, creates the task and copies actor context through FUN_80218C28. An owner object supplies initial position and rotation; an owner without an object supplies a zero transform.",
       "The new task starts with resource ID 0xFFFE at +0x28 and pointer 0xFFFFFFFF at +0x2C. Install the resource fields expected by its initializer before the first scheduled update.",
       "The initializer runs through the native scheduler. Null indicates owner selection or allocation failed.",
-      "The inherited rotation halfwords are forwarded unchanged, including special values such as 0x8000. Tsurami ring children illustrate this: their travelling-projectile owner supplies roll 0x8000, which their initializer retains."
+      "The inherited rotation halfwords are forwarded unchanged, including special values such as 0x8000. Tsurami ring children illustrate this: their travelling-projectile owner supplies roll 0x8000, which their initializer retains.",
+      "In two native player-thaw paths, task kind 8 creates seven shard children from the live actor. Shard velocities use the observed expressions sin(i * 0xAA), 2.5, and cos(i * 0xAA); their initializer copies actor fields. The thaw path also creates a separate scale-3 burst.",
+      "The pickup visual helper uses this allocator with a live actor, initializer func_80211EF8_5CD3C8, and task kind 8 for the model-0xB4 child; nonzero helper variants select a different initializer and task kind 0xD."
     ],
     "cautions": [
       "The owner pointer itself is dereferenced even when its object is absent.",
-      "Do not manually run the initializer immediately after allocation: it may depend on current-task context and caller-installed resource fields."
+      "Do not manually run the initializer immediately after allocation: it may depend on current-task context and caller-installed resource fields.",
+      "The native thaw routines that create these effects also mutate or remove their actor. They are actor-lifecycle paths, not display-only effect helpers; their child initializer expects native actor fields."
     ],
     "confidence": "decompiled",
     "related": [
@@ -548,16 +552,17 @@
   },
   "func_80216E1C_5D22EC": {
     "title": "Initialize object model and default scale",
-    "summary": "Initializes a task object model after assigning the common default scale.",
+    "summary": "Initializes a task object model after assigning the common default scale; mode 0 is used when initializing actor ID 0x08B.",
     "behavior": [
       "Writes the float at 0x8023A510 to object scale fields +0x1C/+0x20/+0x24, then calls FUN_80216CE0(task, object, mode).",
-      "For the native Ryo popup model, the setup sequence uses task flags 0x220, entity/model ID 0x2C4 and mode 2. Other mode meanings are not established here."
+      "For the native Ryo popup model, the setup sequence uses task flags 0x220, entity/model ID 0x2C4 and mode 2. The common save sign has actor ID 0x08B at task +0x5E, which selects its model descriptor; its entry calls this setup function with mode 0. The mode is a setup argument and does not itself select the sign model. Other mode meanings are not established here."
     ],
     "cautions": [
       "The call resets all scale components; assign any intentional custom scale after initialization."
     ],
     "confidence": "decompiled",
     "related": [
+      "D_802287BC_5E3C8C",
       "func_8021A310_5D57E0"
     ],
     "example": "extern void func_80216E1C_5D22EC(void *task, int mode);\n\n/* Run inside a valid file-0x3B effect initializer. */\nvoid initialize_ryo_model(void *task)\n{\n    *(unsigned int *)((char *)task + 0x60) = 0x220;\n    *(unsigned short *)((char *)task + 0x5E) = 0x2C4;\n    func_80216E1C_5D22EC(task, 2);\n}\n",
@@ -571,7 +576,7 @@
       {
         "name": "mode",
         "type": "int",
-        "description": "Model-setup mode passed through to FUN_80216CE0; observed 2 for the popup."
+        "description": "Model-setup mode passed through to the native binder; observed as 0 while initializing actor ID 0x08B (whose task identity selects the sign descriptor) and 2 for the Ryo popup. Mode alone does not select an actor model; other meanings are not established."
       }
     ],
     "decompilation": "void FUN_80216e1c(int param_1,undefined4 param_2)\n\n{\n  float fVar1;\n  int iVar2;\n  \n  fVar1 = FLOAT_8023a510;\n  iVar2 = *(int *)(param_1 + 0x18);\n  *(float *)(iVar2 + 0x1c) = FLOAT_8023a510;\n  *(float *)(iVar2 + 0x20) = fVar1;\n  *(float *)(iVar2 + 0x24) = fVar1;\n  FUN_80216ce0(param_1,iVar2,param_2);\n  return;\n}",
@@ -820,12 +825,13 @@
   },
   "func_80218A54_5D3F24": {
     "title": "Apply a room actor spawn instance",
-    "summary": "Initializes an allocated actor task from its room spawn instance and definition.",
+    "summary": "Initializes an allocated actor task from its room spawn instance, including the signed 16-bit yaw copied directly to its model object.",
     "behavior": [
       "Resolves instance->definition through the active actor-data file, sets actor/entity IDs at task +0x5C/+0x5E, copies the signed 16-bit spawn transform into the model and copies definition words into task +0xD0/+0xD4/+0xD8.",
       "Assigns an incrementing 8-bit generation at +0x74, initializes actor state and installs the native earlier callback FUN_8021925C and common post func_80218F30_5D4400.",
       "D_8015CDDC identifies the current room instance and D_8015CDE0 holds the current resolved definition during the native spawn path. These are transient scratch pointers.",
-      "Room actors are staged before initialization by the actor-data spawn routine func_8020D848_5C8D18, which selects the per-room metadata record at D_80231300_5EC7D0[room]. The record's normal actor-instance list, partitioned/proximity lists and active actor-data file must be resident before this initializer can resolve an instance; a zero instance definition terminates the list."
+      "Room actors are staged before initialization by the actor-data spawn routine func_8020D848_5C8D18, which selects the per-room metadata record at D_80231300_5EC7D0[room]. The record's normal actor-instance list, partitioned/proximity lists and active actor-data file must be resident before this initializer can resolve an instance; a zero instance definition terminates the list.",
+      "The instance yaw is the signed 16-bit field at instance +0x08 and is copied unchanged to the model object at +0x16. The angle period is 65,536 units per revolution, so 0x8000 (signed -32768) is a half turn from zero. The common sign constructor and model binding preserve this yaw."
     ],
     "cautions": [
       "The active actor-data file must be loaded before resolving the definition.",
@@ -930,17 +936,22 @@
   },
   "D_802287BC_5E3C8C": {
     "title": "Actor entry callback table",
-    "summary": "Table of actor entry callbacks indexed by native actor ID.",
+    "summary": "Table of native actor-entry callbacks indexed by actor ID, including the common save sign and its scenario interaction lifecycle.",
     "behavior": [
       "The native room actor manager supplies D_802287BC_5E3C8C[actor_id] to func_8003555C_3615C as the new task entry callback.",
-      "Companion metadata supplies task category and model ID. Actor-data resources and room-instance initialization complete the spawn path."
+      "Companion metadata supplies task category and model ID. Actor-data resources and room-instance initialization complete the spawn path.",
+      "Actor ID 0x08B is the common model-bearing save sign. Its native entry initializes the task, binds model slot 0x08B, and installs the sign interaction callback; its talk path selects the player and dispatches the scenario ID stored on the task.",
+      "An alternate conversation initiation call with interaction mode 0 can begin a scenario without setting object +0x7C bit 0x08. It marks task +0x68 bit 0x100, sets the selected player task state at +0xCD to 1, and sets a global interaction state. The player update advances that state to 3; the scenario coordinator waits for the selected player, advances it to 4, dispatches the scenario ID at sign task +0xA4, and installs a cleanup callback. This interaction mode is separate from model setup mode 0.",
+      "After the scenario virtual machine becomes inactive, cleanup clears task +0x68 bit 0x100, sets task flags to (flags & ~0x100) | 0x4400, and restores the callback saved at task +0xB4."
     ],
     "cautions": [
-      "Validate the actor ID against the native roster before indexing. A callback entry alone is not a complete spawn configuration."
+      "Validate the actor ID against the native roster before indexing. A callback entry alone is not a complete spawn configuration.",
+      "A follow-up player recovery path appears to clear transition state after the scenario ends, but its control-flow gate is not fully confirmed."
     ],
     "confidence": "decompiled",
     "related": [
       "func_80218A54_5D3F24",
+      "func_80216E1C_5D22EC",
       "func_8003555C_3615C"
     ],
     "example": "extern void *D_802287BC_5E3C8C[];\n\n/* actor_id must already be validated against the native roster. */\nvoid *actor_entry(unsigned short actor_id)\n{\n    return D_802287BC_5E3C8C[actor_id];\n}\n",

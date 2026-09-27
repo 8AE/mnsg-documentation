@@ -1,0 +1,124 @@
+{
+  "date": "2026-09-23",
+  "romSha256": "e40bee20508c2e29e651dca4e47504e40f908f0a2186e34a582784bf5a64be4c",
+  "scope": "US ROM native audit of actor 0x08B and its common save-sign talk path",
+  "confidence": "verified by Ghidra decompilation and disassembly",
+  "symbols": {
+    "D_802287BC_5E3C8C": {
+      "nativeAddress": "0x802287BC",
+      "romAddress": "0x005E3C8C",
+      "index": "actor ID 0x08B",
+      "entry": "func_80214BBC_5D008C",
+      "entryNativeAddress": "0x80214BBC",
+      "entryRomAddress": "0x005D008C",
+      "metadata": {
+        "resourceId": 0,
+        "ownerCategory": 7
+      },
+      "modelSlot": "0x08B",
+      "modelDescriptorNativeAddress": "0x80234F68",
+      "resourceListNativeAddress": "0x8023211C",
+      "resourceIds": [
+        "0x0195",
+        "0x0196"
+      ]
+    },
+    "func_80218A54_5D3F24": {
+      "nativeAddress": "0x80218A54",
+      "romAddress": "0x005D3F24",
+      "finding": "Applies the actor ID from the instance definition to task+0x5E."
+    },
+    "func_80214C0C_5D00DC": {
+      "nativeAddress": "0x80214C0C",
+      "romAddress": "0x005D00DC",
+      "abi": "void(task, object)",
+      "finding": "Idle callback invokes func_802212F0_5DC7C0."
+    },
+    "func_80221B7C_5DD04C": {
+      "nativeAddress": "0x80221B7C",
+      "romAddress": "0x005DD04C",
+      "finding": "Checks task+0x68 bit 0x100 and object+0x7C talk bits 0x08/0x10; bit 0x10 selects player 2. On talk, clears object bits 0x18, sets task+0x68 bit 0x100, stores the selected player task at task+0xEC, and the scenario path dispatches the u16 scenario ID at task+0xA4 through func_8003D388_3DF88."
+    },
+    "func_80221A90_5DCF60": {
+      "nativeAddress": "0x80221A90",
+      "romAddress": "0x005DCF60",
+      "finding": "Common initializer can ground-snap actor Y by up to 60 units."
+    },
+    "func_80216E1C_5D22EC": {
+      "nativeAddress": "0x80216E1C",
+      "romAddress": "0x005D22EC",
+      "finding": "Entry calls model setup with mode 0; the model binder uses slot 0x08B. Resource IDs 0x0195 and 0x0196 are loaded through func_80013B14 when func_800141C4 reports they are not resident."
+    }
+  },
+  "roomExample": {
+    "roomId": "0x0166",
+    "placementActorId": "0x08B",
+    "definitionRomAddress": "0x012DD0C0",
+    "scenarioId": "0x013F",
+    "finding": "The scenario asks whether to save in the Adventure Diary; selecting Yes invokes native save callbacks func_8000B718 and func_80214D58."
+  },
+  "limits": [
+    "This confirms the existing common sign and its interaction path; it does not establish an API for allocating arbitrary sign text or authoring new scenario strings.",
+    "The observed room placement establishes behavior for scenario 0x013F only; other scenario IDs may take different paths."
+  ],
+  "scenarioInteractionAudit20260924": {
+    "scope": "US common-overlay scenario interaction path associated with the common save sign",
+    "functions": {
+      "func_801E3750_59F660": {
+        "nativeAddress": "0x801E3750",
+        "romAddress": "0x0059F660",
+        "finding": "In mode 0, sets target task+0x68 bit 0x100, selected player task+0xCD to 1, and D_800C7AE3 to 1. This path does not set object+0x7C bit 0x08."
+      },
+      "func_801DD890_5997A0": {
+        "nativeAddress": "0x801DD890",
+        "romAddress": "0x005997A0",
+        "finding": "Advances the player +0xCD scenario state to 3."
+      },
+      "func_80221338_5DC808": {
+        "nativeAddress": "0x80221338",
+        "romAddress": "0x005DC808",
+        "finding": "Waits for the selected player task at sign task+0xEC to reach +0xCD state 3, sets it to 4, dispatches the u16 scenario ID at sign task+0xA4 through func_8003D388_3DF88, and installs func_802213A4_5DC874."
+      },
+      "func_802213A4_5DC874": {
+        "nativeAddress": "0x802213A4",
+        "romAddress": "0x005DC874",
+        "finding": "Waits for func_8003F1D8() to report an inactive scenario VM; then sets task flags to (flags & ~0x100) | 0x4400 and restores the saved callback from task+0xB4."
+      },
+      "func_801E1B60_59DA70": {
+        "nativeAddress": "0x801E1B60",
+        "romAddress": "0x0059DA70",
+        "confidence": "lower; earlier disassembly read",
+        "finding": "When player state +0xCD is 4, the VM is inactive, and +0xAE22 is zero, appears to clear +0xAE23 and +0xCD.",
+        "uncertainty": "This was recovered from disassembly with lower confidence; the complete control-flow gate and all callers were not confirmed."
+      }
+    },
+    "limits": [
+      "The mode-0 initiation is an alternate path and does not require object+0x7C bit 0x08; keep it distinct from the previously documented object talk-bit path.",
+      "Only the player recovery observation from func_801E1B60_59DA70 is lower confidence; the scenario coordination and sign cleanup sequence are supported by the supplied decompilation audit."
+    ]
+  },
+  "roomActorYawAudit20260924": {
+    "romSha256": "e40bee20508c2e29e651dca4e47504e40f908f0a2186e34a582784bf5a64be4c",
+    "function": "func_80218A54_5D3F24",
+    "nativeAddressRange": "0x80218B24..0x80218B2C",
+    "romAddressRange": "0x005D3FF4..0x005D3FFC",
+    "confidence": "verified by US common-overlay decompilation; angle scale confirmed against the native 16-bit angle convention",
+    "findings": [
+      "The signed-short instance yaw at +0x08 is copied directly to model object +0x16, with no conversion in this initializer.",
+      "A full revolution is 65536 angle units; 0x8000 interpreted as signed -32768 is 180 degrees from zero.",
+      "The common sign constructor func_80214BBC_5D008C and its model-binding path do not overwrite the copied yaw."
+    ],
+    "relatedNativeSymbols": [
+      {
+        "name": "func_80214BBC_5D008C",
+        "nativeAddress": "0x80214BBC",
+        "romAddress": "0x005D008C"
+      },
+      {
+        "name": "func_80216E1C_5D22EC",
+        "nativeAddress": "0x80216E1C",
+        "romAddress": "0x005D22EC"
+      }
+    ]
+  }
+}

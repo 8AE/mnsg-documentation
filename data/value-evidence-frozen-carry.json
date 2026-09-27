@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-25T22:11:37+00:00",
+  "romSha256": "e40bee20508c2e29e651dca4e47504e40f908f0a2186e34a582784bf5a64be4c",
+  "scope": "Ghidra-verified native carry, pickup, throw and frozen-player collision paths in the US game image. Evidence is maintenance-only and excluded from public pages.",
+  "nativeEvidence": [
+    {
+      "symbols": [
+        "func_801E4624_5A0534",
+        "func_801E53E0_5A12F0",
+        "func_801DACDC_596BEC"
+      ],
+      "addresses": [
+        "0x801E4624",
+        "0x801E53E0",
+        "0x801E54A8",
+        "0x801DACDC"
+      ],
+      "finding": "In .file_11, func_801E4624_5A0534 searches actor ID 0x243 and then 0x3D0 through func_801E53E0_5A12F0 before the relevant attack; derived-input press 0x4000 gates the callers. On success, func_801E53E0 calls func_801E54A8_5A13B8(player, found_task), then func_801DACDC_596BEC(player, 0x4E). The search matches exact actor ID, uses radius 20, a facing cone and absolute Y difference <=5, and rejects task status bit 0x80000."
+    },
+    {
+      "symbols": [
+        "func_801E54A8_5A13B8",
+        "func_801E55A0_5A14B0",
+        "func_801E54E0_5A13F0",
+        "func_801E55D4_5A14E4"
+      ],
+      "addresses": [
+        "0x801E54A8",
+        "0x801E55A0",
+        "0x801E54E0",
+        "0x801E55D4"
+      ],
+      "finding": "func_801E54A8 stores the held task at player work +0x8C and sets held task +0x68 bit 0x8000. func_801E55A0 clears both. func_801E54E0 derives the held object transform from the animated hand and reads held task +0x18. func_801E55D4 ABI is (player, local_velocity_x, local_velocity_y, local_velocity_z), with no fifth argument; it writes held task +0x78/+0x7C/+0x80, sets the object launch pose, and detaches the task. Across three inspected callers, func_801E55D4_5A14E4 receives local launch arguments (0, 2, 0); its body rotates and stores them in held task +0x78/+0x7C/+0x80, positions the object, and detaches the task. No Sudden Impact branch appears in the inspected function.",
+      "romAddresses": [
+        "0x005A14E4"
+      ]
+    },
+    {
+      "symbols": [
+        "func_801DAD68_596C78",
+        "func_801E4624_5A0534"
+      ],
+      "addresses": [
+        "0x801DAD68",
+        "0x801E4624"
+      ],
+      "finding": "Action records 0x4E pickup, 0x4F held, 0x50 throw, 0x51 recovery and 0x52 moving carry are present for all four playable characters. func_801DAD68 selects these through a per-character table. The proposed scoped pickup hook gated by D_8015C604==0 is an untested inference, not a native API guarantee."
+    },
+    {
+      "symbols": [
+        "func_80034E08_35A08",
+        "func_801E54A8_5A13B8",
+        "func_801E54E0_5A13F0",
+        "func_801E55D4_5A14E4"
+      ],
+      "addresses": [
+        "0x80034E08",
+        "0x801E54A8",
+        "0x801E54E0",
+        "0x801E55D4"
+      ],
+      "finding": "The generic child task allocator creates a 0xF0-byte task, covering the native carry fields. Scheduler and renderer paths do not use held bit task +0x68 as an inhibition flag. Inspected carry callbacks do not read a held task ID from task +0x5C."
+    },
+    {
+      "symbols": [
+        "func_08006C18_6C6368",
+        "func_080004F8_6BFC48"
+      ],
+      "addresses": [
+        "0x08006C18",
+        "0x080004F8"
+      ],
+      "finding": "In File 30, actor 0x3D0 callback func_08006C18_6C6368 has puzzle-specific delayed impact/break behavior. Actor 0x243 callback func_080004F8_6BFC48 does not implement general thrown-object impact behavior. The identity of actor 0x243 as an unused box is not established."
+    },
+    {
+      "symbols": [
+        "func_8021C744_5D7C14",
+        "func_8002C9D4_2D5D4"
+      ],
+      "addresses": [
+        "0x8021C744",
+        "0x8002C9D4"
+      ],
+      "finding": "The common mover func_8021C744_5D7C14 expects actor-specific fields and is unsafe for a synthetic display child. The generic world-ray helper func_8002C9D4_2D5D4 writes a read-only 0x48-byte hit record and can support a custom sweep; it does not itself mutate player movement state."
+    },
+    {
+      "symbols": [
+        "func_801CBAF8_587A08",
+        "func_801D9C54_595B64"
+      ],
+      "addresses": [
+        "0x801CBAF8",
+        "0x801D9C54"
+      ],
+      "finding": "The frozen control mask 0x02 skips the collision/movement-commit block in func_801CBAF8_587A08. func_801D9C54_595B64 does not mirror held-task XYZ into the playable player."
+    }
+  ],
+  "limitations": [
+    "The proposed D_8015C604==0 pickup hook is an untested inference and is not documented as native API behavior.",
+    "The identity of actor 0x243 as an unused box is unproven.",
+    "No native two-client runtime verification is represented by this Ghidra evidence."
+  ]
+}

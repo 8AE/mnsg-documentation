@@ -1,0 +1,579 @@
+{
+  "date": "2026-09-26",
+  "romSha256": "3e16df0d00d2c4c7d75af3ff40c57d5ae937adb7c2976e35292758e2450a6670",
+  "symbolTableSha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77",
+  "scope": "Native pickup, pot, projectile, travel-door, and Fire Ryo sound/effect behavior in the US image.",
+  "confidence": "Ghidra-researched native behavior; each function address and ROM location is verified against the US symbol table. Function signatures are not asserted unless already established elsewhere.",
+  "evidenceSource": "US ROM mnsg/config/usa/baserom.z64; Goemon64RecompSyms/mnsg.syms.toml; native decompilation and disassembly observations supplied by the task research team.",
+  "symbols": {
+    "func_080000C4_6B3064": {
+      "name": "func_080000C4_6B3064",
+      "address": "0x080000C4",
+      "size": 88,
+      "section": ".file_28",
+      "romAddress": "0x006B3064",
+      "finding": [
+        "For the inspected US callback, the sound cue is 0x026E and the spatial range is 800.",
+        "The callback checks bit 1 in the task word at +0x68 before emitting the sound.",
+        "This describes the inspected pot callback; the sound cue does not establish a universal pot or container sound."
+      ]
+    },
+    "func_802145F0_5CFAC0": {
+      "name": "func_802145F0_5CFAC0",
+      "address": "0x802145F0",
+      "size": 100,
+      "section": ".file_12",
+      "romAddress": "0x005CFAC0",
+      "finding": [
+        "The inspected US callback emits spatial sound cue 0x026B.",
+        "Its visual child is created through func_8021804C_5D351C with the live actor and mode 0. The helper requires the actor and its object to remain valid; the child uses resource slot 8.",
+        "The callback identity is known, but a standalone C prototype is not established."
+      ]
+    },
+    "func_80213FF0_5CF4C0": {
+      "name": "func_80213FF0_5CF4C0",
+      "address": "0x80213FF0",
+      "size": 100,
+      "section": ".file_12",
+      "romAddress": "0x005CF4C0",
+      "finding": [
+        "The inspected US callback emits spatial sound cue 0x026C and awards 2 health through the native health update routine.",
+        "It creates a visual child from the live actor through func_8021804C_5D351C, then sets bit 2 in the task word at +0x68.",
+        "The callback identity is known, but a standalone C prototype is not established."
+      ]
+    },
+    "func_80214AEC_5CFFBC": {
+      "name": "func_80214AEC_5CFFBC",
+      "address": "0x80214AEC",
+      "size": 96,
+      "section": ".file_12",
+      "romAddress": "0x005CFFBC",
+      "finding": [
+        "The inspected US callback emits sound cue 0x026C when bit 0x200 is set in the task word at +0x68.",
+        "This bit is an event gate in the inspected callback; it is not a standalone sound-ID mapping for every health pickup.",
+        "The callback identity is known, but a standalone C prototype is not established."
+      ]
+    },
+    "func_08000434_6AEC14": {
+      "name": "func_08000434_6AEC14",
+      "address": "0x08000434",
+      "size": 120,
+      "section": ".file_26",
+      "romAddress": "0x006AEC14",
+      "finding": [
+        "The inspected US callback emits sound cue 0x026C when bit 0x200 is set in the task word at +0x68.",
+        "The callback identity is known, but a standalone C prototype is not established."
+      ]
+    },
+    "func_0800010C_6F35EC": {
+      "name": "func_0800010C_6F35EC",
+      "address": "0x0800010C",
+      "size": 176,
+      "section": ".file_43",
+      "romAddress": "0x006F35EC",
+      "finding": [
+        "For entity 0x23C, subtype 0 queues cue 0x0224; other subtypes queue 0x015E. The subtype is an unsigned byte at task +0xD0.",
+        "The opening sound requires a nonzero unsigned halfword interaction latch at task +0xDA.",
+        "The entity mapping is specific to this inspected travel-door family. Other door entities are not covered."
+      ]
+    },
+    "func_08002190_6F5670": {
+      "name": "func_08002190_6F5670",
+      "address": "0x08002190",
+      "size": 196,
+      "section": ".file_43",
+      "romAddress": "0x006F5670",
+      "finding": [
+        "For entity 0x242, subtypes 0, 9, and 11 queue cue 0x0224; other subtypes queue 0x015E. The subtype is an unsigned byte at task +0xD0.",
+        "The opening sound requires a nonzero unsigned halfword interaction latch at task +0xDA.",
+        "The entity mapping is specific to this inspected travel-door family. Other door entities are not covered."
+      ]
+    },
+    "func_080012C8_6F47A8": {
+      "name": "func_080012C8_6F47A8",
+      "address": "0x080012C8",
+      "size": 360,
+      "section": ".file_43",
+      "romAddress": "0x006F47A8",
+      "finding": [
+        "For entity 0x23E, subtypes 0, 1, 2, and 6 queue cue 0x0224; subtype 3 queues 0x0227; subtypes 4 and 8 queue 0x015F; subtype 7 queues 0x015D; other subtypes queue 0x015E.",
+        "The subtype is an unsigned byte at task +0xD0. The opening sound requires a nonzero unsigned halfword interaction latch at task +0xDA.",
+        "The entity mapping is specific to this inspected travel-door family. Other door entities are not covered."
+      ]
+    },
+    "func_08002254_6F5734": {
+      "name": "func_08002254_6F5734",
+      "address": "0x08002254",
+      "size": 156,
+      "section": ".file_43",
+      "romAddress": "0x006F5734",
+      "finding": [
+        "No sound call was found in this travel-door completion callback.",
+        "This observation is limited to the inspected file_43 travel-door family and does not establish that all door-close or door-completion paths are silent."
+      ]
+    },
+    "func_080022F0_6F57D0": {
+      "name": "func_080022F0_6F57D0",
+      "address": "0x080022F0",
+      "size": 12,
+      "section": ".file_43",
+      "romAddress": "0x006F57D0",
+      "finding": [
+        "No sound call was found in this travel-door idle callback.",
+        "This observation is limited to the inspected file_43 travel-door family and does not establish that all doors are silent."
+      ]
+    },
+    "func_801F50A4_5B0FB4": {
+      "name": "func_801F50A4_5B0FB4",
+      "address": "0x801F50A4",
+      "size": 248,
+      "section": ".file_11",
+      "romAddress": "0x005B0FB4",
+      "finding": [
+        "Fire Ryo action selector 0x12 emits cue 0x015A.",
+        "Charged coin selector 0x75 emits cue 0x0205 or 0x020B according to the inspected charge state.",
+        "No standalone C prototype is established here."
+      ]
+    },
+    "func_801ED26C_5A917C": {
+      "name": "func_801ED26C_5A917C",
+      "address": "0x801ED26C",
+      "size": 436,
+      "section": ".file_11",
+      "romAddress": "0x005A917C",
+      "finding": [
+        "The trail uses model 0x4900B878 and resource 0x152, with updates spaced three ticks apart.",
+        "The routine depends on a live parent task and its native object. The observed path does not establish a standalone sound call."
+      ]
+    },
+    "func_8021804C_5D351C": {
+      "name": "func_8021804C_5D351C",
+      "address": "0x8021804C",
+      "size": 68,
+      "section": ".file_12",
+      "romAddress": "0x005D351C",
+      "finding": [
+        "The helper returns the allocated child-task pointer from func_802171A8_5D2678; allocation can fail and return null.",
+        "Variant 0 creates a category-8 child under global actor-effect manager D_8015CCBC, independently of the source actor/coin task.",
+        "The child has an object at task +0x18, an initialization/follow/fade sequence on +0x0C, and an existing native cleanup callback at +0x10. Do not replace that cleanup callback.",
+        "The fade path rebuilds a 24-byte material list at object +0x80 tagged with 0x60000000. Actual GPU visibility depends on the address resolving within original 8 MiB RDRAM."
+      ],
+      "declaration": "void *func_8021804C_5D351C(void *actor, int variant);"
+    },
+    "func_80211EF8_5CD3C8": {
+      "name": "func_80211EF8_5CD3C8",
+      "address": "0x80211EF8",
+      "size": 120,
+      "section": ".file_12",
+      "romAddress": "0x005CD3C8",
+      "finding": [
+        "The observed call uses the live actor, this initializer, and task kind 8.",
+        "The child path depends on a live actor and native object, and uses resource slot 8.",
+        "A standalone C prototype and broader initializer semantics are not established."
+      ]
+    },
+    "func_801ECCB8_5A8BC8": {
+      "name": "func_801ECCB8_5A8BC8",
+      "address": "0x801ECCB8",
+      "size": 56,
+      "section": ".file_11",
+      "romAddress": "0x005A8BC8",
+      "finding": [
+        "Selector 0x12 passes through this dispatcher.",
+        "The path calls func_801E8F50_5A4E60 with the manager and selector 0x12, and invokes func_801ED1F0_5A9100 for the Fire Ryo trail."
+      ]
+    },
+    "func_801E8F50_5A4E60": {
+      "name": "func_801E8F50_5A4E60",
+      "address": "0x801E8F50",
+      "size": 852,
+      "section": ".file_11",
+      "romAddress": "0x005A4E60",
+      "finding": [
+        "The inspected Fire Ryo dispatch calls this routine with the native manager and selector 0x12.",
+        "The full argument and return semantics are not established."
+      ]
+    },
+    "func_801ED1F0_5A9100": {
+      "name": "func_801ED1F0_5A9100",
+      "address": "0x801ED1F0",
+      "size": 124,
+      "section": ".file_11",
+      "romAddress": "0x005A9100",
+      "finding": [
+        "The inspected Fire Ryo action path invokes this routine as part of selector 0x12.",
+        "Its full resource configuration and argument semantics are not established."
+      ]
+    },
+    "func_801ECCF0_5A8C00": {
+      "name": "func_801ECCF0_5A8C00",
+      "address": "0x801ECCF0",
+      "size": 540,
+      "section": ".file_11",
+      "romAddress": "0x005A8C00",
+      "finding": [
+        "The first update advances age and velocity. During ages 2 through 59, the callback performs a raycast for impact.",
+        "On impact it creates a visual effect, plays positional cue 0x029A, changes task phase +0x60 to 1, and begins fading the effect by 0x10 per update.",
+        "A hard 60-tick lifetime ends the projectile path.",
+        "The callback invokes a native collision helper. Its full collision behavior is not established here."
+      ]
+    },
+    "func_801ECF0C_5A8E1C": {
+      "name": "func_801ECF0C_5A8E1C",
+      "address": "0x801ECF0C",
+      "size": 328,
+      "section": ".file_11",
+      "romAddress": "0x005A8E1C",
+      "finding": [
+        "The inspected Fire Ryo callback invokes this routine for the impact visual.",
+        "The callback also plays positional sound cue 0x029A; the full argument interface for this routine is not established."
+      ]
+    },
+    "func_801ED054_5A8F64": {
+      "name": "func_801ED054_5A8F64",
+      "address": "0x801ED054",
+      "size": 208,
+      "section": ".file_11",
+      "romAddress": "0x005A8F64",
+      "finding": [
+        "The Fire Ryo projectile callback invokes this collision helper.",
+        "The full collision semantics and calling interface are not established here."
+      ]
+    },
+    "func_80211F70_5CD440": {
+      "name": "func_80211F70_5CD440",
+      "address": "0x80211F70",
+      "size": 176,
+      "section": ".file_12",
+      "romAddress": "0x005CD440",
+      "finding": [
+        "This is the follow phase in the variant-0 category-8 pickup visual child lifecycle."
+      ]
+    },
+    "func_80212020_5CD4F0": {
+      "name": "func_80212020_5CD4F0",
+      "address": "0x80212020",
+      "size": 104,
+      "section": ".file_12",
+      "romAddress": "0x005CD4F0",
+      "finding": [
+        "This is the fade phase in the variant-0 category-8 pickup visual child lifecycle.",
+        "Rebuilds a 24-byte material display list at object +0x80 using segment tag 0x60000000."
+      ]
+    },
+    "func_8021A26C_5D573C": {
+      "name": "func_8021A26C_5D573C",
+      "address": "0x8021A26C",
+      "size": 156,
+      "section": ".file_12",
+      "romAddress": "0x005D573C",
+      "finding": [
+        "Writes a 24-byte native pickup material display list at the object +0x80 address.",
+        "The fade callback refreshes this list; its tagged pointer uses segment 0x60000000.",
+        "Actual RSP readability depends on the destination falling within original 8 MiB RDRAM."
+      ]
+    }
+  },
+  "soundMappings": [
+    {
+      "caller": "func_080000C4_6B3064",
+      "event": "pot break",
+      "cue": "0x026E",
+      "range": 800,
+      "position": "native object XYZ",
+      "gate": "task+0x68 bit 1"
+    },
+    {
+      "caller": "func_802145F0_5CFAC0",
+      "event": "five-ryo pickup",
+      "cue": "0x026B",
+      "visualCall": "func_8021804C_5D351C(actor,0)"
+    },
+    {
+      "caller": "func_80213FF0_5CF4C0",
+      "event": "dynamic health pickup",
+      "cue": "0x026C",
+      "effect": "heals 2",
+      "visualCall": "func_8021804C_5D351C(actor,0)",
+      "taskFlag": "task+0x68 bit 2"
+    },
+    {
+      "caller": "func_80214AEC_5CFFBC",
+      "event": "small health pickup",
+      "cue": "0x026C",
+      "gate": "task+0x68 bit 0x200"
+    },
+    {
+      "caller": "func_08000434_6AEC14",
+      "event": "food pickup",
+      "cue": "0x026C",
+      "gate": "task+0x68 bit 0x200"
+    },
+    {
+      "caller": "func_0800010C_6F35EC",
+      "entity": "0x23C",
+      "event": "unlocked travel door",
+      "subtypeMap": {
+        "0": "0x0224",
+        "other": "0x015E"
+      },
+      "latch": "unsigned halfword task+0xDA != 0",
+      "subtypeType": "unsigned byte task+0xD0"
+    },
+    {
+      "caller": "func_08002190_6F5670",
+      "entity": "0x242",
+      "event": "unlocked travel door",
+      "subtypeMap": {
+        "0,9,11": "0x0224",
+        "other": "0x015E"
+      },
+      "latch": "unsigned halfword task+0xDA != 0",
+      "subtypeType": "unsigned byte task+0xD0"
+    },
+    {
+      "caller": "func_080012C8_6F47A8",
+      "entity": "0x23E",
+      "event": "locked travel door",
+      "subtypeMap": {
+        "0,1,2,6": "0x0224",
+        "3": "0x0227",
+        "4,8": "0x015F",
+        "7": "0x015D",
+        "other": "0x015E"
+      },
+      "latch": "unsigned halfword task+0xDA != 0",
+      "subtypeType": "unsigned byte task+0xD0"
+    },
+    {
+      "caller": "func_08002254_6F5734",
+      "event": "travel-door completion",
+      "finding": "No sound in the inspected callback."
+    },
+    {
+      "caller": "func_080022F0_6F57D0",
+      "event": "travel-door idle",
+      "finding": "No sound in the inspected callback."
+    },
+    {
+      "caller": "func_801F50A4_5B0FB4",
+      "event": "Goemon Fire Ryo",
+      "selector": "0x12",
+      "cue": "0x015A"
+    },
+    {
+      "caller": "func_801F50A4_5B0FB4",
+      "event": "charged coin",
+      "selector": "0x75",
+      "cues": [
+        "0x0205",
+        "0x020B"
+      ],
+      "selection": "depends on charged state"
+    },
+    {
+      "caller": "func_801ED26C_5A917C",
+      "event": "Fire Ryo trail",
+      "model": "0x4900B878",
+      "resource": "0x152",
+      "periodTicks": 3,
+      "sound": "no standalone trail sound established"
+    },
+    {
+      "caller": "func_8021804C_5D351C",
+      "event": "pickup visual child",
+      "arguments": "live actor, mode 0",
+      "resourceSlot": 8,
+      "precondition": "live actor and native object"
+    },
+    {
+      "caller": "func_80211EF8_5CD3C8",
+      "event": "native actor visual initializer",
+      "taskKind": 8,
+      "resourceSlot": 8,
+      "precondition": "live actor and native object"
+    }
+  ],
+  "limits": [
+    "Door subtype mappings apply only to entities 0x23C, 0x23E, and 0x242 in the inspected family.",
+    "Absence of a call in the inspected close/completion and idle callbacks does not establish a universal silent close cue.",
+    "Function signatures remain undocumented where the ABI was not recovered.",
+    "The Fire Ryo projectile callback performs native raycast and collision work; reproduce its visual/audible cues only through a path that does not replay collision or gameplay effects."
+  ],
+  "fireRyoProjectile": {
+    "selector": "0x12",
+    "dispatch": "func_801ECCB8_5A8BC8",
+    "setup": {
+      "function": "func_801E8F50_5A4E60",
+      "argumentsObserved": [
+        "manager",
+        "0x12"
+      ]
+    },
+    "trail": "func_801ED1F0_5A9100",
+    "callbackTable": "D_80204868_5C0778",
+    "callback": "func_801ECCF0_5A8C00",
+    "callbackBehavior": {
+      "firstTick": "age and velocity advance",
+      "raycastAges": "2 through 59",
+      "impactVisual": "func_801ECF0C_5A8E1C",
+      "impactCue": "0x029A positional",
+      "impactPhase": "task+0x60 = 1",
+      "fadePerTick": "0x10",
+      "hardLifetimeTicks": 60,
+      "collisionHelper": "func_801ED054_5A8F64",
+      "remoteReplaySafe": false
+    },
+    "taskFields": {
+      "velocity": [
+        "+0x6C",
+        "+0x70",
+        "+0x74"
+      ],
+      "initialVelocity": [
+        "+0x9C",
+        "+0xA0",
+        "+0xA4"
+      ],
+      "yaw": "+0xA8"
+    },
+    "model": "0x49009498"
+  },
+  "pickupVisualHelper": {
+    "function": "func_8021804C_5D351C",
+    "nativeAddress": "0x8021804C",
+    "romAddress": "0x005D351C",
+    "declaration": "void func_8021804C_5D351C(void *actor, int variant);",
+    "variant0": {
+      "childAllocator": "func_802171A8_5D2678(actor, func_80211EF8_5CD3C8, 8)",
+      "taskKind": 8,
+      "model": "0xB4"
+    },
+    "nonzeroVariant": {
+      "initializer": "different, identity not established",
+      "taskKind": "0x0D"
+    },
+    "requires": [
+      "live actor",
+      "live actor object",
+      "file_12 loaded"
+    ],
+    "failure": "native allocator may return null at category cap",
+    "ryoAward": false,
+    "liveAppearance": "not verified"
+  },
+  "playerCueSelectors": {
+    "overlay": "file_11",
+    "callbackSymbol": "not identified; do not associate with a public function page yet",
+    "entries": [
+      {
+        "character": "Sasuke",
+        "actionIds": [
+          "0x90",
+          "0x91",
+          "0x92"
+        ],
+        "event": "ice kunai",
+        "soundCue": "0x020B"
+      },
+      {
+        "character": "Sasuke",
+        "actionIds": [
+          "0x93",
+          "0x97"
+        ],
+        "event": "bazooka",
+        "soundCue": "0x0103"
+      },
+      {
+        "character": "Goemon",
+        "actionId": "0x7F",
+        "event": "Fire Ryo",
+        "soundCue": "0x015A"
+      },
+      {
+        "character": "Goemon",
+        "actionId": "0x75",
+        "event": "charged coin",
+        "soundCues": [
+          "0x0205",
+          "0x020B"
+        ]
+      },
+      {
+        "character": "Yae",
+        "actionId": "0xA2",
+        "event": "flute loop start",
+        "soundCue": "0x0170"
+      },
+      {
+        "character": "Yae",
+        "actionId": "0xA3",
+        "event": "flute loop stop",
+        "soundCommand": "0x8170"
+      }
+    ],
+    "limits": [
+      "The native dispatcher/callback symbol for this complete selector mapping is not verified, so these action IDs are internal evidence only.",
+      "Yae loop stop routes through the global stop path keyed by the low sound ID 0x0170."
+    ]
+  },
+  "pickupVisualChildLifecycle": {
+    "helper": "func_8021804C_5D351C",
+    "nativeAddress": "0x8021804C",
+    "romAddress": "0x005D351C",
+    "section": ".file_12",
+    "returns": "allocated child task pointer, or null",
+    "variant0": {
+      "manager": "D_8015CCBC",
+      "category": "8",
+      "ownedBySourceActor": false,
+      "ownedBySourceCoin": false,
+      "model": "0xB4"
+    },
+    "taskObject": "child task +0x18",
+    "updateCallbacks": [
+      {
+        "phase": "initialize",
+        "symbol": "func_80211EF8_5CD3C8",
+        "address": "0x80211EF8",
+        "romAddress": "0x005CD3C8",
+        "size": 120
+      },
+      {
+        "phase": "follow",
+        "symbol": "func_80211F70_5CD440",
+        "address": "0x80211F70",
+        "romAddress": "0x005CD440",
+        "size": 176
+      },
+      {
+        "phase": "fade",
+        "symbol": "func_80212020_5CD4F0",
+        "address": "0x80212020",
+        "romAddress": "0x005CD4F0",
+        "size": 104
+      }
+    ],
+    "postCleanup": {
+      "symbol": "func_80218F30_5D4400",
+      "address": "0x80218F30",
+      "romAddress": "0x005D4400",
+      "taskOffset": "0x10",
+      "occupied": true
+    },
+    "material": {
+      "symbol": "func_8021A26C_5D573C",
+      "address": "0x8021A26C",
+      "romAddress": "0x005D573C",
+      "size": 156,
+      "section": ".file_12",
+      "addressOffset": "object+0x80",
+      "displayListBytes": 24,
+      "segmentTag": "0x60000000",
+      "rebuiltBy": "func_80212020_5CD4F0",
+      "gpuReadableRange": "original 8 MiB RDRAM"
+    },
+    "limit": "GPU locality risk depends on the actual child/model address; CPU validity does not prove renderer visibility."
+  }
+}

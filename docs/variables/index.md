@@ -25,7 +25,7 @@ Value tables decode established raw values and document known field layouts. Sel
 | [`D_800C7AE2`](D_800C7AE2.md) | Native player input and damage lock byte | — |
 | [`D_800C7AE3`](D_800C7AE3.md) | Scripted player input state | [Tables](D_800C7AE3.md#known-values) |
 | [`D_800C7DB0_C89B0`](D_800C7DB0_C89B0.md) | Derived gameplay-controller records | [Tables](D_800C7DB0_C89B0.md#known-values) |
-| [`D_8015C5C8_15D1C8`](D_8015C5C8_15D1C8.md) | System-state pointer, graphics banks and world clock | [Tables](D_8015C5C8_15D1C8.md#known-values) |
+| [`D_8015C5C8_15D1C8`](D_8015C5C8_15D1C8.md) | System-state pointer, controller input and world clock | [Tables](D_8015C5C8_15D1C8.md#known-values) |
 | [`D_8015C5CC_15D1CC`](D_8015C5CC_15D1CC.md) | Current graphics-command cursor | — |
 | [`D_8015C5D8_15D1D8`](D_8015C5D8_15D1D8.md) | Runtime save/control mirror | [Tables](D_8015C5D8_15D1D8.md#known-values) |
 | [`D_8015C5E4`](D_8015C5E4.md) | Runtime current health and Tsurami update gate | [Tables](D_8015C5E4.md#known-values) |

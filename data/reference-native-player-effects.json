@@ -1,0 +1,681 @@
+{
+  "func_080000C4_6B3064": {
+    "title": "Break a pot with a spatial sound",
+    "summary": "This pot break callback emits a spatial sound only when the task state enables the event.",
+    "behavior": [
+      "For the inspected US callback, the sound cue is 0x026E and the spatial range is 800.",
+      "The callback checks bit 1 in the task word at +0x68 before emitting the sound.",
+      "This describes the inspected pot callback; the sound cue does not establish a universal pot or container sound."
+    ],
+    "confidence": "decompiled",
+    "example": "/* Observation: func_080000C4_6B3064 is an identified native routine. */\n/* Its standalone C prototype is not established; do not call it through a guessed declaration. */\n"
+  },
+  "func_802145F0_5CFAC0": {
+    "title": "Collect a five-ryo pickup",
+    "summary": "This pickup callback adds five ryo and emits its native pickup sound.",
+    "behavior": [
+      "The inspected US callback emits sound cue 0x026B and adds five ryo.",
+      "Its visual child is created through func_8021804C_5D351C with the live actor and mode 0. The helper requires the actor and its object to remain valid; the child uses task kind 8.",
+      "The callback identity is known, but a standalone C prototype is not established."
+    ],
+    "confidence": "decompiled",
+    "example": "/* Observation: func_802145F0_5CFAC0 is an identified native routine. */\n/* Its standalone C prototype is not established; do not call it through a guessed declaration. */\n"
+  },
+  "func_80213FF0_5CF4C0": {
+    "title": "Collect a dynamic health pickup",
+    "summary": "This pickup callback awards two health points and emits its native pickup sound.",
+    "behavior": [
+      "The inspected US callback emits sound cue 0x026C and awards 2 health through the native health update routine.",
+      "It creates a visual child from the live actor through func_8021804C_5D351C, then sets bit 2 in the task word at +0x68.",
+      "The callback identity is known, but a standalone C prototype is not established."
+    ],
+    "confidence": "decompiled",
+    "example": "/* Observation: func_80213FF0_5CF4C0 is an identified native routine. */\n/* Its standalone C prototype is not established; do not call it through a guessed declaration. */\n"
+  },
+  "func_80214AEC_5CFFBC": {
+    "title": "Collect a small health pickup",
+    "summary": "This health pickup uses the native small-health acquisition cue.",
+    "behavior": [
+      "The inspected US callback emits sound cue 0x026C when bit 0x200 is set in the task word at +0x68.",
+      "This bit is an event gate in the inspected callback; it is not a standalone sound-ID mapping for every health pickup.",
+      "The callback identity is known, but a standalone C prototype is not established."
+    ],
+    "confidence": "decompiled",
+    "example": "/* Observation: func_80214AEC_5CFFBC is an identified native routine. */\n/* Its standalone C prototype is not established; do not call it through a guessed declaration. */\n"
+  },
+  "func_08000434_6AEC14": {
+    "title": "Collect a food pickup",
+    "summary": "This food pickup emits the native health pickup cue when its task state enables the event.",
+    "behavior": [
+      "The inspected US callback emits sound cue 0x026C when bit 0x200 is set in the task word at +0x68.",
+      "The callback identity is known, but a standalone C prototype is not established."
+    ],
+    "confidence": "decompiled",
+    "example": "/* Observation: func_08000434_6AEC14 is an identified native routine. */\n/* Its standalone C prototype is not established; do not call it through a guessed declaration. */\n"
+  },
+  "func_0800010C_6F35EC": {
+    "title": "Open an unlocked travel door",
+    "summary": "This travel-door opener selects its sound from the door subtype and begins the native opening sequence.",
+    "behavior": [
+      "For entity 0x23C, subtype 0 queues cue 0x0224; other subtypes queue 0x015E. The subtype is an unsigned byte at task +0xD0.",
+      "The opening sound requires a nonzero unsigned halfword interaction latch at task +0xDA.",
+      "The entity mapping is specific to this inspected travel-door family. Other door entities are not covered."
+    ],
+    "confidence": "decompiled",
+    "example": "/* Observation: func_0800010C_6F35EC is an identified native routine. */\n/* Its standalone C prototype is not established; do not call it through a guessed declaration. */\n"
+  },
+  "func_08002190_6F5670": {
+    "title": "Open a second unlocked travel door",
+    "summary": "This travel-door opener selects its sound from the door subtype and begins the native opening sequence.",
+    "behavior": [
+      "For entity 0x242, subtypes 0, 9, and 11 queue cue 0x0224; other subtypes queue 0x015E. The subtype is an unsigned byte at task +0xD0.",
+      "The opening sound requires a nonzero unsigned halfword interaction latch at task +0xDA.",
+      "The entity mapping is specific to this inspected travel-door family. Other door entities are not covered."
+    ],
+    "confidence": "decompiled",
+    "example": "/* Observation: func_08002190_6F5670 is an identified native routine. */\n/* Its standalone C prototype is not established; do not call it through a guessed declaration. */\n"
+  },
+  "func_080012C8_6F47A8": {
+    "title": "Open a locked travel door",
+    "summary": "This travel-door opener chooses a sound by door subtype before the native opening sequence.",
+    "behavior": [
+      "For entity 0x23E, subtypes 0, 1, 2, and 6 queue cue 0x0224; subtype 3 queues 0x0227; subtypes 4 and 8 queue 0x015F; subtype 7 queues 0x015D; other subtypes queue 0x015E.",
+      "The subtype is an unsigned byte at task +0xD0. The opening sound requires a nonzero unsigned halfword interaction latch at task +0xDA.",
+      "The entity mapping is specific to this inspected travel-door family. Other door entities are not covered."
+    ],
+    "confidence": "decompiled",
+    "example": "/* Observation: func_080012C8_6F47A8 is an identified native routine. */\n/* Its standalone C prototype is not established; do not call it through a guessed declaration. */\n"
+  },
+  "func_08002254_6F5734": {
+    "title": "Complete a travel-door interaction",
+    "summary": "The inspected travel-door completion callback advances the interaction sequence.",
+    "behavior": [
+      "No sound call was found in this travel-door completion callback.",
+      "This observation is limited to the inspected file_43 travel-door family and does not establish that all door-close or door-completion paths are silent."
+    ],
+    "confidence": "decompiled",
+    "example": "/* Observation: func_08002254_6F5734 is an identified native routine. */\n/* Its standalone C prototype is not established; do not call it through a guessed declaration. */\n"
+  },
+  "func_080022F0_6F57D0": {
+    "title": "Update an idle travel door",
+    "summary": "This idle callback maintains the inspected travel-door state.",
+    "behavior": [
+      "No sound call was found in this travel-door idle callback.",
+      "This observation is limited to the inspected file_43 travel-door family and does not establish that all doors are silent."
+    ],
+    "confidence": "decompiled",
+    "example": "/* Observation: func_080022F0_6F57D0 is an identified native routine. */\n/* Its standalone C prototype is not established; do not call it through a guessed declaration. */\n"
+  },
+  "func_801F50A4_5B0FB4": {
+    "title": "Select a Goemon projectile sound",
+    "summary": "This player sound selector maps observed Goemon projectile actions to native cue IDs.",
+    "behavior": [
+      "Fire Ryo action selector 0x12 emits cue 0x015A.",
+      "Charged coin selector 0x75 emits cue 0x0205 or 0x020B according to the inspected charge state.",
+      "No standalone C prototype is established here.",
+      "For Fire Ryo, selector 0x12 enters the native dispatch path through func_801ECCB8_5A8BC8; that path invokes the projectile setup and trail routines."
+    ],
+    "confidence": "decompiled",
+    "example": "/* Observation: func_801F50A4_5B0FB4 is an identified native routine. */\n/* Its standalone C prototype is not established; do not call it through a guessed declaration. */\n"
+  },
+  "func_801ED26C_5A917C": {
+    "title": "Create a periodic native projectile trail",
+    "summary": "This routine creates a native trail effect for a projectile path.",
+    "behavior": [
+      "The trail uses model 0x4900B878 and resource 0x152, with updates spaced three ticks apart.",
+      "The routine depends on a live parent task and its native object. The observed path does not establish a standalone sound call."
+    ],
+    "confidence": "decompiled",
+    "example": "/* Observation: func_801ED26C_5A917C is an identified native routine. */\n/* Its standalone C prototype is not established; do not call it through a guessed declaration. */\n"
+  },
+  "func_8021804C_5D351C": {
+    "title": "Create a native pickup visual child",
+    "summary": "Creates and returns a visual child task through the native actor-effect manager.",
+    "behavior": [
+      "Variant 0 allocates a category-8 child under the global actor-effect manager at D_8015CCBC; the child is not owned by the source actor or source coin task.",
+      "The helper returns the allocated child-task pointer from func_802171A8_5D2678, or null if the native category cannot allocate another child.",
+      "The returned task stores its model object at task +0x18. Its +0x0C callback advances from initialization (func_80211EF8_5CD3C8) to following (func_80211F70_5CD440) and then fading (func_80212020_5CD4F0).",
+      "The child already has native cleanup at task +0x10 through func_80218F30_5D4400; preserve this callback.",
+      "The fading callback rebuilds a 24-byte material display list at object +0x80, passed with the 0x60000000 segment tag.",
+      "If the child model record places object +0x80 outside original 8 MiB RDRAM, the renderer may be unable to read that display list. The risk depends on the actual address; a low-RDRAM mirror refreshed after native callbacks avoids replacing the existing callback chain."
+    ],
+    "confidence": "decompiled",
+    "example": "#include <stdint.h>\n\nextern void *func_8021804C_5D351C(void *actor, int variant);\n\n/* The actor and its object must remain live; check allocation failure. */\nvoid *spawn_pickup_visual(void *actor)\n{\n    if (!actor) return 0;\n    return func_8021804C_5D351C(actor, 0);\n}\n",
+    "declaration": "void *func_8021804C_5D351C(void *actor, int variant);",
+    "parameters": [
+      {
+        "name": "actor",
+        "type": "void *",
+        "description": "Live native actor task with a valid object."
+      },
+      {
+        "name": "variant",
+        "type": "int",
+        "description": "Zero selects a category-8 child with model 0xB4; nonzero selects another child initializer/category 0xD."
+      }
+    ],
+    "returns": "The allocated child task, or null when allocation fails.",
+    "cautions": [
+      "This helper creates a visual child; it does not award ryo.",
+      "The source actor and its object must remain live, and file_12 content must be loaded.",
+      "The child has a native +0x10 cleanup callback. Do not replace it when installing observation or rendering work.",
+      "The child appearance has not been verified in a live scene.",
+      "The object +0x80 display list must resolve within original 8 MiB RDRAM for RSP access; confirm the actual address before assuming an extended model record is GPU-readable."
+    ],
+    "related": [
+      "func_802171A8_5D2678",
+      "func_80211EF8_5CD3C8",
+      "func_80211F70_5CD440",
+      "func_80212020_5CD4F0",
+      "func_80218F30_5D4400",
+      "func_8021A26C_5D573C"
+    ]
+  },
+  "func_80211EF8_5CD3C8": {
+    "title": "Initialize a native actor effect",
+    "summary": "This native initializer is passed to the child-task allocator for an actor-based visual effect.",
+    "behavior": [
+      "The observed call uses the live actor, this initializer, and task kind 8.",
+      "The child path depends on a live actor and native object, and uses task kind 8.",
+      "A standalone C prototype and broader initializer semantics are not established."
+    ],
+    "confidence": "decompiled",
+    "example": "/* Observation: func_80211EF8_5CD3C8 is an identified native routine. */\n/* Its standalone C prototype is not established; do not call it through a guessed declaration. */\n"
+  },
+  "func_801ECCB8_5A8BC8": {
+    "title": "Dispatch Fire Ryo action",
+    "summary": "This player action dispatches the Fire Ryo selector through its native projectile setup and trail path.",
+    "behavior": [
+      "Selector 0x12 passes through this dispatcher.",
+      "The path calls func_801E8F50_5A4E60 with the manager and selector 0x12, and invokes func_801ED1F0_5A9100 for the Fire Ryo trail."
+    ],
+    "confidence": "decompiled",
+    "example": "/* Observation: func_801ECCB8_5A8BC8 is an identified native routine. */\n/* Its standalone C prototype is not established; do not call it through a guessed declaration. */\n"
+  },
+  "func_801E8F50_5A4E60": {
+    "title": "Set up a Fire Ryo projectile",
+    "summary": "This native action routine handles the Fire Ryo selector.",
+    "behavior": [
+      "The inspected Fire Ryo dispatch calls this routine with the native manager and selector 0x12.",
+      "The full argument and return semantics are not established."
+    ],
+    "confidence": "decompiled",
+    "example": "/* Observation: func_801E8F50_5A4E60 is an identified native routine. */\n/* Its standalone C prototype is not established; do not call it through a guessed declaration. */\n"
+  },
+  "func_801ED1F0_5A9100": {
+    "title": "Create a Fire Ryo trail",
+    "summary": "This native routine creates the trail associated with the Fire Ryo projectile path.",
+    "behavior": [
+      "The inspected Fire Ryo action path invokes this routine as part of selector 0x12.",
+      "Its full resource configuration and argument semantics are not established."
+    ],
+    "confidence": "decompiled",
+    "example": "/* Observation: func_801ED1F0_5A9100 is an identified native routine. */\n/* Its standalone C prototype is not established; do not call it through a guessed declaration. */\n"
+  },
+  "func_801ECCF0_5A8C00": {
+    "title": "Update a Fire Ryo projectile",
+    "summary": "This callback advances the native Fire Ryo projectile and handles its impact effect.",
+    "behavior": [
+      "The first update advances age and velocity. During ages 2 through 59, the callback performs a raycast for impact.",
+      "On impact it creates a visual effect, plays positional cue 0x029A, changes task phase +0x60 to 1, and begins fading the effect by 0x10 per update.",
+      "A hard 60-tick lifetime ends the projectile path.",
+      "The callback invokes a native collision helper. Its full collision behavior is not established here."
+    ],
+    "cautions": [
+      "The collision path is part of native gameplay behavior and must not be replayed as a display-only remote effect."
+    ],
+    "confidence": "decompiled",
+    "example": "/* Observation: func_801ECCF0_5A8C00 is an identified native callback. */\n/* Its standalone C prototype is not established; do not call it through a guessed declaration. */\n"
+  },
+  "func_801ECF0C_5A8E1C": {
+    "title": "Create a Fire Ryo impact effect",
+    "summary": "This native routine creates the visual effect used when a Fire Ryo projectile hits.",
+    "behavior": [
+      "The inspected Fire Ryo callback invokes this routine for the impact visual.",
+      "The callback also plays positional sound cue 0x029A; the full argument interface for this routine is not established."
+    ],
+    "confidence": "decompiled",
+    "example": "/* Observation: func_801ECF0C_5A8E1C is an identified native routine. */\n/* Its standalone C prototype is not established; do not call it through a guessed declaration. */\n"
+  },
+  "func_801ED054_5A8F64": {
+    "title": "Resolve Fire Ryo collision",
+    "summary": "This native helper participates in the Fire Ryo projectile collision path.",
+    "behavior": [
+      "The Fire Ryo projectile callback invokes this collision helper.",
+      "The full collision semantics and calling interface are not established here."
+    ],
+    "cautions": [
+      "Do not invoke this gameplay collision routine to reproduce a visual-only remote effect."
+    ],
+    "confidence": "decompiled",
+    "example": "/* Observation: func_801ED054_5A8F64 is an identified native routine. */\n/* Its standalone C prototype is not established; do not call it through a guessed declaration. */\n"
+  },
+  "func_801EDC08_5A9B18": {
+    "title": "Create the Sasuke jetpack smoke effect",
+    "summary": "This constructor creates Sasuke’s player-owned jetpack smoke emitters.",
+    "behavior": [
+      "Selector 0x16 creates two emitters with seven puffs each.",
+      "The puff callback runs every two ticks while the owner action is 0x9B."
+    ],
+    "confidence": "decompiled",
+    "example": "/* Observation: func_801EDC08_5A9B18 is an identified native routine. */\n/* Its standalone C prototype is not established; do not call it through a guessed declaration. */\n"
+  },
+  "func_801EDCE0_5A9BF0": {
+    "title": "Update Sasuke jetpack smoke",
+    "summary": "This callback emits and cleans up Sasuke’s player-owned jetpack smoke effect.",
+    "behavior": [
+      "While the owner action is 0x9B, the callback emits puffs at two-tick intervals.",
+      "On exit it clears owner player-work at +0x86, queues global stop cue 0x814F, and marks the emitter state at +0x60 as 2.",
+      "The jet smoke descriptor D_80204BF8 contains three 0x8000 rotation halfwords at +0x20, +0x22, and +0x24.",
+      "The callback passes those values through func_801EE750_5AA660 and func_801EE688_5AA598 into child object rotation fields +0x14, +0x16, and +0x18. The descriptor selects model 0x490026B0 with mode 10; this jet puff model also follows the 0x40000000 camera-facing renderer branch."
+    ],
+    "confidence": "decompiled",
+    "example": "/* Observation: func_801EDCE0_5A9BF0 is an identified native routine. */\n/* Its standalone C prototype is not established; do not call it through a guessed declaration. */\n",
+    "cautions": [
+      "The callback changes local player-work and queues a global sound-stop command. Do not replay it for a remote player.",
+      "The live appearance of the effect has not been verified."
+    ]
+  },
+  "func_801EDF2C_5A9E3C": {
+    "title": "Create a jetpack smoke puff",
+    "summary": "This helper creates one native puff for the jetpack smoke effect.",
+    "behavior": [
+      "Each puff uses model 0x490026B0, resource 0x152, scale 0.02, white color, and alpha 0xE8.",
+      "The puff grows by 0.004 scale units and fades alpha by 0x10 per update.",
+      "The puff uses descriptor D_80204AD0 and a material pointer derived from the native object at +0x80 with flag 0x20000000.",
+      "While the owner remains in the jetpack action, puff vertical drift follows -0.5 * (2.56410265 - owner task +0xA4). During cleanup, vertical drift is -2."
+    ],
+    "confidence": "decompiled",
+    "example": "/* Observation: func_801EDF2C_5A9E3C is an identified native routine. */\n/* Its standalone C prototype is not established; do not call it through a guessed declaration. */\n"
+  },
+  "func_801F15E0_5AD4F0": {
+    "title": "Create the Sudden Impact aura",
+    "summary": "This constructor sets up the native Sudden Impact aura effect for selector 0x23.",
+    "behavior": [
+      "The effect has a main aura model 0x190006B8 and five satellite effects using model 0x1900074C.",
+      "The effect uses resource 0x152 and character asset 0x120.",
+      "The constructor masks the selector to its low eight bits before effect selection.",
+      "The main aura and satellite objects use task-local material lists at their task +0xA4 fields."
+    ],
+    "confidence": "decompiled",
+    "example": "#include <stdint.h>\n\nextern void func_801F15E0_5AD4F0(void *effect_manager, uint32_t selector);\n\n/* This native constructor owns task allocation and callback lifetime. */\n",
+    "declaration": "void func_801F15E0_5AD4F0(void *effect_manager, uint32_t selector);",
+    "parameters": [
+      {
+        "name": "effect_manager",
+        "type": "void *",
+        "description": "Native effect manager that owns the allocated tasks."
+      },
+      {
+        "name": "selector",
+        "type": "uint32_t",
+        "description": "Effect selector; the constructor masks the low eight bits before effect selection."
+      }
+    ],
+    "returns": "No value.",
+    "cautions": [
+      "The constructor allocates native tasks and owns their callback lifetimes; its declaration is not a safe arbitrary-call interface.",
+      "The RSP material list must resolve in original 8 MiB RDRAM. Whether an individual extended task allocation crosses that boundary depends on its actual address."
+    ]
+  },
+  "func_801F19A4_5AD8B4": {
+    "title": "Update the Sudden Impact aura",
+    "summary": "This callback updates the native main aura from its owner’s state.",
+    "behavior": [
+      "The callback reads the owner pose and action and updates the aura visuals.",
+      "The effect object material pointer is derived from the task-local material list at task +0xA4."
+    ],
+    "confidence": "decompiled",
+    "example": "/* Observation: func_801F19A4_5AD8B4 is an identified native routine. */\n/* Its standalone C prototype is not established; do not call it through a guessed declaration. */\n",
+    "cautions": [
+      "The callback depends on a live owner and its current pose/action.",
+      "The live appearance of the effect has not been verified.",
+      "The RSP material list must resolve within original 8 MiB RDRAM; an extended CPU task address may not be GPU-readable."
+    ]
+  },
+  "func_801F1CC4_5ADBD4": {
+    "title": "Update a Sudden Impact aura satellite",
+    "summary": "This callback updates one of the native satellite effects around the aura.",
+    "behavior": [
+      "The constructor creates five satellites using model 0x1900074C.",
+      "The callback reads owner pose/action state and updates its visual effect.",
+      "The effect object material pointer is derived from the task-local material list at task +0xA4."
+    ],
+    "confidence": "decompiled",
+    "example": "/* Observation: func_801F1CC4_5ADBD4 is an identified native routine. */\n/* Its standalone C prototype is not established; do not call it through a guessed declaration. */\n",
+    "cautions": [
+      "The callback depends on a live owner and its current pose/action.",
+      "The live appearance of the effect has not been verified.",
+      "The RSP material list must resolve within original 8 MiB RDRAM; an extended CPU task address may not be GPU-readable."
+    ]
+  },
+  "func_801F18CC_5AD7DC": {
+    "title": "Initialize the main Sudden Impact aura",
+    "summary": "This initializer configures the main visual model for the Sudden Impact aura.",
+    "behavior": [
+      "The main aura model is 0x190006B8. The effect uses resource 0x152 and character asset 0x120.",
+      "The initializer binds the object material pointer from its child task +0xA4 through the native segmented material path."
+    ],
+    "confidence": "decompiled",
+    "example": "/* Observation: func_801F18CC_5AD7DC is an identified native routine. */\n/* Its standalone C prototype is not established; do not call it through a guessed declaration. */\n"
+  },
+  "func_801F1BD0_5ADAE0": {
+    "title": "Initialize a Sudden Impact satellite",
+    "summary": "This initializer configures one satellite in the Sudden Impact aura.",
+    "behavior": [
+      "Each satellite uses model 0x1900074C. The native effect creates five satellites.",
+      "The initializer binds the object material pointer from its child task +0xA4 through the native segmented material path."
+    ],
+    "confidence": "decompiled",
+    "example": "/* Observation: func_801F1BD0_5ADAE0 is an identified native routine. */\n/* Its standalone C prototype is not established; do not call it through a guessed declaration. */\n"
+  },
+  "func_801EA860_5A6770": {
+    "title": "Create character-switch smoke",
+    "summary": "Creates the native smoke children used during character switching.",
+    "behavior": [
+      "Creates six children using model 0x490024F0 and material 0xC006D920 at child offset +0xB8.",
+      "The effect uses segment 0x152. Texture setup calls func_801E8820_5A4730 with model slot 10 and an entry from D_80204A10.",
+      "The six children select texture resources in the order 0x802047A0, 0x802047E0, 0x802047E0, 0x802047A0, 0x802047E0, 0x802047A0.",
+      "Their grayscale values are 0xFF, 0x80, 0x90, 0xFF, 0xC0, and 0xFF in the same order.",
+      "For the character-switch smoke children, the constructor passes 0x8000 in all three object rotation halfwords.",
+      "This smoke model uses the 0x40000000 model branch, which builds a camera-facing alignment matrix from the active camera direction. This is a verified path for this smoke model, not a rule for every native renderer object.",
+      "The 0x8000 rotation values act as sentinels in this path; the renderer preserves them rather than reducing them to 10-bit angles."
+    ],
+    "confidence": "decompiled",
+    "example": "/* Observation: func_801EA860_5A6770 is an identified native routine. */\n/* Its standalone C prototype is not established; do not call it through a guessed declaration. */\n"
+  },
+  "func_801EAE88_5A6D98": {
+    "title": "Update character-switch smoke",
+    "summary": "This callback advances the native character-switch smoke children.",
+    "behavior": [
+      "The callback integrates child offsets and rotates the effect using func_801EAF50_5A6E60 against the native local target.",
+      "Its position and rotation work is tied to the native owner and local target; do not replay the raw callback for a remote player.",
+      "Child scale grows from 0.03 to 0.13 by 0.01 per update, then to 0.15 by 0.002 per update before fading.",
+      "The child fades alpha by 0x20 per update.",
+      "The child object retains 0x8000 in its three rotation halfwords for the smoke model’s camera-facing draw path.",
+      "func_801EAF50_5A6E60 separately rotates smoke position offsets toward the local target; that offset rotation is distinct from the object rotation sentinels used for facing."
+    ],
+    "confidence": "decompiled",
+    "example": "/* Observation: func_801EAE88_5A6D98 is an identified native routine. */\n/* Its standalone C prototype is not established; do not call it through a guessed declaration. */\n",
+    "cautions": [
+      "A full standalone C calling interface has not been established."
+    ]
+  },
+  "func_801EAF50_5A6E60": {
+    "title": "Rotate a character-switch smoke child",
+    "summary": "Rotates character-switch smoke position offsets toward the native local target.",
+    "behavior": [
+      "The character-switch smoke callback calls this helper using the native local target.",
+      "Its complete argument semantics are not established.",
+      "This helper rotates the smoke child position offsets toward the local target. It does not supply the object rotation halfwords used by the smoke model’s camera-facing path."
+    ],
+    "confidence": "decompiled",
+    "example": "/* Observation: func_801EAF50_5A6E60 is an identified native routine. */\n/* Its standalone C prototype is not established; do not call it through a guessed declaration. */\n"
+  },
+  "func_801E8820_5A4730": {
+    "title": "Configure an effect texture",
+    "summary": "This helper is used to select a texture for a character-switch smoke model.",
+    "behavior": [
+      "The character-switch smoke constructor calls it with model slot 10 and the selected texture-table entry.",
+      "Its general texture API semantics are not established.",
+      "Initializes an animated-texture descriptor using object fields +0x80, +0x84, and +0x86.",
+      "The initializer then calls func_801E8858_5A4768."
+    ],
+    "confidence": "decompiled",
+    "example": "/* Observation: func_801E8820_5A4730 is an identified native routine. */\n/* Its standalone C prototype is not established; do not call it through a guessed declaration. */\n"
+  },
+  "func_801EC860_5A8770": {
+    "title": "Update a weapon-charge effect",
+    "summary": "This callback updates a native player weapon-charge visual.",
+    "behavior": [
+      "The observed selector is 0x11. It creates three children using models 0x1900012C, 0x1900025C, and 0x1900037C with resource 0x152.",
+      "The callback follows the owner pose and grows the effect by 0.01 per tick.",
+      "It alternates sound cues 0x024D and 0x024E. A remote visual recreation should suppress these native audio calls."
+    ],
+    "confidence": "decompiled",
+    "example": "/* Observation: func_801EC860_5A8770 is an identified native routine. */\n/* Its standalone C prototype is not established; do not call it through a guessed declaration. */\n"
+  },
+  "func_80038C30_39830": {
+    "title": "Manage native sound playback",
+    "summary": "This native sound routine does not accept a playback-owner handle.",
+    "behavior": [
+      "The inspected interface does not provide a per-player owner handle for stopping the flute sound.",
+      "The standalone C prototype is not established."
+    ],
+    "confidence": "decompiled",
+    "example": "/* Observation: func_80038C30_39830 is an identified native routine. */\n/* Its standalone C prototype is not established; do not call it through a guessed declaration. */\n",
+    "cautions": [
+      "A full standalone C calling interface has not been established."
+    ]
+  },
+  "func_80038F68_39B68": {
+    "title": "Dispatch native sound commands",
+    "summary": "This sound dispatcher routes start and stop commands to native playback handlers.",
+    "behavior": [
+      "Command 0x0170 routes to the native start path func_800390D8_39CD8.",
+      "Command 0x8170 routes to the native stop path func_8003A24C_3AE4C.",
+      "The stop-slot table stores the low sound ID and does not identify a player owner."
+    ],
+    "confidence": "decompiled",
+    "example": "/* Observation: func_80038F68_39B68 is an identified native routine. */\n/* Its standalone C prototype is not established; do not call it through a guessed declaration. */\n",
+    "cautions": [
+      "A full standalone C calling interface has not been established."
+    ]
+  },
+  "func_800390D8_39CD8": {
+    "title": "Start native sound playback",
+    "summary": "This routine handles the native sound-start command path.",
+    "behavior": [
+      "The sound dispatcher routes command 0x0170 to this start handler for the flute sound path."
+    ],
+    "confidence": "decompiled",
+    "example": "/* Observation: func_800390D8_39CD8 is an identified native routine. */\n/* Its standalone C prototype is not established; do not call it through a guessed declaration. */\n",
+    "cautions": [
+      "A full standalone C calling interface has not been established."
+    ]
+  },
+  "func_8003A24C_3AE4C": {
+    "title": "Stop native sound playback",
+    "summary": "This routine handles a native sound-stop command.",
+    "behavior": [
+      "The sound dispatcher routes command 0x8170 here. The tracked sound ID is its low value, 0x0170.",
+      "The native stop state is global by sound ID and does not distinguish which player initiated the sound."
+    ],
+    "confidence": "decompiled",
+    "example": "/* Observation: func_8003A24C_3AE4C is an identified native routine. */\n/* Its standalone C prototype is not established; do not call it through a guessed declaration. */\n",
+    "cautions": [
+      "A full standalone C calling interface has not been established."
+    ]
+  },
+  "func_801F11F0_5AD100": {
+    "title": "Create the transformation visual effect",
+    "summary": "Creates the native visual children used for the Mini Ebisumaru and Yae Mermaid transformation effect.",
+    "behavior": [
+      "Selector 0x22 creates four visual child effects.",
+      "The corresponding child callback is func_801F14BC_5AD3CC.",
+      "Stores the selector as an eight-bit task kind at task +0x64; child state byte +0x65 starts at zero.",
+      "Each child object uses a task-local material list at child task +0xA4, passed to the renderer as (task +0xA4) | 0x60000000."
+    ],
+    "cautions": [
+      "The child appearance has not been verified in a live scene.",
+      "The native initializer and visual children depend on the owner actor state.",
+      "The constructor allocates native tasks and owns their callback lifetimes; its declaration is not a safe arbitrary-call interface.",
+      "The RSP material list must resolve within original 8 MiB RDRAM. A valid CPU task outside that range does not prove its material bytes are GPU-readable."
+    ],
+    "confidence": "decompiled",
+    "example": "#include <stdint.h>\n\nextern void func_801F11F0_5AD100(void *effect_manager, uint8_t selector);\n\n/* This native constructor owns task allocation and callback lifetime. */\n",
+    "declaration": "void func_801F11F0_5AD100(void *effect_manager, uint8_t selector);",
+    "parameters": [
+      {
+        "name": "effect_manager",
+        "type": "void *",
+        "description": "Native effect manager that owns the allocated tasks."
+      },
+      {
+        "name": "selector",
+        "type": "uint8_t",
+        "description": "Effect selector; selector 0x22 creates four transformation children."
+      }
+    ],
+    "returns": "No value."
+  },
+  "func_801F14BC_5AD3CC": {
+    "title": "Update a transformation visual child",
+    "summary": "Updates one visual child associated with the Mini Ebisumaru and Yae Mermaid effect.",
+    "behavior": [
+      "The callback reads the owner pose and uses it to update the child visual.",
+      "The selector-0x22 effect creates four visual children.",
+      "The callback rewrites the child task-owned material list at +0xA4 on each update; a separate graphics-visible copy must be refreshed after these native updates."
+    ],
+    "cautions": [
+      "The callback depends on a live owner actor and pose.",
+      "The child appearance has not been verified in a live scene.",
+      "The task-local material list is GPU-readable only if its address resolves within original 8 MiB RDRAM."
+    ],
+    "confidence": "decompiled",
+    "example": "/* Observation: func_801F14BC_5AD3CC updates a selector-0x22 visual child. */\n/* Its standalone C prototype is not established; do not call it through a guessed declaration. */\n"
+  },
+  "func_801E8858_5A4768": {
+    "title": "Initialize animated effect textures",
+    "summary": "This helper is called by the native animated-texture initializer.",
+    "behavior": [
+      "The native initializer func_801E8820_5A4730 calls this helper after setting up an animated-texture descriptor.",
+      "The helper’s complete argument semantics are not established."
+    ],
+    "confidence": "decompiled",
+    "example": "/* Observation: func_801E8858_5A4768 is called by func_801E8820_5A4730. */\n/* Its standalone C prototype is not established; do not call it through a guessed declaration. */\n"
+  },
+  "func_801E8890_5A47A0": {
+    "title": "Select an animated effect texture frame",
+    "summary": "Selects an animated texture frame from a native object’s segment data.",
+    "behavior": [
+      "Reads the segment-10 frame base from object +0x48 and writes the selected value to object +0x50.",
+      "The complete argument and return semantics are not established."
+    ],
+    "confidence": "decompiled",
+    "example": "/* Observation: func_801E8890_5A47A0 selects segment-10 frame data. */\n/* Its standalone C prototype is not established; do not call it through a guessed declaration. */\n"
+  },
+  "func_801F13B0_5AD2C0": {
+    "title": "Initialize a purple transformation child",
+    "summary": "Initializes the model, transform, resources, and task-owned material for a purple transformation effect child.",
+    "behavior": [
+      "The initializer configures one selector-0x22 child and supplies its owner pose and scale.",
+      "It sets file 0x80, texture 0x152, and object mode byte +5 to 10.",
+      "The object material pointer is (child task +0xA4) | 0x60000000; the native callback refreshes that task-owned list each tick."
+    ],
+    "cautions": [
+      "Graphics data must resolve in original 8 MiB RDRAM. A CPU-valid task outside that range can still produce an RSP-inaccessible material pointer.",
+      "The standalone C prototype is not established."
+    ],
+    "confidence": "decompiled",
+    "example": "/* Observation: func_801F13B0_5AD2C0 initializes a selector-0x22 child. */\n/* Its standalone C prototype is not established; do not call it through a guessed declaration. */\n"
+  },
+  "func_801E8C44_5A4B54": {
+    "title": "Count effect descendants",
+    "summary": "Scans a manager’s descendants in the native flat task list and counts a selected child kind.",
+    "behavior": [
+      "The global next-task pointer is at task +0x00 and the unsigned 16-bit hierarchy depth is at +0x20. A subtree continues while each next task has depth greater than its manager; stop at a peer or ancestor.",
+      "The scan counts descendants whose byte at +0x64 equals the selector. It does not test byte +0x65.",
+      "A new child becomes countable when its kind is initialized, before its first scheduled update."
+    ],
+    "cautions": [
+      "The global next pointer is not a parent/child pointer; unrelated tasks may follow a subtree.",
+      "The standalone C prototype is not established."
+    ],
+    "confidence": "decompiled",
+    "example": "/* Observation: func_801E8C44_5A4B54 counts matching descendants. */\n/* Its standalone C prototype is not established; do not call it through a guessed declaration. */\n"
+  },
+  "func_801EE4AC_5AA3BC": {
+    "title": "Initialize an effect child task",
+    "summary": "Sets the owner and kind fields used by native effect descendant scans.",
+    "behavior": [
+      "Sets task +0x64 to the effect selector and clears task +0x65.",
+      "Copies the owner manager pointer to task +0x84 and copies manager +0x5C into child task +0x5C.",
+      "These fields let the flat-list descendant scan recognize a new child before its first scheduled update."
+    ],
+    "cautions": [
+      "The standalone C prototype is not established."
+    ],
+    "confidence": "decompiled",
+    "example": "/* Observation: func_801EE4AC_5AA3BC initializes effect task fields. */\n/* Its standalone C prototype is not established; do not call it through a guessed declaration. */\n"
+  },
+  "func_801DC554_598464": {
+    "title": "Build a native effect material list",
+    "summary": "Writes native material commands into a task-owned display list and invokes the native data-cache writeback routine.",
+    "behavior": [
+      "Writes a material call, primitive and environment color commands, and an end command to the material list.",
+      "Native effect callbacks can refresh task-owned material data during updates.",
+      "After writing, the routine calls osWritebackDCache with the material-list address and byte length. This records the native sequence; it does not establish whether a recompiled runtime requires an equivalent cache operation."
+    ],
+    "cautions": [
+      "The destination must remain valid for the full graphics-use lifetime and resolve within original 8 MiB RDRAM for RSP access."
+    ],
+    "confidence": "decompiled",
+    "example": "/* Observation: func_801DC554_598464 writes a native effect material list. */\n/* Its standalone C prototype is not established; do not call it through a guessed declaration. */\n"
+  },
+  "func_801E0944_59C854": {
+    "title": "Advance a player character transition",
+    "summary": "Updates the native player transition while retaining the same task and object.",
+    "declaration": "void func_801E0944_59C854(void *task, void *object);",
+    "parameters": [
+      {
+        "name": "task",
+        "type": "void *",
+        "description": "The existing player task."
+      },
+      {
+        "name": "object",
+        "type": "void *",
+        "description": "The existing player object supplied by the scheduler."
+      }
+    ],
+    "returns": "No value.",
+    "behavior": [
+      "In transition case 4, clears player-work byte +0x69 while keeping action +0xCC at 0xBA.",
+      "A later case advances the player to its idle state; the task and object remain the same through the observed transition.",
+      "Player-work byte +0x69 is transition state in this path, not a general alive/dead marker."
+    ],
+    "confidence": "decompiled",
+    "example": "extern void func_801E0944_59C854(void *task, void *object);\n\n/* Native scheduler callback ABI; use only with its live player task/object. */\n"
+  },
+  "func_8021A26C_5D573C": {
+    "title": "Build a native pickup material list",
+    "summary": "Writes the material display list used by a native pickup visual child.",
+    "behavior": [
+      "Writes a 24-byte display list at the child object +0x80 address and uses the 0x60000000 segment tag when binding the material.",
+      "The fading pickup callback rebuilds this list as the child updates.",
+      "The destination must be GPU-readable in original 8 MiB RDRAM; a model record valid to the CPU can still place its material list beyond the renderer-visible region."
+    ],
+    "confidence": "decompiled",
+    "example": "/* Observation: func_8021A26C_5D573C writes the pickup material list. */\n/* Its standalone C prototype is not established; do not call it through a guessed declaration. */\n",
+    "cautions": [
+      "The material destination is task/object storage; verify its address is within the renderer-visible RDRAM range."
+    ]
+  },
+  "func_80211F70_5CD440": {
+    "title": "Update a native pickup visual child",
+    "summary": "Follows the live actor while updating a category-8 pickup visual child.",
+    "behavior": [
+      "This callback is the follow phase in the variant-0 pickup child lifecycle.",
+      "The helper-created child supplies the task and object records used by the native visual path."
+    ],
+    "confidence": "decompiled",
+    "example": "/* Observation: func_80211F70_5CD440 is the follow phase for a pickup visual child. */\n/* Its standalone C prototype is not established; do not call it through a guessed declaration. */\n"
+  },
+  "func_80212020_5CD4F0": {
+    "title": "Fade a native pickup visual child",
+    "summary": "Updates the fade phase and rebuilds the child material display list.",
+    "behavior": [
+      "This callback is the fade phase in the variant-0 pickup child lifecycle.",
+      "Rebuilds the 24-byte material list at the child object +0x80, bound with segment tag 0x60000000."
+    ],
+    "cautions": [
+      "The material pointer must resolve within original 8 MiB RDRAM for RSP access; an extended CPU-valid object address may not be GPU-readable."
+    ],
+    "confidence": "decompiled",
+    "example": "/* Observation: func_80212020_5CD4F0 is the pickup child fade callback. */\n/* Its standalone C prototype is not established; do not call it through a guessed declaration. */\n",
+    "related": [
+      "func_8021A26C_5D573C"
+    ]
+  }
+}

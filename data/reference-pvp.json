@@ -193,9 +193,11 @@
     "behavior": [
       "Checks zero health, floor hazards and crushing before consulting the attacker pointer at player task +0x38. A nonzero result therefore does not identify a particular contact or prove health was lost.",
       "For an ordinary type-1 attacker, reads attacker +0x18 as an object pointer, byte +0x4C as hit kind and byte +0x6D as damage. The object world X/Y/Z at +0x08/+0x0C/+0x10 establish hurt direction. One damage unit is the ordinary half-heart baseline.",
+      "The player-health path reads attacker +0x6D as the raw damage byte and passes it through the native health-adjustment helper. That helper treats zero as 1, doubles the amount in the Sudden Impact state, and applies the resulting signed-byte HP delta. The inspected native outgoing attack setup does not initialize attacker +0x6D, so this field must be supplied for predictable damage when using a custom attacker task.",
       "Routes ordinary hits through native armour, player action/context, health loss, hurt animation and direction handling. Sudden Impact vulnerability can double the health loss. An armour-blocked hit can start invulnerability even while the function returns zero.",
       "The inspected type-1 paths do not retain their attacker descriptor. Type 2 is different: interaction paths can retain the attacker in player +0xE0. Do not generalize type-1 lifetime behavior to every hit kind.",
-      "The normal player pre-update calls func_801E8E24_5A4D34(player, 1) after a nonzero result to cancel eligible owned projectile tasks."
+      "The normal player pre-update calls func_801E8E24_5A4D34(player, 1) after a nonzero result to cancel eligible owned projectile tasks.",
+      "The inspected ordinary type-1 intake switch handles hit kinds 1, 2, and 4 through 11, but has no case for kind 0x1A, so this player routine does not apply damage or freeze for that kind. A separate native enemy path recognizes attacker kind 0x1A and starts an enemy freeze sequence; that enemy-specific state path is not a playable-player reaction."
     ],
     "example": "#include \"modding.h\"\n\nstatic const void *observed_incoming_attacker;\n\nRECOMP_HOOK(\"func_801D9E9C_595DAC\")\nvoid observe_player_damage_intake(void *player)\n{\n    const unsigned char *task = player;\n    if (!task) return;\n    observed_incoming_attacker = *(void *const *)(task + 0x38);\n}\n",
     "cautions": [
@@ -219,13 +221,15 @@
     "declaration": "extern void func_801E8E24_5A4D34(void *player, unsigned char reason);",
     "behavior": [
       "Reads the owned-projectile manager through player task +0xDC, follows its task links, and examines tasks while their priority exceeds the playable player's priority.",
-      "Uses each child's type byte at +0x64 to select the native cancellation table. Eligible entries are marked with byte +0x65 = 1 and byte +0x66 = reason.",
-      "The owned-projectile manager processes these marks during its ordinary updates. The normal damage caller supplies reason 1 after a nonzero intake result."
+      "Uses each child's type byte at +0x64 to select the native cancellation table. Eligible entries are marked with byte +0x65 = 1 and byte +0x66 = reason; this table has no entries for kinds 0x17 through 0x1B.",
+      "The owned-projectile manager processes these marks during its ordinary updates. The normal damage caller supplies reason 1 after a nonzero intake result.",
+      "The owned-projectile manager walks its child tasks on each update. For a child with nonzero +0x65, it decrements +0x66 and removes the child when the prior +0x66 value was zero. A mark of +0x65 = 1 and +0x66 = 0 therefore requests removal on the next manager pass.",
+      "Native projectile construction initializes removal bytes +0x65 and +0x66 to zero and stores the projectile kind at +0x64."
     ],
     "example": "#include \"modding.h\"\n\nstatic unsigned char last_projectile_cancel_reason;\n\nRECOMP_HOOK(\"func_801E8E24_5A4D34\")\nvoid observe_projectile_cancellation(void *player, unsigned char reason)\n{\n    (void)player;\n    last_projectile_cancel_reason = reason;\n}\n",
     "cautions": [
       "The player and its +0xDC manager must be live and initialized; the native function does not perform these pointer checks.",
-      "This mutates selected owned projectile tasks. It is not a generic task destructor and does not cancel every projectile type."
+      "The cancellation routine marks only kinds present in its table; kinds 0x17 through 0x1B are skipped there. The manager still honors removal marks placed directly on a child, regardless of kind."
     ],
     "confidence": "decompiled",
     "related": [

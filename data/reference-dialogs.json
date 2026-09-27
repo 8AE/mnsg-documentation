@@ -39,17 +39,19 @@
   },
   "func_8000C260_CE60": {
     "title": "Allocate and configure a native message window",
-    "summary": "Allocates one message-window slot and configures its position, style and animation.",
+    "summary": "Allocates one native message-window slot and configures its position, style and animation; the renderer can draw allocated windows without a scenario text stream.",
     "declaration": "extern void func_8000C260_CE60(int slot, int x, int y, int target_x, int target_y, int style, int animation);",
     "behavior": [
       "Creates a 0x1818-byte native window allocation and stores its pointer in the selected entry of D_80167C48_168848. The three established slots are 0 through 2.",
       "Style definitions come from the initialized table referenced by D_80167C54_168854. The ordinary US save sign uses slot 0, position and target (24,24), style 8 and animation 0.",
-      "The function has no success return. Inspect the selected window pointer after the call. Native choice parsing assumes the window exists and can dereference null if allocation failed."
+      "The function has no success return. Inspect the selected window pointer after the call. Native choice parsing assumes the window exists and can dereference null if allocation failed.",
+      "The regular window renderer draws each non-null slot independently of scenario-interpreter dispatch. Allocating and drawing a window does not itself publish a scenario script or acquire the scenario input/control lock."
     ],
-    "example": "extern void *D_80167C48_168848[3];\nextern void *D_80167C54_168854;\nextern void func_8000C260_CE60(int slot, int x, int y, int target_x,\n                             int target_y, int style, int animation);\n\n/* The caller owns an idle, initialized native scenario and safe world state. */\nint create_message_window(void)\n{\n    if (!D_80167C54_168854 || D_80167C48_168848[0]) return 0;\n    func_8000C260_CE60(0, 24, 24, 24, 24, 8, 0);\n    return D_80167C48_168848[0] != 0;\n}\n",
+    "example": "extern void *D_80167C48_168848[3];\nextern void *D_80167C54_168854;\nextern void func_8000C260_CE60(int slot, int x, int y, int target_x,\n                             int target_y, int style, int animation);\n\n/* The style table is initialized and this slot is idle. */\nint create_message_window(void)\n{\n    if (!D_80167C54_168854 || D_80167C48_168848[0]) return 0;\n    func_8000C260_CE60(0, 24, 24, 24, 24, 8, 0);\n    return D_80167C48_168848[0] != 0;\n}\n",
     "cautions": [
       "Do not publish a text/choice instruction stream before checking window allocation.",
-      "Do not overwrite an occupied slot or assume a style table is resident merely because the main executable is loaded."
+      "Do not overwrite an occupied slot or assume a style table is resident merely because the main executable is loaded.",
+      "Independent rendering does not reserve an occupied slot or guarantee that another game subsystem will leave it available. Check ownership before allocating or releasing a window."
     ],
     "related": [
       "D_80167C48_168848",
@@ -196,12 +198,17 @@
       "Each array entry is a window pointer. The allocator stores its result here; cleanup clears the selected slot.",
       "Check all three slots before claiming an idle shared dialog interface. Slot zero is used by the ordinary save-sign dialog.",
       "The signed 16-bit animation state is at window +0x30. Opening uses states 1 through 3; closing uses states 5 and 6. A ready window and an absent window must be distinguished by checking the pointer.",
-      "Each window contains 120 native glyph records of 0x30 bytes, starting at window +0x198. The native allocator searches these records; bound a custom prompt and its labels to the available glyph capacity."
+      "Each window contains 120 native glyph records of 0x30 bytes, starting at window +0x198. The native allocator searches these records; bound a custom prompt and its labels to the available glyph capacity.",
+      "Each window has 120 glyph records of 0x30 bytes beginning at window +0x198. A record stores its type at +0x04, flags at +0x06, signed center coordinates at +0x08/+0x0A, float X/Y scales at +0x14/+0x18, and a copied low effect mask at +0x2C. The renderer combines the record center with the window screen position.",
+      "The native glyph insertion routine fills the first free record and advances the horizontal cursor at window +0x6E by glyph_width + 1. Printable ASCII maps to the game font by subtracting 0x20 from each character byte. The newline routine resets the horizontal cursor and advances the text line.",
+      "A native text effect can mark subsequently inserted glyphs to blink; the renderer toggles the title hidden bit every two rendered frames. Clear that insertion effect after adding the glyphs that should blink.",
+      "Text inset state is stored at window +0x50/+0x54; the inspected native window setup uses 10 horizontal and 7 vertical pixels. The per-glyph center is relative to this inset and cursor state."
     ],
     "example": "extern void *D_80167C48_168848[3];\n\nint native_message_windows_idle(void)\n{\n    return !D_80167C48_168848[0] && !D_80167C48_168848[1] &&\n           !D_80167C48_168848[2];\n}\n",
     "cautions": [
       "The array contains pointers, not three contiguous 0x1818-byte windows.",
-      "Do not dereference a freed slot or consider a null pointer a successfully opened window."
+      "Do not dereference a freed slot or consider a null pointer a successfully opened window.",
+      "The native text scale path includes additional coordinate adjustments; the meaning and safe range of non-unit scale values are not established here."
     ],
     "related": [
       "func_8000C260_CE60",
@@ -213,16 +220,18 @@
   },
   "D_80167C54_168854": {
     "title": "Native message-window style table pointer",
-    "summary": "Pointer to the initialized native message-window style definitions.",
+    "summary": "Pointer to the native message-window style table, including entries with green and zero-alpha panel settings.",
     "declaration": "extern void *D_80167C54_168854;",
     "behavior": [
       "Generic native setup initializes the table; opening a save sign first is not a prerequisite.",
-      "The US table at runtime 0x800627F0 uses records of 0x24 bytes. Style 8 supplies the ordinary save-sign background and palette with width 256 pixels and a height of nine 8-pixel strips, or 72 pixels."
+      "The US table at runtime 0x800627F0 uses records of 0x24 bytes. Style 8 supplies the ordinary save-sign background and palette with width 256 pixels and a height of nine 8-pixel strips, or 72 pixels.",
+      "In the US style table at runtime address 0x800627F0, style 0 maps to a 256 by 72 pixel panel using pattern data at 0x8005BB70, the green palette at 0x80062770, and primitive RGBA (192, 192, 192, 170). This records the style-table mapping; it does not identify the style selected by any particular scene. Styles 10 and 11 are byte-for-byte identical across their nine 32-bit fields at 0x80062958 and 0x8006297C; they use the same 256 by 72 pixel geometry and primitive RGBA (192, 192, 192, 0). The zero panel alpha is consistent with text displayed over the scene without a filled green panel, but the particular style index used by that scene has not been traced."
     ],
     "example": "extern void *D_80167C54_168854;\n\nint native_window_styles_ready(void)\n{\n    return D_80167C54_168854 != 0;\n}\n",
     "cautions": [
       "The symbol stores a table pointer; it is not the first style record itself.",
-      "Keep native setup/teardown and style-index validity separate from window allocation success."
+      "Keep native setup/teardown and style-index validity separate from window allocation success.",
+      "The style 10 and style 11 records are identical, so table contents alone cannot distinguish which index a scene selected. No scene-specific allocator call has been traced for the transparent-panel example."
     ],
     "related": [
       "func_8000C260_CE60",
@@ -379,5 +388,123 @@
     "exampleExplanation": "The native return hook reads controller-one held buttons after the derived input update. It does not modify raw input or introduce global control ownership.",
     "declaration": "extern void func_80004AF8_56F8(void);",
     "returns": "No return value."
+  },
+  "func_8000D060_DC60": {
+    "title": "Insert a native message-window glyph",
+    "summary": "Adds a game-font glyph whose record supports native per-glyph palette selection.",
+    "declaration": "extern void func_8000D060_DC60(int slot, unsigned int glyph);",
+    "behavior": [
+      "Uses the native window in the selected slot and searches its 120 glyph records for the first free record.",
+      "Printable ASCII characters map to glyph indices by subtracting 0x20 from the character byte. The call advances the horizontal cursor by the glyph width plus one pixel.",
+      "The glyph record stores its center coordinates relative to the window text layout, scale values, and the current low text-effect mask. The low four bits of the glyph record field at +0x06 select its text palette; preserve the remaining bits when changing the selector because they also carry glyph display effects such as blinking or hiding. In the inspected US text renderer, selectors 6/7 use a blue-violet palette (RGB5551 entries 0x003F, 0x31BF, and 0x633F), while selectors 8/9 use a green palette (0x0401, 0x0701, and 0x07C1)."
+    ],
+    "parameters": [
+      {
+        "name": "slot",
+        "type": "int",
+        "description": "Allocated native message-window slot, 0 through 2."
+      },
+      {
+        "name": "glyph",
+        "type": "unsigned int",
+        "description": "Native game-font glyph index; printable US ASCII uses character value minus 0x20."
+      }
+    ],
+    "returns": "No return value.",
+    "example": "extern void func_8000D060_DC60(int slot, unsigned int glyph);\n\n/* Insert the native glyph for the letter A (ASCII 0x41). */\nvoid add_letter_a(int slot)\n{\n    func_8000D060_DC60(slot, 0x41u - 0x20u);\n}\n",
+    "exampleExplanation": "Pass a bounded glyph from the game font to an allocated window. The routine selects the first free glyph record and updates the text cursor.",
+    "cautions": [
+      "The window has a fixed capacity of 120 glyph records. Do not assume insertion succeeds when all records are occupied.",
+      "Unicode characters and scenario control tokens are not printable ASCII glyph indices.",
+      "When changing a glyph palette, update only the low four bits at record +0x06. The higher bits include display-effect state and must be preserved."
+    ],
+    "related": [
+      "D_80167C48_168848",
+      "func_8000C3EC_CFEC",
+      "func_8000C454_D054",
+      "func_8000C488_D088"
+    ],
+    "confidence": "decompiled"
+  },
+  "func_8000C3EC_CFEC": {
+    "title": "Advance a native message-window text line",
+    "summary": "Moves the selected native window text cursor to the next line.",
+    "declaration": "extern void func_8000C3EC_CFEC(int slot);",
+    "behavior": [
+      "Resets the horizontal text cursor and advances the vertical text position by the line-step value stored in the native window."
+    ],
+    "parameters": [
+      {
+        "name": "slot",
+        "type": "int",
+        "description": "Allocated native message-window slot, 0 through 2."
+      }
+    ],
+    "returns": "No return value.",
+    "example": "extern void func_8000C3EC_CFEC(int slot);\n\nvoid begin_next_text_line(int slot)\n{\n    func_8000C3EC_CFEC(slot);\n}\n",
+    "exampleExplanation": "Call between glyph sequences to place the next sequence on a new native text line.",
+    "cautions": [
+      "Use only with an allocated native window slot."
+    ],
+    "related": [
+      "D_80167C48_168848",
+      "func_8000D060_DC60"
+    ],
+    "confidence": "decompiled"
+  },
+  "func_8000C454_D054": {
+    "title": "Enable blinking for subsequent native glyphs",
+    "summary": "Sets the native message-window text effect copied into subsequently inserted glyph records.",
+    "declaration": "extern void func_8000C454_D054(int slot);",
+    "behavior": [
+      "Enables the native blink effect for glyphs inserted afterward. The window renderer toggles the glyph title-hidden bit every two rendered frames.",
+      "The effect mask is copied into each glyph record at insertion time; changing the window effect does not retroactively mark existing glyphs."
+    ],
+    "parameters": [
+      {
+        "name": "slot",
+        "type": "int",
+        "description": "Allocated native message-window slot, 0 through 2."
+      }
+    ],
+    "returns": "No return value.",
+    "example": "extern void func_8000C454_D054(int slot);\nextern void func_8000D060_DC60(int slot, unsigned int glyph);\nextern void func_8000C488_D088(int slot);\n\nvoid insert_blinking_a(int slot)\n{\n    func_8000C454_D054(slot);\n    func_8000D060_DC60(slot, (unsigned int)('A' - 0x20));\n    func_8000C488_D088(slot);\n}\n",
+    "exampleExplanation": "Enable the effect before inserting glyphs that should blink, then clear it before inserting steady text.",
+    "cautions": [
+      "This changes text-effect state on the selected native window; it does not start the scenario interpreter or handle input."
+    ],
+    "related": [
+      "func_8000C488_D088",
+      "func_8000D060_DC60",
+      "D_80167C48_168848"
+    ],
+    "confidence": "decompiled"
+  },
+  "func_8000C488_D088": {
+    "title": "Clear the native message-window text effect",
+    "summary": "Clears the current text effect so subsequently inserted glyphs use the default effect.",
+    "declaration": "extern void func_8000C488_D088(int slot);",
+    "behavior": [
+      "Clears the effect mask applied to glyphs inserted afterward. Glyph records already created retain the effect value copied when they were inserted."
+    ],
+    "parameters": [
+      {
+        "name": "slot",
+        "type": "int",
+        "description": "Allocated native message-window slot, 0 through 2."
+      }
+    ],
+    "returns": "No return value.",
+    "example": "extern void func_8000C488_D088(int slot);\n\nvoid insert_steady_text_after_effect(int slot)\n{\n    func_8000C488_D088(slot);\n    /* Subsequent glyph insertions use the default text effect. */\n}\n",
+    "exampleExplanation": "Clear the insertion effect before adding glyphs that should remain steady.",
+    "cautions": [
+      "This affects subsequent glyph insertions only; it does not change window ownership or control gameplay input."
+    ],
+    "related": [
+      "func_8000C454_D054",
+      "func_8000D060_DC60",
+      "D_80167C48_168848"
+    ],
+    "confidence": "decompiled"
   }
 }

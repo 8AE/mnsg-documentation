@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-26T01:00:45+00:00",
+  "romSha256": "e40bee20508c2e29e651dca4e47504e40f908f0a2186e34a582784bf5a64be4c",
+  "scope": "US native Sasuke bomb launch trajectory and impact descriptor observations, used as comparison evidence for carried-object throw behavior. No binaries are included.",
+  "nativeEvidence": [
+    {
+      "symbols": [
+        "func_801EBF48_5A7E58",
+        "func_801EBEAC_5A7DBC",
+        "func_801EBEE0_5A7DF0",
+        "func_801EBF14_5A7E24",
+        "func_80033898_34498"
+      ],
+      "addresses": [
+        "0x801EBF48",
+        "0x801EBEAC",
+        "0x801EBEE0",
+        "0x801EBF14",
+        "0x80033898"
+      ],
+      "finding": "The three native bomb variants launch from local player-relative offset (0, 125.300003, 75.129997). In phase zero, the common updater reads owner task float fields +0x68/+0x6C/+0x70, adds 5 to the Y component and 3 to Z, then rotates the vector using the owner display object's packed angles at +0x14/+0x16/+0x18 through func_80033898_34498, and writes bomb task velocity at +0x6C/+0x70/+0x74. Flight applies gravity constant D_8020BA74=0xBF2AAAAA (-0.66666662693) per update, advances position, and checks collision before switching to impact behavior."
+    },
+    {
+      "symbols": [
+        "func_801EBF48_5A7E58"
+      ],
+      "addresses": [
+        "0x801EBF48"
+      ],
+      "finding": "The initialized outgoing attack descriptor has bit 2 set at descriptor +0x30, -1 at +0x48, 0x1C at +0x4C, and 30 at +0x4E. The impact descriptor writes 100 at +0x4E. These observations establish raw fields and values; their exact meanings and the complete enemy/environment damage behavior were not established by this trace."
+    }
+  ],
+  "limitations": [
+    "The launch trace establishes an owner-relative vector, its rotation, per-update gravity, collision transition, and raw descriptor values. It does not by itself establish damage radius, pot-breaking behavior, or the semantics of all descriptor fields.",
+    "The evidence is native static analysis and does not establish live behavior for a multiplayer frozen-player cube."
+  ]
+}

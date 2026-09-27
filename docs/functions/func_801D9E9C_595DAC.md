@@ -27,11 +27,15 @@ Checks zero health, floor hazards and crushing before consulting the attacker po
 
 For an ordinary type-1 attacker, reads attacker +0x18 as an object pointer, byte +0x4C as hit kind and byte +0x6D as damage. The object world X/Y/Z at +0x08/+0x0C/+0x10 establish hurt direction. One damage unit is the ordinary half-heart baseline.
 
+The player-health path reads attacker +0x6D as the raw damage byte and passes it through the native health-adjustment helper. That helper treats zero as 1, doubles the amount in the Sudden Impact state, and applies the resulting signed-byte HP delta. The inspected native outgoing attack setup does not initialize attacker +0x6D, so this field must be supplied for predictable damage when using a custom attacker task.
+
 Routes ordinary hits through native armour, player action/context, health loss, hurt animation and direction handling. Sudden Impact vulnerability can double the health loss. An armour-blocked hit can start invulnerability even while the function returns zero.
 
 The inspected type-1 paths do not retain their attacker descriptor. Type 2 is different: interaction paths can retain the attacker in player +0xE0. Do not generalize type-1 lifetime behavior to every hit kind.
 
 The normal player pre-update calls func_801E8E24_5A4D34(player, 1) after a nonzero result to cancel eligible owned projectile tasks.
+
+The inspected ordinary type-1 intake switch handles hit kinds 1, 2, and 4 through 11, but has no case for kind 0x1A, so this player routine does not apply damage or freeze for that kind. A separate native enemy path recognizes attacker kind 0x1A and starts an enemy freeze sequence; that enemy-specific state path is not a playable-player reaction.
 
 ## Return value
 
