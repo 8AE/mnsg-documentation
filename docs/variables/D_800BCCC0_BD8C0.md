@@ -44,14 +44,14 @@ This exported byte array begins at full-system offset +0x30000. Use the alias-re
 | `0xAE24` | `0x3AE24` | `uint16_t` | Native task execution/render mask. The task scheduler uses only low mask bits 0x0007; Start pause adds 0x0001 to suspend matching task subtrees. |
 | `0xAE26` | `0x3AE26` | `uint16_t` | Native Start pause/menu state. Zero is ordinary gameplay; nonzero dispatches the native pause overlay state machine. |
 | `0xAE29` | `0x3AE29` | `uint8_t` | Destination-transition marker; the warp destination helper writes 1. |
-| `0xAE3A` | `0x3AE3A` | `uint16_t` | Seventh argument of the warp destination helper; individual values are not yet interpreted. |
-| `0xAE3C` | `0x3AE3C` | `uint32_t` | Eighth argument of the warp destination helper; individual values are not yet interpreted. |
+| `0xAE3A` | `0x3AE3A` | `int16_t` | Queued native script resource ID. Zero requests no script; signed -1 belongs to a separate menu/demo path. |
+| `0xAE3C` | `0x3AE3C` | `uint32_t` | 32-bit segmented address of a queued native script. Ordinary requests pass zero with script resource zero. |
 | `0xAFE0` | `0x3AFE0` | `uint16_t` | Destination room/stage ID. Use the room table on D_800C7AB2. |
-| `0xAFE2` | `0x3AFE2` | `int16_t` | Destination player rotation. |
+| `0xAFE2` | `0x3AFE2` | `int16_t` | Destination packed camera-start parameter; camera byte +0xBC selects native startup group and direction. |
 | `0xAFE4` | `0x3AFE4` | `int16_t` | Destination player X position. |
 | `0xAFE6` | `0x3AFE6` | `int16_t` | Destination player Y position. |
 | `0xAFE8` | `0x3AFE8` | `int16_t` | Destination player Z position. |
-| `0xAFEA` | `0x3AFEA` | `int16_t` | Destination camera rotation. |
+| `0xAFEA` | `0x3AFEA` | `int16_t` | Destination base player Y heading in native 10-bit phase (1024 units per revolution); also a camera-facing baseline. |
 
 ## Usage example
 

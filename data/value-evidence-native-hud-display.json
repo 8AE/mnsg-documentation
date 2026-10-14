@@ -1,0 +1,112 @@
+{
+  "reviewedAt": "2026-09-28",
+  "romSha256": "e40bee20508c2e29e651dca4e47504e40f908f0a2186e34a582784bf5a64be4c",
+  "symbolTable": {
+    "path": "Goemon64RecompSyms/mnsg.syms.toml",
+    "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77",
+    "note": "Hash is recorded from the currently inspected symbol table. Function VROM offsets and sizes are cross-checked against its rows."
+  },
+  "method": "Ghidra decompilation and MIPS call-site inspection against the US ROM; no live game behavior was exercised.",
+  "nativeEvidence": {
+    "displayAllocation": {
+      "address": "0x80035EEC",
+      "range": "0x80035F88-0x80035FB8",
+      "finding": "Returns the first allocated display object and links it into the owner display list using owner +0x18/+0x1C and object +0x00."
+    },
+    "queue": {
+      "function": "func_800103DC_10FDC",
+      "address": "0x800103DC",
+      "finding": "Creates a kind-1 child queue and allocates a sprite-record buffer using the requested capacity. There are at most 16 live queue slots. A stock overlay caller requests capacity 0x73 and display layer 10.",
+      "appendFunction": "func_800106F0_112F0",
+      "appendAddress": "0x800106F0",
+      "appendFinding": "Takes eight arguments, appends a 12-byte record, and returns its index or -1. In o32, height, handle, s, and t are read from stack argument slots 0x10, 0x14, 0x18, and 0x1C.",
+      "overlayCaller": {
+        "function": "func_8021433C_6732EC",
+        "address": "0x8021433C",
+        "finding": "Creates a queue with requested capacity 0x73 and display layer 10."
+      },
+      "appendCaller": {
+        "addressRange": "0x802124C0-0x802124D8",
+        "overlay": ".file_17",
+        "finding": "Supplies all eight native sprite-append arguments and confirms the final four o32 stack arguments."
+      },
+      "resetFunction": "func_80010358_10F58",
+      "resetAddress": "0x80010358",
+      "resetFinding": "Resets the pending count.",
+      "finalizeFunction": "func_800105AC_111AC",
+      "finalizeAddress": "0x800105AC",
+      "finalizeFinding": "Writes a 0x8000 end marker after the pending records.",
+      "cleanupFunction": "func_80010374_10F74",
+      "cleanupAddress": "0x80010374",
+      "cleanupFinding": "Loads the queue buffer and passes that exact pointer to func_80014B74 for scene-pool release.",
+      "lifecycleFinding": "func_800101AC_10DAC clears all 40 texture descriptors and all 16 queue slots during scene transition cleanup. A queue's visible contribution during a newly added sprite's first intro frame was not runtime tested."
+    },
+    "textureDescriptors": {
+      "registerFunction": "func_80010230_10E30",
+      "registerAddress": "0x80010230",
+      "finding": "Registers dimensions, format and flags bytes, pixel pointer, and palette in a 40-slot descriptor table; callers use the returned handle.",
+      "unregisterFunction": "func_800102E0_10EE0",
+      "unregisterAddress": "0x800102E0",
+      "finding": "Clears the descriptor selected by its handle. A file_17 overlay calls it for every handle it registered.",
+      "unregisterCaller": {
+        "function": "func_80212010_670FC0",
+        "address": "0x80212010",
+        "overlay": ".file_17"
+      }
+    },
+    "stockPlayerHearts": {
+      "overlay": ".file_0C",
+      "initializer": {
+        "function": "func_801FBB30_5B7A40",
+        "address": "0x801FBB30",
+        "callRange": "0x801FBBF4-0x801FBC58",
+        "finding": "Calls kind-1 display allocation with count 1, sets object +0x04=1, +0x05=10, +0x0C=0, writes 0.5 to scales +0x2C/+0x30, and ORs 0x04 into byte +0x08 to enable scale processing."
+      },
+      "updater": {
+        "function": "func_801FBD50_5B7C60",
+        "address": "0x801FBD50",
+        "finding": "Reads current/max player health in half-heart units, clamps at 0x28 units, and uses descriptor arrays D_8020A1D4 (base, source x=16,y=24), D_8020A2C4 (empty/max, x=8,y=24), D_8020A3B4 (full/current, x=0,y=24), and D_8020A4A4 (half, same red source cell x=0,y=24). The half red image is 4x4 at (+2,+2) over the 8x8 dark-heart base, without a separate transparent texture or alpha treatment.",
+        "halfHeartRendering": {
+          "scaleEnableByteOffset": "0x08",
+          "scaleEnableMask": "0x04",
+          "scaleXOffset": "0x2C",
+          "scaleYOffset": "0x30",
+          "scaleX": 0.5,
+          "scaleY": 0.5,
+          "atlasCell": "same red 8x8 cell at (0,24) as the full heart",
+          "foregroundSize": "4x4",
+          "foregroundOffset": "+2,+2",
+          "background": "8x8 dark-heart base",
+          "alphaOrSeparateTexture": false
+        },
+        "resource": "0x8004",
+        "resourceEvidence": "D_8005B740 bank entry points to a 64x32 RGBA5551 image in segment 0x0A000000, file 0x7F, resource 0x8004.",
+        "playerHealth": {
+          "current": "D_8015C5E6, unsigned halfword, half-heart units",
+          "maximum": "D_8015C5E2, unsigned halfword, half-heart units",
+          "displayLimit": 40,
+          "unitsPerFullHeart": 2
+        },
+        "caution": "Congo HP is separate: boss task byte +0x8D ranges 0..30. Treating two Congo HP units as one displayed heart is a UI conversion choice; the stock player-heart routine does not define that mapping."
+      }
+    },
+    "displayScale": {
+      "function": "func_80008920_9520",
+      "address": "0x80008920",
+      "finding": "The float-scale rendering path ignores scale fields unless display-object byte +0x08 has bit 0x04 set."
+    },
+    "descriptorBank": {
+      "function": "func_800086C4_92C4",
+      "address": "0x800086C4",
+      "instructionRange": "0x800086C4-0x800086C8",
+      "finding": "Stores the second argument (a1) as the descriptor pointer at display object +0x34 and the third argument (a2) as the descriptor-bank pointer at +0x14. Return behavior and pointer ownership are unconfirmed.",
+      "heartResource": "0x8004"
+    }
+  },
+  "uncertainties": [
+    "The new sprite's visibility during a first-time scene introduction was not checked in a running game.",
+    "The numeric encodings for texture format and flags, ownership of caller pixel buffers, and all display-layer semantics were not established by these inspected paths.",
+    "Return values are documented only where native callers or decompilation establish their use; several cleanup/finalize call sites ignore any possible return value."
+  ],
+  "confidence": "Ghidra-verified structural behavior and stock HUD mapping; no live rendering verification."
+}

@@ -5,7 +5,8 @@
     "mnsg-enable-boss-rush": "73f7a09e9ccee312aa33f093bac7bd539ede8b60",
     "mnsg-extra-options": "8ff1ff2a3f4de42679ea5cb0b6b021a830140ed2",
     "mnsg-recomp-example": "caa88eea1021a8ee9eb4edeb1c6d56ed64d79a2d",
-    "mnsg-team-up": "725bf954fb46297d2d0e0208d762ecd21856517a"
+    "mnsg-team-up": "725bf954fb46297d2d0e0208d762ecd21856517a",
+    "Goemon64Recomp": "30775d247e912178d28fe46bf04d5d610ebc43da"
   },
   "sourceFiles": [
     {
@@ -72,16 +73,22 @@
       "project": "mnsg-enable-boss-rush",
       "path": "docs/impact-boss-rush.md",
       "sha256": "7ee575abb7f45a2d67eac57b2773aeb01df0e850ef082624fafed5cc92245348"
+    },
+    {
+      "project": "Goemon64Recomp",
+      "path": "src/game/scene_table.cpp",
+      "sha256": "37a9974a7497a88566362061a26aca568b8199ff55377909cc5204b50e5e74ae"
     }
   ],
   "counts": {
     "baseAreaMapping": 200,
     "specificLocationCatalog": 76,
     "exactRoomRefinements": 7,
-    "uniquePublicRoomIds": 201,
-    "areaOnlyPublicRows": 115,
+    "uniquePublicRoomIds": 208,
+    "areaOnlyPublicRows": 114,
     "publicSymbols": 2,
-    "publicTables": 3
+    "publicTables": 3,
+    "upstreamSceneTableLabels": 6
   },
   "rooms": {
     "0x0000": {
@@ -3663,10 +3670,23 @@
             "line": 186,
             "note": "Room field and human-readable name in the location catalog; coordinates deliberately not treated as native table values."
           }
+        },
+        {
+          "name": "Waterfall of Kegon",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "Goemon64Recomp",
+            "path": "src/game/scene_table.cpp",
+            "line": 181,
+            "revision": "30775d247e912178d28fe46bf04d5d610ebc43da",
+            "sha256": "37a9974a7497a88566362061a26aca568b8199ff55377909cc5204b50e5e74ae",
+            "url": "https://github.com/klorfmorf/Goemon64Recomp/blob/30775d247e912178d28fe46bf04d5d610ebc43da/src/game/scene_table.cpp",
+            "note": "The scene table labels room ID 0x154 as Waterfall of Kegon."
+          }
         }
       ],
       "specific": true,
-      "resolution": "Preserve the available label without inventing a more specific chamber name.",
+      "resolution": "The scene table confirms the existing exact label Waterfall of Kegon.",
       "parsedName": "Waterfall of Kegon",
       "publicName": "Waterfall of Kegon"
     },
@@ -4953,34 +4973,50 @@
             "project": "mnsg-recomp-example",
             "path": "py/anchor_mnsg.py",
             "line": 417,
-            "note": "Native room ID to area label mapping."
+            "note": "Existing broad native room-to-area mapping; the upstream scene table provides the exact room name."
+          }
+        },
+        {
+          "name": "Goemon Impact Minigame",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "Goemon64Recomp",
+            "path": "src/game/scene_table.cpp",
+            "line": 296,
+            "note": "The Minigames group names room ID 0x1e0 as Goemon Impact Minigame.",
+            "revision": "30775d247e912178d28fe46bf04d5d610ebc43da",
+            "sha256": "37a9974a7497a88566362061a26aca568b8199ff55377909cc5204b50e5e74ae",
+            "url": "https://github.com/klorfmorf/Goemon64Recomp/blob/30775d247e912178d28fe46bf04d5d610ebc43da/src/game/scene_table.cpp"
           }
         }
       ],
-      "specific": false,
-      "resolution": "Preserve the available label without inventing a more specific chamber name.",
-      "parsedName": "Oedo Town",
-      "publicName": "Oedo Town (specific room name unknown)"
+      "specific": true,
+      "resolution": "Use the exact minigame room name in preference to the pre-existing broad Oedo Town area label.",
+      "parsedName": "Goemon Impact Minigame",
+      "publicName": "Goemon Impact Minigame"
     },
     "0x01E2": {
       "raw": 482,
       "rawHex": "0x01E2",
       "candidates": [
         {
-          "name": "Jump Challenge Training",
-          "scope": "area-or-location",
+          "name": "Sasuke High Jump Minigame",
+          "scope": "specific-location",
           "evidence": {
-            "project": "mnsg-recomp-example",
-            "path": "py/anchor_mnsg.py",
-            "line": 403,
-            "note": "Native room ID to area label mapping."
+            "project": "Goemon64Recomp",
+            "path": "src/game/scene_table.cpp",
+            "line": 298,
+            "note": "The Minigames group names room ID 0x1e2 as Sasuke High Jump Minigame.",
+            "revision": "30775d247e912178d28fe46bf04d5d610ebc43da",
+            "sha256": "37a9974a7497a88566362061a26aca568b8199ff55377909cc5204b50e5e74ae",
+            "url": "https://github.com/klorfmorf/Goemon64Recomp/blob/30775d247e912178d28fe46bf04d5d610ebc43da/src/game/scene_table.cpp"
           }
         }
       ],
-      "specific": false,
-      "resolution": "Preserve the available label without inventing a more specific chamber name.",
-      "parsedName": "Jump Challenge Training",
-      "publicName": "Jump Challenge Training"
+      "specific": true,
+      "resolution": "Use the exact minigame room name in preference to the pre-existing generic Jump Challenge Training label.",
+      "parsedName": "Sasuke High Jump Minigame",
+      "publicName": "Sasuke High Jump Minigame"
     },
     "0x0226": {
       "raw": 550,
@@ -5001,6 +5037,75 @@
       "resolution": "Preserve the available label without inventing a more specific chamber name.",
       "parsedName": "World Map",
       "publicName": "World Map"
+    },
+    "0x0157": {
+      "raw": 343,
+      "rawHex": "0x0157",
+      "candidates": [
+        {
+          "name": "Mermaid Waterfall - Unused",
+          "scope": "unused-room",
+          "evidence": {
+            "project": "Goemon64Recomp",
+            "path": "src/game/scene_table.cpp",
+            "line": 183,
+            "note": "The room catalog explicitly appends \"- Unused\" to this scene name; it does not establish an active Yae minigame.",
+            "revision": "30775d247e912178d28fe46bf04d5d610ebc43da",
+            "sha256": "37a9974a7497a88566362061a26aca568b8199ff55377909cc5204b50e5e74ae",
+            "url": "https://github.com/klorfmorf/Goemon64Recomp/blob/30775d247e912178d28fe46bf04d5d610ebc43da/src/game/scene_table.cpp"
+          }
+        }
+      ],
+      "specific": false,
+      "resolution": "Preserve the explicit unused marker. This source does not establish an active or playable mermaid minigame.",
+      "parsedName": "Mermaid Waterfall - Unused",
+      "publicName": "Mermaid Waterfall (marked unused)"
+    },
+    "0x01D0": {
+      "raw": 464,
+      "rawHex": "0x01D0",
+      "candidates": [
+        {
+          "name": "Sasuke Jetpack Training",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "Goemon64Recomp",
+            "path": "src/game/scene_table.cpp",
+            "line": 295,
+            "note": "The Minigames group names room ID 0x1d0 as Sasuke Jetpack Training.",
+            "revision": "30775d247e912178d28fe46bf04d5d610ebc43da",
+            "sha256": "37a9974a7497a88566362061a26aca568b8199ff55377909cc5204b50e5e74ae",
+            "url": "https://github.com/klorfmorf/Goemon64Recomp/blob/30775d247e912178d28fe46bf04d5d610ebc43da/src/game/scene_table.cpp"
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Use the exact room name listed in the upstream scene table.",
+      "parsedName": "Sasuke Jetpack Training",
+      "publicName": "Sasuke Jetpack Training"
+    },
+    "0x01E1": {
+      "raw": 481,
+      "rawHex": "0x01E1",
+      "candidates": [
+        {
+          "name": "Ebisumaru Sweets Minigame",
+          "scope": "specific-location",
+          "evidence": {
+            "project": "Goemon64Recomp",
+            "path": "src/game/scene_table.cpp",
+            "line": 297,
+            "note": "The Minigames group names room ID 0x1e1 as Ebisumaru Sweets Minigame.",
+            "revision": "30775d247e912178d28fe46bf04d5d610ebc43da",
+            "sha256": "37a9974a7497a88566362061a26aca568b8199ff55377909cc5204b50e5e74ae",
+            "url": "https://github.com/klorfmorf/Goemon64Recomp/blob/30775d247e912178d28fe46bf04d5d610ebc43da/src/game/scene_table.cpp"
+          }
+        }
+      ],
+      "specific": true,
+      "resolution": "Use the exact room name listed in the upstream scene table.",
+      "parsedName": "Ebisumaru Sweets Minigame",
+      "publicName": "Ebisumaru Sweets Minigame"
     }
   },
   "layoutEvidence": [
@@ -5087,6 +5192,18 @@
     {
       "subject": "0x01B8 broad area versus interior label",
       "decision": "Publish the specific interior label Oedo Tourist Center - Awa branch rather than asserting the broad Folkypoke Village grouping is an exact room name. Both original candidates are retained for audit."
+    },
+    {
+      "subject": "Minigame scene labels and unused Mermaid Waterfall",
+      "decision": "Use the exact Minigames group names for 0x01D0 and 0x01E0-0x01E2. Record 0x0157 as Mermaid Waterfall - Unused; that label alone does not establish an active Yae mermaid minigame.",
+      "evidence": {
+        "project": "Goemon64Recomp",
+        "path": "src/game/scene_table.cpp",
+        "lines": "183, 294-298",
+        "revision": "30775d247e912178d28fe46bf04d5d610ebc43da",
+        "sha256": "37a9974a7497a88566362061a26aca568b8199ff55377909cc5204b50e5e74ae",
+        "url": "https://github.com/klorfmorf/Goemon64Recomp/blob/30775d247e912178d28fe46bf04d5d610ebc43da/src/game/scene_table.cpp"
+      }
     }
   ],
   "auditedCheckouts": [
@@ -5109,6 +5226,13 @@
     {
       "project": "mnsg-enable-boss-rush",
       "findings": "Native Impact boss-rush destination 0x260 documented; not promoted to a current-room value."
+    },
+    {
+      "project": "Goemon64Recomp",
+      "revision": "30775d247e912178d28fe46bf04d5d610ebc43da",
+      "source": "src/game/scene_table.cpp",
+      "sha256": "37a9974a7497a88566362061a26aca568b8199ff55377909cc5204b50e5e74ae",
+      "findings": "The Minigames group labels 0x01D0, 0x01E0, 0x01E1 and 0x01E2 as Sasuke Jetpack Training, Goemon Impact Minigame, Ebisumaru Sweets Minigame and Sasuke High Jump Minigame. Room 0x0157 is Mermaid Waterfall - Unused."
     }
   ],
   "limitations": [
@@ -5116,6 +5240,7 @@
     "Most dungeon chamber IDs have only area-level labels. Repeated names do not mean the IDs are interchangeable.",
     "Unlisted room IDs remain undocumented, not necessarily invalid.",
     "Native table values were not dumped; only the five-short layout and arithmetic are published.",
-    "The active Ghidra database returned no xrefs at 0x8006B780 in this pass; no database changes were made."
+    "The active Ghidra database returned no xrefs at 0x8006B780 in this pass; no database changes were made.",
+    "The upstream room names do not establish which flags or launch transitions activate the minigames. The 0x0157 label explicitly says Unused and does not prove an active Yae mermaid minigame."
   ]
 }

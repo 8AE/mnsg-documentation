@@ -1,0 +1,40 @@
+{
+  "func_80006140_6D40": {
+    "title": "Prepare an Impact battle cutscene stage",
+    "summary": "Prepares one of the native Impact battle stage transitions. The engine warp step must be selected separately to enter the prepared stage.",
+    "confidence": "decompiled",
+    "behavior": [
+      "Calls a native stage setup helper with the two caller-supplied values, sets a global transition flag to 1, writes 0x80 to the system byte at +0x3AE29, and stores 0x021C + index at system halfword +0x3AFE0.",
+      "For the inspected Impact battle stages, index 0x1D selects Kashiwagi stage 0x0239, index 0x1E selects Thaisamba stage 0x023A, and index 0x1F selects Balberra stage 0x023B.",
+      "After preparing these fields, the caller must separately select engine step 12 with func_80003728_4328 to run the warp transition."
+    ],
+    "parameters": [
+      {
+        "name": "index",
+        "type": "unsigned char",
+        "description": "Stage offset added to 0x021C. The verified Impact intro indices are 0x1D, 0x1E, and 0x1F."
+      },
+      {
+        "name": "field90",
+        "type": "unsigned short",
+        "description": "Value forwarded to the native stage setup helper; its semantic meaning is not established here."
+      },
+      {
+        "name": "field91",
+        "type": "unsigned int",
+        "description": "Value forwarded to the native stage setup helper; its semantic meaning is not established here."
+      }
+    ],
+    "returns": "No return value.",
+    "cautions": [
+      "This function prepares transition state but does not select the engine warp step by itself. Call func_80003728_4328(12) after preparation.",
+      "The meanings and valid ranges of field90 and field91 are not established here. Preserve values verified for the intended caller rather than guessing them.",
+      "Only the three listed stage indices are mapped here; other indices must be researched before use."
+    ],
+    "example": "extern void func_80006140_6D40(unsigned char index, unsigned short field90, unsigned int field91);\nextern void func_80003728_4328(unsigned char step);\n\n/* Use field values established for the selected Impact stage. */\nvoid prepare_kashiwagi_intro(unsigned short field90, unsigned int field91)\n{\n    func_80006140_6D40(0x1D, field90, field91);\n    func_80003728_4328(12);\n}\n",
+    "exampleExplanation": "The stage-preparation routine and engine-step switch are separate operations. The example shows the verified Kashiwagi stage index; it leaves the setup arguments to a caller that has established their values.",
+    "related": [
+      "func_80003728_4328"
+    ]
+  }
+}

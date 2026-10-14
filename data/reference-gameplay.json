@@ -125,30 +125,35 @@
   },
   "func_800141C4_14DC4": {
     "title": "Look up a loaded resource file",
-    "summary": "Looks up a file ID in the native loaded-resource registry without loading missing data.",
+    "summary": "Looks up a dynamic scene-registry resource and returns its stored value, including native type tags.",
     "behavior": [
       "Scans registry entries beginning at 0x80167FC0 until a matching ID or the zero-ID terminator. A match returns the stored resource data pointer.",
-      "File ID zero returns null. A nonzero ID absent from the registry returns target pointer 0xFFFFFFFF."
+      "File ID zero returns null. A nonzero ID absent from the registry returns target pointer 0xFFFFFFFF.",
+      "Control Machine projectile resource file 0x2E has native resource category 0x11. When registered, its data base is stored with tag bit 0x40000000, and this lookup returns that stored value unchanged.",
+      "This lookup searches the dynamic scene-resource registry only. The native world loader directly loads common File12 code to fixed destination 0x8020D2A0 without inserting a dynamic registry entry."
     ],
     "cautions": [
       "Check both null and the -1 sentinel before dereferencing. A non-null pointer alone does not prove the file was found.",
-      "Registry entries have scene/overlay lifetimes; a pointer retained across a resource reload may be stale."
+      "Registry entries have scene/overlay lifetimes; a pointer retained across a resource reload may be stale.",
+      "A tagged resource value is not an actor or task pointer. Do not require it to pass actor-pointer address-range checks; check this API's null and 0xFFFFFFFF sentinels and preserve the returned value unchanged when a resource consumer expects it.",
+      "A missing entry is not a general test for executable-overlay residency. In particular, File12 world functions can be available through the fixed native loader while file ID 0x0C is absent from this registry."
     ],
     "confidence": "decompiled",
     "related": [
       "func_80013B14_14714",
-      "func_802171A8_5D2678"
+      "func_802171A8_5D2678",
+      "func_08001954_6F1B64"
     ],
-    "example": "extern void *func_800141C4_14DC4(unsigned int file_id);\n\nvoid *find_ryo_popup_resource(void)\n{\n    void *resource = func_800141C4_14DC4(0x3B);\n    if (!resource || resource == (void *)(unsigned long)0xFFFFFFFFu)\n        return 0;\n    return resource;\n}\n",
-    "exampleExplanation": "The example shows the documented native data layout or call sequence. Use it only while the relevant game state and resources are valid.",
+    "example": "extern void *func_800141C4_14DC4(unsigned int file_id);\n\nvoid *find_control_machine_shot_resource(void)\n{\n    void *resource = func_800141C4_14DC4(0x2E);\n    if (!resource || resource == (void *)(unsigned long)0xFFFFFFFFu)\n        return 0;\n    /* Preserve the registry value; it is not an actor or task pointer. */\n    return resource;\n}\n",
+    "exampleExplanation": "The Control Machine shot lookup demonstrates the null and missing-file checks while preserving the tagged registry value for the resource consumer.",
     "parameters": [
       {
         "name": "file_id",
         "type": "unsigned int",
-        "description": "Native resource file ID, such as 0x3B for the Ryo popup."
+        "description": "Native resource file ID, such as 0x2E for the Control Machine projectile."
       }
     ],
-    "returns": "Loaded resource pointer; null for file ID 0; target pointer 0xFFFFFFFF when not found.",
+    "returns": "Stored resource value, including any native type tag; null for file ID 0; target pointer 0xFFFFFFFF when not found.",
     "decompilation": "void * FUN_800141c4(uint param_1)\n\n{\n  uint uVar1;\n  overlay *poVar2;\n  \n  poVar2 = overlay_ARRAY_80167fc0;\n  if (param_1 == 0) {\n    return (void *)0x0;\n  }\n  if (overlay_ARRAY_80167fc0[0].file_id != 0) {\n    uVar1 = (uint)overlay_ARRAY_80167fc0[0].file_id;\n    do {\n      if (param_1 == uVar1) {\n        return poVar2->data;\n      }\n      uVar1 = (uint)poVar2[1].file_id;\n      poVar2 = poVar2 + 1;\n    } while (uVar1 != 0);\n  }\n  return (void *)0xffffffff;\n}",
     "decompilationAddress": "0x800141C4",
     "decompilationNote": "Ghidra pseudocode recovered at the displayed native address. Undefined types and analysis names are not complete C declarations; use the documented signature when writing calling code."
@@ -396,14 +401,17 @@
     "behavior": [
       "The partial object layout contains float x/y/z at offsets +0x08/+0x0C/+0x10. These coordinates locate player-centered effects and spatial sounds.",
       "The object pointer differs from the player task pointer at D_801FC604_5B8514.",
-      "Room actors commonly pursue \"the player\" by reading this object's position, either directly, through the player task's +0x18 primary-object pointer, or through the actor target-object field at +0x84 (see func_802197D8_5D4CA8). Moving this object's x/y/z during one actor's AI callback therefore redirects only that actor's pursuit, without relocating the local player."
+      "Room actors commonly read this object's position directly, through the player task's +0x18 primary-object pointer, or through an actor target-object field at +0x84 (see func_802197D8_5D4CA8). This is the shared current local-player object, so changing its x/y/z affects every native reader that runs while the values are substituted.",
+      "The sweets-challenge controller reads this global object directly for its hide test and bomb placement. Its callback also updates a local camera and owns player animation/state and statistics backup/restore paths; those side effects mean a whole-callback position swap is not automatically safe."
     ],
     "cautions": [
       "The object can be absent during transitions and non-gameplay system states.",
-      "A temporary position substitution is only safe when scoped to a single actor callback and restored before the local player's own update, collision, rendering or camera work reads the object."
+      "Scoping a temporary position substitution to one callback does not make that callback safe to redirect: inspect all of its global-object readers and other side effects. Restore the shared object before other native consumers, including player update, collision, rendering or camera code, can read it. Do not replay a multi-purpose native controller just to query its position-based decision."
     ],
     "confidence": "source-reviewed",
-    "related": [],
+    "related": [
+      "func_08001954_6F1B64"
+    ],
     "example": "typedef struct { unsigned char pad[8]; float x, y, z; } PositionObject;\nextern PositionObject *D_801FC60C_5B851C;\n\nint copy_player_position(float out[3])\n{\n    PositionObject *p = D_801FC60C_5B851C;\n    if (!p) return 0;\n    out[0] = p->x; out[1] = p->y; out[2] = p->z;\n    return 1;\n}\n",
     "exampleExplanation": "The example shows the documented native data layout or call sequence. Use it only while the relevant game state and resources are valid."
   },
@@ -462,7 +470,8 @@
       "The initializer runs through the native scheduler. Null indicates owner selection or allocation failed.",
       "The inherited rotation halfwords are forwarded unchanged, including special values such as 0x8000. Tsurami ring children illustrate this: their travelling-projectile owner supplies roll 0x8000, which their initializer retains.",
       "In two native player-thaw paths, task kind 8 creates seven shard children from the live actor. Shard velocities use the observed expressions sin(i * 0xAA), 2.5, and cos(i * 0xAA); their initializer copies actor fields. The thaw path also creates a separate scale-3 burst.",
-      "The pickup visual helper uses this allocator with a live actor, initializer func_80211EF8_5CD3C8, and task kind 8 for the model-0xB4 child; nonzero helper variants select a different initializer and task kind 0xD."
+      "The pickup visual helper uses this allocator with a live actor, initializer func_80211EF8_5CD3C8, and task kind 8 for the model-0xB4 child; nonzero helper variants select a different initializer and task kind 0xD.",
+      "For the direct File42 explosion-child path, context inheritance runs while task bank +0x28 and resource base +0x2C are zero; this allocator then writes the 0xFFFE/0xFFFFFFFF pending-resource sentinels. The calling overlay installs bank 0x2A and its resident base after this allocator returns."
     ],
     "cautions": [
       "The owner pointer itself is dereferenced even when its object is absent.",
@@ -615,20 +624,23 @@
   },
   "func_8021664C_5D1B1C": {
     "title": "Select and restart an actor animation",
-    "summary": "Selects and restarts an actor animation, including playback state and resource binding.",
+    "summary": "Selects an actor animation by replacing its object resource binding and playback state.",
     "behavior": [
       "Uses the task entity/model ID at +0x5E and animation index to select animation data. Stores playback flags at object +0x7C and floor(rate * 256) at +0x7E.",
       "Required animation/model files are looked up and loaded if absent. The frame at object +0x28 is reset to zero for forward playback or clip length minus one for reverse playback.",
-      "Congo model parts use distinct spin clips numbered 12 through 17. Each index is local to the corresponding entity/model animation table."
+      "Congo model parts use distinct spin clips numbered 12 through 17. Each index is local to the corresponding entity/model animation table.",
+      "Ebisumaru's sweets controller selects its root animation index 0 with rate 0.125 and flags 1 at the phase-2-to-phase-3 transition. The playback rate is stored as 32 after conversion to 1/256 units."
     ],
     "cautions": [
       "An animation index from one model is not valid for arbitrary actors.",
-      "This call restarts the clip and can load resources. Use func_80216AB8_5D1F88 to advance an already selected animation."
+      "This call restarts the clip and can load resources. Use func_80216AB8_5D1F88 to advance an already selected animation.",
+      "Selecting an animation rewrites the object's resource binding to an animation table. Calling this on a dragon segment bound to a static model slot replaces that static binding; retain the static binding routine func_80216DF8_5D22C8 for static segments."
     ],
     "confidence": "decompiled",
     "related": [
       "func_80216AB8_5D1F88",
-      "func_800141C4_14DC4"
+      "func_800141C4_14DC4",
+      "func_08001954_6F1B64"
     ],
     "example": "extern void func_8021664C_5D1B1C(void *, unsigned int, float, unsigned int);\n\n/* part must be one of Congo's validated six native model tasks. */\nvoid restart_congo_part_clip(void *part, unsigned int part_index)\n{\n    if (!part || part_index >= 6) return;\n    func_8021664C_5D1B1C(part, 12 + part_index, 0.05f, 0);\n}\n",
     "exampleExplanation": "Restart the appropriate spin clip for one of the six Congo model tasks. The caller must establish the correct part identity and a valid loaded model.",
@@ -721,11 +733,13 @@
     "summary": "Selects an actor task owner/list and checks native capacity limits.",
     "behavior": [
       "Checks the total cap at 0x8015CCFC against live counts, records the requested category and chooses a native scheduler list root.",
-      "Categories 6, 8, 9, 10 and 12 also receive category-count checks. Category 13 returns the supplied task. A rejected capacity check returns null."
+      "Categories 6, 8, 9, 10 and 12 also receive category-count checks. Category 13 returns the supplied task. A rejected capacity check returns null.",
+      "The total and category guards reject only when the current count is strictly greater than the configured cap. Equality passes this selector; later allocation can still fail."
     ],
     "cautions": [
       "This routine selects a list/owner; it does not allocate an actor.",
-      "A category is distinct from actor ID and model ID."
+      "A category is distinct from actor ID and model ID.",
+      "A configured cap is not an inclusive refusal threshold in this helper. Do not infer guaranteed allocation capacity from equality passing its guard."
     ],
     "confidence": "decompiled",
     "related": [
@@ -757,7 +771,8 @@
     "behavior": [
       "Calls FUN_80034E98(owner, entry, 2, model_id), then passes the other setup values to FUN_80035964. The resulting native task handle is returned.",
       "The room actor manager uses flags 0xC006D920, zero initial transform, uniform native scale and the actor metadata model ID. It then applies a room instance through func_80218A54_5D3F24.",
-      "The meanings of arg2, arg13 and arg14 are not established. Their observed room-spawn values are zero."
+      "The meanings of arg2, arg13 and arg14 are not established. Their observed room-spawn values are zero.",
+      "Its allocation chain installs the incoming callback unchanged at task +0x0C and creates the object before returning to the child-spawn inheritance stage. A segmented callback is resolved later by the recompiled scheduler, so initialized render state does not establish that the callback address is already loaded."
     ],
     "cautions": [
       "Preserve the mixed integer, short and float parameter ABI.",
@@ -767,7 +782,9 @@
     "related": [
       "func_80218A54_5D3F24",
       "func_80219CA0_5D5170",
-      "D_802287BC_5E3C8C"
+      "D_802287BC_5E3C8C",
+      "func_80218C28_5D40F8",
+      "func_80014840_15440"
     ],
     "parameters": [
       {
@@ -866,7 +883,7 @@
     "title": "Common actor post-processing and removal",
     "summary": "Runs common actor post-processing and pending-removal bookkeeping.",
     "behavior": [
-      "Calls FUN_80218E7C, clears task fields +0x34/+0x38 and tests removal-pending bit 0x02 in status +0x68.",
+      "Calls the native common actor-processing body, clears task fields +0x34/+0x38 and tests removal-pending bit 0x02 in status +0x68. The common body includes func_8021B610_5D6AE0 fall-effect and below-world removal checks.",
       "Pending removal deletes the current task and updates or schedules bookkeeping associated with the room-instance pointer at +0x70.",
       "Ordinary room actors install this callback at task +0x10. Some multipart bosses use private post routines: Congo, Dharumanyo and Tsurami have additional actor-specific processing."
     ],
@@ -878,7 +895,8 @@
     "related": [
       "func_80218A54_5D3F24",
       "D_8016DAB4_16E6B4",
-      "func_80034ED4_35AD4"
+      "func_80034ED4_35AD4",
+      "func_8021B610_5D6AE0"
     ],
     "example": "#include \"modding.h\"\nextern void *D_8016DAB4_16E6B4;\n\nstatic unsigned int pending_removals;\nRECOMP_HOOK(\"func_80218F30_5D4400\")\nvoid observe_actor_removal(void *task)\n{\n    if (!task || task != D_8016DAB4_16E6B4) return;\n    if (*(volatile unsigned int *)((char *)task + 0x68) & 2u)\n        ++pending_removals;\n}\n",
     "exampleExplanation": "The example shows the documented native data layout or call sequence. Use it only while the relevant game state and resources are valid.",
@@ -1117,13 +1135,16 @@
     "summary": "Initializes the health-bearing mind-control robot child in Koryuta flight.",
     "behavior": [
       "The encounter is multipart. The battle child is distinct from camera, scene and encounter controllers that can share actor/entity family 0x1B0.",
-      "The later pre-fight proximity state is func_08002EB4_703FB4; its transition leads to the first combat callback func_08002F58_704058."
+      "The flight encounter creates this as a distinct kind-6 child with func_802171A8(root, func_08002D18_703E18, 6) and writes the root pointer to child +0xD0. Its initializer runs on a later scheduler pass, then sets entity halfword +0x5E to 0x1B0 and HP byte +0x8D to 5.",
+      "Task +0x04 is a mutable pointer-to-pointer backlink and is not a stable parent pointer; use the initializer's explicit child +0xD0 root link when identifying this child.",
+      "The later pre-fight proximity state is func_08002EB4_703FB4; when the absolute Z separation between player and child objects is below 200.0, it schedules the first combat callback func_08002F58_704058.",
+      "At zero HP, the death state func_08002540_703640 schedules func_080031D8_7042D8. Later callbacks advance through func_08003634_704734, func_08003678_704778 and func_080036CC_7047CC, where the child is deleted."
     ],
     "cautions": [
       "Resolve the full ROM-qualified overlay symbol; a shared 0x080... address alone does not identify the loaded routine.",
       "Use a live task of the documented family. Task pointers and callback slots follow the 32-bit target ABI."
     ],
-    "confidence": "source-reviewed",
+    "confidence": "decompiled",
     "related": [
       "D_8016DAB4_16E6B4"
     ],
@@ -1143,13 +1164,15 @@
     "summary": "Waits for the player-proximity condition before mind-control robot combat.",
     "behavior": [
       "This pre-fight state belongs to the health-bearing entity-0x1B0 child in Koryuta flight room 0x155.",
-      "When the encounter condition is met, the state machine installs func_08002F58_704058 as the first combat state. The exact distance threshold is not established here."
+      "When the absolute difference between the player-object and child-object Z coordinates is less than 200.0, the state writes transient save flag 0x019F, sets D_8015CDC0, and schedules func_08002F58_704058 as the first combat state. This is a one-axis Z threshold, not a full 3D distance.",
+      "A separate encounter camera task reads D_8015CDC0 and, when set, starts its camera actor and allocates a camera handle. That reader does not repeat the local proximity check."
     ],
     "cautions": [
       "Resolve the full ROM-qualified overlay symbol; a shared 0x080... address alone does not identify the loaded routine.",
-      "Use a live task of the documented family. Task pointers and callback slots follow the 32-bit target ABI."
+      "Use a live task of the documented family. Task pointers and callback slots follow the 32-bit target ABI.",
+      "D_8015CDC0 also gates a Koryuta root transition and starts native camera work. Do not set this latch independently of the local proximity transition, or the camera sequence can begin before the player reaches the battle child."
     ],
-    "confidence": "source-reviewed",
+    "confidence": "decompiled",
     "related": [
       "D_8016DAB4_16E6B4"
     ],
@@ -1166,16 +1189,25 @@
   },
   "func_08002F58_704058": {
     "title": "Begin mind-control robot combat",
-    "summary": "Begins the mind-control robot combat state sequence.",
+    "summary": "Runs Control Machine battle phases and local-frame-gated attack-shot production.",
     "behavior": [
       "Installed after the pre-fight proximity waiter func_08002EB4_703FB4 completes.",
-      "The callback identifies the transition to combat for the health-bearing entity-0x1B0 child in room 0x155. Its complete attack logic is not yet reconstructed."
+      "The battle child uses a spin-up callback (func_08002F8C_70408C), timed hold (func_08003054_704154), spin-down (func_080030B0_7041B0), and hit-accepting wait (func_0800316C_70426C). The loop uses task +0x8A as a 16-bit timer, +0xDA as signed angular speed, +0xDC as signed spin increment, and +0xDE as signed colour/alpha ramp. The spin-up seeds +0x8A=0x80; spin-down seeds +0x8A=0x50.",
+      "Scheduler callbacks consume a0=task and a1=object. The damage helper func_08002540_703640 is called from func_0800316C_70426C with task in a0 and obtains the local object through task +0x18.",
+      "The live child fields include +0x0C callback pointer; +0x18 local object pointer; +0x68 u32 status (bit 0 pending hit, bit 1 remove-pending); +0x8A 16-bit timer; +0x8D u8 HP; +0xD0 root pointer; +0xD4 u16 hit-flash countdown; +0xD8 s16 oscillation phase; +0xDA s16 angular speed; +0xDC s16 spin increment/direction; +0xDE s16 colour/alpha ramp; and +0xE0 s16 yaw cache. The object stores XYZ as f32 at +0x08/+0x0C/+0x10, rotations as s16 at +0x14/+0x16/+0x18, and scales as f32 at +0x1C/+0x20/+0x24.",
+      "Each combat phase runs pose/attack producer func_080029CC_703ACC. It updates orbit and root-relative position from signed speed and local root pose, then may create at most one shot when the unsigned object yaw is strictly between 0x140 and 0x2C0, absolute speed is at least 0x40, and local u16 world counter D_8015CC30 is divisible by 3. The pose producer has no RNG; its shot cadence depends on this local frame counter, so phase state alone does not determine identical shot timing.",
+      "The damage helper clears task +0x68 bit 0. When angular speed is nonzero it does not reduce HP. At zero speed it decrements the u8 HP, then branches on the old value: old HP nonzero writes status 1 to D_8015CDB6 and mirrors remaining HP to D_8015CDBC; old HP zero writes status 2, seeds timer +0x8A=0x80 and schedules death callback func_080031D8_7042D8. Starting at HP 5, the fifth accepted hit leaves the child alive at HP 0; the next accepted hit wraps HP to 0xFF while beginning death. HP 0 alone does not mean the child is dead.",
+      "A Control Machine encounter can validly begin with D_8015CDB6 equal to 0; status 10 is not a required initial value for this battle child. The hit/death path writes status 1 for nonterminal hit, 2 for terminal hit, 3 at the death transition, and 4 at root departure. The native death animation advances through func_080031D8_7042D8, func_08003634_704734, func_08003678_704778 and func_080036CC_7047CC before deleting the child.",
+      "The separate local File_58 controller func_080004F8_71AA08 consumes local arrival flag 0x19F in phase 8. At phase 7/timer 1 it locks input and opens intro scenario 0x217, then waits until func_8003F1D8_3FDD8 reports the scenario pointer D_80077858 is null. It then clears the local transition state and enters phase 6; phase 6 waits for immediate event 0, written by the terminal-hit path and read through func_80023E94_24A94.",
+      "The statically identified pre-open skip boundary is before the phase-7/timer-1 callback dispatch, after local arrival has completed and only when the scenario-active predicate reports no scenario. This ordering is a static finding and has not been verified in a running game."
     ],
     "cautions": [
       "Resolve the full ROM-qualified overlay symbol; a shared 0x080... address alone does not identify the loaded routine.",
-      "Use a live task of the documented family. Task pointers and callback slots follow the 32-bit target ABI."
+      "Use a live task of the documented family. Task pointers and callback slots follow the 32-bit target ABI.",
+      "Callback and object pointers are local native references, not scalar values. Preserve the task/object distinction and the scheduler argument order when observing this state machine.",
+      "Do not force the local arrival flag or shared camera latch to simulate reaching the battle child; the native local-proximity callback owns that transition."
     ],
-    "confidence": "source-reviewed",
+    "confidence": "decompiled",
     "related": [
       "D_8016DAB4_16E6B4"
     ],
@@ -1666,7 +1698,7 @@
     "summary": "Enters Dharumanyo neutral combat after the native introduction finishes.",
     "behavior": [
       "The boss occupies room 0x49 with actor ID 0xCC. Its visible root and lives carrier link to one another through task +0xDC.",
-      "The carrier is entity 0xCC and owns the twelve lives at +0xD1. Flag 0x16C represents the documented combat-pause gate. The similarly named actor 0x132 is an ordinary enemy, not this boss."
+      "The carrier is entity 0xCC and owns twelve lives in byte +0xD1. Its generic health byte +0x8D is reset to 10 by the common actor path and is not the remaining-lives counter. Flag 0x16C represents the documented combat-pause gate. The similarly named actor 0x132 is an ordinary enemy, not this boss."
     ],
     "cautions": [
       "Resolve the full ROM-qualified overlay symbol; a shared 0x080... address alone does not identify the loaded routine.",
@@ -2157,6 +2189,7 @@
     "summary": "Runs Tsurami root damage, phase bookkeeping and the nonlethal blue-flash recovery lifecycle.",
     "behavior": [
       "Installed only on the health-bearing root at task +0x10. Its body is skipped when D_8015C5E4 is zero.",
+      "The initialized Tsurami root has 12 HP in byte +0x8D.",
       "The private post includes the common actor pipeline plus boss-specific collision/damage and phase/defeat work. It is separate from the current AI callback at task +0x0C.",
       "The nonlethal damage state func_08002E34_6B60D4 creates a screen overlay with RGB (128,128,255) and alpha 0 through func_8022026C_5DB73C. Its next AI func_08002EC8_6B6168 increases alpha by 80 per invocation through func_80220210_5DB6E0, clamping at 255 before scheduling func_08002F0C_6B61AC.",
       "The fade-out AI subtracts 80 through func_80220168_5DB638. At zero it releases the root-owned display record and advances to func_08002F50_6B61F0. After the animation condition, func_08002FA4_6B6244 clears task-status bit 0 and schedules neutral state func_08001D54_6B4FF4. The native one-HP lethal branch instead selects func_08002FFC_6B629C before creating the flash."
@@ -3314,7 +3347,8 @@
     "behavior": [
       "Reads the immediate byte-backed event bank also used by func_80023DF0_249F0 and func_80023E40_24A40.",
       "Event 0x0B occupies bit 0x08 in the second byte. Native camera code tests the raw return for zero before entering or leaving the Congo shake callback.",
-      "Congo health processing may set event 0x0B repeatedly while HP is exactly 25, 20, 15, 10 or 5. Other event consumers can clear it, so a current bank read can differ from an HP-based inference."
+      "Congo health processing may set event 0x0B repeatedly while HP is exactly 25, 20, 15, 10 or 5. Other event consumers can clear it, so a current bank read can differ from an HP-based inference.",
+      "In the Koryuta Control Machine encounter, the terminal battle-child hit sets immediate event 0 after writing terminal status. The local File_58 controller reads event 0 in phase 6 to leave its boss-completion wait; it reaches that phase only after local arrival flag 0x19F has been consumed and the phase-7 intro has completed."
     ],
     "cautions": [
       "Use result != 0 rather than result == 1. A set event can return a different power-of-two mask.",
@@ -3326,7 +3360,8 @@
       "func_80023DF0_249F0",
       "func_80023E40_24A40",
       "func_0800A228_6BD4C8",
-      "func_08008E54_6BC0F4"
+      "func_08008E54_6BC0F4",
+      "func_08002F58_704058"
     ]
   },
   "func_080009C4_6B3C64": {
@@ -3431,7 +3466,7 @@
     "behavior": [
       "Entered only from the common health-zero path after func_80218350_5D3820 has consumed the final health point. Room unloads and distance culls do not call it.",
       "Performs the generic death handling for an ordinary actor, including the reaction, counters, effects and removal bookkeeping.",
-      "The synthetic fast-hit bit 0x00040000 at actor +0x68 reaches this path after subtracting one health point, which lets an external source drive the real death without a native attacker pointer."
+      "The synthetic fast-hit bit 0x00040000 at actor +0x68 reaches this path after subtracting one health point, which lets an external source drive the real death without a native attacker pointer. This is the status word at +0x68; the same numeric mask in the separate flags word at +0x60 does not select that branch."
     ],
     "example": "#include \"modding.h\"\n\n/* Observe an ordinary actor's native zero-health entry. */\nRECOMP_HOOK(\"func_80218548_5D3A18\")\nvoid observe_actor_zero_health(void *actor)\n{\n    if (!actor) return;\n    /* Record the death only for a validated actor; it may be removed after. */\n}\n",
     "exampleExplanation": "The entry hook observes the authoritative zero-health edge for an actor. The entry argument is established; a complete callable prototype is not.",
@@ -3498,5 +3533,35 @@
     "returns": "No return value.",
     "decompilation": "void FUN_80002f54(void)\n{\n  switch(PTR_g_system_8015c5c8->stepw_s) {\n  case 0:\n    g_system.field4_0x3adb6 = 1;\n    g_system.stepw_s = g_system.stepw_s + '\\x01';\n    break;\n  case 1:\n    if (DAT_800548d8 == 0) {\n      FUN_8000383c();\n      PTR_g_system_8015c5c8->field37_0x3ade4 = 0xc;\n      PTR_g_system_8015c5c8->field45_0x3adf4 = 0;\n      FUN_80020440();\n      FUN_800369b4(PTR_PTR_8006d328);\n      PTR_g_system_8015c5c8->stepw_s = PTR_g_system_8015c5c8->stepw_s + '\\x01';\n    }\n    break;\n  case 2:\n    g_system.field4_0x3adb6 = 0;\n    FUN_80036840(PTR_PTR_8006d328);\n    FUN_800038e4();\n    break;\n  case 3:\n    FUN_8000394c();\n    break;\n  case 4:\n    if (DAT_800548d8 == 0) {\n      FUN_8000383c();\n      if (g_system.stepw_end == '\\x01') {\n        FUN_8000b6e0();\n        g_system.field58_0x3ae0c = g_system.field58_0x3ae0c + '\\x01';\n        FUN_80003728(0xb);\n      }\n      else {\n        FUN_80003728(3);\n      }\n    }\n  }\n  return;\n}\n",
     "decompilationNote": "Recovered native logic, whitespace normalized. Decompiler types and temporary names are approximate reference material, not a replacement function. The substate switch at +0x3ADD6 and the exit branch at case 4 are the relevant behavior."
+  },
+  "func_80038BC8_397C8": {
+    "title": "Queue a native scenario audio command",
+    "summary": "Queues a 16-bit native audio command; Sasuke's instruction scenario uses 0x0052 to enter gameplay music.",
+    "confidence": "decompiled",
+    "declaration": "void func_80038BC8_397C8(unsigned short cue);",
+    "parameters": [
+      {
+        "name": "cue",
+        "type": "unsigned short",
+        "description": "Native 16-bit audio command. Scenario 0x0179 uses 0x0292 during instructions and 0x0052 at their completion."
+      }
+    ],
+    "returns": "No return value. The wrapper does not report whether the queue accepted the command.",
+    "behavior": [
+      "Masks the command to 16 bits and forwards it to the native audio queue with both additional parameters set to zero.",
+      "The queue holds at most eight pending commands and suppresses duplicates only while they remain pending. A later call can enqueue the same command again.",
+      "Scenario 0x0179 supplies command 0x0292 before its final instruction text and wait. After setting instruction flag 0x21, it supplies gameplay music command 0x0052 and ends.",
+      "The scenario helper reads the unsigned low halfword of its command word and invokes this wrapper. The separate func_80038B98_39798 wrapper has equivalent queue defaults, but this is the wrapper used by scenario 0x0179."
+    ],
+    "cautions": [
+      "Invoke once at the intended transition. Skipping the scenario skips its audio commands, and the later controller HUD transition does not queue the gameplay command.",
+      "The wrapper supplies no player, fade or volume arguments, and no acceptance acknowledgment. Preserve the native audio scheduler and queue lifetime."
+    ],
+    "example": "extern void func_80038BC8_397C8(unsigned short cue);\n\n/* Call once when the native instruction sequence reaches active play. */\nvoid queue_high_jump_gameplay_music(void)\n{\n    func_80038BC8_397C8(0x0052);\n}\n",
+    "exampleExplanation": "Queues the verified gameplay command once. The caller owns the transition lifetime; the wrapper supplies its native queue defaults.",
+    "related": [
+      "func_08000AD4_7068C4",
+      "func_80038B98_39798"
+    ]
   }
 }

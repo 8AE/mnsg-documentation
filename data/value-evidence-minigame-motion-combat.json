@@ -1,0 +1,166 @@
+{
+  "scope": "Internal static native evidence for the Ebisumaru sweets challenge HUD and the common actor target, movement, fall, proximity-retirement, carrier-displacement, and overlap-rollback helpers documented in the public minigame reference. This record is not copied into the website.",
+  "analysisDate": "2026-10-13",
+  "analysisTool": "Ghidra decompilation and MIPS disassembly",
+  "proofs": [
+    {
+      "path": "/private/tmp/mnsg-ebi-health-combat-native-proof-20261013.md",
+      "sha256": "f179fa7d524a5884050727504acc97c76e403ae49e6ef104fd22f9224cad2513",
+      "scope": "File 42 sweets-controller HP initialization, failure threshold and HUD write; File 11 signed-byte health adjustment; File 12 ordinary and fast actor-damage paths."
+    },
+    {
+      "path": "/private/tmp/mnsg-ebi-ai-motion-native-proof-20261013.md",
+      "sha256": "97ce9823acc59f3b9f4aad1443b0e823328d833b0e5e37f8bb414bb05e229669",
+      "scope": "File 12 target-pointer refresh, robot movement helpers, task-target use, and normal scheduler/finalizer ordering."
+    },
+    {
+      "path": "/private/tmp/mnsg-ebi-follower-finalizer-abi-proof-20261013.md",
+      "sha256": "f91c56b0cce6b304266e644d44452d0bb7593260a53c1629494d5f54947ff520",
+      "scope": "File 12 finalizer fall/removal, status-gated proximity retirement, local carrier displacement, and local-player overlap rollback helpers; verified MIPS calling conventions for orbit, turn, and waypoint helpers."
+    },
+    {
+      "path": "/private/tmp/mnsg-ebi-planar-yaw-abi-proof-20261013.md",
+      "sha256": "12efa48a4cfaa728d1a1cd880f48fde95922c03ae2b2e985b304386f243f06f6",
+      "scope": "File 12 planar X/Z direction-to-yaw helper ABI, lookup-table behavior, raw return width, and zero-vector/quantization limits."
+    },
+    {
+      "path": "/private/tmp/mnsg-ebi-blast-descriptor-proof-20261013.md",
+      "sha256": "746f21d91865078319a224334761e3649b4b8fa53131ffee0a3f557685bdb672",
+      "scope": "Native dynamic-child inheritance and the studied blast-parent initializer leave task +0x70 clear; separate effect children and unrelated constructors remain outside the verified scope."
+    }
+  ],
+  "functions": [
+    {
+      "name": "func_08001954_6F1B64",
+      "program": "world_file_42.elf",
+      "address": "0x08001954",
+      "romAddress": "0x006F1B64",
+      "observed": "Initializes current/max player HP to 20, derives the private HUD heart count as current HP minus 17, enters failure at current HP <= 17, and saves/restores a 48-byte player-statistics block across its native exit path.",
+      "confidence": "decompiled"
+    },
+    {
+      "name": "func_080008E4_6F0AF4",
+      "program": "world_file_42.elf",
+      "address": "0x080008E4",
+      "romAddress": "0x006F0AF4",
+      "observed": "Stores its signed 32-bit count argument at HUD task +0x88. The separate renderer draws one icon per positive count.",
+      "confidence": "disassembly"
+    },
+    {
+      "name": "func_8021927C_5D474C",
+      "program": "world_file_12_common.elf",
+      "address": "0x8021927C",
+      "romAddress": "0x005D474C",
+      "observed": "Four instructions load pointer global D_8015CD60 and store it at task +0x84.",
+      "confidence": "disassembly"
+    },
+    {
+      "name": "func_8021928C_5D475C",
+      "program": "world_file_12_common.elf",
+      "address": "0x8021928C",
+      "romAddress": "0x005D475C",
+      "observed": "Performs the same four-instruction D_8015CD60-to-task+0x84 pointer copy.",
+      "confidence": "disassembly"
+    },
+    {
+      "name": "func_80219448_5D4918",
+      "program": "world_file_12_common.elf",
+      "address": "0x80219448",
+      "romAddress": "0x005D4918",
+      "abi": "void (task pointer in a0)",
+      "observed": "Advances a seeded 10-bit ellipse phase using a signed-byte step, computes the rotated orbit point, and writes velocity as half the point delta for the normal 2x integration.",
+      "confidence": "decompiled"
+    },
+    {
+      "name": "func_802196FC_5D4BCC",
+      "program": "world_file_12_common.elf",
+      "address": "0x802196FC",
+      "romAddress": "0x005D4BCC",
+      "abi": "int (task pointer, float target_x, float target_y, float target_z, int turn_step); fifth argument at caller stack +0x10",
+      "observed": "Uses X/Z and a signed turn step to change the task object's 10-bit yaw. The Y argument slot is unused. Returns zero when aligned/snapped or a nonzero direction code.",
+      "confidence": "decompiled plus caller disassembly"
+    },
+    {
+      "name": "func_8021BB04_5D6FD4",
+      "program": "world_file_12_common.elf",
+      "address": "0x8021BB04",
+      "romAddress": "0x005D6FD4",
+      "abi": "int (task pointer, float target_x, float target_z, float speed)",
+      "observed": "Writes X/Z velocity toward a waypoint, may snap the object to the waypoint and zero velocity, and returns one while movement remains.",
+      "confidence": "decompiled plus caller disassembly"
+    },
+    {
+      "name": "func_8021B610_5D6AE0",
+      "program": "world_file_12_common.elf",
+      "address": "0x8021B610",
+      "romAddress": "0x005D6AE0",
+      "abi": "int (task pointer)",
+      "observed": "In the normal common actor finalizer, flags +0x60 bit 0x40000000 gates a fall-effect/removal-status path; bit 0x00000400 gates a below-world test. Below Y -1000, status +0x68 is overwritten with 0x02 and the function returns one.",
+      "confidence": "decompiled and disassembly"
+    },
+    {
+      "name": "func_8021ADD0_5D62A0",
+      "program": "world_file_12_common.elf",
+      "address": "0x8021ADD0",
+      "romAddress": "0x005D62A0",
+      "size": 612,
+      "abi": "unsigned int (float delta_x in f12, float delta_z in f14); v0 return zero-extended from low 16 bits",
+      "observed": "Pure planar direction conversion using native float lookup table at 0x80237C60. Cardinal yaw is +Z 0, +X 256, -Z 512, -X 768; equal-magnitude diagonals return 128/384/640/896. Exact (0,0) returns 128. The function masks the computed return with 0xFFFF, not 0x3FF; a small negative X with positive Z can return raw 1024 after lookup quantization. Callers needing a 10-bit result must mask with 0x3FF. The helper temporarily changes and restores FCSR rounding mode and does not mutate task/object state.",
+      "confidence": "decompiled and disassembly"
+    },
+    {
+      "name": "func_8021A328_5D57F8",
+      "program": "world_file_12_common.elf",
+      "address": "0x8021A328",
+      "romAddress": "0x005D57F8",
+      "size": 436,
+      "abi": "task-entry helper; task pointer in a0",
+      "observed": "Requires status +0x68 bit 0x08 and a non-null static spawn descriptor at task +0x70. Outside the descriptor's local-player activation bounds, can create a disappearance effect, clear descriptor active byte +0x10, clear task +0x70 and set status +0x68 exactly 0x02. Native dynamic child inheritance explicitly clears +0x70; the studied blast-parent initializer does not repopulate it. Separate effect children and unrelated constructors remain outside this proof.",
+      "confidence": "decompiled and disassembly"
+    },
+    {
+      "name": "func_8021A978_5D5E48",
+      "program": "world_file_12_common.elf",
+      "address": "0x8021A978",
+      "romAddress": "0x005D5E48",
+      "size": 360,
+      "abi": "task-entry helper; task pointer in a0",
+      "observed": "Runs only when task flags +0x64 bit 0x4000 is set and object pointer at task +0x18 matches local player task +0xA0; transforms a local-player-relative vector and writes displacement to player task +0xC0/+0xC4/+0xC8.",
+      "confidence": "decompiled and disassembly"
+    },
+    {
+      "name": "func_80218990_5D3E60",
+      "program": "world_file_12_common.elf",
+      "address": "0x80218990",
+      "romAddress": "0x005D3E60",
+      "size": 196,
+      "abi": "task-entry helper; task pointer in a0",
+      "observed": "Runs only when task flags +0x60 bit 0x10000000 is set. If planar distance to the local player is within the squared threshold (local scale X times 50 plus actor byte +0x99), restores object XYZ and task velocity XYZ from native pre-physics scratch values.",
+      "confidence": "decompiled and disassembly"
+    },
+    {
+      "name": "func_801DCD48_598C58",
+      "address": "0x801DCD48",
+      "romAddress": "0x00598C58",
+      "observed": "Existing API entry describes signed-byte delta extension and its clamp-status return. The caller must observe actual HP before/after to determine health lost; the return value is not the delta.",
+      "confidence": "disassembly",
+      "file": "File11"
+    },
+    {
+      "name": "func_80218350_5D3820",
+      "program": "world_file_12_common.elf",
+      "address": "0x80218350",
+      "romAddress": "0x005D3820",
+      "observed": "The numeric mask 0x00040000 appears in distinct status +0x68 and flags +0x60 fields. Only status +0x68 bit 0x00040000 selects the no-attacker fast damage branch; the flags field does not arm it.",
+      "confidence": "disassembly"
+    }
+  ],
+  "limitations": [
+    "Evidence is static decompilation/disassembly and caller analysis. No new gameplay session, multiplayer run, or runtime validation was performed for these API descriptions.",
+    "The orbit helper requires initialized phase, radii, rotation, signed step, and prior-point fields; this evidence does not establish a general-purpose orbit initializer contract.",
+    "The target helpers copy a native runtime pointer. This record does not define target ownership outside the studied current-player path or permit serializing that pointer.",
+    "The minigame HUD count reflects participant-local HP in the studied controller. It does not establish a shared health authority or a general-purpose minigame health API.",
+    "The safe attacker-free actor damage bit belongs to status +0x68. Do not substitute flags +0x60 or infer a shared-mod HP ABI from the actor damage helper.",
+    "The yaw conversion evidence covers finite inputs and the observed native math. NaN behavior is not established; zero-vector facing preservation is a caller policy, and 10-bit normalization is also caller-owned."
+  ]
+}

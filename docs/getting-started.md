@@ -43,7 +43,7 @@ int game_flag_is_set(unsigned int flag_id)
 
 ## Observe an update
 
-Your recompilation project's `modding.h` provides the hook macros. An entry hook observes the start of a native function; a return hook runs after it returns. The system-step dispatcher is a useful recurring observation point.
+Your recompilation project's `modding.h` provides the hook macros. An entry hook observes the start of a native function; a return hook runs after every invocation returns, not only after initialization. If the target is a persistent task callback, the return hook also runs after each ordinary update. Keep one-time setup idempotent, and when wrapping a callback preserve the genuine native continuation it leaves installed rather than recording the wrapper itself as the continuation. The system-step dispatcher is a useful recurring observation point.
 
 ```c
 #include "modding.h"

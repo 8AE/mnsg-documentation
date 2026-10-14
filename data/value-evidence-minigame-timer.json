@@ -1,0 +1,64 @@
+{
+  "scope": "Internal native evidence for the Ebisumaru challenge HUD timer callback, seconds helpers, creator boundary, scheduler cadence, and root failure threshold. This record is not public page content.",
+  "analysisDate": "2026-10-13",
+  "analysisTool": "Ghidra decompilation and MIPS disassembly",
+  "proofs": [
+    {
+      "path": "/private/tmp/mnsg-ebi-timer-native-proof-20261013.md",
+      "sha256": "847199d1259b0c273da799d4f14d6ed58611b77e1cd9f645d750e38f472c6447",
+      "scope": "File42 HUD timer callback, setter/getter, creator observations, root's timer test and phase behavior, plus main scheduler/task pause ordering."
+    }
+  ],
+  "functions": [
+    {
+      "name": "func_080005DC_6F07EC",
+      "program": "mini_ebisumaru_file42.bin",
+      "address": "0x080005DC",
+      "romAddress": "0x006F07EC",
+      "abi": "void(task pointer in a0, object pointer in a1); object argument unused by callback body",
+      "observed": "Reads signed word HUD+0x80, converts to seconds with signed divide by 30 and draws before decrementing the raw word by one; clamps a negative decrement result to zero. No phase/start/result gate exists in the callback. The normal task scheduler calls the task once per admitted update; main dispatch occurs before the camera loop.",
+      "confidence": "decompilation and disassembly"
+    },
+    {
+      "name": "func_080008B8_6F0AC8",
+      "program": "mini_ebisumaru_file42.bin",
+      "address": "0x080008B8",
+      "romAddress": "0x006F0AC8",
+      "abi": "void(HUD pointer32, signed seconds32)",
+      "observed": "Stores seconds multiplied by 30 to HUD+0x80 without range validation. Normal root setup passes 99 seconds, yielding 2970 frames.",
+      "confidence": "decompilation and disassembly"
+    },
+    {
+      "name": "func_080008CC_6F0ADC",
+      "program": "mini_ebisumaru_file42.bin",
+      "address": "0x080008CC",
+      "romAddress": "0x006F0ADC",
+      "abi": "signed32(HUD pointer32)",
+      "observed": "Loads signed HUD+0x80, divides by 30 with signed integer division, returns whole seconds. Root tests this value against zero; with nonnegative remaining frames, 29 through 0 produce zero and enter timer failure, so native threshold is raw < 30.",
+      "confidence": "decompilation and disassembly"
+    },
+    {
+      "name": "func_080008F4_6F0B04",
+      "program": "mini_ebisumaru_file42.bin",
+      "address": "0x080008F4",
+      "romAddress": "0x006F0B04",
+      "abi": "Complete callable prototype not established; observed setup arguments include parent task pointer, X/Y words, and priority word.",
+      "observed": "Installs func_080005DC_6F07EC as the task callback and assigns bank 0x2A. No full call signature is published.",
+      "confidence": "decompilation and call-site observation"
+    },
+    {
+      "name": "func_08001954_6F1B64",
+      "program": "mini_ebisumaru_file42.bin",
+      "address": "0x08001954",
+      "romAddress": "0x006F1B64",
+      "abi": "void(task pointer in a0, object pointer in a1)",
+      "observed": "Root constructs HUD after phase-frame+0xDE exceeds 1, starts its timer at 99 seconds, calls the seconds getter, and enters the timer failure branch when the getter returns zero.",
+      "confidence": "disassembly and decompilation"
+    }
+  ],
+  "limitations": [
+    "The proof reports that the Ghidra input executables are absent from the current shell host; no executable SHA256 is claimed.",
+    "Pause-mask skip logic is observed, but every pause reason is not decoded.",
+    "Static native analysis only; no game execution, live countdown timing, or multiplayer timer equality test was performed."
+  ]
+}

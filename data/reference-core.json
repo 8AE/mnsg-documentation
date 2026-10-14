@@ -95,16 +95,18 @@
   "D_800C7AB2": {
     "title": "Current game room ID",
     "summary": "The game’s 16-bit current room identifier. Read it to limit behavior to a particular room or invalidate cached actor state after a transition.",
-    "confidence": "source-reviewed",
+    "confidence": "decompiled",
     "behavior": [
       "Compare this value with a known room constant before applying room-specific behavior. Store it alongside cached actors or pending effects and revalidate that state when the value changes.",
       "Room identity does not establish that actor initialization has completed. Loaded resources, task generation, and encounter phase need their own checks.",
       "The storage is accessed as a 16-bit short. Use unsigned short for room identifiers and keep declarations consistent within your project. The complete surrounding system structure is not required for a read-only room check.",
-      "The title-menu Impact boss rush advances through stages 0x0260..0x0263. Kashiwagi uses 0x0260 (608), and Taisamba 2 uses 0x0261 (609). FUN_800370B0 selects the first stage; FUN_80037000 advances the current stage by one through 0x0263, then returns to 0x025F. The live Impact task and encounter selector must still be checked after each transition."
+      "The title-menu Impact boss rush advances through stages 0x0260..0x0263. Kashiwagi uses 0x0260 (608), and Taisamba 2 uses 0x0261 (609). FUN_800370B0 selects the first stage; FUN_80037000 advances the current stage by one through 0x0263, then returns to 0x025F. The live Impact task and encounter selector must still be checked after each transition.",
+      "The room actor-metadata registry has 800 slots. In the inspected native image, IDs 620 through 799 are null slots. The main stage mapper falls through for IDs at or above 620; the File11 graphics mapper can then compute an unsigned local index of 65408. Null registry slots do not make those IDs safe native rooms."
     ],
     "cautions": [
       "Reading a new room ID does not prove that its actor data has finished loading. Check native lifecycle and resource readiness separately.",
-      "Writing the variable directly is not a supported room-transition recipe. The engine manages additional transition state."
+      "Writing the variable directly is not a supported room-transition recipe. The engine manages additional transition state.",
+      "A custom room must establish bounded stage/group/local-index fields and cover the unconditional default-start table reader before native loading. Install valid 28-byte room actor metadata before func_8020D670_5C8B40 reads its callback at +0x18; that reader has no null-metadata guard. The load callback runs as void(void). The callback must be nonnull: func_8020D6BC_5C8B8C invokes it unconditionally."
     ],
     "example": "#include \"modding.h\"\n\nextern unsigned short D_800C7AB2;\n\nstatic unsigned short last_room;\nstatic int have_room;\nstatic unsigned int room_generation;\n\nRECOMP_HOOK_RETURN(\"func_80002040_2C40\")\nvoid track_game_room(void)\n{\n    unsigned short room = D_800C7AB2;\n    if (!have_room || room != last_room) {\n        last_room = room;\n        have_room = 1;\n        ++room_generation;\n        /* Invalidate your room-scoped caches here. */\n    }\n}",
     "exampleExplanation": "Tracks room transitions after the system update and increments a local generation counter. Discard or revalidate cached native actors when that generation changes.",
@@ -154,5 +156,327 @@
     "example": "extern unsigned char *D_8015C5C8_15D1C8;\n\nunsigned short pad0_pressed_buttons(void)\n{\n    if (!D_8015C5C8_15D1C8) return 0;\n    return *(volatile unsigned short *)(D_8015C5C8_15D1C8 + 0x3B07C);\n}\n\nunsigned short pad0_pressed_ab(void)\n{\n    return pad0_pressed_buttons() & 0xC000u;\n}\n",
     "exampleExplanation": "Reads pad 0's newly pressed button mask after the native controller update; the A/B mask is 0xC000. Pad n uses the same fields at offsets +0x3B07A + n*0x18 and +0x3B07C + n*0x18.",
     "declaration": "extern unsigned char *D_8015C5C8_15D1C8;"
+  },
+  "D_8006B780_6C380": {
+    "title": "Room default arrival table",
+    "summary": "Room-indexed records containing default XYZ, base player heading and a packed native camera-start parameter.",
+    "behavior": [
+      "Each entry consists of five signed 16-bit values: X, Y, Z, base player Y heading copied to system +0x3AFEA, and packed camera-start parameter copied to +0x3AFE2. An entry begins at short index room * 5 or byte offset room * 10.",
+      "File11 initialization truncates the fifth halfword to camera-task byte +0xBC. Camera startup uses byte >> 3 as an unguarded index into five native callbacks and its direction bits to establish facing relative to the base heading. The common value 0x10 selects callback group 2; this field is not an Euler yaw.",
+      "The default reader func_800214E4_220E4 indexes five signed halfwords without a room-ID guard. The ordinary destination consumer invokes it even when an explicit arrival transform has been prepared. Custom room admission must cover this reader separately from graphics and actor metadata.",
+      "Validate the room against known native entries before indexing. An unused room actor-metadata slot does not establish a valid default-start entry.",
+      "The base heading uses the native 10-bit phase: 1024 units per revolution. Player construction copies it into object yaw and player task +0x94, and stores heading << 6 in player-work +0xA4. The camera also uses it as a facing baseline."
+    ],
+    "cautions": [
+      "The unsized declaration provides no runtime bounds check. Do not index it with a newly allocated room ID.",
+      "Keep packed camera startup distinct from base player heading and object Euler rotation. Values 0 through 39 select an in-range callback index; this bound alone does not prove every value works in every scene."
+    ],
+    "related": [
+      "func_8000607C_6C7C"
+    ],
+    "confidence": "decompiled",
+    "example": "extern signed short D_8006B780_6C380[];\n\n/* This helper only reads the verified native Congo entry, room 0x0016. */\nint congo_arrival_fields(short *base_heading, short *packed_camera_start)\n{\n    if (!base_heading || !packed_camera_start) return 0;\n    const signed short *start = &D_8006B780_6C380[0x0016u * 5u];\n    *base_heading = start[3];\n    *packed_camera_start = start[4];\n    return 1;\n}\n",
+    "exampleExplanation": "Reads the two native arrival fields for one known room without accepting an arbitrary room index. The fifth field retains its packed camera startup semantics."
+  },
+  "func_8000607C_6C7C": {
+    "title": "Set the engine destination",
+    "summary": "Writes pending destination room, XYZ, base player heading, packed camera-start parameter and related loading fields.",
+    "behavior": [
+      "Writes the destination room at full-system +0x3AFE0, packed camera-start parameter at +0x3AFE2, X/Y/Z at +0x3AFE4/+0x3AFE6/+0x3AFE8 and base player heading at +0x3AFEA. It sets destination-transition byte +0x3AE29 to 1 and stores the script resource ID and script address at +0x3AE3A and +0x3AE3C.",
+      "This prepares a destination without assigning the current room. In ordinary live File11 gameplay, func_801F77F4_5B3704 observes the request marker and selects native room teardown and reload. The separate full main-system step-12 route also consumes pending fields, tears down the world and enters step 13; these lifecycles are not interchangeable.",
+      "The live step-12 route consumes the prepared destination directly; it does not read the saved respawn transform. Save-file loading has a separate spawn-reading route. Preserve saved respawn fields when requesting an ordinary live warp unless changing the saved return point is also intended.",
+      "This setter leaves the extended setup word at +0x3AE2C and option halfword at +0x3AE30 untouched. Native camera initialization can use a nonzero setup word to override the ordinary arrival transform even when transition-marker bit 0x08 is clear.",
+      "The sixth argument is the native packed camera-start parameter. File11 initialization stores its low byte at camera-task +0xBC; startup uses byte >> 3 as an unguarded index into five callbacks and direction bits for camera facing. Passing an arbitrary rotation here can select an invalid callback.",
+      "A newly assigned room ID also needs bounded graphics/group indices, a valid default-start reader and installed room actor metadata before native rebuild consumers run. Queuing explicit coordinates does not bypass those independent reads.",
+      "The seventh and eighth arguments are a signed 16-bit script resource ID and a 32-bit segmented script address. The native script-start consumer loads a nonzero resource through the scene registry, maps the script and starts it. Zero for both requests no queued native script. Resource -1 belongs to separate menu/demo behavior, not controller selection.",
+      "The ordinary hot transition retains the live player task, its controller byte at +0x90 and character byte at +0x60 while replacing room task subtrees. The final two arguments do not select the controller or character. Cold player allocation has a separate controller-zero initialization policy."
+    ],
+    "cautions": [
+      "This queues destination state; it does not alone execute a complete warp.",
+      "Do not request a second warp while a native transition, pause, conversation or scripted movement owns the player. A loaded save and a live ordinary-world player are prerequisites for this call sequence.",
+      "This basic destination setter and the extended native room-request helper write different fields. Preserve the surrounding native camera/setup lifecycle rather than treating the request helpers as interchangeable.",
+      "Passing zero for script_resource and script_address does not clear the separate extended setup and option fields. Establish the target camera lifecycle's required values before requesting a rebuild.",
+      "The camera-start byte and base heading have different units and roles. Use validated native startup values; an in-range callback index alone is not a complete camera-lifecycle guarantee."
+    ],
+    "related": [
+      "D_8006B780_6C380",
+      "func_8000B364_BF64",
+      "func_80003728_4328",
+      "func_801FA420_5B6330"
+    ],
+    "confidence": "decompiled",
+    "example": "extern short D_8006B780_6C380[];\nextern void func_8000607C_6C7C(unsigned short room, short x, short y, short z,\n                              short base_heading, short packed_camera_start,\n                              short script_resource, unsigned int script_address);\n\n/* Call only from a loaded ordinary world after all native dialogs, pause,\n * scripted movement and an existing transition have finished. */\nvoid queue_congo_destination(void)\n{\n    const unsigned short room = 0x0016;\n    const short *start = &D_8006B780_6C380[room * 5u];\n    func_8000607C_6C7C(room, start[0], start[1], start[2],\n                     start[3], start[4], 0, 0);\n}\n",
+    "exampleExplanation": "Queues the verified Congo arrival fields and no native script during ordinary live File11 gameplay. The existing scene callback owns the hot transition and retains the player task, selected controller and character. This example does not alter saved respawn state or force a full system-step rebuild.",
+    "parameters": [
+      {
+        "name": "room",
+        "type": "unsigned short",
+        "description": "Destination room/stage identifier."
+      },
+      {
+        "name": "x, y, z",
+        "type": "short",
+        "description": "Destination player coordinates."
+      },
+      {
+        "name": "base_heading, packed_camera_start",
+        "type": "short",
+        "description": "Base player Y heading in native 10-bit phase (1024 units per revolution), also used as a camera baseline; separate packed camera-start parameter selecting startup callback group and direction."
+      },
+      {
+        "name": "script_resource",
+        "type": "short",
+        "description": "Signed 16-bit queued native script resource ID. Zero means no queued script; -1 has separate menu/demo semantics."
+      },
+      {
+        "name": "script_address",
+        "type": "unsigned int",
+        "description": "32-bit segmented address of the queued native script. Ordinary requests pass zero with script_resource zero."
+      }
+    ],
+    "returns": "No return value."
+  },
+  "func_801FA6E4_5B65F4": {
+    "title": "Prepare a native return request from room history",
+    "summary": "Copies the saved room and arrival fields into pending transition state and selects a return marker.",
+    "confidence": "decompiled",
+    "declaration": "void func_801FA6E4_5B65F4(char marker_mode);",
+    "parameters": [
+      {
+        "name": "marker_mode",
+        "type": "char",
+        "description": "Zero selects marker 1; any nonzero value selects marker 4."
+      }
+    ],
+    "returns": "No return value.",
+    "behavior": [
+      "Copies the saved room halfword from system-state +0x3ADFC to pending room +0x3AFE0.",
+      "Copies saved XYZ halfwords from +0x3AFF8/+0x3AFFA/+0x3AFFC to pending +0x3AFE4/+0x3AFE6/+0x3AFE8, and copies the saved orientation halfword at +0x3AFFE to pending +0x3AFEA.",
+      "Writes system-state marker byte +0x3AE29 as 4 for nonzero marker_mode, or 1 for zero.",
+      "The separate pending packed camera-start parameter at +0x3AFE2 is not written by this helper. The base destination heading is stored at +0x3AFEA."
+    ],
+    "cautions": [
+      "Requires valid initialized system state and saved room history from the surrounding native entry lifecycle.",
+      "This routine records pending transition fields; it does not by itself execute the room transition, restore challenge statistics or grant a reward.",
+      "The copy itself does not prove whether every caller originally saved a camera angle or player facing into +0x3AFFE. Keep the saved halfword distinct from the separate pending packed camera-start field."
+    ],
+    "example": "extern void func_801FA6E4_5B65F4(char marker_mode);\n\n/* Invoke at the native exit boundary after room history is valid. */\nvoid record_saved_room_return(void)\n{\n    func_801FA6E4_5B65F4(1);\n}\n",
+    "exampleExplanation": "This selects marker 4 using the native saved room and arrival fields. The native exit controller remains responsible for the rest of the transition lifecycle.",
+    "related": [
+      "func_801FA4FC_5B640C",
+      "func_801FA420_5B6330",
+      "func_800370E8_37CE8",
+      "func_800371B4_37DB4",
+      "func_8000607C_6C7C",
+      "func_80003728_4328"
+    ]
+  },
+  "func_08002254_6F5734": {
+    "title": "Complete a travel-door interaction",
+    "summary": "Completes the inspected visual travel-door sequence by setting a native selector latch.",
+    "behavior": [
+      "No sound call was found in this travel-door completion callback.",
+      "This observation is limited to the inspected file_43 travel-door family and does not establish that all door-close or door-completion paths are silent.",
+      "After waiting for animation bit 2 at object +0x7C, the File43 completion path clears interaction state and writes the low byte of task halfword +0xD8 to full-system +0xCF898. This is a selector latch, not a destination room ID.",
+      "A separate common transition controller, actor ID 0x08C, matches the selector and queues its own packed destination fields. Do not derive a destination room from the visual door payload."
+    ],
+    "confidence": "decompiled",
+    "example": "/* Observation: func_08002254_6F5734 is an identified native routine. */\n/* Its standalone C prototype is not established; do not call it through a guessed declaration. */\n",
+    "related": [
+      "D_8015CDE0",
+      "func_8000607C_6C7C"
+    ]
+  },
+  "D_8015CDE0": {
+    "title": "Current resolved actor definition pointer",
+    "summary": "Scratch pointer to a resolved actor definition, including the actor 0x08C destination XYZ, base heading and packed camera-start payload layout.",
+    "behavior": [
+      "The 16-byte definition contains unsigned 16-bit actor ID at +0, a retained halfword at +2 and three 32-bit payload words at +4/+8/+0xC. The initializer copies those payloads into task +0xD0/+0xD4/+0xD8; it does not copy the retained halfword into these fields.",
+      "The native actor manager resolves definitions through the active actor-data file. func_80218A54_5D3F24 replaces this shared pointer from the supplied instance before copying the definition payloads. Nested initialization can change the pointer.",
+      "For transition controller actor 0x08C, payload word 0 upper/lower halfwords hold destination room/X; word 1 upper/lower halfwords hold Y/Z. Word 2 upper halfword supplies the base player Y heading, bits 8..11 supply the four-bit selector, and its low byte is sign-extended into the packed camera-start parameter. This layout is actor-specific.",
+      "func_80215230_5D0700 matches the controller selector and func_80215330_5D0800 writes destination state. The visual File43 travel-door completion instead writes a selector latch at system +0xCF898; the two actors have different payload meanings."
+    ],
+    "cautions": [
+      "Retain values rather than assuming this global still names the same definition after another spawn call.",
+      "This is native scene/overlay state. Validate actor IDs and resource lifetime; do not assume an unsized extern provides bounds.",
+      "Keep Y in payload word 1 upper halfword and Z in its lower halfword. Do not swap them or reinterpret the packed camera-start byte as a player rotation."
+    ],
+    "related": [
+      "func_80218A54_5D3F24",
+      "func_8003555C_3615C",
+      "D_8015CDDC",
+      "func_08002254_6F5734",
+      "func_8000607C_6C7C",
+      "D_8006B780_6C380"
+    ],
+    "confidence": "decompiled",
+    "example": "typedef struct ActorDefinition {\n    unsigned short actor_id, retained;\n    unsigned int payload[3];\n} ActorDefinition;\n\nextern ActorDefinition *D_8015CDE0;\n\ntypedef struct ControllerArrival {\n    unsigned short room, selector;\n    short x, y, z, base_heading, packed_camera_start;\n} ControllerArrival;\n\n/* Decode the native 32-bit ABI; does not activate a transition. */\nint decode_controller_arrival(const ActorDefinition *definition,\n                              ControllerArrival *out)\n{\n    if (!definition || !out || definition->actor_id != 0x08Cu) return 0;\n    unsigned int p0 = definition->payload[0];\n    unsigned int p1 = definition->payload[1];\n    unsigned int p2 = definition->payload[2];\n    out->room = (unsigned short)(p0 >> 16);\n    out->x = (short)p0;\n    out->y = (short)(p1 >> 16);\n    out->z = (short)p1;\n    out->base_heading = (short)(p2 >> 16);\n    out->selector = (unsigned short)((p2 >> 8) & 0xFu);\n    out->packed_camera_start = (signed char)(p2 & 0xFFu);\n    return 1;\n}\n",
+    "exampleExplanation": "Decodes only the verified transition-controller payload layout. A valid room, resource lifecycle and packed camera-start parameter remain prerequisites for native activation."
+  },
+  "func_80218A54_5D3F24": {
+    "title": "Apply a room actor spawn instance",
+    "summary": "Initializes an allocated actor task from its room spawn instance, including the signed 16-bit yaw copied directly to its model object.",
+    "behavior": [
+      "Resolves instance->definition through the active actor-data file, sets actor/entity IDs at task +0x5C/+0x5E, copies the signed 16-bit spawn transform into the model and copies definition words into task +0xD0/+0xD4/+0xD8.",
+      "Assigns an incrementing 8-bit generation at +0x74, initializes actor state and installs the native earlier callback FUN_8021925C and common post func_80218F30_5D4400.",
+      "D_8015CDDC identifies the current room instance and D_8015CDE0 holds the current resolved definition during the native spawn path. These are transient scratch pointers.",
+      "Room actors are staged before initialization by the actor-data spawn routine func_8020D848_5C8D18, which selects the per-room metadata record at D_80231300_5EC7D0[room]. The record's normal actor-instance list, partitioned/proximity lists and active actor-data file must be resident before this initializer can resolve an instance; a zero instance definition terminates the list.",
+      "The instance yaw is the signed 16-bit field at instance +0x08 and is copied unchanged to the model object at +0x16. The angle period is 65,536 units per revolution, so 0x8000 (signed -32768) is a half turn from zero. The common sign constructor and model binding preserve this yaw.",
+      "Resolves instance->definition using the active actor-data file, updates D_8015CDE0, copies actor ID into +0x5C/+0x5E and applies the instance transform to the task display object.",
+      "Copies definition payload into +0xD0/+0xD4/+0xD8, initializes actor state, and installs native update/finalizer callbacks. It requires a valid allocated display object and resident actor-data resources.",
+      "Calling this initializer from a hook on itself requires a recursion guard. The shared definition pointer can change during nested initialization.",
+      "The retained definition halfword at +2 is not copied to the task payload fields. The instance definition pointer at +0x0C terminates static roster traversal when zero; actor ID zero is not the list terminator."
+    ],
+    "cautions": [
+      "The active actor-data file must be loaded before resolving the definition.",
+      "Entry occurs before task initialization. Inspect final identity fields only after the native routine completes.",
+      "Requires a valid allocated actor with a display object and resident actor-data wave. Native segmented definition resolution can fault when resources are absent.",
+      "Its global definition context changes during initialization. Do not retain it as a per-enemy stable pointer without validating the scene.",
+      "Calling from its own hook requires a recursion guard. The example assumes duplicate and duplicate_instance were prepared by the recovered call pattern spawning pattern.",
+      "An initializer callback address alone does not prove that its overlay, model, animations or later child resources are resident. Preserve validated native load order and ownership."
+    ],
+    "related": [
+      "D_8015CDDC",
+      "D_8015CDE0",
+      "func_8003555C_3615C",
+      "func_80218F30_5D4400"
+    ],
+    "confidence": "decompiled",
+    "example": "#include \"modding.h\"\nextern void *D_8015CDDC;\ntypedef struct {\n    unsigned short actor_id, params;\n    unsigned int data[3];\n} ActorDefinition;\nextern ActorDefinition *D_8015CDE0;\n\nstatic unsigned short last_native_spawn_id;\nRECOMP_HOOK(\"func_80218A54_5D3F24\")\nvoid observe_room_actor_spawn(int actor, void *instance)\n{\n    (void)actor;\n    if (instance && D_8015CDDC == instance && D_8015CDE0)\n        last_native_spawn_id = D_8015CDE0->actor_id;\n}\n",
+    "exampleExplanation": "Capture the actor ID from the current resolved room definition at the native spawn boundary without allocating another actor.",
+    "parameters": [
+      {
+        "name": "actor",
+        "type": "int",
+        "description": "Already allocated task handle in the 32-bit target ABI."
+      },
+      {
+        "name": "instance",
+        "type": "ActorInstance *",
+        "description": "Room spawn instance containing signed 16-bit position/rotation and a native/segmented definition pointer."
+      }
+    ],
+    "returns": "No return value.",
+    "decompilation": "/* WARNING: Removing unreachable block (ram,0x80218bb0) */\n/* WARNING: Removing unreachable block (ram,0x80218be0) */\n\nvoid FUN_80218a54(int param_1,actor_instance *param_2)\n\n{\n  ushort uVar1;\n  int iVar2;\n  undefined4 uVar3;\n  \n  DAT_8015cde0 = param_2->definition;\n  DAT_8015cde0 = (actor_definition *)FUN_80014840(DAT_8015cde0,DAT_8015cc70);\n  uVar1 = *(ushort *)DAT_8015cde0;\n  *(ushort *)(param_1 + 0x5c) = uVar1;\n  iVar2 = *(int *)(param_1 + 0x18);\n  *(ushort *)(param_1 + 0x5e) = *(ushort *)DAT_8015cde0;\n  *(byte *)(param_1 + 0x77) = BYTE_ARRAY_80229fe4[uVar1];\n  *(undefined1 *)(iVar2 + 5) = 2;\n  *(float *)(iVar2 + 8) = (float)(int)(param_2->position).x;\n  *(float *)(iVar2 + 0xc) = (float)(int)(param_2->position).y;\n  *(float *)(iVar2 + 0x10) = (float)(int)(param_2->position).z;\n  *(short *)(iVar2 + 0x14) = (param_2->rotation).pitch;\n  *(short *)(iVar2 + 0x16) = (param_2->rotation).yaw;\n  *(short *)(iVar2 + 0x18) = (param_2->rotation).roll;\n  *(undefined4 *)(param_1 + 0xd0) = *(undefined4 *)((int)DAT_8015cde0 + 4);\n  *(undefined4 *)(param_1 + 0xd4) = *(undefined4 *)((int)DAT_8015cde0 + 8);\n  uVar3 = *(undefined4 *)((int)DAT_8015cde0 + 0xc);\n  *(undefined4 *)(param_1 + 0x70) = 0;\n  *(undefined1 *)(param_1 + 0x75) = 0x19;\n  *(undefined2 *)(param_1 + 0xa4) = 0;\n  *(undefined1 *)(param_1 + 0x76) = 0x14;\n  *(undefined2 *)(param_1 + 0x96) = 1;\n  *(undefined4 *)(param_1 + 0xd8) = uVar3;\n  *(char *)(param_1 + 0x74) = DAT_8015cd08;\n  DAT_8015cd08 = DAT_8015cd08 + '\\x01';\n  *(undefined2 *)(param_1 + 0x22) = 1;\n  FUN_80217144(param_1);\n  *(float *)(iVar2 + 0x68) = (float)*(byte *)(param_1 + 0x99) / 2.0;\n  *(float *)(iVar2 + 0x6c) = (float)*(byte *)(param_1 + 0x98);\n  FUN_8021928c(param_1);\n  FUN_80035214(param_1,FUN_8021925c);\n  FUN_80035244(param_1,FUN_80218f30);\n  return;\n}",
+    "decompilationAddress": "0x80218A54",
+    "decompilationNote": "Ghidra pseudocode recovered at the displayed native address. Undefined types and analysis names are not complete C declarations; use the documented signature when writing calling code."
+  },
+  "D_802287BC_5E3C8C": {
+    "title": "Actor entry callback table",
+    "summary": "Table of native actor-entry callbacks indexed by actor ID, including the common save sign and its scenario interaction lifecycle.",
+    "behavior": [
+      "The native room actor manager supplies D_802287BC_5E3C8C[actor_id] to func_8003555C_3615C as the new task entry callback.",
+      "Companion metadata supplies task category and model ID. Actor-data resources and room-instance initialization complete the spawn path.",
+      "Actor ID 0x08B is the common model-bearing save sign. Its native entry initializes the task, binds model slot 0x08B, and installs the sign interaction callback; its talk path selects the player and dispatches the scenario ID stored on the task.",
+      "An alternate conversation initiation call with interaction mode 0 can begin a scenario without setting object +0x7C bit 0x08. It marks task +0x68 bit 0x100, sets the selected player task state at +0xCD to 1, and sets a global interaction state. The player update advances that state to 3; the scenario coordinator waits for the selected player, advances it to 4, dispatches the scenario ID at sign task +0xA4, and installs a cleanup callback. This interaction mode is separate from model setup mode 0.",
+      "After the scenario virtual machine becomes inactive, cleanup clears task +0x68 bit 0x100, sets task flags to (flags & ~0x100) | 0x4400, and restores the callback saved at task +0xB4.",
+      "An entry supplies the actor callback/entry value passed to func_8003555C during task creation.",
+      "The table is exposed as void pointers; a fuller entry layout or callable function prototype is not established by that lookup alone.",
+      "Resource closure and visible-model coverage are separate facts. Exact common constructor 0x08C only writes identity, scale, flags and its transition callback; exact environment constructor 0x08E applies environment fields and removes its own task. Neither inspected initialization path requests an additional dynamic wave.",
+      "The exact File24 0x35E persistent callback requests no dynamic wave; its later spatial-sound operation is audio work. The exact File30 0x1BF constructor may allocate room-arena camera work and a type-two tagged camera graph rather than a model wave. These bounded conclusions retain each required executable overlay dependency and do not prove later script or gameplay parity."
+    ],
+    "cautions": [
+      "Validate the actor ID against the native roster before indexing. A callback entry alone is not a complete spawn configuration.",
+      "A follow-up player recovery path appears to clear transition state after the scenario ends, but its control-flow gate is not fully confirmed.",
+      "This is native scene/overlay state. Validate actor IDs and resource lifetime; do not assume an unsized extern provides bounds.",
+      "An exact initializer-array length is not established by the unsized declaration or the next exported symbol. Reviewed dispatchers do not guard actor IDs; validate an eligible ID and its exact overlay/resource context before looking up or scheduling its callback."
+    ],
+    "related": [
+      "func_80218A54_5D3F24",
+      "func_80216E1C_5D22EC",
+      "func_8003555C_3615C",
+      "D_802297D6_5E4CA6"
+    ],
+    "confidence": "decompiled",
+    "example": "extern void *D_802287BC_5E3C8C[];\n\n/* actor_id must already be validated against the native roster. */\nvoid *actor_entry(unsigned short actor_id)\n{\n    return D_802287BC_5E3C8C[actor_id];\n}\n",
+    "exampleExplanation": "The example shows the documented native data layout or call sequence. Use it only while the relevant game state and resources are valid."
+  },
+  "D_80167FC0_168BC0": {
+    "title": "Scene resource registry and arena cursor",
+    "summary": "Dynamic scene-resource registry with 48 accepted ID slots and an append cursor; memory capacity requires a separate bound.",
+    "behavior": [
+      "The loader accepts 48 file-ID slots at 0x80167FC0 + 8 * index for indices 0 through 47. Each 8-byte record contains a 16-bit file ID, a retained halfword and a 32-bit data value. A zero file ID terminates the resident list; its data value supplies the next allocation destination.",
+      "A new load writes the file ID into the first zero slot, loads and registers the file, then writes a following zero-ID sentinel with the next 64-byte-aligned cursor. Loading the final accepted slot writes that sentinel at 0x80168140 and its cursor at 0x80168144, which are adjacent loader scratch globals. They are outside the accepted ID scan range.",
+      "func_80013B14_14714 returns zero for a full ID scan and does not evict entries. The 48-ID bound does not enforce arena capacity or reserve resources for later events.",
+      "Ordinary File11 cold setup reserves the world bank prefix 0x80304000 through 0x803214FF and starts dynamic appends at 0x80321500. It uses four 0x1000-byte work buffers beginning at 0x80305500 and a 0x18000-byte player buffer at 0x80309500.",
+      "The boot File10 allocation spans 0x80304000 through exclusive end 0x80594000. An ordinary-world extension may adopt that end as an explicit conservative cache policy; the native loader itself does not check it. Preserve the reserved prefix and verify the live retained cursor, file-allocation extents and alignment before each append.",
+      "Room transitions can truncate the registry at a retained entry index before loading donor and actor resources. Count the actual retained prefix together with appended IDs; an authored resource list alone is not the complete occupancy."
+    ],
+    "cautions": [
+      "48 accepted resource IDs and a separate bounded memory region are independent checks. A full list has no sentinel inside these 48 accepted records; the example returns null in that case.",
+      "Do not write into the ordinary-world reserved prefix or extend its cache using unverified gaps between native and host allocations.",
+      "The 0x80594000 policy applies only to the inspected ordinary File11/File12 world layout. Other modes, substituted resources and relocated banks need their own allocation contract.",
+      "Reacquire registry-backed values after scene truncation or reload. Preserve opaque resource tags expected by native consumers."
+    ],
+    "related": [
+      "func_80013B14_14714",
+      "func_800141C4_14DC4"
+    ],
+    "confidence": "decompiled",
+    "example": "#define SCENE_RESOURCE_ENTRY_COUNT 48\ntypedef struct SceneResourceEntry {\n    unsigned short file_id, padding;\n    unsigned char *data;\n} SceneResourceEntry;\n\nextern SceneResourceEntry D_80167FC0_168BC0[SCENE_RESOURCE_ENTRY_COUNT];\n\n/* Inspect only after the native stage resource registry is initialized. */\nvoid *scene_arena_cursor(void) {\n    for (int i = 0; i < SCENE_RESOURCE_ENTRY_COUNT; ++i) {\n        if (D_80167FC0_168BC0[i].file_id == 0)\n            return D_80167FC0_168BC0[i].data;\n    }\n    return 0;\n}\n",
+    "exampleExplanation": "Scans only the 48 accepted records and reads the first zero-ID cursor. Null means no sentinel was found within that range; it does not establish heap capacity."
+  },
+  "func_80013B14_14714": {
+    "title": "Load a file into the scene registry",
+    "summary": "Loads a file into the scene resource registry and advances its aligned allocation boundary.",
+    "behavior": [
+      "Scans 48 accepted file-ID records for an existing ID or the first zero-file sentinel. A full ID scan returns zero without loading. An existing ID returns the following record data value, not the loaded file base.",
+      "For a new ID, reads the sentinel destination and queries func_80001DF4_29F4. A nonzero result requires 0x1000 alignment and a native 0x40000000 resource tag. Loads through func_80001C00_2800, registers through func_800142BC_14EBC and writes a following zero-ID sentinel with the next 0x40-aligned cursor.",
+      "The load allocation extent comes from the native start/end table, not the raw ROM file length. func_80001C00_2800 copies or decompresses the file, zero-fills its allocation tail and writes back the cache. Raw copy length rounds up to an even byte count. PIC-part registration can add writes at native part destinations; validate those decoded spans and their terminator as well as the allocation extent.",
+      "This routine has no heap-capacity check and does not evict cached entries. Check the live retained prefix, the union of resource IDs, allocation extents and required alignment before appending.",
+      "Ordinary File11 world setup preserves 0x80304000..0x803214FF and begins appends at 0x80321500. The boot File10 bank ends at 0x80594000; using that exclusive end for a bounded extension is an explicit policy, not a bound enforced here."
+    ],
+    "cautions": [
+      "Only call during a valid native loading phase after independent ID-slot and memory-capacity preflight. A nonzero returned cursor alone does not prove a safe load.",
+      "The return is an aligned next cursor or following-entry data value. Use func_800141C4_14DC4 to retrieve the registered resource, preserving its native tags.",
+      "Allocation extent, raw even-copy extent and decoded PIC-part destinations all require bounds checks. Do not substitute raw file length for native allocation size.",
+      "Scene-resident pointers must be reacquired after a stage change. Arbitrary replacement resources or relocated backing banks fall outside the fixed canonical allocation contract."
+    ],
+    "related": [
+      "func_800141C4_14DC4",
+      "func_8020D6BC_5C8B8C",
+      "D_80167FC0_168BC0"
+    ],
+    "confidence": "decompiled",
+    "example": "extern void *func_80013B14_14714(unsigned int file_id);\nextern void *func_800141C4_14DC4(unsigned int file_id);\n\n/* Call only after verifying the live registry slots, aligned allocation\n * extent and all decoded writes fit the owned loading bank. */\nvoid *load_and_find_ryo_effect(void)\n{\n    void *p = func_800141C4_14DC4(0x3B);\n    if (!p || p == (void *)(unsigned long)0xFFFFFFFFu) {\n        func_80013B14_14714(0x3B);\n        p = func_800141C4_14DC4(0x3B);\n    }\n    return (!p || p == (void *)(unsigned long)0xFFFFFFFFu) ? 0 : p;\n}\n",
+    "exampleExplanation": "Uses the native loader and then the resource lookup after the caller has verified the live registry and allocation budget. It rejects both lookup sentinels and does not reinterpret the tagged resource value.",
+    "parameters": [
+      {
+        "name": "file_id",
+        "type": "unsigned int",
+        "description": "File identifier. The native routine consumes a 16-bit ID; the documented call uses an unsigned word argument."
+      }
+    ],
+    "returns": "Aligned next allocation boundary, or null if the registry scan cannot allocate an entry. It is not the resource base.",
+    "decompilation": "void * FUN_80013b14(ushort param_1)\n\n{\n  ushort uVar1;\n  int iVar2;\n  undefined1 *puVar3;\n  undefined1 *puVar4;\n  overlay *poVar5;\n  \n  poVar5 = overlay_ARRAY_80167fc0;\n  uVar1 = overlay_ARRAY_80167fc0[0].file_id;\n  while( true ) {\n    if (uVar1 == 0) {\n      puVar4 = poVar5->data;\n      poVar5->file_id = param_1;\n      iVar2 = FUN_80001df4(param_1);\n      if (iVar2 != 0) {\n        puVar4 = (undefined1 *)((uint)(puVar4 + 0xfff) & 0xfffff000);\n        poVar5->data = (void *)((uint)puVar4 | 0x40000000);\n      }\n      puVar3 = FUN_80001c00((uint)poVar5->file_id,puVar4);\n      FUN_800142bc(poVar5->file_id,puVar4);\n      poVar5[1].file_id = 0;\n      poVar5[1].data = (void *)((uint)(puVar3 + 0x3f) & 0xffffffc0);\n      return (void *)((uint)(puVar3 + 0x3f) & 0xffffffc0);\n    }\n    if (uVar1 == param_1) break;\n    poVar5 = poVar5 + 1;\n    if ((overlay *)((int)&overlay_ARRAY_80167fc0[0x2f].data + 3) < poVar5) {\n      return (void *)0x0;\n    }\n    uVar1 = poVar5->file_id;\n  }\n  return poVar5[1].data;\n}",
+    "decompilationAddress": "0x80013B14",
+    "decompilationNote": "Ghidra pseudocode recovered at the displayed native address. Undefined types and analysis names are not complete C declarations; use the documented signature when writing calling code."
+  },
+  "func_801F77F4_5B3704": {
+    "title": "Run scene contacts and player-state maintenance",
+    "summary": "Native scene callback that coordinates contact scans and diverts a pending room request into selective world teardown and reload.",
+    "declaration": "extern void func_801F77F4_5B3704(void *task, void *object);",
+    "behavior": [
+      "The native callback saves two scheduler arguments. Its inspected body obtains the task-group pointers from scene globals instead of using those arguments for contact selection.",
+      "After scene preparation, invokes func_80033024_33C24 for selected attacker/victim groups. While the player-manager pointer is live, four calls use D_801FC600_5B8510 as the outgoing attacker subtree.",
+      "Other pairs test actor and projectile groups against the playable-player group. The callback subsequently processes height, scene-exit and related state; it has effects beyond hit detection.",
+      "A nonzero native transition marker redirects the callback into a room-transition lifecycle that tears down the current world tasks and selectively reloads native resource banks.",
+      "That selective route invokes the destination room initializer only when the native force-initialization byte is nonzero or the pending room selects a different initializer callback. A request marker alone does not guarantee that destination initialization runs.",
+      "The ordinary hot transition passes through func_801F7C14_5B3B24, which removes room-owned task hierarchies and resets the room arena at 0x802F7000 with size 0xA000. It retains the live player task rather than reallocating it. The reload path truncates the dynamic registry to its retained entry prefix before invoking room-resource callbacks."
+    ],
+    "example": "#include \"modding.h\"\n\nstatic unsigned int observed_contact_frames;\n\nRECOMP_HOOK(\"func_801F77F4_5B3704\")\nvoid observe_contact_frame(void)\n{\n    ++observed_contact_frames;\n}\n",
+    "cautions": [
+      "Observe the normal scheduler invocation. Calling the callback again repeats stateful scene work.",
+      "The callback belongs to its native gameplay overlay and requires initialized scene managers. A hook that ignores the scheduler arguments may declare no parameters.",
+      "The selective scene reload and main system step 12 are different lifecycles. The latter tears down and fully rebuilds the world; do not assume the selective route recreates every destination task or resource.",
+      "Parent custom room tasks beneath the room-owned hierarchy and preserve their storage until native cleanup has finished. Teardown and cache truncation make retained scene pointers invalid."
+    ],
+    "confidence": "decompiled",
+    "related": [
+      "func_80033024_33C24",
+      "D_801FC600_5B8510",
+      "func_80003728_4328",
+      "func_801FA6E4_5B65F4"
+    ]
   }
 }

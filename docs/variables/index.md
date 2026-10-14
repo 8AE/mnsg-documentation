@@ -11,7 +11,7 @@ Value tables decode established raw values and document known field layouts. Sel
 | Symbol | Purpose | Known values |
 | --- | --- | --- |
 | [`D_800657CC_663CC`](D_800657CC_663CC.md) | HUD file resource-to-segment list | — |
-| [`D_8006B780_6C380`](D_8006B780_6C380.md) | Room default start transform table | [Tables](D_8006B780_6C380.md#known-values) |
+| [`D_8006B780_6C380`](D_8006B780_6C380.md) | Room default arrival table | [Tables](D_8006B780_6C380.md#known-values) |
 | [`D_8006D320_6DF20`](D_8006D320_6DF20.md) | Optional record recycling owner | [Tables](D_8006D320_6DF20.md#known-values) |
 | [`D_8006D328_6DF28`](D_8006D328_6DF28.md) | Native task-list state | — |
 | [`D_8006D350_6DF50`](D_8006D350_6DF50.md) | Per-kind pool capacity table | [Tables](D_8006D350_6DF50.md#known-values) |

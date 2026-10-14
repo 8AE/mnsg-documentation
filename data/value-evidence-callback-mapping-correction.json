@@ -1,0 +1,100 @@
+{
+  "date": "2026-10-08",
+  "scope": "Correction to callback identity comparisons before recompiled scheduler dispatch. This is additive evidence; the native resolver's own file-segment behavior remains unchanged.",
+  "confidence": {
+    "file42": "Live recording plus native and recompiled-source evidence.",
+    "file32": "Recompiled-source and native segment-table evidence; robot birth not live-confirmed."
+  },
+  "recompiledRuntime": {
+    "repositoryHead": "30775d247e912178d28fe46bf04d5d610ebc43da",
+    "sourceFile": "Goemon64Recomp/patches/required.c",
+    "sourceSHA256": "b4f0928933b4a13d92ceaa363e95467b87fb0c0c0d9213c621b20e30428da3c9",
+    "relevantLines": [
+      "74-120",
+      "88-91",
+      "97-100",
+      "106-109"
+    ],
+    "mapping": "For raw callbacks in 0x08000000 <= raw < 0x09000000, loaded_callback = raw_callback - 0x08000000u + (resource_handle & 0xBFFFFFFFu), with 32-bit unsigned arithmetic.",
+    "safety": "Early identity comparison maps a local callback copy; it does not invoke the task callback or write the mapped value back to task+0x0C. The resource handle is a registry handle/base value, not an actor pointer. Reject null and 0xFFFFFFFF before clearing the resource tag; clear only bit 0x40000000. Preserve the separate callback-inhibition policy."
+  },
+  "nativeResolver": {
+    "function": "func_80014840_15440",
+    "address": "0x80014840",
+    "romAddress": "0x00015440",
+    "sizeBytes": 128,
+    "resourceSegmentLookup": "func_80001E50_2A50",
+    "segmentTableAddress": "0x80054910",
+    "file32And42Segment": "0x11",
+    "mapping": "The native resolver's positive-address path is raw + (registry_base & 0xBFFFFFFF) - (file_segment << 24). For banks 0x20 and 0x2A, the file segment is 0x11; this differs by 0x09000000 from the recompiled scheduler's fixed 0x08000000 subtraction.",
+    "semanticsPreserved": "Signed-nonpositive pass-through, native per-file segment conversion, and the deliberate missing-file fault remain documented native behavior. Do not relabel this function as the recompiled fixed-base callback converter."
+  },
+  "nativeGhidraEvidence": {
+    "program": "mnsg_main_static.elf",
+    "recordedExecutablePath": "/private/tmp/mnsg_main_static.elf",
+    "recordedExecutableAvailableForHashing": false,
+    "functions": [
+      {
+        "symbol": "func_80014840_15440",
+        "address": "0x80014840",
+        "romAddress": "0x00015440",
+        "sizeBytes": 128,
+        "relevantInstructions": "0x8001484C; 0x80014858; 0x80014868-0x80014884; 0x8001488C; 0x8001489C-0x800148A8"
+      },
+      {
+        "symbol": "func_80001E50_2A50",
+        "address": "0x80001E50",
+        "romAddress": "0x00002A50",
+        "relevantInstructions": "0x80001E7C-0x80001E90"
+      },
+      {
+        "symbol": "func_800141C4_14DC4",
+        "address": "0x800141C4",
+        "romAddress": "0x00014DC4",
+        "relevantInstructions": "0x800141F4-0x800141F8"
+      }
+    ],
+    "resourceSegmentTableReadAddress": "0x80054910",
+    "nativeExecutableSHA256": null,
+    "note": "Function disassembly, decompilation and table bytes were read from the open Ghidra program; its recorded ELF path was unavailable, so no current executable file hash is claimed."
+  },
+  "liveFile42Evidence": {
+    "recording": "/private/tmp/mnsg-mini-ebisumaru.gdtGdd",
+    "sha256": "cd12191e61bec9e79edb199baa49d2dae00d8d0ff8a125067057bd689b79b0a9",
+    "lines": "98-108",
+    "rawMechanismCallback": "0x0800139C",
+    "bank": "0x002A",
+    "resident": true,
+    "nativeResolverResult": "0x773CF39C",
+    "recompiledCallback": "0x803CF39C",
+    "platformRawCallback": "0x08001250",
+    "platformRecompiledCallback": "0x803CF250",
+    "observedDifference": "0x09000000",
+    "inferredUntaggedRegistryBase": "0x803CE000"
+  },
+  "file32Evidence": {
+    "rawRobotCallback": "0x08001720",
+    "importedCallback": "0x803C2720",
+    "nativeSegment": "0x11",
+    "recompiledMapping": "Matches fixed-base source arithmetic and the native segment-table range for file 0x20.",
+    "limitation": "No robot birth was recorded; its live callback mapping remains unconfirmed. The inferred untagged registry base 0x803C1000 is not a directly logged handle."
+  },
+  "proofReport": {
+    "path": "/private/tmp/mnsg-ebi-callback-mapping-proof-20261008.md",
+    "sha256": "0baddf88241a48857c2626727a109a128c4be92c9894e5d64d6d9cd93263696b"
+  },
+  "reviewedClassifierSnapshot": {
+    "source": "mnsg-recomp-example/src/world/anchor_minigame_ebisumaru.c",
+    "sourceSHA256": "c2d7ace5635d62adbcf548b1263cbcf136519aa21fac2e55902c2e60142581ce",
+    "fixture": "mnsg-recomp-example/tests/test_minigame_ebisumaru_native.c",
+    "fixtureSHA256": "aa3530f805feee117f603b128166a7cde365359701414ace766f0f2061c3cbc5",
+    "sourceDiff": "/private/tmp/ebi-callback-mapping-source.patch"
+  },
+  "correction": "Prior advice to compare an early raw callback by directly using func_80014840_15440's return is disproven for this verified raw callback family. Keep the native resolver formula and missing-file fault warning; use the recompiled scheduler mapping on a validated local copy when this early identity comparison is required.",
+  "limitations": [
+    "The original native ELF image was unavailable for hashing; exact Ghidra program name, addresses and inspected locations are retained above.",
+    "File42 mechanism/platform mapping is live-confirmed; File32 robot mapping is source- and table-confirmed without a live robot birth.",
+    "The source snapshot records the reviewed classifier source; this documentation task did not rerun or independently verify the mod build.",
+    "No new game session, invitation acceptance, phase progression, or end-to-end multiplayer behavior was verified by the documentation update."
+  ]
+}

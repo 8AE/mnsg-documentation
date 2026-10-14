@@ -4,7 +4,7 @@ slug: "/functions"
 description: "Native functions for the US recompilation of Mystical Ninja Starring Goemon."
 ---
 
-265 functions with C interfaces, behavior, and usage examples. Use the search bar to look up an exact symbol, address, or purpose.
+317 functions with C interfaces, behavior, and usage examples. Use the search bar to look up an exact symbol, address, or purpose.
 
 | Symbol | Purpose |
 | --- | --- |
@@ -15,21 +15,40 @@ description: "Native functions for the US recompilation of Mystical Ninja Starri
 | [`func_0800010C_6F35EC`](func_0800010C_6F35EC.md) | Open an unlocked travel door |
 | [`func_080001A4_6AC6F4`](func_080001A4_6AC6F4.md) | Emit a Dango-machine wiper |
 | [`func_08000224_6AC774`](func_08000224_6AC774.md) | Initialize a Dango wiper child |
+| [`func_08000240_71A750`](func_08000240_71A750.md) | Set the Control Machine opening-camera scissor |
+| [`func_080002B4_7060A4`](func_080002B4_7060A4.md) | Draw and advance the high-jump HUD timer |
 | [`func_08000388_6B3628`](func_08000388_6B3628.md) | Process Tsurami root pipeline and damage |
 | [`func_08000434_6AEC14`](func_08000434_6AEC14.md) | Collect a food pickup |
+| [`func_080005D0_708010`](func_080005D0_708010.md) | Draw and advance the Impact challenge timer |
 | [`func_080005DC_6ACB2C`](func_080005DC_6ACB2C.md) | Rotate an active spike chain |
+| [`func_080005DC_6F07EC`](func_080005DC_6F07EC.md) | Update the Ebisumaru challenge timer display |
+| [`func_080006F8_7064E8`](func_080006F8_7064E8.md) | Update an orbiting high-jump platform |
 | [`func_0800074C_6ACC9C`](func_0800074C_6ACC9C.md) | Rotate a jump rope |
+| [`func_08000790_7081D0`](func_08000790_7081D0.md) | Initialize the Impact challenge timer |
+| [`func_080007A4_7081E4`](func_080007A4_7081E4.md) | Read the Impact challenge timer in seconds |
+| [`func_080008B8_6F0AC8`](func_080008B8_6F0AC8.md) | Set the Ebisumaru HUD countdown in seconds |
+| [`func_080008CC_6F0ADC`](func_080008CC_6F0ADC.md) | Read the Ebisumaru HUD countdown in seconds |
+| [`func_080008E4_6F0AF4`](func_080008E4_6F0AF4.md) | Set the minigame heart display |
+| [`func_080008F4_6F0B04`](func_080008F4_6F0B04.md) | Create the Ebisumaru challenge HUD task |
 | [`func_08000970_6C8B80`](func_08000970_6C8B80.md) | Enter Dharumanyo neutral combat |
 | [`func_08000980_6ACED0`](func_08000980_6ACED0.md) | Advance a spike floor |
+| [`func_08000980_706770`](func_08000980_706770.md) | Update a spinning high-jump platform |
 | [`func_080009C4_6B3C64`](func_080009C4_6B3C64.md) | Fade and remove a Congo spin ray |
 | [`func_08000AA8_6F3F88`](func_08000AA8_6F3F88.md) | Initialize a locked doorway |
+| [`func_08000AD4_7068C4`](func_08000AD4_7068C4.md) | Run Sasuke's high-jump challenge controller |
+| [`func_08000B58_6F0D68`](func_08000B58_6F0D68.md) | Advance an Ebisumaru explosion |
 | [`func_08000B98_70ABD8`](func_08000B98_70ABD8.md) | Benkei live battle controller |
 | [`func_08000DCC_6B406C`](func_08000DCC_6B406C.md) | Initialize a Congo flame |
+| [`func_08000E2C_6F103C`](func_08000E2C_6F103C.md) | Advance an Ebisumaru bomb |
 | [`func_08001020_6F4500`](func_08001020_6F4500.md) | Update a live locked doorway |
+| [`func_0800127C_708CBC`](func_0800127C_708CBC.md) | Update an Impact challenge target |
 | [`func_080012C8_6F47A8`](func_080012C8_6F47A8.md) | Open a locked travel door |
 | [`func_08001464_70B4A4`](func_08001464_70B4A4.md) | Update Benkei bridge encounter topology |
 | [`func_080017F4_6B4A94`](func_080017F4_6B4A94.md) | Initialize Tsurami health-bearing root |
 | [`func_080018E4_6EAA34`](func_080018E4_6EAA34.md) | Advance a giant spinning top |
+| [`func_080018E8_709328`](func_080018E8_709328.md) | Run Goemon's Impact challenge controller |
+| [`func_08001954_6F1B64`](func_08001954_6F1B64.md) | Run Ebisumaru's sweets challenge controller |
+| [`func_08001AE4_718984`](func_08001AE4_718984.md) | Prepare Ebisumaru's sweets minigame entry |
 | [`func_08001CC4_6EAE14`](func_08001CC4_6EAE14.md) | Rotate a File40 platform |
 | [`func_08001D54_6B4FF4`](func_08001D54_6B4FF4.md) | Enter Tsurami neutral combat |
 | [`func_08001DB0_6B5050`](func_08001DB0_6B5050.md) | Tsurami combat AI state 0x1DB0 |
@@ -45,6 +64,7 @@ description: "Native functions for the US recompilation of Mystical Ninja Starri
 | [`func_08002190_6F5670`](func_08002190_6F5670.md) | Open a second unlocked travel door |
 | [`func_08002254_6F5734`](func_08002254_6F5734.md) | Complete a travel-door interaction |
 | [`func_080022F0_6F57D0`](func_080022F0_6F57D0.md) | Update an idle travel door |
+| [`func_080023A4_709DE4`](func_080023A4_709DE4.md) | Initialize Goemon's Impact challenge controller |
 | [`func_080023E0_6B5680`](func_080023E0_6B5680.md) | Tsurami combat AI state 0x23E0 |
 | [`func_08002460_6B5700`](func_08002460_6B5700.md) | Tsurami combat AI state 0x2460 |
 | [`func_080024A0_6B5740`](func_080024A0_6B5740.md) | Tsurami combat AI state 0x24A0 |
@@ -120,6 +140,8 @@ description: "Native functions for the US recompilation of Mystical Ninja Starri
 | [`func_80004240_4E40`](func_80004240_4E40.md) | Clear native text/UI slots |
 | [`func_80004AF8_56F8`](func_80004AF8_56F8.md) | Update derived gameplay-controller input |
 | [`func_8000607C_6C7C`](func_8000607C_6C7C.md) | Set the engine destination |
+| [`func_80006140_6D40`](func_80006140_6D40.md) | Prepare an Impact battle cutscene stage |
+| [`func_800086C4_92C4`](func_800086C4_92C4.md) | Bind a display object to texture descriptors |
 | [`func_8000A5C4_B1C4`](func_8000A5C4_B1C4.md) | Reset a kind-2 display record |
 | [`func_8000B2A0_BEA0`](func_8000B2A0_BEA0.md) | Consume saved spawn configuration |
 | [`func_8000B364_BF64`](func_8000B364_BF64.md) | Prepare destination scene loading |
@@ -134,13 +156,22 @@ description: "Native functions for the US recompilation of Mystical Ninja Starri
 | [`func_8000D060_DC60`](func_8000D060_DC60.md) | Insert a native message-window glyph |
 | [`func_8000DBF0_E7F0`](func_8000DBF0_E7F0.md) | Attach a model/display object to a task |
 | [`func_8000F420_10020`](func_8000F420_10020.md) | Play a sound at an object position |
+| [`func_80010230_10E30`](func_80010230_10E30.md) | Register a native texture descriptor |
+| [`func_800102E0_10EE0`](func_800102E0_10EE0.md) | Unregister a native texture descriptor |
+| [`func_80010358_10F58`](func_80010358_10F58.md) | Reset a native sprite queue |
+| [`func_80010374_10F74`](func_80010374_10F74.md) | Free a native sprite queue |
+| [`func_800103DC_10FDC`](func_800103DC_10FDC.md) | Create a native sprite queue |
+| [`func_800105AC_111AC`](func_800105AC_111AC.md) | Finalize a native sprite queue |
+| [`func_800106F0_112F0`](func_800106F0_112F0.md) | Append a sprite to a native queue |
 | [`func_80013B14_14714`](func_80013B14_14714.md) | Load a file into the scene registry |
 | [`func_800141C4_14DC4`](func_800141C4_14DC4.md) | Look up a loaded resource file |
 | [`func_800144E8_150E8`](func_800144E8_150E8.md) | Load and decode a resource |
 | [`func_800145B4_151B4`](func_800145B4_151B4.md) | Load an auxiliary resource into a buffer |
 | [`func_80014698_15298`](func_80014698_15298.md) | Query a resource ROM size and address |
+| [`func_80014840_15440`](func_80014840_15440.md) | Resolve a segmented resource address |
 | [`func_80016950_17550`](func_80016950_17550.md) | Initialize the current graphics bank |
 | [`func_80016C44_17844`](func_80016C44_17844.md) | Draw one native display object |
+| [`func_80017D8C_1898C`](func_80017D8C_1898C.md) | Emit the camera's RDP scissor rectangle |
 | [`func_80018B28_19728`](func_80018B28_19728.md) | Render the root of a cached model tree |
 | [`func_80018CA0_198A0`](func_80018CA0_198A0.md) | Traverse cached model nodes |
 | [`func_80018F3C_19B3C`](func_80018F3C_19B3C.md) | Find or allocate a model child cache |
@@ -180,7 +211,10 @@ description: "Native functions for the US recompilation of Mystical Ninja Starri
 | [`func_80036448_37048`](func_80036448_37048.md) | Allocate a single kind-2 record |
 | [`func_8003674C_3734C`](func_8003674C_3734C.md) | Release the cached child subtree |
 | [`func_80036798_37398`](func_80036798_37398.md) | Release the cached sibling subtree |
+| [`func_800370E8_37CE8`](func_800370E8_37CE8.md) | Prepare Goemon's Impact minigame entry |
+| [`func_800371B4_37DB4`](func_800371B4_37DB4.md) | Prepare Sasuke's high-jump minigame entry |
 | [`func_80038B98_39798`](func_80038B98_39798.md) | Queue a native audio command |
+| [`func_80038BC8_397C8`](func_80038BC8_397C8.md) | Queue a native scenario audio command |
 | [`func_80038C30_39830`](func_80038C30_39830.md) | Manage native sound playback |
 | [`func_80038F68_39B68`](func_80038F68_39B68.md) | Dispatch native sound commands |
 | [`func_800390D8_39CD8`](func_800390D8_39CD8.md) | Start native sound playback |
@@ -237,7 +271,12 @@ description: "Native functions for the US recompilation of Mystical Ninja Starri
 | [`func_801F50A4_5B0FB4`](func_801F50A4_5B0FB4.md) | Select a Goemon projectile sound |
 | [`func_801F6C4C_62202C`](func_801F6C4C_62202C.md) | Dispatch Thaisamba collision and damage |
 | [`func_801F77F4_5B3704`](func_801F77F4_5B3704.md) | Run scene contacts and player-state maintenance |
+| [`func_801FA420_5B6330`](func_801FA420_5B6330.md) | Prepare an extended native room-entry request |
+| [`func_801FA4FC_5B640C`](func_801FA4FC_5B640C.md) | Record a native room-entry request |
+| [`func_801FA6E4_5B65F4`](func_801FA6E4_5B65F4.md) | Prepare a native return request from room history |
 | [`func_801FB2D0_5B71E0`](func_801FB2D0_5B71E0.md) | Height-dependent dungeon floor update |
+| [`func_801FBB30_5B7A40`](func_801FBB30_5B7A40.md) | Initialize the native player-heart display |
+| [`func_801FBD50_5B7C60`](func_801FBD50_5B7C60.md) | Update the native player-heart display |
 | [`func_8020D6BC_5C8B8C`](func_8020D6BC_5C8B8C.md) | Load normal stage resources |
 | [`func_8020D848_5C8D18`](func_8020D848_5C8D18.md) | Stage room actor data and spawn definitions |
 | [`func_80211EF8_5CD3C8`](func_80211EF8_5CD3C8.md) | Initialize a native actor effect |
@@ -256,19 +295,32 @@ description: "Native functions for the US recompilation of Mystical Ninja Starri
 | [`func_8021664C_5D1B1C`](func_8021664C_5D1B1C.md) | Select and restart an actor animation |
 | [`func_80216AB8_5D1F88`](func_80216AB8_5D1F88.md) | Advance actor model animation |
 | [`func_80216E1C_5D22EC`](func_80216E1C_5D22EC.md) | Initialize object model and default scale |
+| [`func_80217144_5D2614`](func_80217144_5D2614.md) | Initialize native actor collision scalars |
 | [`func_802171A8_5D2678`](func_802171A8_5D2678.md) | Allocate a child actor task |
+| [`func_80217360_5D2830`](func_80217360_5D2830.md) | Spawn a native child actor from an owner |
 | [`func_8021804C_5D351C`](func_8021804C_5D351C.md) | Create a native pickup visual child |
 | [`func_80218350_5D3820`](func_80218350_5D3820.md) | Process actor damage and hit reactions |
 | [`func_80218548_5D3A18`](func_80218548_5D3A18.md) | Handle an actor reaching zero health |
+| [`func_80218990_5D3E60`](func_80218990_5D3E60.md) | Check local-player overlap rollback |
 | [`func_80218A54_5D3F24`](func_80218A54_5D3F24.md) | Apply a room actor spawn instance |
+| [`func_80218C28_5D40F8`](func_80218C28_5D40F8.md) | Copy parent actor context into an allocated child |
 | [`func_80218DA8_5D4278`](func_80218DA8_5D4278.md) | Set an actor attack cylinder |
 | [`func_80218E7C_5D434C`](func_80218E7C_5D434C.md) | Run the common actor update pipeline |
 | [`func_80218F30_5D4400`](func_80218F30_5D4400.md) | Common actor post-processing and removal |
+| [`func_8021927C_5D474C`](func_8021927C_5D474C.md) | Copy the current player object into a task target |
+| [`func_8021928C_5D475C`](func_8021928C_5D475C.md) | Copy the current player object into a task target |
+| [`func_80219448_5D4918`](func_80219448_5D4918.md) | Advance a task’s orbit motion |
+| [`func_802196FC_5D4BCC`](func_802196FC_5D4BCC.md) | Turn a task toward an XZ target |
 | [`func_802197D8_5D4CA8`](func_802197D8_5D4CA8.md) | Turn an actor toward its target object |
 | [`func_80219CA0_5D5170`](func_80219CA0_5D5170.md) | Choose an actor task owner and enforce caps |
 | [`func_8021A26C_5D573C`](func_8021A26C_5D573C.md) | Build a native pickup material list |
 | [`func_8021A310_5D57E0`](func_8021A310_5D57E0.md) | Set object rotation fields to 0x8000 |
+| [`func_8021A328_5D57F8`](func_8021A328_5D57F8.md) | Check a task's native proximity retirement gate |
+| [`func_8021A978_5D5E48`](func_8021A978_5D5E48.md) | Apply local-player carrier displacement |
+| [`func_8021ADD0_5D62A0`](func_8021ADD0_5D62A0.md) | Convert planar direction to native yaw |
+| [`func_8021B610_5D6AE0`](func_8021B610_5D6AE0.md) | Apply actor fall effects and removal checks |
 | [`func_8021B808_5D6CD8`](func_8021B808_5D6CD8.md) | Integrate actor velocity |
+| [`func_8021BB04_5D6FD4`](func_8021BB04_5D6FD4.md) | Move a task toward an XZ waypoint |
 | [`func_8021DDE8_5D92B8`](func_8021DDE8_5D92B8.md) | Spawn a child at an owner-relative offset |
 | [`func_8022075C_5DBC2C`](func_8022075C_5DBC2C.md) | Accept an alternate NPC conversation |
 | [`func_80221F70_5DD440`](func_80221F70_5DD440.md) | Enter a local player-control lock |

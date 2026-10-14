@@ -1,0 +1,255 @@
+{
+  "scope": "Internal evidence for bounded native room authoring reference corrections. No ROM bytes or project provenance enter public pages.",
+  "researchDate": "2026-10-04",
+  "rom": {
+    "region": "US",
+    "normalizedSha256": "e40bee20508c2e29e651dca4e47504e40f908f0a2186e34a582784bf5a64be4c",
+    "hashSource": "Fresh native researcher handoff; normalized ROM byte order."
+  },
+  "documentationCheckout": {
+    "path": "/Users/ahmad/git/mnsg-documentation",
+    "head": "ff87357fb868ead0ec37ee81048b796e8e2ae136",
+    "state": "Preexisting local edits preserved; no commit or publication authorized."
+  },
+  "evidenceSources": [
+    {
+      "path": "/Users/ahmad/git/mnsg-level-editor/docs/native-room-authoring.md",
+      "sha256": "89ea6c7f4b5c0abfb8af11db2b6482008ce2460a0880659e14a002e3839d72ce",
+      "role": "Native consumer research with program/address and disassembly locations"
+    },
+    {
+      "role": "Final fresh Ghidra heading/camera-start correction handoff",
+      "programs": [
+        "mnsg_main_static.elf",
+        "mnsg_player_file_11.elf",
+        "world_file_12_common.elf",
+        "world_file_43.elf"
+      ]
+    },
+    {
+      "path": "/private/tmp/mnsg-room-authoring-cache-ownership-proof.json",
+      "sha256": "5de5b78071e6d34dc7c6bd5e95fbb3ce98ceaf50f080acba7df48195e03188b1",
+      "role": "Fresh Ghidra decompilations for native boot allocation, loader extent/alignment/registry and File11 prefix/teardown ownership."
+    }
+  ],
+  "findings": [
+    {
+      "symbols": [
+        "D_8006B780_6C380",
+        "func_8000607C_6C7C",
+        "D_8015C5C8_15D1C8",
+        "D_800BCCC0_BD8C0"
+      ],
+      "confidence": "decompiled",
+      "nativeReaders": [
+        "func_800214E4_220E4",
+        "func_801F9988_5B5898",
+        "0x801D27A4",
+        "0x801CB5D0",
+        "0x801CBD88",
+        "0x801D2A2C",
+        "0x801D2A34",
+        "0x801D2A40",
+        "0x801D2A44"
+      ],
+      "established": [
+        "Five-s16 table record order XYZ, base player heading, packed camera-start parameter.",
+        "System +3AFEA reaches player object yaw +16, player task +94 and player-work+A4 as heading<<6; native10-bit phase, also camera baseline.",
+        "System +3AFE2 truncated to camera task DAT_801FC624+BC; byte>>3 is unguarded five-callback index. Camera +6A receives byte*0x2000 + base +66.",
+        "Canonical parameters observed: 0,16,19,20,21.",
+        "0..39 establishes only callback-index bounds; no broader gameplay claim."
+      ],
+      "cameraStartupCensus": {
+        "defaultRows": 620,
+        "controllerPlacements": 595,
+        "defaultCounts": {
+          "0": 353,
+          "16": 176,
+          "19": 77,
+          "20": 12,
+          "21": 2
+        },
+        "controllerCounts": {
+          "0": 3,
+          "16": 430,
+          "19": 119,
+          "20": 33,
+          "21": 10
+        }
+      }
+    },
+    {
+      "symbols": [
+        "func_08002254_6F5734",
+        "D_8015CDE0"
+      ],
+      "confidence": "decompiled",
+      "nativeReaders": [
+        "func_08002254_6F5734",
+        "func_80215230_5D0700",
+        "func_80215330_5D0800",
+        "func_801CB5D0_5874E0",
+        "0x801F7B0C"
+      ],
+      "established": [
+        "File43 completion takes low byte of task halfword+D8 to full-system+CF898 selector; does not write a destination room.",
+        "Actor08C payload0 upper16 destination room/lower16 X; payload1 upper16 Y/lower16 Z.",
+        "Payload2 upper16 base player heading; bits8..11 selector; low byte sign-extends into +3AFE2.",
+        "XYZ confirmed through File11 801CB600/620/634 allocator arguments and 800357BC->80035964 object writes+8/+C/+10; reverse801F7B0C agrees."
+      ]
+    },
+    {
+      "symbols": [
+        "D_800C7AB2"
+      ],
+      "confidence": "decompiled",
+      "nativeReaders": [
+        "func_8000B3E4_BFE4",
+        "func_801F8F0C_5B4E1C",
+        "func_8000B364_BF64",
+        "func_800214E4_220E4",
+        "func_8020D670_5C8B40",
+        "func_8020D6BC_5C8B8C"
+      ],
+      "established": [
+        "D_80231300_5EC7D0 to D_80231F80_5ED450 extent0xC80:800 room metadata pointer slots;374 nonnull;620..799 null.",
+        "Main boundaries0,300,350,400,540,544,549,561,588,607,613,618,619,620;>=620 fallthrough stage/local0 leads File11 group5/local65408.",
+        "8000B364 unconditionally calls default five-s16 reader800214E4, even for explicit arrivals.",
+        "D670 dereferences metadata[room]+18 without null guard; metadata must exist before this read.",
+        "Room metadata28bytes callback+18 invoked void(void) by D6BC. D6BC has no null-callback check and invokes it unconditionally."
+      ]
+    },
+    {
+      "symbols": [
+        "func_80218A54_5D3F24",
+        "D_802287BC_5E3C8C"
+      ],
+      "confidence": "decompiled",
+      "nativeReaders": [
+        "func_80218A54_5D3F24",
+        "func_8020D848_5C8D18"
+      ],
+      "established": [
+        "Definition halfword+2 retained, payload words+4/+8/+C copied to task+D0/+D4/+D8.",
+        "Static roster terminator instance definition pointer+C zero; actorID0 not terminator.",
+        "Initializer unsized array and next exported symbol do not establish exact valid-ID bounds; nonnull callback does not establish resource residency."
+      ]
+    },
+    {
+      "symbols": [
+        "D_80167FC0_168BC0",
+        "func_80013B14_14714"
+      ],
+      "confidence": "decompiled",
+      "nativeReaders": [
+        "0x80000580",
+        "0x80001C00",
+        "0x80001DF4",
+        "0x80013B14",
+        "0x80013940",
+        "0x801DC630"
+      ],
+      "established": [
+        "Accepted registry slots0..47 at80167FC0+8*i; exclusive scan end80168140; final sentinel80168140/cursor80168144 overlap scratch globals.",
+        "13B14 fullscan returns0, no eviction or heap-capacity check.",
+        "01C00 allocation table extent and zero-fill differ from raw file length; raw evencopy and PIC decoded part destinations require independent bounds.",
+        "01DF4nonzero code destination4KiB alignment; cursor64B after allocationextent.",
+        "Boot File10 allocation80304000..80594000; worldDC630 repurposes same bank and reserves prefix80304000..80321500.",
+        "80594000 cache end is an explicit conservative extension policy for inspected ordinaryworld, not native loader enforcement.",
+        "Live retained prefix and resource union must be counted beforeappend; baselineprefix may differ across reloads."
+      ]
+    },
+    {
+      "symbols": [
+        "func_8000607C_6C7C",
+        "func_801F77F4_5B3704"
+      ],
+      "confidence": "decompiled",
+      "nativeReaders": [
+        "0x80006298",
+        "0x801F7C14",
+        "0x801F7E1C",
+        "0x801F7F78",
+        "0x801CB5D0",
+        "0x801CC30C"
+      ],
+      "established": [
+        "0607C args7/8 script resource/address;0,0 no queuedscript; resource-1 separate menu/demo.",
+        "Hot transition retains player task/controller+90/character+60; cold player allocation sets controller0; player+91 B9 is not character.",
+        "F7C14 removes room task hierarchies and resets802F7000 arena0xA000; keep owned objects alive through cleanup."
+      ]
+    },
+    {
+      "symbols": [
+        "D_802287BC_5E3C8C"
+      ],
+      "confidence": "decompiled",
+      "nativeReaders": [
+        "0x802151E0",
+        "0x80215A74",
+        "File24:0x08000808",
+        "File30:0x08002D98",
+        "0x80012940"
+      ],
+      "established": [
+        "Exact08C/08E initializer paths and35E persistent callback request no additional dynamic wave.",
+        "Exact1BF constructor camera work uses roomarena/type2taggedcamera graph rather than modelwave.",
+        "Own overlay dependencies remain required; these closures do not establish later script or gameplay parity."
+      ]
+    }
+  ],
+  "conflicts": [
+    {
+      "priorInterpretation": "Fifth start-table field and system+3AFE2 called player rotation.",
+      "decision": "Superseded by packed camera-start parameter traced to camera task+BC. Existing value-evidence-rooms source-reviewed camera/player labels are historical and superseded here."
+    },
+    {
+      "priorInterpretation": "Earlier native-room-authoring draft called the packed byte player-work.",
+      "decision": "Final Ghidra handoff identifies DAT_801FC624 camera task. Corrected public reference."
+    },
+    {
+      "priorInterpretation": "External room dump annotates payload1 upper16 as Z and lower16 as Y.",
+      "decision": "Fresh allocator and reverse writer establish upper16 Y/lower16 Z."
+    },
+    {
+      "priorInterpretation": "Visual travel-door payload determines room destination.",
+      "decision": "Visual completion only sets selector; separate actor08C controller queues destination."
+    },
+    {
+      "priorInterpretation": "Destination setter field90/field91 remained unresolved.",
+      "decision": "Fresh native script-start consumer establishes script resource/address; these fields do not select controller or character."
+    }
+  ],
+  "limitations": [
+    "Static/native-reader evidence only; no native game execution or gameplay transition proof in this task.",
+    "No new native symbols inventoried; related existing pages carry verified layouts.",
+    "Saved spawn field+208 was not changed: its complete saved-reader contract was not part of this correction.",
+    "Callback-index safety0..39 is not a complete camera-start behavior guarantee.",
+    "Exact valid initializer-array size and unresolved overlay/resource closure remain unknown.",
+    "No Git commit, Pages workflow deployment or live-site verification authorized.",
+    "The80594000 end is an explicit policy derived from canonical native backing, not a bound enforced by13B14; no runtime validation of other layouts or substitute resources."
+  ],
+  "validation": {
+    "scope": "Local generation, build, tests and example syntax only; no workflow deployment or live-site verification.",
+    "commands": [
+      {
+        "command": "npm run build",
+        "result": "Exit0; generated406 pages; Docusaurus server and client compiled successfully."
+      },
+      {
+        "command": "npm test",
+        "result": "Exit0;34unittests passed; validator ok:true,414HTMLpages,119770internal links,406symbols/search entries,300function pages,106variable pages,43variables with values,88tables,1186rows,0public source files,errors[]."
+      },
+      {
+        "command": "clang --target=mips-unknown-none -mabi=32 -EB -std=c11 -Wall -Wextra -Werror -fsyntax-only /tmp/D_8006B780_6C380.c /tmp/D_8015CDE0.c /tmp/func_8000607C_6C7C.c /tmp/func_80013B14_14714.c /tmp/D_80167FC0_168BC0.c",
+        "result": "Exit0; five full source-JSON example blocks compile as MIPS32 big-endian C11. Raw native pseudocode is excluded because it is explicitly incomplete C."
+      },
+      {
+        "command": "git diff --check",
+        "result": "Exit0."
+      }
+    ],
+    "deployment": "Not authorized; no commit, push or workflow dispatch.",
+    "liveVerification": "Not performed after this final rebuild. Earlier local HTTP verification did not establish a deployed site."
+  }
+}

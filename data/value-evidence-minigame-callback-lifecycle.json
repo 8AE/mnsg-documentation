@@ -1,0 +1,70 @@
+{
+  "date": "2026-10-11",
+  "scope": "RETURN-hook invocation lifecycle clarification for persistent native task callbacks. This is mod callback ownership evidence, not a new native ABI or symbol definition.",
+  "publicClarification": "A RETURN observer runs after every invocation of the hooked function. For a persistent task callback, that includes its first setup call and every ordinary update. One-time setup must be idempotent, and callback wrappers must preserve the native continuation rather than capture their own wrapper as the continuation.",
+  "nativeCallback": {
+    "program": "mini_ebisumaru_file42.bin",
+    "symbol": "func_0800139C_6F15AC",
+    "virtualAddress": "0x0800139C",
+    "romAddress": "0x006F15AC",
+    "evidence": "Ghidra disassembly reads task byte +0xD4, selects its initialization branch when the value is 0 and its ordinary update branch when the value is 1, and returns through the same function epilogue at 0x08001568. The callback remains the same persistent native function after initialization.",
+    "limitation": "A hash for the Ghidra input image was not available in the supplied proof; no binary hash is claimed."
+  },
+  "runtimeReturnSemantics": {
+    "runtimeSource": "Goemon64Recomp/lib/N64ModernRuntime/N64Recomp/LiveRecomp/live_generator.cpp",
+    "runtimeSourceSHA256": "3baca6b7a1fef908891a7af556837b611df231a5998e3ac0a32f6db4de306be0",
+    "relevantLines": "1667-1680",
+    "observed": "emit_return runs each registered return hook before returning from the emulated function. Hook register-context restoration does not roll back task-memory writes made by the observer."
+  },
+  "originalCallbackWrapper": {
+    "source": "mnsg-recomp-example/src/world/anchor_minigame_ebisumaru.c",
+    "sourceSHA256": "c2d7ace5635d62adbcf548b1263cbcf136519aa21fac2e55902c2e60142581ce",
+    "relevantLines": "900-948",
+    "observed": "On every matching native return, initialized(kind) saved task+0x0C as a->native and reinstalled ebi_actor_update, without first rejecting an already initialized actor. The outer wrapper then read task+0x0C and saved that wrapper as the native continuation. Its next authorized update called itself through a->native.",
+    "finalReviewedSourceSHA256": "2bfe6fa443aa0a8c13ecfa67c92beb8d99f835696f9b8d76d1b676759858a818",
+    "finalSourceSnapshot": "data/source-snapshots.json:mnsg-recomp-example/src/world/anchor_minigame_ebisumaru.c",
+    "reviewedCorrection": "The observer returns when the actor is already initialized, so recurring native returns do not replace the saved native continuation. Initial capture remains limited to the first successful initializer return."
+  },
+  "boundedReproducer": {
+    "fixture": "mnsg-recomp-example/tests/test_minigame_ebisumaru_native.c",
+    "fixtureSHA256": "d16a959efda44ed10359952a0c3ac10edac9e7ce1d55ebd8900ee9d6b070a50c",
+    "test": "test_repeated_initializer_returns",
+    "finalFixtureSourceLocation": "lines 349-370",
+    "finalFixtureAssertion": "After one authorized wrapper update, task+0x0C remains ebi_actor_update while the saved a->native continuation remains the native mechanism callback; a second update preserves the saved native continuation.",
+    "preFixRunLog": "/private/tmp/ebi-repeated-return-before-20261011.log",
+    "preFixRunLogSHA256": "53f9f242c3754e0f63f927f550fc2da32e62a849910185eec8fb5e60c1804910",
+    "preFixRunOutput": "Ebi repeated return: mechanism native_is_wrapper=1; assertion fails before a second dispatch.",
+    "scope": "The pre-fix reproduction stops at the first poisoned continuation and does not invoke it recursively. The log predates the final fixture contents; no hash for its exact earlier fixture version is claimed."
+  },
+  "finalImplementationVerification": {
+    "sourceSHA256": "2bfe6fa443aa0a8c13ecfa67c92beb8d99f835696f9b8d76d1b676759858a818",
+    "fixtureSHA256": "d16a959efda44ed10359952a0c3ac10edac9e7ce1d55ebd8900ee9d6b070a50c",
+    "reviewedResults": "The root reports the bounded baseline classifier regression fails with native_is_wrapper=1, while the fixed fixture passes; DEBUG UBSan and native, invitation and C-to-Python bridge tests pass; both packages built.",
+    "installedDebugPackageSHA256": "1ef69243cf796b71a52ff212e7bbff19395abcf69d249abec4eed7447c465998",
+    "liveGameRun": false
+  },
+  "crashEvidence": {
+    "proofReport": "/private/tmp/mnsg-ebi-join-crash-native-proof-20261011.md",
+    "proofReportSHA256": "17abc7f36b7f1b32fe45b449be83a3d56c8c9153c0dad21015ec78db24df5dd5",
+    "recordings": [
+      {
+        "label": "remote recording vOuZS4",
+        "sha256": "39fd2ae6a3e2a9064fb7c1c6ba9453520554c8dba9b050eec659e518cbfd2744",
+        "crashReport": "Goemon64Recompiled-2026-10-11-153409.ips",
+        "crashReportSHA256": "da723805e2a549e69721b0d73a6ae77398147f584edba11fa19676f3b2454282"
+      },
+      {
+        "label": "host recording RkvXC0",
+        "sha256": "4c8fcbfafb6ec4292253a834b3ce822883d1b9b9dbc585e9feddcdd3de265dbd",
+        "crashReport": "Goemon64Recompiled-2026-10-11-153506.ips",
+        "crashReportSHA256": "99298e3b178053990962adc548257598782fa4663ef1af05fa401cb24edb5080"
+      }
+    ],
+    "observation": "Both reports show repeated Python error-formatting frames and repeated anonymous live-JIT PCs after authorized actor updates.",
+    "limitations": [
+      "The anonymous JIT program counters were not symbolicated and cannot identify the wrapper by name.",
+      "The two recordings have distinct authority/host identifiers, 1447 and 1448. Do not present them as evidence from one host or a single shared multiplayer session, and do not infer session identity from separate process launches alone.",
+      "The native callback ownership path is source-established and the first poisoned continuation is fixture-reproduced; the supplied crash stacks do not independently prove the exact mod frame responsible."
+    ]
+  }
+}

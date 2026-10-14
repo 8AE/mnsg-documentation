@@ -37,6 +37,8 @@ The normal player pre-update calls func_801E8E24_5A4D34(player, 1) after a nonze
 
 The inspected ordinary type-1 intake switch handles hit kinds 1, 2, and 4 through 11, but has no case for kind 0x1A, so this player routine does not apply damage or freeze for that kind. A separate native enemy path recognizes attacker kind 0x1A and starts an enemy freeze sequence; that enemy-specific state path is not a playable-player reaction.
 
+For the verified damaging explosion mode in the Ebisumaru challenge, the native outgoing contact is ordinary kind 1 with damage byte +0x6D equal to 1. When the normal collision scan and player-intake gates accept that contact, this routine reaches the native signed-byte health adjustment with delta -1; rejected or blocked contact does not imply health loss.
+
 ## Return value
 
 Integer native reaction indicator. Nonzero triggers the normal caller's projectile cleanup; zero can still accompany armour absorption and newly started recovery.

@@ -1,0 +1,45 @@
+{
+  "scope": "Verified native launchers and transition-state helpers for the Goemon, Sasuke, and Ebisumaru minigames.",
+  "symbols": [
+    {
+      "name": "func_800370E8_37CE8",
+      "kind": "function",
+      "address": "0x800370E8",
+      "romAddress": "0x00037CE8",
+      "section": ".main",
+      "size": 204
+    },
+    {
+      "name": "func_800371B4_37DB4",
+      "kind": "function",
+      "address": "0x800371B4",
+      "romAddress": "0x00037DB4",
+      "section": ".main",
+      "size": 208
+    },
+    {
+      "name": "func_08001AE4_718984",
+      "kind": "function",
+      "address": "0x08001AE4",
+      "romAddress": "0x00718984",
+      "section": ".file_57",
+      "size": 96
+    },
+    {
+      "name": "func_801FA4FC_5B640C",
+      "kind": "function",
+      "address": "0x801FA4FC",
+      "romAddress": "0x005B640C",
+      "section": ".file_11",
+      "size": 168
+    },
+    {
+      "name": "func_801FA420_5B6330",
+      "kind": "function",
+      "address": "0x801FA420",
+      "romAddress": "0x005B6330",
+      "section": ".file_11",
+      "size": 132
+    }
+  ]
+}

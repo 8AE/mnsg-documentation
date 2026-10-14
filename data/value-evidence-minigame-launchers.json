@@ -1,0 +1,69 @@
+{
+  "scope": "Internal Ghidra evidence for the native mini-game launchers and their transition-state helpers. Public pages contain only native behavior and verified caller values.",
+  "analysisTool": "Ghidra",
+  "functions": [
+    {
+      "name": "func_800370E8_37CE8",
+      "program": "mnsg_main_static.elf",
+      "address": "0x800370E8",
+      "romAddress": "0x00037CE8",
+      "sizeBytes": 204,
+      "normalizedOpcodeHash": "453de31d417708fa40c0d2f5004d077890554e24a4d1fbef2843916881e8cb04",
+      "observed": "Copies current XYZ and facing into transition state, then calls func_801FA4FC_5B640C(0x01E0, 0, 25, 0, 0, 1)."
+    },
+    {
+      "name": "func_800371B4_37DB4",
+      "program": "mnsg_main_static.elf",
+      "address": "0x800371B4",
+      "romAddress": "0x00037DB4",
+      "sizeBytes": 208,
+      "normalizedOpcodeHash": "de09a3e458c5ab3ff226cbc65422ad7be5e31d09ea8e945834c3c81e84a6ba99",
+      "observed": "Copies current XYZ and facing into transition state, then calls func_801FA4FC_5B640C(0x01E2, -213, 0, -357, 0x0060, 1)."
+    },
+    {
+      "name": "func_08001AE4_718984",
+      "program": "world_file_57.elf",
+      "address": "0x08001AE4",
+      "romAddress": "0x00718984",
+      "sizeBytes": 96,
+      "normalizedOpcodeHash": "aa8e78e180dafc1a3bdfebb6a912aa2b93c76ce94a56679cdc7426534144f1e4",
+      "observed": "Calls func_801FA420_5B6330(0x01E1, 0, 0, 0, 0, 0x50, 0), then queues 0x800354B4 through the native scheduler."
+    },
+    {
+      "name": "func_801FA4FC_5B640C",
+      "program": "mnsg_player_file_11.elf",
+      "address": "0x801FA4FC",
+      "romAddress": "0x005B640C",
+      "sizeBytes": 168,
+      "normalizedOpcodeHash": "ba66c8e4de162b8e6b12faafbcbd578b31ac7f33872f393da4dc5aea0ed0f976",
+      "decompilerSignature": "void (undefined2 room, undefined2 x, undefined2 y, undefined2 z, undefined2 camera, char marker_mode)",
+      "observed": "Stores the first five 16-bit values into native transition state. marker_mode zero writes marker 1; nonzero writes marker 4. The launcher call sites establish signed XYZ values; room and camera fields are documented as raw 16-bit values."
+    },
+    {
+      "name": "func_801FA420_5B6330",
+      "program": "mnsg_player_file_11.elf",
+      "address": "0x801FA420",
+      "romAddress": "0x005B6330",
+      "sizeBytes": 132,
+      "normalizedOpcodeHash": "36e017709ddef55079f8aefc90d5bd656dafb91b9d186df0709bd0baa48729e5",
+      "decompilerSignature": "void (undefined2 room, short x, short y, short z, undefined2 camera, undefined4 setup_value, undefined2 option)",
+      "observed": "Calls func_801FA4FC_5B640C with marker_mode zero; stores setup_value and option in additional state and ORs 0x08 into a transition flag byte."
+    }
+  ],
+  "eventScriptMappings": [
+    {"program":"world_file_98.elf","scenarios":["0x0172-0x0175"],"launcher":"func_800370E8_37CE8","character":"Goemon"},
+    {"program":"world_file_98.elf","scenarios":["0x0178-0x0179"],"launcher":"func_800371B4_37DB4","character":"Sasuke"},
+    {"program":"world_file_98.elf","scenarios":["0x017A-0x017B"],"launcher":"func_08001AE4_718984","character":"Ebisumaru"}
+  ],
+  "scriptProgressFlags": {
+    "0x0079": "script progress; not an active-challenge indicator",
+    "0x001B": "script progress; not an active-challenge indicator",
+    "0x0021": "script progress; not an active-challenge indicator",
+    "0x007D": "one-shot Ebisumaru entry routing; not an active-challenge indicator"
+  },
+  "limitations": [
+    "Transition helper fields are described only as far as decompilation and the three verified callers establish; do not infer a general room-transfer contract.",
+    "Scenario IDs map to the listed character-specific scripts; this record does not infer behavior for other scenarios.",
+    "Script progress flags are not evidence of whether a minigame challenge is currently active or complete."
+  ]
+}

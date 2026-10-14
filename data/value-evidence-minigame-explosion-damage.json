@@ -1,0 +1,79 @@
+{
+  "scope": "Internal native evidence for Ebisumaru bomb child ordering, direct explosion birth/resource initialization, explosion visual/contact modes, expiry, and the ordinary player damage route. This record is not public page content.",
+  "analysisDate": "2026-10-13",
+  "analysisTool": "Ghidra decompilation and MIPS disassembly",
+  "proofs": [
+    {
+      "path": "/private/tmp/mnsg-ebi-explosion-damage-native-proof-20261013.md",
+      "sha256": "d95a5bd6fcd6eaf698404a462ae83a12b2d17d892888d9683d0e7204e0bbead3",
+      "scope": "File42 bomb and blast callbacks; direct-child constructor field order; explosion model/mode setup, contact geometry, life expiry; native collision and player health intake."
+    },
+    {
+      "path": "/private/tmp/mnsg-ebi-blast-delete-model-audit-20261013.md",
+      "sha256": "d4052dc7c49cb433cd92cb483740ab5615e878212d467962d2e32d4910d0a9c0",
+      "scope": "Focused confirmation that the native bomb delete wrapper is entered after both blast children are fully configured and before task cleanup/unlinking, and that parent entity and model identifiers are copied independently."
+    }
+  ],
+  "functions": [
+    {
+      "name": "func_08000E2C_6F103C",
+      "program": "mini_ebisumaru_file42.bin",
+      "address": "0x08000E2C",
+      "romAddress": "0x006F103C",
+      "abi": "void(task pointer in a0, object pointer in a1)",
+      "observed": "When its ground-status gate clears, constructs group-0 visual child, then group-1 contact child, then deletes the bomb parent. Children inherit bomb transform. The callback does not select a player target.",
+      "confidence": "decompilation and disassembly"
+    },
+    {
+      "name": "func_08000B58_6F0D68",
+      "program": "mini_ebisumaru_file42.bin",
+      "address": "0x08000B58",
+      "romAddress": "0x006F0D68",
+      "size": 724,
+      "abi": "void(task pointer in a0, object pointer in a1)",
+      "observed": "Uses model resource 0x0191, variant 8, and signed task halfword +0x8A initialized to 30. Mode flag 0x01/group 0 is visual with outgoing kind 0; mode flag 0x04/group 1 installs a stored-radius-120 local contact descriptor on its first phase-1 update and sets outgoing kind 1. The mode-4 damage byte is 1. On a phase-1 update whose entry life is zero, the callback removes the task.",
+      "confidence": "decompilation and disassembly"
+    },
+    {
+      "name": "func_80218C28_5D40F8",
+      "program": "world_file_12_common.elf",
+      "address": "0x80218C28",
+      "romAddress": "0x005D40F8",
+      "abi": "void(parent pointer32, child pointer32)",
+      "observed": "On direct File42 blast construction, task bank+0x28 and resource base+0x2C are zero at helper entry. It copies context; the allocator then writes pending sentinels 0xFFFE/0xFFFFFFFF and the File42 caller later installs bank 0x2A and its resident resource base. Entity +0x5C and model +0x5E are copied independently from the corresponding parent fields; equality is not guaranteed.",
+      "confidence": "disassembly and caller tracing"
+    },
+    {
+      "name": "func_802171A8_5D2678",
+      "program": "world_file_12_common.elf",
+      "address": "0x802171A8",
+      "romAddress": "0x005D2678",
+      "abi": "void *(owner pointer32, callback, group byte)",
+      "observed": "For the direct File42 explosion-child path, invokes context inheritance before storing bank 0xFFFE/base 0xFFFFFFFF; the File42 caller changes these to bank 0x2A and the resident File42 base after return.",
+      "confidence": "decompilation and disassembly"
+    },
+    {
+      "name": "func_801D9E9C_595DAC",
+      "program": "mnsg_player_file_11.elf",
+      "address": "0x801D9E9C",
+      "romAddress": "0x00595DAC",
+      "abi": "int(player task pointer32)",
+      "observed": "Accepted ordinary type-1 player contact from the group-1 explosion follows native defense/invulnerability gates and invokes the signed health adjuster with -1. The contact scan itself does not subtract health.",
+      "confidence": "decompilation and disassembly"
+    },
+    {
+      "name": "func_80034ED4_35AD4",
+      "program": "mnsg_main_static.elf",
+      "address": "0x80034ED4",
+      "abi": "void(void); uses the current-task global as the cleanup argument",
+      "observed": "The Ebisumaru bomb callback calls this wrapper only after both direct explosion children have completed overlay/mode/resource setup. First wrapper entry occurs before descendant cleanup and unlinking; the verified native bomb path does not set task status +0x68 bit 0x02 before entry.",
+      "confidence": "disassembly"
+    }
+  ],
+  "limitations": [
+    "The local proof is static analysis; no callback was replayed and no gameplay run or multiplayer test was performed.",
+    "A radius-120 descriptor is local and object-scale transformed, not a fixed world-space radius.",
+    "Visual explosion creation does not prove damaging contact was accepted; native collision and player intake keep their normal gates.",
+    "No raw callback, task pointer, object pointer, or scheduler identity should be treated as a portable remote actor reference."
+  ]
+}

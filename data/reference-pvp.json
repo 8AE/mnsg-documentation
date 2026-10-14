@@ -68,22 +68,27 @@
   },
   "func_801F77F4_5B3704": {
     "title": "Run scene contacts and player-state maintenance",
-    "summary": "Native scene callback that coordinates contact scans between task groups and performs additional scene-state checks.",
+    "summary": "Native scene callback that coordinates contact scans and diverts a pending room request into selective world teardown and reload.",
     "declaration": "extern void func_801F77F4_5B3704(void *task, void *object);",
     "behavior": [
       "The native callback saves two scheduler arguments. Its inspected body obtains the task-group pointers from scene globals instead of using those arguments for contact selection.",
       "After scene preparation, invokes func_80033024_33C24 for selected attacker/victim groups. While the player-manager pointer is live, four calls use D_801FC600_5B8510 as the outgoing attacker subtree.",
-      "Other pairs test actor and projectile groups against the playable-player group. The callback subsequently processes height, scene-exit and related state; it has effects beyond hit detection."
+      "Other pairs test actor and projectile groups against the playable-player group. The callback subsequently processes height, scene-exit and related state; it has effects beyond hit detection.",
+      "A nonzero native transition marker redirects the callback into a room-transition lifecycle that tears down the current world tasks and selectively reloads native resource banks.",
+      "That selective route invokes the destination room initializer only when the native force-initialization byte is nonzero or the pending room selects a different initializer callback. A request marker alone does not guarantee that destination initialization runs."
     ],
     "example": "#include \"modding.h\"\n\nstatic unsigned int observed_contact_frames;\n\nRECOMP_HOOK(\"func_801F77F4_5B3704\")\nvoid observe_contact_frame(void)\n{\n    ++observed_contact_frames;\n}\n",
     "cautions": [
       "Observe the normal scheduler invocation. Calling the callback again repeats stateful scene work.",
-      "The callback belongs to its native gameplay overlay and requires initialized scene managers. A hook that ignores the scheduler arguments may declare no parameters."
+      "The callback belongs to its native gameplay overlay and requires initialized scene managers. A hook that ignores the scheduler arguments may declare no parameters.",
+      "The selective scene reload and main system step 12 are different lifecycles. The latter tears down and fully rebuilds the world; do not assume the selective route recreates every destination task or resource."
     ],
     "confidence": "decompiled",
     "related": [
       "func_80033024_33C24",
-      "D_801FC600_5B8510"
+      "D_801FC600_5B8510",
+      "func_80003728_4328",
+      "func_801FA6E4_5B65F4"
     ]
   },
   "D_801FC600_5B8510": {
@@ -197,7 +202,8 @@
       "Routes ordinary hits through native armour, player action/context, health loss, hurt animation and direction handling. Sudden Impact vulnerability can double the health loss. An armour-blocked hit can start invulnerability even while the function returns zero.",
       "The inspected type-1 paths do not retain their attacker descriptor. Type 2 is different: interaction paths can retain the attacker in player +0xE0. Do not generalize type-1 lifetime behavior to every hit kind.",
       "The normal player pre-update calls func_801E8E24_5A4D34(player, 1) after a nonzero result to cancel eligible owned projectile tasks.",
-      "The inspected ordinary type-1 intake switch handles hit kinds 1, 2, and 4 through 11, but has no case for kind 0x1A, so this player routine does not apply damage or freeze for that kind. A separate native enemy path recognizes attacker kind 0x1A and starts an enemy freeze sequence; that enemy-specific state path is not a playable-player reaction."
+      "The inspected ordinary type-1 intake switch handles hit kinds 1, 2, and 4 through 11, but has no case for kind 0x1A, so this player routine does not apply damage or freeze for that kind. A separate native enemy path recognizes attacker kind 0x1A and starts an enemy freeze sequence; that enemy-specific state path is not a playable-player reaction.",
+      "For the verified damaging explosion mode in the Ebisumaru challenge, the native outgoing contact is ordinary kind 1 with damage byte +0x6D equal to 1. When the normal collision scan and player-intake gates accept that contact, this routine reaches the native signed-byte health adjustment with delta -1; rejected or blocked contact does not imply health loss."
     ],
     "example": "#include \"modding.h\"\n\nstatic const void *observed_incoming_attacker;\n\nRECOMP_HOOK(\"func_801D9E9C_595DAC\")\nvoid observe_player_damage_intake(void *player)\n{\n    const unsigned char *task = player;\n    if (!task) return;\n    observed_incoming_attacker = *(void *const *)(task + 0x38);\n}\n",
     "cautions": [

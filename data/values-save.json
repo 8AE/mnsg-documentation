@@ -638,7 +638,7 @@
             "`0x0F`",
             "`2`",
             "`0x04`",
-            "Benkei challenge is actively running"
+            "Benkei challenge active; the accepted Yae branch of Mermaid sign scenario 0x0176 also sets this flag. Actor 0x33A reads it in state 3 in room 0x0154 to enter state 4; scenario 0x0177 does not read this flag."
           ],
           [
             "`0x07C`",
@@ -647,6 +647,14 @@
             "`4`",
             "`0x10`",
             "Witch cutscene event 1"
+          ],
+          [
+            "`0x07D`",
+            "`125`",
+            "`0x0F`",
+            "`5`",
+            "`0x20`",
+            "Ebisumaru sweets minigame one-shot route: when set, native scene logic clears the flag and schedules entry to room 0x01E1; when clear, the alternate scene/dialogue sequence continues."
           ],
           [
             "`0x07F`",

@@ -1,0 +1,243 @@
+{
+  "scope": "Verified native minigame controllers, HUD state, common movement/target helpers, and scoped actor finalizer helpers.",
+  "symbols": [
+    {
+      "name": "func_801FA6E4_5B65F4",
+      "kind": "function",
+      "address": "0x801FA6E4",
+      "romAddress": "0x005B65F4",
+      "section": ".file_11",
+      "size": 204
+    },
+    {
+      "name": "func_80217360_5D2830",
+      "kind": "function",
+      "address": "0x80217360",
+      "romAddress": "0x005D2830",
+      "section": ".file_12",
+      "size": 504
+    },
+    {
+      "name": "func_80217144_5D2614",
+      "kind": "function",
+      "address": "0x80217144",
+      "romAddress": "0x005D2614",
+      "section": ".file_12",
+      "size": 100
+    },
+    {
+      "name": "func_080002B4_7060A4",
+      "kind": "function",
+      "address": "0x080002B4",
+      "romAddress": "0x007060A4",
+      "section": ".file_47",
+      "size": 244
+    },
+    {
+      "name": "func_08000980_706770",
+      "kind": "function",
+      "address": "0x08000980",
+      "romAddress": "0x00706770",
+      "section": ".file_47",
+      "size": 300
+    },
+    {
+      "name": "func_08000AD4_7068C4",
+      "kind": "function",
+      "address": "0x08000AD4",
+      "romAddress": "0x007068C4",
+      "section": ".file_47",
+      "size": 4020
+    },
+    {
+      "name": "func_080006F8_7064E8",
+      "kind": "function",
+      "address": "0x080006F8",
+      "romAddress": "0x007064E8",
+      "section": ".file_47",
+      "size": 576
+    },
+    {
+      "name": "func_080023A4_709DE4",
+      "kind": "function",
+      "address": "0x080023A4",
+      "romAddress": "0x00709DE4",
+      "section": ".file_48",
+      "size": 120
+    },
+    {
+      "name": "func_080018E8_709328",
+      "kind": "function",
+      "address": "0x080018E8",
+      "romAddress": "0x00709328",
+      "section": ".file_48",
+      "size": 2748
+    },
+    {
+      "name": "func_0800127C_708CBC",
+      "kind": "function",
+      "address": "0x0800127C",
+      "romAddress": "0x00708CBC",
+      "section": ".file_48",
+      "size": 1496
+    },
+    {
+      "name": "func_080007A4_7081E4",
+      "kind": "function",
+      "address": "0x080007A4",
+      "romAddress": "0x007081E4",
+      "section": ".file_48",
+      "size": 32
+    },
+    {
+      "name": "func_08000790_7081D0",
+      "kind": "function",
+      "address": "0x08000790",
+      "romAddress": "0x007081D0",
+      "section": ".file_48",
+      "size": 20
+    },
+    {
+      "name": "func_080005D0_708010",
+      "kind": "function",
+      "address": "0x080005D0",
+      "romAddress": "0x00708010",
+      "section": ".file_48",
+      "size": 328
+    },
+    {
+      "name": "func_08001954_6F1B64",
+      "kind": "function",
+      "address": "0x08001954",
+      "romAddress": "0x006F1B64",
+      "section": ".file_42",
+      "size": 5428
+    },
+    {
+      "name": "func_08000E2C_6F103C",
+      "kind": "function",
+      "address": "0x08000E2C",
+      "romAddress": "0x006F103C",
+      "section": ".file_42",
+      "size": 516
+    },
+    {
+      "name": "func_080008E4_6F0AF4",
+      "kind": "function",
+      "address": "0x080008E4",
+      "romAddress": "0x006F0AF4",
+      "section": ".file_42",
+      "size": 8
+    },
+    {
+      "name": "func_8021927C_5D474C",
+      "kind": "function",
+      "address": "0x8021927C",
+      "romAddress": "0x005D474C",
+      "section": ".file_12"
+    },
+    {
+      "name": "func_8021928C_5D475C",
+      "kind": "function",
+      "address": "0x8021928C",
+      "romAddress": "0x005D475C",
+      "section": ".file_12"
+    },
+    {
+      "name": "func_80219448_5D4918",
+      "kind": "function",
+      "address": "0x80219448",
+      "romAddress": "0x005D4918",
+      "section": ".file_12"
+    },
+    {
+      "name": "func_802196FC_5D4BCC",
+      "kind": "function",
+      "address": "0x802196FC",
+      "romAddress": "0x005D4BCC",
+      "section": ".file_12"
+    },
+    {
+      "name": "func_8021B610_5D6AE0",
+      "kind": "function",
+      "address": "0x8021B610",
+      "romAddress": "0x005D6AE0",
+      "section": ".file_12"
+    },
+    {
+      "name": "func_8021BB04_5D6FD4",
+      "kind": "function",
+      "address": "0x8021BB04",
+      "romAddress": "0x005D6FD4",
+      "section": ".file_12"
+    },
+    {
+      "name": "func_8021ADD0_5D62A0",
+      "kind": "function",
+      "address": "0x8021ADD0",
+      "romAddress": "0x005D62A0",
+      "section": ".file_12",
+      "size": 612
+    },
+    {
+      "name": "func_8021A328_5D57F8",
+      "kind": "function",
+      "address": "0x8021A328",
+      "romAddress": "0x005D57F8",
+      "section": ".file_12",
+      "size": 436
+    },
+    {
+      "name": "func_8021A978_5D5E48",
+      "kind": "function",
+      "address": "0x8021A978",
+      "romAddress": "0x005D5E48",
+      "section": ".file_12",
+      "size": 360
+    },
+    {
+      "name": "func_80218990_5D3E60",
+      "kind": "function",
+      "address": "0x80218990",
+      "romAddress": "0x005D3E60",
+      "section": ".file_12",
+      "size": 196
+    },
+    {
+      "name": "func_080005DC_6F07EC",
+      "kind": "function",
+      "address": "0x080005DC",
+      "romAddress": "0x006F07EC",
+      "section": ".file_42"
+    },
+    {
+      "name": "func_080008B8_6F0AC8",
+      "kind": "function",
+      "address": "0x080008B8",
+      "romAddress": "0x006F0AC8",
+      "section": ".file_42"
+    },
+    {
+      "name": "func_080008CC_6F0ADC",
+      "kind": "function",
+      "address": "0x080008CC",
+      "romAddress": "0x006F0ADC",
+      "section": ".file_42"
+    },
+    {
+      "name": "func_080008F4_6F0B04",
+      "kind": "function",
+      "address": "0x080008F4",
+      "romAddress": "0x006F0B04",
+      "section": ".file_42"
+    },
+    {
+      "name": "func_08000B58_6F0D68",
+      "kind": "function",
+      "address": "0x08000B58",
+      "romAddress": "0x006F0D68",
+      "section": ".file_42",
+      "size": 724
+    }
+  ]
+}

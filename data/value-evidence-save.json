@@ -100,6 +100,21 @@
     {
       "address": "0x8001FA80",
       "note": "Native menu/map code checks base+268 and +26C arrays and scans base+2A4 nonzero words. Large function has decompiler overlap warning; no additional exact per-slot interpretation inferred."
+    },
+    {
+      "program": "world_file_57.elf",
+      "address": "0x08001754",
+      "relatedAddresses": [
+        "0x08001980",
+        "0x08001AE4"
+      ],
+      "note": "Both scene handlers read and clear event flag 0x7D on the set branch; the queued handler requests room 0x01E1. See nativeEventFlagFindings for normalized opcode hashes and branch summary."
+    },
+    {
+      "program": "world_file_98.elf",
+      "address": "ROM 0x0076A374",
+      "relatedProgram": "world_file_69.elf",
+      "note": "File98 scenario 0x0176 accepted Yae path sets flag 0x7A; File69 actor 0x33A in room 0x154 reads it from state 3 to select state 4. Scenario 0x0177 does not read it. See nativeEventFlagFindings for scoped observations."
     }
   ],
   "flagRows": [
@@ -3550,5 +3565,76 @@
     "Normalized public spelling Dharmanyo to Dharumanyo to match existing encounter pages and room table.",
     "Known-save-flags description explicitly distinguishes native callback behavior from inferred exact pickup locations whose room actor data has not been verified. No raw values changed.",
     "2026-09-12: Verified 29 dungeon key colors and pickup flags against native actor definitions, resolving 12 conflicting meanings. Retained original source claims above as historical evidence; nativeReview gives the current finding. Preserved the unresolved-save-flags public anchor for the expanded native key table."
+  ],
+  "nativeEventFlagFindings": [
+    {
+      "id": "0x007D",
+      "byteOffset": "0x0F",
+      "bit": 5,
+      "mask": "0x20",
+      "program": "world_file_57.elf",
+      "programLanguage": "MIPS:BE:32",
+      "programImageBase": "0x08000000",
+      "behavior": "Both scene handlers read flag 0x7D. A nonzero result calls the native clear-bit routine and queues func_08001AE4_718984. That handler calls the room transition with first argument 0x01E1, then queues the common continuation. A zero result follows the handlers’ alternate scene setup/dialogue path.",
+      "functions": [
+        {
+          "name": "func_08001754_7185F4",
+          "address": "0x08001754",
+          "normalizedOpcodeHash": "ed58b499f3cc61cffee4acf62d4d2a94cf4a9312ed0a93db0f999e4ab61fc3d0"
+        },
+        {
+          "name": "func_08001980_718820",
+          "address": "0x08001980",
+          "normalizedOpcodeHash": "8c2f2915ecd2af446c0a1bccc879c7a46192f2a732025eb2805d60bf803ccad3"
+        },
+        {
+          "name": "func_08001AE4_718984",
+          "address": "0x08001AE4",
+          "normalizedOpcodeHash": "aa8e78e180dafc1a3bdfebb6a912aa2b93c76ce94a56679cdc7426534144f1e4"
+        }
+      ],
+      "supportingFunctions": [
+        {
+          "name": "func_80024088_24C88",
+          "address": "0x80024088",
+          "role": "clear selected save-flag bit",
+          "normalizedOpcodeHash": "133d279cb94e0de37816901094f27ce421dd6affde4025915e95fdc5ae0192c4"
+        },
+        {
+          "name": "func_800240DC_24CDC",
+          "address": "0x800240DC",
+          "role": "read selected save-flag bit",
+          "normalizedOpcodeHash": "2c09dee43de46c33302386dfe8720f86b8aac083acf62c722124cbde5c722e90"
+        }
+      ],
+      "uncertainty": "This documents the branch and destination room, not every dialogue trigger or minigame completion condition."
+    },
+    {
+      "id": "0x007A",
+      "byteOffset": "0x0F",
+      "bit": 2,
+      "mask": "0x04",
+      "observations": [
+        {
+          "program": "world_file_98.elf",
+          "decompressedRomOffset": "0x0076A374",
+          "scene": "Mermaid sign scenario 0x0176",
+          "finding": "The accepted Yae path sets event flag 0x007A."
+        },
+        {
+          "program": "world_file_69.elf",
+          "roomId": "0x0154",
+          "actorId": "0x33A",
+          "entryState": 3,
+          "finding": "State 3 reads event flag 0x007A; the matching branch enters state 4."
+        },
+        {
+          "program": "world_file_98.elf",
+          "scene": "scenario 0x0177",
+          "finding": "The inspected scenario does not read event flag 0x007A."
+        }
+      ],
+      "scopeNote": "These references document an additional observed use of this packed flag. They do not establish all meanings or completion behavior; the no-read observation is limited to the inspected scenario 0x0177 code."
+    }
   ]
 }

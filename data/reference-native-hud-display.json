@@ -1,0 +1,215 @@
+{
+  "func_800086C4_92C4": {
+    "title": "Bind a display object to texture descriptors",
+    "summary": "Stores a texture descriptor and its bank pointer on a native display object.",
+    "behavior": [
+      "The helper stores its second argument (MIPS a1) as the display object's descriptor pointer at +0x34.",
+      "It stores its third argument (MIPS a2) as the display object's descriptor-bank pointer at +0x14.",
+      "The descriptor and bank pointers occupy separate fields and are both used by native display paths."
+    ],
+    "returns": "Return behavior was not established by the inspected native call path.",
+    "cautions": [
+      "The caller's ownership and lifetime guarantees for either pointer are not established here.",
+      "No complete public C prototype is claimed."
+    ],
+    "example": "/* The direct-call interface for func_800086C4_92C4 is not fully recovered. */\nvoid observe_display_texture_binding(void *display_object)\n{\n    void *descriptor = *(void **)((char *)display_object + 0x34);\n    void *descriptor_bank = *(void **)((char *)display_object + 0x14);\n    (void)descriptor;\n    (void)descriptor_bank;\n}\n",
+    "exampleExplanation": "Observation-only example for the two verified display-object fields; it does not assert the helper's complete native signature.",
+    "related": ["func_800106F0_112F0"],
+    "confidence": "decompiled"
+  },
+  "func_80010230_10E30": {
+    "title": "Register a native texture descriptor",
+    "summary": "Registers image metadata in the native texture-descriptor table and returns its runtime handle.",
+    "declaration": "extern int func_80010230_10E30(unsigned short width, unsigned short height, unsigned char format, unsigned char flags, void *pixels, unsigned short palette);",
+    "parameters": [
+      {"name": "width", "type": "unsigned short", "description": "Image width supplied to the descriptor."},
+      {"name": "height", "type": "unsigned short", "description": "Image height supplied to the descriptor."},
+      {"name": "format", "type": "unsigned char", "description": "Format byte stored for the descriptor; individual values are not established here."},
+      {"name": "flags", "type": "unsigned char", "description": "Flags byte stored for the descriptor; individual bits are not established here."},
+      {"name": "pixels", "type": "void *", "description": "Pixel-data pointer recorded for the descriptor."},
+      {"name": "palette", "type": "unsigned short", "description": "Palette value supplied to the descriptor."}
+    ],
+    "returns": "A runtime descriptor handle on success, or -1 when registration cannot allocate a descriptor.",
+    "behavior": [
+      "The native registry has 40 texture-descriptor slots. Registration records image dimensions, format and flags bytes, a pixel pointer, and a palette value.",
+      "The returned handle identifies a registered descriptor for native sprite commands. A handle is runtime state and is not a resource ID.",
+      "The format-byte and flags-byte encodings are not established by this interface description."
+    ],
+    "cautions": [
+      "Unregister descriptors with the matching handle when their owning image data or scene lifetime ends.",
+      "A newly registered sprite's visibility during a scene's first introductory animation has not been tested."
+    ],
+    "example": "extern int func_80010230_10E30(unsigned short width, unsigned short height, unsigned char format, unsigned char flags, void *pixels, unsigned short palette);\n\nint register_image(void *pixels)\n{\n    return func_80010230_10E30(64, 32, 0, 0, pixels, 0);\n}\n",
+    "exampleExplanation": "This example shows the native argument shape only. Format, flags, palette, and pixel-buffer requirements must match the image data and caller context.",
+    "related": ["func_800102E0_10EE0", "func_800106F0_112F0"],
+    "confidence": "decompiled"
+  },
+  "func_800102E0_10EE0": {
+    "title": "Unregister a native texture descriptor",
+    "summary": "Clears a registered texture descriptor by its runtime handle.",
+    "declaration": "extern void func_800102E0_10EE0(int handle);",
+    "parameters": [
+      {"name": "handle", "type": "int", "description": "Runtime handle returned by texture-descriptor registration."}
+    ],
+    "returns": "No return value is used by the inspected native caller; whether the routine returns an ignored value is unconfirmed.",
+    "behavior": [
+      "The routine clears the texture-descriptor entry selected by the supplied handle.",
+      "The stock overlay invokes this cleanup for each handle it previously registered. The registry contains 40 descriptor slots."
+    ],
+    "cautions": [
+      "Pass a handle returned for a live registration. The routine does not establish ownership or lifetime for the caller's pixel memory."
+    ],
+    "example": "extern void func_800102E0_10EE0(int handle);\n\nvoid release_image(int handle)\n{\n    func_800102E0_10EE0(handle);\n}\n",
+    "exampleExplanation": "Release a descriptor using the handle saved when the image was registered.",
+    "related": ["func_80010230_10E30"],
+    "confidence": "decompiled"
+  },
+  "func_80010358_10F58": {
+    "title": "Reset a native sprite queue",
+    "summary": "Resets the pending sprite-record count for a native sprite queue.",
+    "declaration": "extern void func_80010358_10F58(int queue);",
+    "parameters": [
+      {"name": "queue", "type": "int", "description": "Queue index returned by native sprite-queue creation."}
+    ],
+    "returns": "No return value.",
+    "behavior": [
+      "Resets the queue's pending record count so a later collection pass can append sprites again.",
+      "Resetting a queue does not release its backing buffer; use the queue cleanup routine when its lifetime ends."
+    ],
+    "cautions": [
+      "Keep the queue allocated for as long as later append and finalize calls use its index."
+    ],
+    "example": "extern void func_80010358_10F58(int queue);\n\nvoid begin_sprite_pass(int queue)\n{\n    func_80010358_10F58(queue);\n}\n",
+    "exampleExplanation": "Reset the pending sprite list at the start of a collection pass.",
+    "related": ["func_800103DC_10FDC", "func_800106F0_112F0", "func_800105AC_111AC", "func_80010374_10F74"],
+    "confidence": "decompiled"
+  },
+  "func_80010374_10F74": {
+    "title": "Free a native sprite queue",
+    "summary": "Releases the backing buffer owned by a native sprite queue.",
+    "declaration": "extern void func_80010374_10F74(int queue);",
+    "parameters": [
+      {"name": "queue", "type": "int", "description": "Queue index returned by native sprite-queue creation."}
+    ],
+    "returns": "No return value is used by the inspected native caller; whether the routine returns an ignored value is unconfirmed.",
+    "behavior": [
+      "Loads the queue's backing-buffer pointer and passes that exact allocation to the native scene-pool free routine.",
+      "This releases queue storage. It is separate from resetting pending records or finalizing a draw list."
+    ],
+    "cautions": [
+      "Do not append or finalize through a queue after its backing buffer has been released."
+    ],
+    "example": "extern void func_80010374_10F74(int queue);\n\nvoid destroy_sprite_queue(int queue)\n{\n    func_80010374_10F74(queue);\n}\n",
+    "exampleExplanation": "Call when the queue's owning scene or display lifetime ends.",
+    "related": ["func_800103DC_10FDC", "func_80010358_10F58", "func_800105AC_111AC"],
+    "confidence": "decompiled"
+  },
+  "func_800103DC_10FDC": {
+    "title": "Create a native sprite queue",
+    "summary": "Allocates a persistent native sprite-queue child and its fixed-capacity record buffer.",
+    "declaration": "extern int func_800103DC_10FDC(void *task, int capacity, unsigned char display_layer);",
+    "parameters": [
+      {"name": "task", "type": "void *", "description": "Native task that owns the queue child."},
+      {"name": "capacity", "type": "int", "description": "Number of sprite records requested for this queue's backing buffer."},
+      {"name": "display_layer", "type": "unsigned char", "description": "Display layer value passed to the queue child; other layer semantics are not established here."}
+    ],
+    "returns": "A queue index on success, or -1 if queue creation or record-buffer allocation fails.",
+    "behavior": [
+      "Creates a child of native task kind 1 and allocates a backing buffer for the requested record capacity. The global native registry supports at most 16 queues.",
+      "The queue persists across collection passes until its storage is explicitly released or scene-level native cleanup runs.",
+      "The queue index is consumed by reset, append, finalize, and cleanup calls."
+    ],
+    "cautions": [
+      "The queue registry supports at most 16 live queues. Append no more records than this queue's requested capacity; append failure is reported as -1.",
+      "A newly created sprite queue's visibility during a scene's first introductory animation has not been tested."
+    ],
+    "example": "extern int func_800103DC_10FDC(void *task, int capacity, unsigned char display_layer);\n\nint create_hud_sprite_queue(void *task)\n{\n    return func_800103DC_10FDC(task, 8, 10);\n}\n",
+    "exampleExplanation": "Create the queue with a native owner task, a capacity no greater than 16, and the layer value required by the caller's draw path.",
+    "related": ["func_80010358_10F58", "func_800106F0_112F0", "func_800105AC_111AC", "func_80010374_10F74"],
+    "confidence": "decompiled"
+  },
+  "func_800105AC_111AC": {
+    "title": "Finalize a native sprite queue",
+    "summary": "Marks the end of a native sprite queue's pending display records.",
+    "declaration": "extern void func_800105AC_111AC(int queue);",
+    "parameters": [
+      {"name": "queue", "type": "int", "description": "Queue index returned by native sprite-queue creation."}
+    ],
+    "returns": "No return value is used by the inspected native caller; whether the routine returns an ignored value is unconfirmed.",
+    "behavior": [
+      "Writes the native 0x8000 end marker after the queue's pending records so the display consumer can stop at the end of the list.",
+      "Finalization does not free the queue buffer; call the queue cleanup routine when its lifetime ends."
+    ],
+    "cautions": [
+      "Finalize after appending the records for the current collection pass."
+    ],
+    "example": "extern void func_800105AC_111AC(int queue);\n\nvoid finish_sprite_pass(int queue)\n{\n    func_800105AC_111AC(queue);\n}\n",
+    "exampleExplanation": "Close the current record list after all desired sprites have been appended.",
+    "related": ["func_800103DC_10FDC", "func_80010358_10F58", "func_800106F0_112F0", "func_80010374_10F74"],
+    "confidence": "decompiled"
+  },
+  "func_800106F0_112F0": {
+    "title": "Append a sprite to a native queue",
+    "summary": "Appends one 12-byte sprite record to a native sprite queue.",
+    "declaration": "extern int func_800106F0_112F0(int queue, short x, short y, unsigned short width, unsigned short height, int texture_handle, short s, short t);",
+    "parameters": [
+      {"name": "queue", "type": "int", "description": "Queue index returned by native sprite-queue creation."},
+      {"name": "x", "type": "short", "description": "Horizontal position supplied for this sprite record."},
+      {"name": "y", "type": "short", "description": "Vertical position supplied for this sprite record."},
+      {"name": "width", "type": "unsigned short", "description": "Width supplied for this sprite record."},
+      {"name": "height", "type": "unsigned short", "description": "Height supplied for this sprite record."},
+      {"name": "texture_handle", "type": "int", "description": "Native texture-descriptor handle used by this sprite record."},
+      {"name": "s", "type": "short", "description": "S texture coordinate supplied for the record."},
+      {"name": "t", "type": "short", "description": "T texture coordinate supplied for the record."}
+    ],
+    "returns": "The appended record index, or -1 if the queue cannot accept another record.",
+    "behavior": [
+      "Appends a fixed 12-byte record containing the supplied position, dimensions, texture handle, and texture coordinates.",
+      "Under the o32 ABI, height, texture_handle, s, and t occupy caller stack slots 0x10, 0x14, 0x18, and 0x1C relative to the argument area.",
+      "The native registry supports at most 16 live queues. Each queue's record capacity is supplied when it is created."
+    ],
+    "cautions": [
+      "Pass a live texture handle returned by native descriptor registration.",
+      "The visual result of adding a sprite during a scene's first introductory animation has not been tested."
+    ],
+    "example": "extern int func_800106F0_112F0(int queue, short x, short y, unsigned short width, unsigned short height, int texture_handle, short s, short t);\n\nint append_hud_icon(int queue, int texture_handle)\n{\n    return func_800106F0_112F0(queue, 16, 24, 8, 8, texture_handle, 0, 0);\n}\n",
+    "exampleExplanation": "Append one sprite using a live texture descriptor and the coordinates required by its image sheet.",
+    "related": ["func_800103DC_10FDC", "func_80010230_10E30", "func_800105AC_111AC"],
+    "confidence": "decompiled"
+  },
+  "func_801FBB30_5B7A40": {
+    "title": "Initialize the native player-heart display",
+    "summary": "Creates and initializes the native display object used by the player-heart HUD.",
+    "behavior": [
+      "Creates one child display object through the native kind-1 display allocator.",
+      "Initializes the object's texture descriptor, writes 0.5 to the horizontal and vertical scale fields at +0x2C and +0x30, and sets bit 0x04 in the display-object byte at +0x08 to enable those scale values.",
+      "The renderer's scale path ignores the floating-point scale fields unless byte +0x08 has bit 0x04 set.",
+      "The companion heart updater uses native atlas descriptors for full/current, empty/maximum, base, and half-heart images."
+    ],
+    "cautions": [
+      "The function initializes the stock player HUD object; it does not establish boss-health ownership or boss-specific damage semantics."
+    ],
+    "example": "/* The callable interface for func_801FBB30_5B7A40 is not established here. */\nvoid observe_player_heart_setup(void)\n{\n    /* Inspect the native HUD object after the game initializes it. */\n}\n",
+    "exampleExplanation": "This observation-only example avoids asserting a native callable signature that has not been recovered.",
+    "related": ["func_801FBD50_5B7C60"],
+    "confidence": "decompiled"
+  },
+  "func_801FBD50_5B7C60": {
+    "title": "Update the native player-heart display",
+    "summary": "Builds the stock player-heart display from current and maximum health measured in half-heart units.",
+    "behavior": [
+      "Reads the native current-health and maximum-health halfword values in half-heart units and clamps the displayed range to 0x28 units (20 hearts).",
+      "Selects heart imagery from the native descriptor arrays: current/full heart at atlas coordinate (0, 24), maximum/empty heart at (8, 24), base image at (16, 24), and half-heart image using the same red cell at (0, 24).",
+      "The half-heart is rendered as a 4 by 4 red heart at offset (+2,+2) over the 8 by 8 dark-heart base. It does not use a separate semi-transparent texture or alpha treatment; the native scale-enable bit and 0.5 object scales produce the smaller image.",
+      "The descriptor bank uses native image resource 0x8004, a 64 by 32 RGBA5551 sheet. Each full heart represents two native health units; the half-heart descriptor represents one unit."
+    ],
+    "cautions": [
+      "This mapping describes the native player HUD. Congo's separate health counter is a byte at boss task +0x8D with a native range of 0 through 30; mapping two Congo units to one displayed heart is a separate presentation choice, not a native player-health equivalence.",
+      "The atlas coordinates describe source image locations, not screen positions."
+    ],
+    "example": "/* The callable interface for func_801FBD50_5B7C60 is not established here. */\nvoid observe_player_heart_values(unsigned short current_half_hearts, unsigned short maximum_half_hearts)\n{\n    (void)current_half_hearts;\n    (void)maximum_half_hearts;\n}\n",
+    "exampleExplanation": "This observation-only example represents the verified health units without asserting an unrecovered native callable signature.",
+    "related": ["func_801FBB30_5B7A40"],
+    "confidence": "decompiled"
+  }
+}

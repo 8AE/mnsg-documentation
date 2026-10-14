@@ -907,10 +907,11 @@
       "Writes the selected character to task+0x60 and global 0x8015C5DC, updates the linked player state at task+0x5C, clears movement/action fields, marks character-change state, and sets action byte +0xCC to 0xBA.",
       "Installs the native character-change callback. This mutates the authoritative live player and global character state; visual-only characters should use independent render tasks instead.",
       "The native character-change path writes the target character to task +0x60, sets player-work +0x69 to 1, sets action +0xCC to 0xBA, and updates the same player task/object rather than replacing them.",
-      "During the transition, the case-4 update clears player-work +0x69 while action remains 0xBA; this byte is transition state, not a general alive/dead marker."
+      "The native resource-rebinding path clears player-work +0x69 after the character resources are rebound. The action byte is set to 0xBA for the transition; +0x69 is a transition marker, not a general alive/dead marker.",
+      "The function and its resource loader contain no unlock or recruitment check for the selected character ID."
     ],
     "cautions": [
-      "Use only on the actual live player and an enabled/recruited character.",
+      "Call only while the live player and File 11 resources are resident, and pass a character ID from 0 through 3. Native code does not validate whether that character is unlocked or recruited; callers must account for that because the game provides no in-game validation for switching to a locked character.",
       "This changes global player state. It is inappropriate for spawning another visual player model."
     ],
     "related": [
@@ -1107,18 +1108,22 @@
     "summary": "Writes the engine destination room, transform and related loading fields.",
     "behavior": [
       "Writes the destination room at full-system offset +0x3AFE0, player rotation at +0x3AFE2, X/Y/Z at +0x3AFE4/+0x3AFE6/+0x3AFE8 and camera rotation at +0x3AFEA. It also sets the destination-transition byte at +0x3AE29 to 1 and stores the seventh and eighth arguments at +0x3AE3A and +0x3AE3C.",
-      "This prepares a destination without immediately changing the current room. During an ordinary live world transition, main system step 12 later calls func_8000B364_BF64 to consume these fields, resets rendering, and enters world step 13.",
-      "The live step-12 route consumes the prepared destination directly; it does not read the saved respawn transform. Save-file loading has a separate spawn-reading route. Preserve saved respawn fields when requesting an ordinary live warp unless changing the saved return point is also intended."
+      "This prepares a destination without immediately changing the current room. During an ordinary live world transition, main system step 12 calls func_8000B364_BF64 to consume these fields, runs func_8000383C_443C for teardown and enters step 13 to rebuild the destination world.",
+      "The live step-12 route consumes the prepared destination directly; it does not read the saved respawn transform. Save-file loading has a separate spawn-reading route. Preserve saved respawn fields when requesting an ordinary live warp unless changing the saved return point is also intended.",
+      "This setter leaves the extended setup word at +0x3AE2C and option halfword at +0x3AE30 untouched. Native camera initialization can use a nonzero setup word to override the ordinary arrival transform even when transition-marker bit 0x08 is clear."
     ],
     "cautions": [
       "This queues destination state; it does not alone execute a complete warp.",
       "field90/field91 names in the recovered call pattern are unresolved; the documented call pattern passes zero rather than assigning unsupported meanings.",
-      "Do not request a second warp while a native transition, pause, conversation or scripted movement owns the player. A loaded save and a live ordinary-world player are prerequisites for this call sequence."
+      "Do not request a second warp while a native transition, pause, conversation or scripted movement owns the player. A loaded save and a live ordinary-world player are prerequisites for this call sequence.",
+      "This basic destination setter and the extended native room-request helper write different fields. Preserve the surrounding native camera/setup lifecycle rather than treating the request helpers as interchangeable.",
+      "Passing zero for field90 and field91 does not clear the separate extended setup and option fields. Establish the target camera lifecycle's required values before requesting a rebuild."
     ],
     "related": [
       "D_8006B780_6C380",
       "func_8000B364_BF64",
-      "func_80003728_4328"
+      "func_80003728_4328",
+      "func_801FA420_5B6330"
     ],
     "confidence": "decompiled",
     "example": "extern short D_8006B780_6C380[];\nextern void func_8000607C_6C7C(unsigned short room, short x, short y, short z,\n                              short camera_rot, short player_rot,\n                              short field90, int field91);\nextern void func_80003728_4328(unsigned char step);\n\n/* Call only from a loaded ordinary world after all native dialogs, pause,\n * scripted movement and an existing transition have finished. */\nvoid request_congo_destination(void)\n{\n    const unsigned short room = 0x0016;\n    const short *start = &D_8006B780_6C380[room * 5u];\n    func_8000607C_6C7C(room, start[0], start[1], start[2],\n                     start[3], start[4], 0, 0);\n    func_80003728_4328(12);\n}\n",
@@ -1181,22 +1186,26 @@
   },
   "func_80003728_4328": {
     "title": "Switch the system execution step",
-    "summary": "Switches the native system execution step and resets transition substate.",
+    "summary": "Switches the native system execution step; step 12 starts the full world rebuild for a prepared destination.",
     "behavior": [
       "Writes the main system step, clears its completion byte, marks the transition and resets its substate.",
-      "The numeric step selects a state-machine branch, not a room. Step 12 is the live destination/warp sequence; provide a valid prepared destination while ordinary gameplay is safe to leave. It eventually invokes destination preparation and render reset, then selects step 13.",
+      "The numeric step selects a state-machine branch, not a room. Step 12 is the live destination/warp sequence; provide a valid prepared destination while ordinary gameplay is safe to leave. Its dispatcher branch calls func_8000B364_BF64 to consume the destination and func_8000383C_443C for teardown, then selects step 13 for the full world rebuild.",
       "Step 0x0E is the game-over handler. It presents the continue/goodbye choice: the continue exit selects step 0x0B, and the goodbye exit runs func_8000383C_443C then selects step 0x03.",
-      "Step 0x03 is the start/sequence step that loads overlay file 0x16. The native game-over goodbye exit and the ordinary world-teardown path both select it, so it is not an ordinary gameplay readiness test."
+      "Step 0x03 is the start/sequence step that loads overlay file 0x16. The native game-over goodbye exit and the ordinary world-teardown path both select it, so it is not an ordinary gameplay readiness test.",
+      "The full warp resource phase selects a character model bank from the current character before the destination initializer returns. The intended character must therefore be established before starting this rebuild; changing it only after destination initialization is too late for that bank-selection phase."
     ],
     "cautions": [
       "Step numbers are state-machine selectors, not arbitrary room IDs.",
-      "Jumping to a step without its expected prior initialization can leave invalid render or game state."
+      "Jumping to a step without its expected prior initialization can leave invalid render or game state.",
+      "The ordinary scene callback has a separate selective reload path. Selecting step 12 invokes the full teardown and rebuild sequence; it is not equivalent to setting a room-transition marker alone."
     ],
     "related": [
       "func_80002040_2C40",
       "func_8000383C_443C",
       "func_80002F54_3B54",
-      "func_8000607C_6C7C"
+      "func_8000607C_6C7C",
+      "func_801F77F4_5B3704",
+      "D_8015C5D8_15D1D8"
     ],
     "confidence": "decompiled",
     "example": "extern void func_80003728_4328(unsigned char step);\n\n/* The caller has prepared a valid destination and released native dialog,\n * pause and scripted-movement ownership in an already loaded live world. */\nvoid enter_prepared_warp_step(void)\n{\n    func_80003728_4328(12);\n}\n",
@@ -1317,8 +1326,9 @@
     "summary": "Consumes actor hit state, changes health and selects hit/death behavior.",
     "behavior": [
       "Status bit 0x00040000 at actor+0x68 enables a fast one-point health subtraction at byte +0x8D without the usual attacker pointer. The ordinary path checks actor flags, hit bit 0x80, attacker data and damage type, then reads the hit-kind byte at attacker +0x4C. For ordinary actors, kinds 0x15, 0x19 and 0x1F subtract 1 HP; 0x16 and 0x23 subtract 2; 0x17 and 0x24 subtract 4; 0x1B subtracts 3; 0x22 subtracts 8; other kinds default to 1. Native weapon-tier dispatch maps tier 0/1/2 to kinds 0x15/0x16/0x17 for character slots 0 and 1, and 0x19/0x23/0x24 for slots 2 and 3. Fire Ryo uses kind 0x1B and subtracts 3 HP on this actor path. These values describe ordinary actor damage, not the separate playable-player intake path.",
+      "The fast no-attacker branch is selected by status +0x68 bit 0x00040000. The same numeric mask in the separate flags word at +0x60 is a different field and does not arm the fast branch.",
       "Nonzero health sets status bit 0 and may install/invoke the actor-specific +0x90 callback. Zero health enters generic death. The inner routine does not clear the synthetic pending-damage bit the same way the outer func_80218E7C wrapper does.",
-      "Some bosses use generic health only as a damage carrier. Dharmanyo separately consumes lives at +0xD1, while Tsurami uses its custom remaining-health callback.",
+      "Some bosses use generic health only as a damage carrier. Dharumanyo's carrier stores its 12 remaining lives in byte +0xD1; the common actor path resets generic HP byte +0x8D to 10, so +0x8D is not its lives count. Tsurami instead uses its custom remaining-health callback, with 12 initial root HP at +0x8D.",
       "The native zero-health entry is func_80218548_5D3A18, called immediately inside this damage routine. Scene unloads and distance culls do not call it. Health one with status bit 0x00040000 reaches native death, counters, optional loot and cleanup. This fast branch skips the ordinary death sound and fragment constructors; it does not reproduce every hit-specific visual effect."
     ],
     "cautions": [

@@ -1,0 +1,34 @@
+{
+  "func_08000240_71A750": {
+    "title": "Set the Control Machine opening-camera scissor",
+    "summary": "Updates the Control Machine opening camera's scissor rectangle during the room 0x155 introduction.",
+    "behavior": [
+      "The opening camera starts with the RDP scissor rectangle (left 8, top 38)-(right 312, bottom 202). A later camera state reaches (8, 16)-(312, 224).",
+      "The main display routine func_80017D8C_1898C emits the RDP scissor from camera fields +0x48 through +0x4E.",
+      "The native kind-1 sprite path through func_800087C4_93C4, func_800086F0_92F0 and func_80008920_9520 does not replace the camera scissor rectangle."
+    ],
+    "cautions": [
+      "These values describe the native scissor rectangle for this opening sequence; they do not establish a general output-resolution or camera-aspect API."
+    ],
+    "example": "/* The callable interface for func_08000240_71A750 is not established here. */\nvoid observe_control_machine_opening(void)\n{\n    /* Observe the camera state as its native callbacks advance. */\n}\n",
+    "exampleExplanation": "Observation-only example; it does not assert the native camera callback's argument or return ABI.",
+    "related": ["func_80017D8C_1898C"],
+    "confidence": "decompiled"
+  },
+  "func_80017D8C_1898C": {
+    "title": "Emit the camera's RDP scissor rectangle",
+    "summary": "Builds the native RDP scissor command from the current camera's rectangle fields.",
+    "behavior": [
+      "Reads the camera rectangle fields at offsets +0x48 through +0x4E and emits the corresponding RDP scissor command.",
+      "For the Control Machine opening sequence, these camera fields begin at (8, 38)-(312, 202) and later reach (8, 16)-(312, 224).",
+      "The observed native kind-1 sprite rendering path does not override this scissor rectangle."
+    ],
+    "cautions": [
+      "This describes the scissor command path only. The full callable signature is not established here."
+    ],
+    "example": "/* The callable interface for func_80017D8C_1898C is not established here. */\nvoid observe_camera_scissor_emission(void)\n{\n    /* Inspect the emitted RDP scissor while the native camera is active. */\n}\n",
+    "exampleExplanation": "Observation-only example; no native entry-point prototype is inferred.",
+    "related": ["func_08000240_71A750"],
+    "confidence": "decompiled"
+  }
+}

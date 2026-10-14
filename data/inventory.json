@@ -119,13 +119,17 @@
         "src/utils/anchor_scripted_state.c",
         "src/utils/json_utils.c",
         "src/utils/room_utils.c",
-        "src/utils/string_utils.c"
+        "src/utils/string_utils.c",
+        "src/world/anchor_minigame_ebisumaru.c",
+        "src/world/anchor_minigame_sasuke.c",
+        "src/world/anchor_world_doll.c",
+        "src/world/anchor_world_gate64.c"
       ],
       "symbolTables": [
         "Goemon64RecompSyms/mnsg.datasyms.toml",
         "Goemon64RecompSyms/mnsg.syms.toml"
       ],
-      "symbolCount": 188
+      "symbolCount": 191
     },
     {
       "name": "mnsg-team-up",
@@ -27561,6 +27565,128 @@
       "declarationReviewRequired": true
     },
     {
+      "name": "func_80014840_15440",
+      "kind": "function",
+      "address": "0x80014840",
+      "size": 128,
+      "section": ".main",
+      "romAddress": "0x00015440",
+      "projects": [
+        "mnsg-recomp-example"
+      ],
+      "roles": [
+        "called",
+        "declared"
+      ],
+      "declarations": [
+        {
+          "text": "extern void *func_80014840_15440(void *, unsigned int);",
+          "project": "mnsg-recomp-example",
+          "path": "src/world/anchor_minigame_ebisumaru.c",
+          "line": 43
+        }
+      ],
+      "references": [
+        {
+          "project": "mnsg-recomp-example",
+          "path": "src/world/anchor_minigame_ebisumaru.c",
+          "line": 43,
+          "role": "declared",
+          "context": "\nextern unsigned short D_800C7AB2;\nextern void *D_8016DAB4_16E6B4, *D_801FC604_5B8514, *D_801FC628_5B8538;\nextern unsigned char D_080032F4_6F3504;\nextern unsigned int D_8015C5D8_15D1D8[];\nextern void *func_800141C4_14DC4(unsigned int);\nextern void *func_80014840_15440(void *, unsigned int);\nextern void *func_80217360_5D2830(void *, unsigned short, unsigned char);\nextern void *func_8021DDE8_5D92B8(void *, EbiCallback, unsigned char,\n                                float, float, float, int);\nextern void func_80034EF8_35AF8(void *);\nextern void func_8021664C_5D1B1C(void *, unsigned int, float, unsigned int);\nextern void func_80216E1C_5D22EC(void *, int);\nextern void func_80219E70_5D5340(void *, unsigned char, unsigned char);",
+          "contextStartLine": 37
+        },
+        {
+          "project": "mnsg-recomp-example",
+          "path": "src/world/anchor_minigame_ebisumaru.c",
+          "line": 557,
+          "role": "called",
+          "context": "    int kind;\n    if((bank!=0x2a && bank!=0x20) || !resident(bank)) return 0;\n    /* Allocator 34B58 stores the raw File12 table callback before 18C28.\n     * Patched scheduler 1481C relocates it only at the first native slot.\n     * Resolve a read-only copy against the child's already assigned bank. */\n    if(raw>=0x08000000ul && raw<0x09000000ul)\n        callback=(EbiCallback)func_80014840_15440((void *)raw,bank);\n    kind=classify(callback);\n    return kind && bank==(kind==EBI_ROBOT?0x20u:0x2au)?kind:0;\n}\nstatic void bomb_initialize(void *t,void *o)\n{\n    EbiActor *a=find(t);\n    if(!a || a->kind!=EBI_BOMB || !resident(0x2a)) return;",
+          "contextStartLine": 551
+        }
+      ],
+      "symbolSources": [
+        {
+          "project": "mnsg-custom-fish",
+          "path": "Goemon64RecompSyms/mnsg.us.syms.toml",
+          "line": 102,
+          "kind": "function",
+          "address": "0x80014840",
+          "size": 128,
+          "section": ".main",
+          "romAddress": "0x00015440",
+          "context": "    { name = \"func_8001654C_1714C\", vram = 0x8001654C, size = 0x78 },\n    { name = \"__osLeoAbnormalResume\", vram = 0x80051004, size = 0xE8 },\n    { name = \"func_80014840_15440\", vram = 0x80014840, size = 0x80 },\n    { name = \"func_80006220_6E20\", vram = 0x80006220, size = 0x54 },\n    { name = \"osViBlack\", vram = 0x80041770, size = 0x70 },",
+          "contextStartLine": 100,
+          "sha256": "ff7d8a852e902eb84511a00e2ba0dd22a9e1f17b0b9264cd5fc98ef157adb933"
+        },
+        {
+          "project": "mnsg-enable-boss-rush",
+          "path": "Goemon64RecompSyms/mnsg.us.syms.toml",
+          "line": 102,
+          "kind": "function",
+          "address": "0x80014840",
+          "size": 128,
+          "section": ".main",
+          "romAddress": "0x00015440",
+          "context": "    { name = \"func_8001654C_1714C\", vram = 0x8001654C, size = 0x78 },\n    { name = \"__osLeoAbnormalResume\", vram = 0x80051004, size = 0xE8 },\n    { name = \"func_80014840_15440\", vram = 0x80014840, size = 0x80 },\n    { name = \"func_80006220_6E20\", vram = 0x80006220, size = 0x54 },\n    { name = \"osViBlack\", vram = 0x80041770, size = 0x70 },",
+          "contextStartLine": 100,
+          "sha256": "ff7d8a852e902eb84511a00e2ba0dd22a9e1f17b0b9264cd5fc98ef157adb933"
+        },
+        {
+          "project": "mnsg-extra-options",
+          "path": "Goemon64RecompSyms/mnsg.us.syms.toml",
+          "line": 102,
+          "kind": "function",
+          "address": "0x80014840",
+          "size": 128,
+          "section": ".main",
+          "romAddress": "0x00015440",
+          "context": "    { name = \"func_8001654C_1714C\", vram = 0x8001654C, size = 0x78 },\n    { name = \"__osLeoAbnormalResume\", vram = 0x80051004, size = 0xE8 },\n    { name = \"func_80014840_15440\", vram = 0x80014840, size = 0x80 },\n    { name = \"func_80006220_6E20\", vram = 0x80006220, size = 0x54 },\n    { name = \"osViBlack\", vram = 0x80041770, size = 0x70 },",
+          "contextStartLine": 100,
+          "sha256": "ff7d8a852e902eb84511a00e2ba0dd22a9e1f17b0b9264cd5fc98ef157adb933"
+        },
+        {
+          "project": "mnsg-recomp-example",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 102,
+          "kind": "function",
+          "address": "0x80014840",
+          "size": 128,
+          "section": ".main",
+          "romAddress": "0x00015440",
+          "context": "    { name = \"func_8001654C_1714C\", vram = 0x8001654C, size = 0x78 },\n    { name = \"__osLeoAbnormalResume\", vram = 0x80051004, size = 0xE8 },\n    { name = \"func_80014840_15440\", vram = 0x80014840, size = 0x80 },\n    { name = \"func_80006220_6E20\", vram = 0x80006220, size = 0x54 },\n    { name = \"osViBlack\", vram = 0x80041770, size = 0x70 },",
+          "contextStartLine": 100,
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        },
+        {
+          "project": "mnsg-team-up",
+          "path": "Goemon64RecompSyms/mnsg.us.syms.toml",
+          "line": 102,
+          "kind": "function",
+          "address": "0x80014840",
+          "size": 128,
+          "section": ".main",
+          "romAddress": "0x00015440",
+          "context": "    { name = \"func_8001654C_1714C\", vram = 0x8001654C, size = 0x78 },\n    { name = \"__osLeoAbnormalResume\", vram = 0x80051004, size = 0xE8 },\n    { name = \"func_80014840_15440\", vram = 0x80014840, size = 0x80 },\n    { name = \"func_80006220_6E20\", vram = 0x80006220, size = 0x54 },\n    { name = \"osViBlack\", vram = 0x80041770, size = 0x70 },",
+          "contextStartLine": 100,
+          "sha256": "ff7d8a852e902eb84511a00e2ba0dd22a9e1f17b0b9264cd5fc98ef157adb933"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x80014840",
+          "size": 128,
+          "section": ".main",
+          "romAddress": "0x00015440"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [
+        "extern void *func_80014840_15440(void *, unsigned int);"
+      ]
+    },
+    {
       "name": "func_80016950_17550",
       "kind": "function",
       "address": "0x80016950",
@@ -33377,6 +33503,222 @@
       "declarationReviewRequired": true
     },
     {
+      "name": "func_80038BC8_397C8",
+      "kind": "function",
+      "address": "0x80038BC8",
+      "size": 48,
+      "section": ".main",
+      "romAddress": "0x000397C8",
+      "projects": [
+        "mnsg-recomp-example"
+      ],
+      "roles": [
+        "called",
+        "declared"
+      ],
+      "declarations": [
+        {
+          "text": "extern void func_80038BC8_397C8(unsigned short);",
+          "project": "mnsg-recomp-example",
+          "path": "src/world/anchor_minigame_sasuke.c",
+          "line": 27
+        },
+        {
+          "text": "extern void func_80038BC8_397C8(unsigned int);",
+          "project": "mnsg-recomp-example",
+          "path": "src/world/anchor_world_doll.c",
+          "line": 30
+        },
+        {
+          "text": "extern void func_80038BC8_397C8(unsigned int);",
+          "project": "mnsg-recomp-example",
+          "path": "src/world/anchor_world_gate64.c",
+          "line": 28
+        }
+      ],
+      "references": [
+        {
+          "project": "mnsg-recomp-example",
+          "path": "src/world/anchor_minigame_sasuke.c",
+          "line": 27,
+          "role": "declared",
+          "context": "typedef void (*SasukeCallback)(void *, void *);\nextern unsigned short D_800C7AB2;\nextern void *D_801FC60C_5B851C;\nextern void *D_8016DAB4_16E6B4;\nextern void *func_800141C4_14DC4(unsigned int);\nextern int func_8003F1D8_3FDD8(void);\nextern void func_80038BC8_397C8(unsigned short);\nextern void func_80034EF8_35AF8(void *);\nextern void func_08000AD4_7068C4(void *, void *);\nextern void func_080006F8_7064E8(void *, void *);\nextern void func_08000980_706770(void *, void *);\nextern void func_080002B4_7060A4(void *, void *);\n\nenum { SJ_ROOM=0x1e2, SJ_GAME=3, SJ_ENTITY=0x1b2, SJ_COUNT=17,",
+          "contextStartLine": 21
+        },
+        {
+          "project": "mnsg-recomp-example",
+          "path": "src/world/anchor_minigame_sasuke.c",
+          "line": 295,
+          "role": "called",
+          "context": "    /* Scenario 179 ends with native audio command 0x52. Followers bypass that\n     * VM, so supply its audio once after their own native HUD initialization.\n     * The full native intro remains responsible for an owner's music. */\n    if(s_intro_skipped && !s_game_music_started && !s_terminal &&\n       s_host_phase<5 && (s_owner || s_host_phase==3) && root_live() &&\n       SB(s_root.task,0xd0)==3 && hud_live() && !func_8003F1D8_3FDD8()) {\n        func_80038BC8_397C8(0x0052);\n        s_game_music_started=1;\n    }\n}\nstatic void root_callback(void *task,void *object)\n{\n    int phase;\n    if(!root_live() || task!=s_root.task || object!=s_root.object) return;",
+          "contextStartLine": 289
+        },
+        {
+          "project": "mnsg-recomp-example",
+          "path": "src/world/anchor_world_doll.c",
+          "line": 30,
+          "role": "declared",
+          "context": "extern void *D_8016DAB4_16E6B4;\nextern void *D_80236984_5F1E54[];\nextern int func_800141C4_14DC4(unsigned int);\nextern int func_800240DC_24CDC(int);\nextern int func_80023E94_24A94(int);\nextern void func_80023DF0_249F0(int);\nextern void func_80038BC8_397C8(unsigned int);\n/* The dynamic-world parent API births the nested File_26 task from this root. */\nextern int anchor_world_dynamic_doll_spawn(void *root,\n                                           unsigned int index_onebased);\n\n#define WDC_DECLARE(f) extern void f(void *, void *);\nWDC_DECLARE(func_080025A8_723BC8) /* idle: waits for a fresh contact */\nWDC_DECLARE(func_08002618_723C38) /* opening: pitch +8, clamps to 70 */",
+          "contextStartLine": 24
+        },
+        {
+          "project": "mnsg-recomp-example",
+          "path": "src/world/anchor_world_doll.c",
+          "line": 155,
+          "role": "called",
+          "context": "  /* The native trigger repeats forever, so every accepted contact opens a new\n   * cycle. The consumed latch is cleared so one contact cannot re-arm next\n   * frame and a new hit needs a new contact. */\n  if (doll_cycle >= 1000000u) return; /* Saturated: never publish an invalid row. */\n  ++doll_cycle;\n  DB(a,0x8d) = 100;\n  func_80038BC8_397C8(0x24f);\n  DW(a,0x68) &= ~0x80u;\n  set_phase(DOLL_OPENING);\n}\nstatic void doll_callback(void *a, void *o) {\n  int p;\n  (void)o;\n  if (!doll_enabled || !live() || a != doll_node.actor ||",
+          "contextStartLine": 149
+        },
+        {
+          "project": "mnsg-recomp-example",
+          "path": "src/world/anchor_world_doll.c",
+          "line": 198,
+          "role": "called",
+          "context": "    return;\n  }\n  {\n    unsigned int v = (pitch()-16u)&1023u;\n    if (v > 0x300u) {\n      set_pitch(0);\n      func_80038BC8_397C8(0x273);\n      set_phase(DOLL_IDLE);\n    } else set_pitch(v);\n  }\n}\nvoid anchor_world_doll_reset(int room_changed) {\n  if (!room_changed && same() && raw(doll_node.actor) == doll_callback)\n    DP(doll_node.actor,0xc) = (void *)doll_real;",
+          "contextStartLine": 192
+        },
+        {
+          "project": "mnsg-recomp-example",
+          "path": "src/world/anchor_world_gate64.c",
+          "line": 28,
+          "role": "declared",
+          "context": "extern void *D_8016DAB4_16E6B4;\nextern unsigned char D_8015C608_15D208[];\nextern void *D_80236984_5F1E54[];\nextern int func_800141C4_14DC4(unsigned int);\nextern int func_800240DC_24CDC(int);\nextern void func_80024038_24C38(int);\nextern void func_80038BC8_397C8(unsigned int);\nextern void func_80221F70_5DD440(void);\nextern void func_80221EBC_5DD38C(void);\nextern void func_80216E1C_5D22EC(void *,unsigned int);\nextern void *func_80220410_5DB8E0(void *,GateCallback,float,float,float,unsigned short);\nextern float func_80003E10_4A10(unsigned short);\nextern float func_80003EA0_4AA0(unsigned short);\n#define G64_DECLARE(f) extern void f(void *,void *);",
+          "contextStartLine": 22
+        },
+        {
+          "project": "mnsg-recomp-example",
+          "path": "src/world/anchor_world_gate64.c",
+          "line": 293,
+          "role": "called",
+          "context": "  if(!(GW(a,0x68)&1u)) return;\n  GB(a,0x8d)=30;void *contact=GP(a,0x38);if(!contact) return;\n  unsigned int type=GB(contact,0x4c);int powered=0;\n  for(unsigned int j=0;j<4;++j) {\n    unsigned int v=GW(D_8015C608_15D208,0xa4+j*4);if(v==1||v==2) powered=1;\n  }\n  func_80038BC8_397C8(0x24f);GW(a,0x68)&=~1u;\n  if(powered&&(type==0x16||type==0x17||type==0x23||type==0x24)) {\n    func_80038BC8_397C8(0x119);GS(a,0x8a)=60;gate_local_hit=1;set_phase(3);\n  } else {GS(a,0x8a)=7;set_phase(2);}\n}\nstatic void gate_callback(void *a,void *o) {\n  if(!live(0)||a!=gate_nodes[0].actor||D_800C7AB2!=WORLD_GATE64_ROOM) return;\n  int p=phase();if(!p||p==10) return;",
+          "contextStartLine": 287
+        },
+        {
+          "project": "mnsg-recomp-example",
+          "path": "src/world/anchor_world_gate64.c",
+          "line": 295,
+          "role": "called",
+          "context": "  unsigned int type=GB(contact,0x4c);int powered=0;\n  for(unsigned int j=0;j<4;++j) {\n    unsigned int v=GW(D_8015C608_15D208,0xa4+j*4);if(v==1||v==2) powered=1;\n  }\n  func_80038BC8_397C8(0x24f);GW(a,0x68)&=~1u;\n  if(powered&&(type==0x16||type==0x17||type==0x23||type==0x24)) {\n    func_80038BC8_397C8(0x119);GS(a,0x8a)=60;gate_local_hit=1;set_phase(3);\n  } else {GS(a,0x8a)=7;set_phase(2);}\n}\nstatic void gate_callback(void *a,void *o) {\n  if(!live(0)||a!=gate_nodes[0].actor||D_800C7AB2!=WORLD_GATE64_ROOM) return;\n  int p=phase();if(!p||p==10) return;\n  if(gate_suspend) return;\n  if(gate_scene) {native_call(gate_real,a,o);return;}",
+          "contextStartLine": 289
+        },
+        {
+          "project": "mnsg-recomp-example",
+          "path": "src/world/anchor_world_gate64.c",
+          "line": 336,
+          "role": "called",
+          "context": "  }\n  void *child=gate_nodes[1].actor,*co=gate_nodes[1].object;\n  if(gate_enabled&&gate_remote&&((p==5&&t>60)||(p==6&&t>48)||(p==7&&t>90))) return;\n  if(p==5) {\n    if(t>60){GS(a,0x8a)=1;set_phase(6);return;}\n    GW(a,0x60)&=~0x800000u;\n    if(t==1)func_80038BC8_397C8(0x251);\n    if(!(t&3)){GF(o,8)+=1;GF(co,8)=GF(o,8);}\n    else if((t&3)==2){GF(o,8)-=1;GF(co,8)=GF(o,8);}\n    if(t==60){func_80038BC8_397C8(0x8251);if(!gate_enabled||!gate_remote){t=0;set_phase(6);}}\n  } else if(p==6) {\n    if(t>48){GS(a,0x8a)=1;set_phase(7);return;}\n    if(t==1) {\n      if(gate_slot!=2){func_80216E1C_5D22EC(a,2);gate_slot=2;}",
+          "contextStartLine": 330
+        },
+        {
+          "project": "mnsg-recomp-example",
+          "path": "src/world/anchor_world_gate64.c",
+          "line": 339,
+          "role": "called",
+          "context": "  if(p==5) {\n    if(t>60){GS(a,0x8a)=1;set_phase(6);return;}\n    GW(a,0x60)&=~0x800000u;\n    if(t==1)func_80038BC8_397C8(0x251);\n    if(!(t&3)){GF(o,8)+=1;GF(co,8)=GF(o,8);}\n    else if((t&3)==2){GF(o,8)-=1;GF(co,8)=GF(o,8);}\n    if(t==60){func_80038BC8_397C8(0x8251);if(!gate_enabled||!gate_remote){t=0;set_phase(6);}}\n  } else if(p==6) {\n    if(t>48){GS(a,0x8a)=1;set_phase(7);return;}\n    if(t==1) {\n      if(gate_slot!=2){func_80216E1C_5D22EC(a,2);gate_slot=2;}\n      for(unsigned int j=0;j<3;++j)GF(o,0x1c+j*4)=0.15f;\n      GW(child,0x60)|=0x20u;\n      if(!gate_fx_rise){func_08000DE4_7259F4(a);gate_fx_rise=1;func_80038BC8_397C8(0x13c);}",
+          "contextStartLine": 333
+        },
+        {
+          "project": "mnsg-recomp-example",
+          "path": "src/world/anchor_world_gate64.c",
+          "line": 346,
+          "role": "called",
+          "context": "  } else if(p==6) {\n    if(t>48){GS(a,0x8a)=1;set_phase(7);return;}\n    if(t==1) {\n      if(gate_slot!=2){func_80216E1C_5D22EC(a,2);gate_slot=2;}\n      for(unsigned int j=0;j<3;++j)GF(o,0x1c+j*4)=0.15f;\n      GW(child,0x60)|=0x20u;\n      if(!gate_fx_rise){func_08000DE4_7259F4(a);gate_fx_rise=1;func_80038BC8_397C8(0x13c);}\n    }\n    GF(o,12)+=20;GF(co,12)=GF(o,12);GH(o,22)=(GH(o,22)+64)&1023;GH(co,22)=GH(o,22);\n    if(t==48&&(!gate_enabled||!gate_remote)){t=0;set_phase(7);}\n  } else if(p==7) {\n    if(t>90){GS(a,0x8a)=1;set_phase(8);return;}\n    if(t==20&&!gate_fx_split) {\n      void *fx=func_08000C18_725828(a);",
+          "contextStartLine": 340
+        },
+        {
+          "project": "mnsg-recomp-example",
+          "path": "src/world/anchor_world_gate64.c",
+          "line": 356,
+          "role": "called",
+          "context": "  } else if(p==7) {\n    if(t>90){GS(a,0x8a)=1;set_phase(8);return;}\n    if(t==20&&!gate_fx_split) {\n      void *fx=func_08000C18_725828(a);\n      if(!fx) {GS(a,0x8a)=(short)(t+1);return;}\n      void *fo=GP(fx,0x18);if(fo){GF(fo,12)-=20;GF(fo,8)-=20;}\n      gate_fx_split=1;func_80038BC8_397C8(0x13d);\n    }\n    if(t>19) {\n      float step=(t<31?3.0f:0.0f)+(t>29?2.0f:0.0f);\n      GF(o,8)+=func_80003E10_4A10(GH(o,22))*step;\n      GF(o,16)+=func_80003EA0_4AA0(GH(o,22))*step;\n      GF(co,8)-=func_80003E10_4A10(GH(co,22))*step;\n      GF(co,16)-=func_80003EA0_4AA0(GH(co,22))*step;",
+          "contextStartLine": 350
+        }
+      ],
+      "symbolSources": [
+        {
+          "project": "mnsg-custom-fish",
+          "path": "Goemon64RecompSyms/mnsg.us.syms.toml",
+          "line": 265,
+          "kind": "function",
+          "address": "0x80038BC8",
+          "size": 48,
+          "section": ".main",
+          "romAddress": "0x000397C8",
+          "context": "    { name = \"alSaveParam\", vram = 0x80050870, size = 0x34 },\n    { name = \"func_800127B8_133B8\", vram = 0x800127B8, size = 0x30 },\n    { name = \"func_80038BC8_397C8\", vram = 0x80038BC8, size = 0x30 },\n    { name = \"__osContDataCrc\", vram = 0x8004E150, size = 0xD0 },\n    { name = \"__sinf\", vram = 0x800417F0, size = 0x1C0 },",
+          "contextStartLine": 263,
+          "sha256": "ff7d8a852e902eb84511a00e2ba0dd22a9e1f17b0b9264cd5fc98ef157adb933"
+        },
+        {
+          "project": "mnsg-enable-boss-rush",
+          "path": "Goemon64RecompSyms/mnsg.us.syms.toml",
+          "line": 265,
+          "kind": "function",
+          "address": "0x80038BC8",
+          "size": 48,
+          "section": ".main",
+          "romAddress": "0x000397C8",
+          "context": "    { name = \"alSaveParam\", vram = 0x80050870, size = 0x34 },\n    { name = \"func_800127B8_133B8\", vram = 0x800127B8, size = 0x30 },\n    { name = \"func_80038BC8_397C8\", vram = 0x80038BC8, size = 0x30 },\n    { name = \"__osContDataCrc\", vram = 0x8004E150, size = 0xD0 },\n    { name = \"__sinf\", vram = 0x800417F0, size = 0x1C0 },",
+          "contextStartLine": 263,
+          "sha256": "ff7d8a852e902eb84511a00e2ba0dd22a9e1f17b0b9264cd5fc98ef157adb933"
+        },
+        {
+          "project": "mnsg-extra-options",
+          "path": "Goemon64RecompSyms/mnsg.us.syms.toml",
+          "line": 265,
+          "kind": "function",
+          "address": "0x80038BC8",
+          "size": 48,
+          "section": ".main",
+          "romAddress": "0x000397C8",
+          "context": "    { name = \"alSaveParam\", vram = 0x80050870, size = 0x34 },\n    { name = \"func_800127B8_133B8\", vram = 0x800127B8, size = 0x30 },\n    { name = \"func_80038BC8_397C8\", vram = 0x80038BC8, size = 0x30 },\n    { name = \"__osContDataCrc\", vram = 0x8004E150, size = 0xD0 },\n    { name = \"__sinf\", vram = 0x800417F0, size = 0x1C0 },",
+          "contextStartLine": 263,
+          "sha256": "ff7d8a852e902eb84511a00e2ba0dd22a9e1f17b0b9264cd5fc98ef157adb933"
+        },
+        {
+          "project": "mnsg-recomp-example",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 265,
+          "kind": "function",
+          "address": "0x80038BC8",
+          "size": 48,
+          "section": ".main",
+          "romAddress": "0x000397C8",
+          "context": "    { name = \"alSaveParam\", vram = 0x80050870, size = 0x34 },\n    { name = \"func_800127B8_133B8\", vram = 0x800127B8, size = 0x30 },\n    { name = \"func_80038BC8_397C8\", vram = 0x80038BC8, size = 0x30 },\n    { name = \"__osContDataCrc\", vram = 0x8004E150, size = 0xD0 },\n    { name = \"__sinf\", vram = 0x800417F0, size = 0x1C0 },",
+          "contextStartLine": 263,
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        },
+        {
+          "project": "mnsg-team-up",
+          "path": "Goemon64RecompSyms/mnsg.us.syms.toml",
+          "line": 265,
+          "kind": "function",
+          "address": "0x80038BC8",
+          "size": 48,
+          "section": ".main",
+          "romAddress": "0x000397C8",
+          "context": "    { name = \"alSaveParam\", vram = 0x80050870, size = 0x34 },\n    { name = \"func_800127B8_133B8\", vram = 0x800127B8, size = 0x30 },\n    { name = \"func_80038BC8_397C8\", vram = 0x80038BC8, size = 0x30 },\n    { name = \"__osContDataCrc\", vram = 0x8004E150, size = 0xD0 },\n    { name = \"__sinf\", vram = 0x800417F0, size = 0x1C0 },",
+          "contextStartLine": 263,
+          "sha256": "ff7d8a852e902eb84511a00e2ba0dd22a9e1f17b0b9264cd5fc98ef157adb933"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x80038BC8",
+          "size": 48,
+          "section": ".main",
+          "romAddress": "0x000397C8"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": [
+        "extern void func_80038BC8_397C8(unsigned int);",
+        "extern void func_80038BC8_397C8(unsigned short);"
+      ],
+      "declarationReviewRequired": true
+    },
+    {
       "name": "func_8003CFD0_3DBD0",
       "kind": "function",
       "address": "0x8003CFD0",
@@ -37439,6 +37781,110 @@
       "declarationReviewRequired": true
     },
     {
+      "name": "func_80218C28_5D40F8",
+      "kind": "function",
+      "address": "0x80218C28",
+      "size": 340,
+      "section": ".file_12",
+      "romAddress": "0x005D40F8",
+      "projects": [
+        "mnsg-recomp-example"
+      ],
+      "roles": [
+        "hook"
+      ],
+      "declarations": [],
+      "references": [
+        {
+          "project": "mnsg-recomp-example",
+          "path": "src/world/anchor_minigame_ebisumaru.c",
+          "line": 573,
+          "role": "hook",
+          "context": "/* Register births before their first scheduler slot. Entity fields are still\n * inherited at this hook, and are refreshed by the verified initializer hook. */\nRECOMP_HOOK(\"func_80218C28_5D40F8\")\nvoid anchor_minigame_ebi_child(void *parent,void *child)\n{\n    int kind;\n    EbiActor *a,*p=raw_find(parent);\n    int initializing=p && !p->initialized && parent==D_8016DAB4_16E6B4 &&\n                     EBI_PTR(parent,0x18)==p->object;\n    if(!live(&s_root) || (!find(parent) && !initializing && parent!=s_root.task) ||\n       !pointer_valid(child) || !pointer_valid(EBI_PTR(child,0x18))) return;\n    kind=classify_child(child);if(!kind) return;\n    a=record(child,kind);if(!a) return;\n    if(s_birth_row) {\n        a->id=(unsigned int)s_birth_row[ER_ID];a->generation=(unsigned int)s_birth_row[ER_GENERATION];\n        a->proxy=1;\n    }\n}",
+          "contextStartLine": 571
+        }
+      ],
+      "symbolSources": [
+        {
+          "project": "mnsg-custom-fish",
+          "path": "Goemon64RecompSyms/mnsg.us.syms.toml",
+          "line": 2876,
+          "kind": "function",
+          "address": "0x80218C28",
+          "size": 340,
+          "section": ".file_12",
+          "romAddress": "0x005D40F8",
+          "context": "    { name = \"func_80210948_5CBE18\", vram = 0x80210948, size = 0x24 },\n    { name = \"func_8021018C_5CB65C\", vram = 0x8021018C, size = 0x24 },\n    { name = \"func_80218C28_5D40F8\", vram = 0x80218C28, size = 0x154 },\n    { name = \"func_8020EC74_5CA144\", vram = 0x8020EC74, size = 0x24 },\n    { name = \"func_80213F14_5CF3E4\", vram = 0x80213F14, size = 0xC },",
+          "contextStartLine": 2874,
+          "sha256": "ff7d8a852e902eb84511a00e2ba0dd22a9e1f17b0b9264cd5fc98ef157adb933"
+        },
+        {
+          "project": "mnsg-enable-boss-rush",
+          "path": "Goemon64RecompSyms/mnsg.us.syms.toml",
+          "line": 2876,
+          "kind": "function",
+          "address": "0x80218C28",
+          "size": 340,
+          "section": ".file_12",
+          "romAddress": "0x005D40F8",
+          "context": "    { name = \"func_80210948_5CBE18\", vram = 0x80210948, size = 0x24 },\n    { name = \"func_8021018C_5CB65C\", vram = 0x8021018C, size = 0x24 },\n    { name = \"func_80218C28_5D40F8\", vram = 0x80218C28, size = 0x154 },\n    { name = \"func_8020EC74_5CA144\", vram = 0x8020EC74, size = 0x24 },\n    { name = \"func_80213F14_5CF3E4\", vram = 0x80213F14, size = 0xC },",
+          "contextStartLine": 2874,
+          "sha256": "ff7d8a852e902eb84511a00e2ba0dd22a9e1f17b0b9264cd5fc98ef157adb933"
+        },
+        {
+          "project": "mnsg-extra-options",
+          "path": "Goemon64RecompSyms/mnsg.us.syms.toml",
+          "line": 2876,
+          "kind": "function",
+          "address": "0x80218C28",
+          "size": 340,
+          "section": ".file_12",
+          "romAddress": "0x005D40F8",
+          "context": "    { name = \"func_80210948_5CBE18\", vram = 0x80210948, size = 0x24 },\n    { name = \"func_8021018C_5CB65C\", vram = 0x8021018C, size = 0x24 },\n    { name = \"func_80218C28_5D40F8\", vram = 0x80218C28, size = 0x154 },\n    { name = \"func_8020EC74_5CA144\", vram = 0x8020EC74, size = 0x24 },\n    { name = \"func_80213F14_5CF3E4\", vram = 0x80213F14, size = 0xC },",
+          "contextStartLine": 2874,
+          "sha256": "ff7d8a852e902eb84511a00e2ba0dd22a9e1f17b0b9264cd5fc98ef157adb933"
+        },
+        {
+          "project": "mnsg-recomp-example",
+          "path": "Goemon64RecompSyms/mnsg.syms.toml",
+          "line": 2876,
+          "kind": "function",
+          "address": "0x80218C28",
+          "size": 340,
+          "section": ".file_12",
+          "romAddress": "0x005D40F8",
+          "context": "    { name = \"func_80210948_5CBE18\", vram = 0x80210948, size = 0x24 },\n    { name = \"func_8021018C_5CB65C\", vram = 0x8021018C, size = 0x24 },\n    { name = \"func_80218C28_5D40F8\", vram = 0x80218C28, size = 0x154 },\n    { name = \"func_8020EC74_5CA144\", vram = 0x8020EC74, size = 0x24 },\n    { name = \"func_80213F14_5CF3E4\", vram = 0x80213F14, size = 0xC },",
+          "contextStartLine": 2874,
+          "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+        },
+        {
+          "project": "mnsg-team-up",
+          "path": "Goemon64RecompSyms/mnsg.us.syms.toml",
+          "line": 2876,
+          "kind": "function",
+          "address": "0x80218C28",
+          "size": 340,
+          "section": ".file_12",
+          "romAddress": "0x005D40F8",
+          "context": "    { name = \"func_80210948_5CBE18\", vram = 0x80210948, size = 0x24 },\n    { name = \"func_8021018C_5CB65C\", vram = 0x8021018C, size = 0x24 },\n    { name = \"func_80218C28_5D40F8\", vram = 0x80218C28, size = 0x154 },\n    { name = \"func_8020EC74_5CA144\", vram = 0x8020EC74, size = 0x24 },\n    { name = \"func_80213F14_5CF3E4\", vram = 0x80213F14, size = 0xC },",
+          "contextStartLine": 2874,
+          "sha256": "ff7d8a852e902eb84511a00e2ba0dd22a9e1f17b0b9264cd5fc98ef157adb933"
+        }
+      ],
+      "aliases": [],
+      "variants": [
+        {
+          "kind": "function",
+          "address": "0x80218C28",
+          "size": 340,
+          "section": ".file_12",
+          "romAddress": "0x005D40F8"
+        }
+      ],
+      "conflicts": [],
+      "declarationVariants": []
+    },
+    {
       "name": "func_80218DA8_5D4278",
       "kind": "function",
       "address": "0x80218DA8",
@@ -38911,7 +39357,7 @@
     }
   ],
   "audit": {
-    "sourceFileCount": 76,
+    "sourceFileCount": 80,
     "tableEntryCounts": {
       "mnsg-custom-fish": 28853,
       "mnsg-enable-boss-rush": 28853,
@@ -38920,10 +39366,10 @@
       "mnsg-team-up": 28853
     },
     "tableSymbolCount": 28866,
-    "documentedSymbolCount": 269,
-    "functionCount": 206,
+    "documentedSymbolCount": 272,
+    "functionCount": 209,
     "variableCount": 63,
-    "referenceCount": 1145,
+    "referenceCount": 1160,
     "macroHookReferenceCount": 6,
     "unresolvedSymbols": [],
     "unresolvedHooks": [],
@@ -39052,6 +39498,14 @@
           "extern void func_80218A54_5D3F24(int actor, RaceEnemyActorInstance *instance);"
         ],
         "reason": "Mod-side declarations differ; review parameter names, typedef aliases and ABI assumptions before reuse."
+      },
+      {
+        "name": "func_80038BC8_397C8",
+        "variants": [
+          "extern void func_80038BC8_397C8(unsigned int);",
+          "extern void func_80038BC8_397C8(unsigned short);"
+        ],
+        "reason": "Native wrapper masks a0 to unsigned 16 bits. The scenario helper passes the low unsigned halfword; source unsigned-int declarations are recorded as wider local assumptions. Public declaration uses verified native width. See value-evidence-minigame-runtime.json."
       }
     ],
     "excludedSDKHeaders": [
@@ -39089,7 +39543,9 @@
       "2026-09-19 scoped spike-floor refresh adds only func_08000980_6ACED0 and its exact src/anchor_world.c snapshot. The preview has 1097 symbols across 190 source files: 840 additions and two historical removals relative to the prior source inventory. Unrelated additions and historical removals are not adopted. All prior symbol records and source snapshots remain retained; detailed native and preview evidence is in value-evidence-world-actors.json.",
       "2026-09-19 scoped File24 rope refresh adds only func_0800074C_6ACC9C, refreshes the previously reviewed spike callback references, and replaces their shared exact src/anchor_world.c snapshot. The full preview has 1098 symbols across190 files, no unresolved symbols/hooks, table gaps or metadata conflicts. Unrelated additions and two previously retained historical removals are not adopted; existing unrelated records/snapshots remain intact.",
       "2026-09-19 scoped File40 mechanisms and File30 equipment refresh: eight verified native symbols, exact four changed-source snapshots and matching known-symbol references. Full preview1106 symbols/191 files has no unresolved symbols/hooks, table gaps or metadata conflicts. Unrelated preview additions and previously retained historical removals remain outside this refresh.",
-      "2026-09-25 scoped native message-window text refresh adds four verified glyph/effect helpers and the exact src/ui/anchor_freeze_prompt.c source snapshot. The full workspace preview contained unrelated sibling-project changes and was not adopted."
+      "2026-09-25 scoped native message-window text refresh adds four verified glyph/effect helpers and the exact src/ui/anchor_freeze_prompt.c source snapshot. The full workspace preview contained unrelated sibling-project changes and was not adopted.",
+      "2026-10-04 scoped Sasuke audio refresh adds only func_80038BC8_397C8 and its three participating source snapshots. The full current-workspace scan contains 1308 symbols, including 1039 additions and four historical removals relative to the base inventory; unrelated changes were not adopted. Existing native extension inventories and all prior records are preserved.",
+      "2026-10-04 scoped Ebisumaru birth-hook refresh adds only func_80014840_15440 and func_80218C28_5D40F8 with the participating src/world/anchor_minigame_ebisumaru.c snapshot. Full preview1308 symbols versus base274 includes1038 unrelated additions/four historical removals; none of those other changes are adopted. Native pointer/u32 resolver ABI and parent/child inheritance ABI are verified separately from lexical hook references."
     ]
   }
 }

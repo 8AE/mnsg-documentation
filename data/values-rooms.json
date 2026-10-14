@@ -4,7 +4,7 @@
       {
         "id": "known-room-ids",
         "title": "Known room IDs",
-        "description": "203 known native room/scene IDs. Read each value as the complete unsigned 16-bit room ID; hexadecimal and decimal columns represent the same value. Repeated area names refer to distinct rooms. Some IDs are identified only to their area, and unknown IDs are omitted rather than assigned guessed names. Congo battle room 0x0016 is distinct from its preceding approach room 0x001A.",
+        "description": "208 known native room/scene IDs. Read each value as the complete unsigned 16-bit room ID; hexadecimal and decimal columns represent the same value. Repeated area names refer to distinct rooms. Some IDs are identified only to their area, and unknown IDs are omitted rather than assigned guessed names. Congo battle room 0x0016 is distinct from its preceding approach room 0x001A.",
         "columns": [
           "Raw value (hex)",
           "Raw value (decimal)",
@@ -802,6 +802,11 @@
             "Koryuta's flight — airborne Control Machine encounter"
           ],
           [
+            "`0x0157`",
+            "`343`",
+            "Mermaid Waterfall (marked unused)"
+          ],
+          [
             "`0x015E`",
             "`350`",
             "Oedo Town Super Pass Bridge"
@@ -992,6 +997,11 @@
             "Oedo Tourist Center — Awaji Island branch"
           ],
           [
+            "`0x01D0`",
+            "`464`",
+            "Sasuke Jetpack Training"
+          ],
+          [
             "`0x01D1`",
             "`465`",
             "Goemon's House"
@@ -1004,12 +1014,17 @@
           [
             "`0x01E0`",
             "`480`",
-            "Oedo Town (specific room name unknown)"
+            "Goemon Impact Minigame"
+          ],
+          [
+            "`0x01E1`",
+            "`481`",
+            "Ebisumaru Sweets Minigame"
           ],
           [
             "`0x01E2`",
             "`482`",
-            "Jump Challenge Training"
+            "Sasuke High Jump Minigame"
           ],
           [
             "`0x0226`",
@@ -1075,20 +1090,20 @@
             "`3`",
             "`0x06`",
             "`s16`",
-            "Default camera rotation"
+            "Default base player heading"
           ],
           [
             "`4`",
             "`0x08`",
             "`s16`",
-            "Default player rotation"
+            "Default packed camera-start parameter"
           ]
         ]
       },
       {
         "id": "room-start-index-examples",
         "title": "Room ID to table index examples",
-        "description": "The raw room ID is the entry index. Array short indices and byte offsets are derived from it and must not be passed to APIs expecting a room ID. This table does not assert native spawn coordinates or rotations.",
+        "description": "The raw room ID is the entry index. Array short indices and byte offsets are derived from it and must not be passed to APIs expecting a room ID. This table does not assert native spawn coordinates or arrival fields.",
         "columns": [
           "Room ID (hex)",
           "Room ID (decimal)",
@@ -1137,7 +1152,7 @@
       {
         "id": "congo-default-transform",
         "title": "Congo default start transform",
-        "description": "US executable values for room 0x0016 (22), Oedo Castle Congo battle. Its five signed 16-bit fields begin at table short index 110, byte offset 0x00DC. Coordinates and rotations are stored values, not indices or alternate room IDs.",
+        "description": "US executable values for room 0x0016 (22), Oedo Castle Congo battle. Its five signed 16-bit fields begin at table short index 110, byte offset 0x00DC. Coordinates, base heading and packed camera-start parameter are stored values, not indices or alternate room IDs.",
         "columns": [
           "Field",
           "Stored signed value (decimal)"
@@ -1156,11 +1171,11 @@
             "`171`"
           ],
           [
-            "Camera rotation",
+            "Base player heading",
             "`512`"
           ],
           [
-            "Player rotation",
+            "Packed camera-start parameter",
             "`16`"
           ]
         ]
@@ -1187,11 +1202,11 @@
             "`-99`"
           ],
           [
-            "Camera rotation",
+            "Base player heading",
             "`768`"
           ],
           [
-            "Player rotation",
+            "Packed camera-start parameter",
             "`16`"
           ]
         ]
@@ -1218,11 +1233,11 @@
             "`318`"
           ],
           [
-            "Camera rotation",
+            "Base player heading",
             "`512`"
           ],
           [
-            "Player rotation",
+            "Packed camera-start parameter",
             "`16`"
           ]
         ]
@@ -1249,11 +1264,11 @@
             "`131`"
           ],
           [
-            "Camera rotation",
+            "Base player heading",
             "`0`"
           ],
           [
-            "Player rotation",
+            "Packed camera-start parameter",
             "`16`"
           ]
         ]

@@ -1,0 +1,1116 @@
+{
+  "scope": "Internal evidence for minigame controllers, private HUD layouts, child actor creation, scalar initialization and native room-history returns. Not copied into the website.",
+  "analysisDate": "2026-10-03",
+  "analysisTools": [
+    "Ghidra",
+    "LLVM MIPS disassembly"
+  ],
+  "sourceSnapshot": {
+    "documentationBaseCommit": "ff87357fb868ead0ec37ee81048b796e8e2ae136",
+    "implementationBaseCommit": "08e54c28eb98d6974e9fb2b7b464a41ca7d9ff64",
+    "workingTreeIsDirty": true,
+    "symbolTablePath": "/Users/ahmad/git/mnsg-recomp-example/Goemon64RecompSyms/mnsg.syms.toml",
+    "symbolTableSHA256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77",
+    "decompressedRomPath": "/Users/ahmad/git/Goemon64Recomp/mnsg.us.decompressed.z64",
+    "decompressedRomSHA256": "e40bee20508c2e29e651dca4e47504e40f908f0a2186e34a582784bf5a64be4c",
+    "sections": [
+      {
+        "section": ".file_11",
+        "romBase": "0x587370",
+        "sizeBytes": 267264,
+        "decompressedRangeSHA256": "d5ad065ecf55538bf64e971fed1906d41f15eac02a57727187546d580e61ade7"
+      },
+      {
+        "section": ".file_12",
+        "romBase": "0x5c8770",
+        "sizeBytes": 188624,
+        "decompressedRangeSHA256": "1fe5547a5899a34c0cb94c3ca56576d88509c4cff9f7682202627e0df0eddc4e"
+      },
+      {
+        "section": ".file_42",
+        "romBase": "0x6f0210",
+        "sizeBytes": 13008,
+        "decompressedRangeSHA256": "68f02891e2083c38466d07fe823ca1c947277c4ac339345e77fc670d61197145"
+      },
+      {
+        "section": ".file_47",
+        "romBase": "0x705df0",
+        "sizeBytes": 7248,
+        "decompressedRangeSHA256": "d5fa391a721f5ad26493f755f34c4df098b9d697e61e2e14e1888eb8a5a74328"
+      },
+      {
+        "section": ".file_48",
+        "romBase": "0x707a40",
+        "sizeBytes": 9728,
+        "decompressedRangeSHA256": "ffafc837b759129a06d7fab0aacfb902274b6c55f9125fb1ad66dc5ce730da25"
+      }
+    ]
+  },
+  "functions": [
+    {
+      "name": "func_80217360_5D2830",
+      "program": "world_file_12_common.elf",
+      "address": "0x80217360",
+      "romAddress": "0x005D2830",
+      "sizeBytes": 504,
+      "normalizedOpcodeHash": "86900619857f2372ccf07728cc66f053987325179407803a76c17ec7bcaed93f",
+      "confidence": "decompiled",
+      "observed": "Owner task a0, entity u16 a1, group u8 a2; selects native owner list; allocates callback/model indexed by entity; owner object transform or zero; scale0.1; copies owner context; writes entity5C/5E; increments shared count only on success."
+    },
+    {
+      "name": "func_80217144_5D2614",
+      "program": "world_file_12_common.elf",
+      "address": "0x80217144",
+      "romAddress": "0x005D2614",
+      "sizeBytes": 100,
+      "normalizedOpcodeHash": "a7c9f71e3cdc28de073a7df20677747957f67846d8bdf260de097c6f6436f692",
+      "confidence": "decompiled",
+      "observed": "a0 task void return; stores fixed scalar image. Word38 cleared, byte4C=1 is attack kind, halfword4E=2 is shape radius scalar; identity semantics of word38 on Goemon cube hits remain unproved."
+    },
+    {
+      "name": "func_801FA6E4_5B65F4",
+      "program": "mnsg_player_file_11.elf",
+      "address": "0x801FA6E4",
+      "romAddress": "0x005B65F4",
+      "sizeBytes": 204,
+      "normalizedOpcodeHash": "5d3980378fcaa16c991191b325798fd349b4d2588a4116848a1c1f62525f75cf",
+      "confidence": "decompiled",
+      "observed": "a0 low byte marker selector; history room3ADFC to pending3AFE0, XYZ3AFF8/A/C to3AFE4/6/8 and saved orientation halfword3AFFE to pendingcamera slot3AFEA; marker3AE29=4 nonzero or1 zero. Does notwrite pendingplayerrot3AFE2; originalmeaning of saved3AFFE notproved bycopybody."
+    },
+    {
+      "name": "func_80219CA0_5D5170",
+      "program": "world_file_12_common.elf",
+      "address": "0x80219CA0",
+      "confidence": "decompiled",
+      "observed": "Native existing decompilation uses cap<count rejection for global and category guards. Equality passes only this selection routine. A cap60 therefore is not itself proof of exactly60 maximum successful tasks. Direct visual tasks use a separate allocation route."
+    },
+    {
+      "name": "func_08000AD4_7068C4",
+      "section": ".file_47",
+      "address": "0x08000AD4",
+      "romAddress": "0x007068C4",
+      "sizeBytes": 4020,
+      "symbolTableLine": 11546,
+      "confidence": "decompiled-and-disassembled",
+      "observed": "Root entity1B2 callback(task,object). PhaseD0; cameraD1, warningD2, framesD4u16, repeatD6u16, previnputD8u16; local displayDC/E0 and HUDtaskE4. Native phase0 creates17 collision platforms; only full initialization reaches phase1; failure phase4 inert. Scenario179 starts frame6. Resume phase1 to2 only after graph init and func8003F1D8 VM inactive."
+    },
+    {
+      "name": "func_080006F8_7064E8",
+      "section": ".file_47",
+      "address": "0x080006F8",
+      "romAddress": "0x007064E8",
+      "sizeBytes": 576,
+      "symbolTableLine": 11547,
+      "confidence": "decompiled-and-disassembled",
+      "observed": "Orbit callback(task,obj): phase0 initializes/binds native collision; phase1 pose/visibility only. Task D2s16 yaw offset,D4s16 period,D6s16 tick,D8f32 radius30.0,DCf32 baselineY,E0f32 amplitude20.0. First4 orbit slots0/1/2/3 period360; later5 orbit slots9/11/13/15/16 period240; object XYZ8/C/10f32,yaw16halfword.",
+      "layoutCorrection": {
+        "previousClaim": "Public page grouped +0xD8 radius with halfwords and presented period360 as universal.",
+        "verifiedCorrection": "Radius+0xD8 is IEEE754 float32, with baselineY+0xDC and amplitude+0xE0 also float32. Period+0xD4 and tick+0xD6 are signed16. Period is360 for the firstfour native orbit slots and240 for the laterfive.",
+        "confidence": "raw-rom-disassembly-verified",
+        "researchReason": "Bounded Sasuke platform initialization/period investigation; no claim of fresh gameplay verification."
+      },
+      "constructorEvidence": {
+        "name": "func_08000938_706728",
+        "nativeAddress": "0x08000938",
+        "romAddress": "0x00706728",
+        "section": ".file_47",
+        "romBase": "0x00705DF0",
+        "stores": [
+          {
+            "address": "0x08000940",
+            "field": "task+0xD2",
+            "type": "s16",
+            "source": "a2 yaw offset"
+          },
+          {
+            "address": "0x08000944",
+            "field": "task+0xDC",
+            "type": "f32",
+            "source": "a1 baseline Y bit pattern"
+          },
+          {
+            "address": "0x08000948",
+            "operation": "Load float period from caller stack+0x14"
+          },
+          {
+            "addresses": [
+              "0x08000950",
+              "0x08000958",
+              "0x08000960"
+            ],
+            "field": "task+0xD4",
+            "type": "s16",
+            "operation": "Truncate floating period and store signed halfword"
+          },
+          {
+            "address": "0x08000954",
+            "field": "task+0xD8",
+            "type": "f32",
+            "source": "a3 radius bit pattern; observed0x41F00000=30.0"
+          },
+          {
+            "addresses": [
+              "0x08000964",
+              "0x08000968"
+            ],
+            "field": "task+0xE0",
+            "type": "f32",
+            "source": "caller stack+0x10 amplitude; observed0x41A00000=20.0"
+          },
+          {
+            "addresses": [
+              "0x0800096C",
+              "0x08000970",
+              "0x08000974",
+              "0x0800097C"
+            ],
+            "field": "task+0xD6",
+            "type": "s16",
+            "operation": "Truncate float tick from caller stack+0x18 and store signed halfword"
+          }
+        ]
+      },
+      "periodCallSites": [
+        {
+          "slot": 0,
+          "callAddress": "0x08000E50",
+          "callRomAddress": "0x00706C40",
+          "period": 360,
+          "floatBits": "0x43B40000",
+          "luiAddress": "0x08000E1C",
+          "stack14StoreAddress": "0x08000E4C"
+        },
+        {
+          "slot": 1,
+          "callAddress": "0x08000EBC",
+          "callRomAddress": "0x00706CAC",
+          "period": 360,
+          "floatBits": "0x43B40000",
+          "luiAddress": "0x08000E8C",
+          "stack14StoreAddress": "0x08000EB8"
+        },
+        {
+          "slot": 2,
+          "callAddress": "0x08000F24",
+          "callRomAddress": "0x00706D14",
+          "period": 360,
+          "floatBits": "0x43B40000",
+          "luiAddress": "0x08000EFC",
+          "stack14StoreAddress": "0x08000F20"
+        },
+        {
+          "slot": 3,
+          "callAddress": "0x08000F8C",
+          "callRomAddress": "0x00706D7C",
+          "period": 360,
+          "floatBits": "0x43B40000",
+          "luiAddress": "0x08000F64",
+          "stack14StoreAddress": "0x08000F88"
+        },
+        {
+          "slot": 9,
+          "callAddress": "0x08001174",
+          "callRomAddress": "0x00706F64",
+          "period": 240,
+          "floatBits": "0x43700000",
+          "luiAddress": "0x0800114C",
+          "stack14StoreAddress": "0x08001170"
+        },
+        {
+          "slot": 11,
+          "callAddress": "0x0800122C",
+          "callRomAddress": "0x0070701C",
+          "period": 240,
+          "floatBits": "0x43700000",
+          "luiAddress": "0x08001200",
+          "stack14StoreAddress": "0x08001228"
+        },
+        {
+          "slot": 13,
+          "callAddress": "0x080012DC",
+          "callRomAddress": "0x007070CC",
+          "period": 240,
+          "floatBits": "0x43700000",
+          "luiAddress": "0x080012B4",
+          "stack14StoreAddress": "0x080012D8"
+        },
+        {
+          "slot": 15,
+          "callAddress": "0x08001394",
+          "callRomAddress": "0x00707184",
+          "period": 240,
+          "floatBits": "0x43700000",
+          "luiAddress": "0x08001368",
+          "stack14StoreAddress": "0x08001390"
+        },
+        {
+          "slot": 16,
+          "callAddress": "0x08001400",
+          "callRomAddress": "0x007071F0",
+          "period": 240,
+          "floatBits": "0x43700000",
+          "luiAddress": "0x080013D0",
+          "stack14StoreAddress": "0x080013FC"
+        }
+      ]
+    },
+    {
+      "name": "func_08000980_706770",
+      "section": ".file_47",
+      "address": "0x08000980",
+      "romAddress": "0x00706770",
+      "sizeBytes": 300,
+      "symbolTableLine": 11545,
+      "confidence": "decompiled-and-disassembled",
+      "observed": "Spin callback(task,obj):phase0 initializes/binds native collision;phase1 pose/visibility only;D2s16rate +/-2,D4f32Y;obj XYZ8/C/10,yaw16."
+    },
+    {
+      "name": "func_080002B4_7060A4",
+      "section": ".file_47",
+      "address": "0x080002B4",
+      "romAddress": "0x007060A4",
+      "sizeBytes": 244,
+      "symbolTableLine": 11541,
+      "confidence": "decompiled-and-disassembled",
+      "observed": "Private sprite data starts5C, UI coords64/68, textbuffer78,sprite7C,timer80raw3960/40. Draw then saturating decrement; world entity status/generation68/74 is inapplicable."
+    },
+    {
+      "name": "func_080023A4_709DE4",
+      "kind": "function",
+      "address": "0x080023A4",
+      "romAddress": "0x00709DE4",
+      "section": ".file_48",
+      "size": 120,
+      "confidence": "native-disassembly-reviewed",
+      "source": "ghidra_decompiler bounded raw ROM disassembly handoff",
+      "observed": [
+        "Allocates a zeroed 60-byte work area and stores its pointer in task word +0xD0.",
+        "Installs func_080018E8_709328 as the task update callback. The object argument is preserved by the calling convention but unused by this initializer."
+      ],
+      "uncertainty": [
+        "Task +0xD0 is a work pointer for this controller. The target callback in the same challenge uses inline data beginning at +0xD0.",
+        "Use the native constructor and scheduler lifecycle; rerunning this initializer is not established as a reset operation."
+      ]
+    },
+    {
+      "name": "func_080018E8_709328",
+      "kind": "function",
+      "address": "0x080018E8",
+      "romAddress": "0x00709328",
+      "section": ".file_48",
+      "size": 2748,
+      "confidence": "native-disassembly-reviewed",
+      "source": "ghidra_decompiler bounded raw ROM disassembly handoff",
+      "observed": [
+        "Task word +0xD0 points to its 60-byte work area. Work byte +0x00 is the phase, halfword +0x02 is yaw modulo 1024, signed halfword +0x04 is the phase frame, halfword +0x06 is the held-button repeat count, and word +0x08 is the previous held-button mask.",
+        "Work words +0x0C and +0x10 are native visual pointers; +0x14 is the timer HUD task pointer. Six target task pointers occupy +0x18 through +0x2C; three throwable task pointers occupy +0x30 through +0x38.",
+        "Phase 0 performs setup. Phase 3 starts introduction scenario 0x0173. Phase 4 waits for the instruction VM to be idle, then constructs the timer and six targets.",
+        "Phases 1 and 2 implement local carrying/aiming and throwing. The timer starts at 100 seconds, represented by 3000 native frames. Timer zero selects timeout phase 5; all six target completion bytes equal to 1 select success phase 6. Phase 7 handles exit."
+      ],
+      "uncertainty": [
+        "Pointers and carry/throw state belong to this native controller graph. Preserve native child initialization and cleanup.",
+        "The target hit bit is observed, but attribution of a specific cube through task +0x38 has not been established."
+      ]
+    },
+    {
+      "name": "func_0800127C_708CBC",
+      "kind": "function",
+      "address": "0x0800127C",
+      "romAddress": "0x00708CBC",
+      "section": ".file_48",
+      "size": 1496,
+      "confidence": "native-disassembly-reviewed",
+      "source": "ghidra_decompiler bounded raw ROM disassembly handoff",
+      "observed": [
+        "This callback stores inline target work beginning at task +0xD0. It does not dereference task +0xD0 as a heap-work pointer.",
+        "The inline work begins with a phase byte at +0x00 and a signed completion byte at +0x01. The controller checks each completion byte for value 1.",
+        "Reads task word +0x68 bit 0x80 as native hit status and advances the target lifecycle."
+      ],
+      "uncertainty": [
+        "The hit-status bit does not establish the identity of the attacking cube. Task +0x38 must not be documented as that cube pointer without additional collision-path evidence.",
+        "Use this target layout only for the matching callback; the challenge controller uses a heap pointer at the same task offset."
+      ]
+    },
+    {
+      "name": "func_080007A4_7081E4",
+      "kind": "function",
+      "address": "0x080007A4",
+      "romAddress": "0x007081E4",
+      "section": ".file_48",
+      "size": 32,
+      "confidence": "native-disassembly-reviewed",
+      "source": "ghidra_decompiler bounded raw ROM disassembly handoff",
+      "observed": [
+        "Reads signed task word +0x84 and divides it by 30 to obtain the displayed seconds value."
+      ],
+      "uncertainty": [
+        "This read does not advance the counter.",
+        "The timer task must remain valid; a saved task pointer is not valid after native cleanup."
+      ]
+    },
+    {
+      "name": "func_08000790_7081D0",
+      "kind": "function",
+      "address": "0x08000790",
+      "romAddress": "0x007081D0",
+      "section": ".file_48",
+      "size": 20,
+      "confidence": "native-disassembly-reviewed",
+      "source": "ghidra_decompiler bounded raw ROM disassembly handoff",
+      "observed": [
+        "Writes signed task word +0x84 as seconds multiplied by 30. The observed value 100 produces 3000 native frames."
+      ],
+      "uncertainty": [
+        "This writes timer data only. It does not allocate the HUD or run its draw callback.",
+        "Negative or overflowing durations have no established supported contract."
+      ]
+    },
+    {
+      "name": "func_080005D0_708010",
+      "kind": "function",
+      "address": "0x080005D0",
+      "romAddress": "0x00708010",
+      "section": ".file_48",
+      "size": 328,
+      "confidence": "native-disassembly-reviewed",
+      "source": "ghidra_decompiler bounded raw ROM disassembly handoff",
+      "observed": [
+        "Draws the local timer using its native HUD resources.",
+        "Decrements signed task word +0x84 once per native frame and clamps a negative result to zero. The counter uses thirty ticks per second; the controller initializes 3000 for 100 seconds."
+      ],
+      "timerOrderingCorrection": {
+        "confidence": "original-rom-compared-and-disassembled",
+        "finding": "Signed task84/30 passed to native two-digit formatter before decrement/clamp. Initial3000 passes numeric100, then leaves2999; next callback passes99. Do not claim the two-digit HUD visibly shows100.",
+        "nativeStartCall": {
+          "controller": "func_080018E8_709328",
+          "callAddress": "0x08001BF0",
+          "delaySlotAddress": "0x08001BF4",
+          "delaySlotOperation": "li a1,0x64",
+          "callee": "func_08000790_7081D0",
+          "arithmetic": "(seconds<<4)-seconds, then<<1; storetask+0x84 = seconds*30"
+        },
+        "originalRomComparison": {
+          "fileNumber": 48,
+          "zeroBasedFileTableIndex": 47,
+          "fileTableAddress": "0x00057FD8",
+          "compressedStart": "0x0069AB34",
+          "compressedEnd": "0x0069C68A",
+          "decoder": "LZKN64",
+          "decodedSizeBytes": 9728,
+          "decodedCRC32": "BE401DF8",
+          "decodedSHA256": "ffafc837b759129a06d7fab0aacfb902274b6c55f9125fb1ad66dc5ce730da25",
+          "recompRomStart": "0x00707A40",
+          "comparison": "Byte-identical decoded original File48 and recomp File48.",
+          "sourcePath": "/Users/ahmad/git/mnsg-recomp-example/mnsg/config/usa/baserom.z64",
+          "sourceHeader": "37804012",
+          "normalization": "Adjacent byte pairs swapped to big endian before file-table extraction.",
+          "decoderRuntimePath": "/Users/ahmad/git/Goemon64Recomp/lib/mnsg/.venv/bin/python",
+          "decoderModule": "lzkn64",
+          "decodedArtifactPath": "/private/tmp/goemon_timer_original_47.bin",
+          "wholeRomSHA256": "not computed"
+        },
+        "durationScope": "Only observed setter cross-reference is controller08001BF0; no first/repeat duration variant established.",
+        "drawArgumentAddressRange": [
+          "0x080006B8",
+          "0x080006E8"
+        ],
+        "decrementClampAddressRange": [
+          "0x080006F0",
+          "0x08000700"
+        ],
+        "numericRenderer": {
+          "name": "func_8001110C_11D0C",
+          "address": "0x8001110C",
+          "romAddress": "0x00011D0C",
+          "modeArgument": 2,
+          "scope": "Native two-digit decimal formatting; separate from timer initialization."
+        },
+        "proofArtifactPath": "/private/tmp/minigame-goemon-timer-native-proof.md",
+        "runtimeLimit": "Static original-ROM proof only; no fresh game stopwatch or renderer timing measurement."
+      }
+    },
+    {
+      "name": "func_0800127C_708CBC",
+      "layoutCorrection": "All target offsets are relative to inline task+0xD0: phase00u8,completion01s8,frame06s16,random08/0As16,Y0Cf32,threshold14f32,visual18ptr; source decimal offsets normalized to hexadecimal.",
+      "confidence": "native-disassembly-reviewed"
+    },
+    {
+      "name": "func_08001954_6F1B64",
+      "kind": "function",
+      "address": "0x08001954",
+      "romAddress": "0x006F1B64",
+      "section": ".file_42",
+      "size": 5428,
+      "analysisProgram": "mini_ebisumaru_file42.bin",
+      "normalizedOpcodeHash": "004198084bf98a3b8dee4e38026e11b0dfa01f06b85505213979f5c9db88d4b4",
+      "analyzedBodySizeBytes": 5416,
+      "confidence": "decompiled-and-disassembled",
+      "observed": [
+        "Task words +0xD0/+0xD4/+0xD8 point to the mechanism, native camera and HUD. Byte +0xDC is the phase. Signed halfwords +0xDE/+0xE0/+0xE2 hold phase frames, the spawn clock and the random threshold.",
+        "The private HUD stores a signed timer at +0x80, sweets count at +0x84 and local player health at +0x88. The timer initializes to 99 seconds, represented by 2970 native frames at thirty ticks per second.",
+        "The root creates mechanism entity 0x01AE, whose callback creates platform entity 0x01B1. It also controls robot entity 0x00FB, sweet entity 0x01AD and bomb entity 0x01AC spawning; the robot callback resides in a different native overlay.",
+        "During phase 6 the root requests bombs at frame residues 1 and 21 modulo 40. A 120-frame pass requests six bombs; repeated phases and surviving parents can yield more than six live bombs. The bomb callback creates two native explosion children before retiring.",
+        "Phase 0 saves a 48-byte native player-statistics block. Phase 9 at tick 10 restores that block, runs the native exit cleanup and records the request for room 0x016D, XYZ (0,7,1), camera 0x0100, setup 0xA0 and option 0 through func_801FA420_5B6330."
+      ],
+      "abiConflict": {
+        "ghidraPrototype": "void FUN_08001954(double,int,int)",
+        "resolution": "FPU misprototype. Raw entry sw a0,90(sp) at+18; or s0,a1,zero at+50; lw s1,90(sp) at+5C. s1 task and s0 object establish two pointer arguments.",
+        "bodySizeNote": "Symbol table span5428 versus current analyzed body5416; inventory preserves real table span without treating the analyzed body as metadata."
+      },
+      "hudEvidence": "080008B8 writes s32 HUD80=seconds*30;080008CC returns HUD80/30;080008E4 writes HUD88 localhealth D8015C5E4-11;080008EC writes HUD84 from File42BSS32F4u8 sweets.",
+      "statisticsEvidence": "Phase0 copy08001AC8..1AEC saves30hex bytes8015C5D8→8015C66C;phase9 tick10 copy08002C1C..2C50 restores;exit call08002C64..2C90 follows80221FB0,80011C58,80011BB4 andsound9C.",
+      "childGraphEvidence": "Mechanism0800139C spawns1B1;rootFB if native count<2;phase6 bombs1AC residue1/21mod40;no bomb parentTTL; bomb08000E2C bit68&20clear spawns two08000B58 children then retires;common group6cap20/globalcap60 guardstrict>."
+    }
+  ],
+  "pendingResearch": {},
+  "limitations": [
+    "No fresh native runtime or two-client behavior verification was performed by documentation work.",
+    "C syntax checks do not validate native ABI, resource residency or scheduler behavior.",
+    "Task +0x38 has not been proved to identify the specific cube for Goemon target hits.",
+    "Sasuke camera runtime and instruction VM behavior have static evidence only; no fresh native runtime validation.",
+    "Function sizes and section/ROM offsets come from the symbol table, not inferred from decompiler output.",
+    "Ebisumaru root decompiler prototype and body extent are recorded as conflicts; raw entry establishes callback ABI while symbol-table metadata supplies the inventory size."
+  ],
+  "evidenceSources": [
+    {
+      "role": "ghidra_decompiler",
+      "method": "Task-specific native metadata and ROM disassembly handoff",
+      "symbols": [
+        "File48 callbacks",
+        "File42 callbacks",
+        "File11 helpers"
+      ]
+    },
+    {
+      "role": "minigame_sasuke",
+      "method": "Bounded Ghidra handoff plus direct LLVM ROM disassembly confirming platform phase1 and HUD fields",
+      "sourcePath": "/Users/ahmad/git/mnsg-recomp-example/src/world/anchor_minigame_sasuke.c",
+      "symbols": [
+        "File47 callbacks"
+      ]
+    },
+    {
+      "role": "documentation worker",
+      "method": "Fresh read-only Ghidra decompilation and normalized opcode hashes",
+      "symbols": [
+        "func_80217360_5D2830",
+        "func_80217144_5D2614",
+        "func_801FA6E4_5B65F4"
+      ]
+    },
+    {
+      "role": "ghidra_yae",
+      "method": "Bounded File42 raw entry disassembly, native HUD/48-byte statistics and child-graph handoff",
+      "symbols": [
+        "func_08001954_6F1B64",
+        "func_801FA420_5B6330",
+        "func_80219CA0_5D5170"
+      ]
+    },
+    {
+      "role": "ghidra_decompiler",
+      "method": "Bounded raw File47 ROM disassembly of constructor08000938 and root orbit callsites; exact PCs supplied for field-width and360/240 correction",
+      "symbols": [
+        "func_080006F8_7064E8",
+        "func_08000938_706728",
+        "func_08000AD4_7068C4"
+      ]
+    },
+    {
+      "role": "minigame_timer_native",
+      "method": "Original compressed File48 decode, byte comparison against recomp File48 and bounded raw MIPS timer disassembly",
+      "symbols": [
+        "func_080018E8_709328",
+        "func_08000790_7081D0",
+        "func_080005D0_708010"
+      ]
+    },
+    {
+      "role": "ghidra_decompiler",
+      "method": "Bounded US Ghidra decompilation and ABI disassembly for selective scene return versus main step12 full rebuild",
+      "symbols": [
+        "func_801FA6E4_5B65F4",
+        "func_801FA420_5B6330",
+        "func_801F77F4_5B3704",
+        "func_8000607C_6C7C",
+        "func_80003728_4328"
+      ]
+    }
+  ],
+  "returnTransitionEvidence": {
+    "confidence": "ghidra-decompiled-and-disassembled",
+    "analysisDate": "2026-10-04",
+    "analysisPrograms": [
+      "mnsg_player_file_11.elf",
+      "mnsg_main_static.elf"
+    ],
+    "sourceSnapshotScope": "Previously recorded decompressed US ROM and File11 range hashes; new research uses the same native mappings.",
+    "savedHistoryCopy": {
+      "function": "func_801FA6E4_5B65F4",
+      "address": "0x801FA6E4",
+      "romAddress": "0x005B65F4",
+      "writes": [
+        "history3ADFC→pending3AFE0",
+        "history3AFF8/A/C→pending3AFE4/6/8",
+        "history3AFFE→pending3AFEA",
+        "marker3AE29=4nonzero or1zero"
+      ],
+      "doesNotWrite": "pending3AFE2 player rotation",
+      "orientationConflict": {
+        "previousPublicLabel": "saved facing",
+        "verifiedNarrowLabel": "saved orientation halfword",
+        "pendingSlotMeaning": "func8000607C writes fifth camera_rot argument to3AFEA at800060B0/B8; sixth player_rot goes3AFE2.",
+        "unknown": "The history-copy body alone does not establish whether each original caller stored camera angle or player facing into history3AFFE."
+      }
+    },
+    "extendedRequest": {
+      "function": "func_801FA420_5B6330",
+      "address": "0x801FA420",
+      "romAddress": "0x005B6330",
+      "writes": "Innerfunc801FA4FC stages marker1; wrapper stores setup3AE2C/option3AE30 then lbu/ori8/sb of samebyte3AE29 yields final9.",
+      "cameraConsumers": [
+        {
+          "function": "func_801F8FD0_5B4EE0",
+          "observed": "Reads nonzero setup word for camera transform."
+        },
+        {
+          "function": "func_801F9470_5B5380",
+          "observed": "Reads markerbit8,setup and option for camera initialization."
+        }
+      ],
+      "finalMarker": 9,
+      "markerOrPCs": [
+        "0x801FA488",
+        "0x801FA48C",
+        "0x801FA490"
+      ]
+    },
+    "selectiveReload": {
+      "entry": "func_801F77F4_5B3704",
+      "nonzeroMarkerChain": [
+        "0x801F7AA4",
+        "0x801F7B0C",
+        "0x801F7C14",
+        "0x801F7E1C",
+        "0x801F87F8",
+        "0x801F7F78"
+      ],
+      "roles": {
+        "801F7C14": "world/task teardown",
+        "801F7E1C/801F87F8": "selective resource bank load",
+        "801F7F78": "conditional destination initialization"
+      },
+      "initializer": "func_8020D6BC_5C8B8C",
+      "condition": "system+CF88D nonzero OR func8020D670 reports changed room-initializer pointer.",
+      "limit": "Nonzero marker alone does not guarantee destination initializer is called."
+    },
+    "fullStep12": {
+      "stepDispatcher": "func_80002040_2C40",
+      "tableAddress": "0x80058908",
+      "step12Callback": "func_80002E70_3A70",
+      "sequence": [
+        "func_8000B364_BF64",
+        "func_8000383C_443C",
+        "selectstep13func_80002EFC_3AFC"
+      ],
+      "basicDestinationSetter": "func_8000607C_6C7C",
+      "setterAddress": "0x8000607C",
+      "setterRomAddress": "0x00006C7C",
+      "setterABI": "void(u16room,s16x,s16y,s16z,s16camera_rot,s16player_rot,s16field90,s32field91)",
+      "characterBankPhase": {
+        "function": "func_8001FA80_20680",
+        "phase": 4,
+        "reads": "D_8015C5DC selected character",
+        "timing": "Before destination func8020D6BC returns; seed intended character before reconstruction starts."
+      }
+    },
+    "proofArtifactPath": "/private/tmp/minigame-return-native-proof.md",
+    "limitations": [
+      "Static native paths and argument/storage mapping; no fresh live two-client or resource-reconstruction outcome verified.",
+      "Field90/field91 and setup/option valid ranges remain unresolved beyond observed native callers."
+    ],
+    "basicSetterSetupLimit": {
+      "function": "func_8000607C_6C7C",
+      "doesNotClear": [
+        "system+3AE2C setupword",
+        "system+3AE30 optionhalfword"
+      ],
+      "cameraConsumer": "func_801F8FD0_5B4EE0 uses any nonzero setupword independently of markerbit8; func_801F9470_5B5380 separately readsbit8/setup/option.",
+      "field90And91": "Separate from setup3AE2C/option3AE30; zeroing these arguments does not clear extended camera setup."
+    },
+    "nativeResultCallers": [
+      {
+        "overlay": ".file_48",
+        "root": "func_080018E8_709328",
+        "loadAddress": "0x080020F8",
+        "callAddress": "0x08002100",
+        "delaySlotAddress": "0x08002104",
+        "romCallAddress": "0x00709B40",
+        "callee": "func_801FA6E4_5B65F4",
+        "argument": 1
+      },
+      {
+        "overlay": ".file_47",
+        "root": "func_08000AD4_7068C4",
+        "loadAddress": "0x0800190C",
+        "callAddress": "0x08001914",
+        "delaySlotAddress": "0x08001918",
+        "romCallAddress": "0x00707704",
+        "callee": "func_801FA6E4_5B65F4",
+        "argument": 1
+      },
+      {
+        "overlay": ".file_42",
+        "root": "func_08001954_6F1B64",
+        "callAddress": "0x08002C8C",
+        "romCallAddress": "0x006F2E9C",
+        "callee": "func_801FA420_5B6330",
+        "arguments": [
+          "0x016D",
+          0,
+          7,
+          1,
+          "0x0100",
+          "0xA0",
+          0
+        ],
+        "setupStackStoreAddress": "0x08002C74",
+        "cameraStackStoreAddress": "0x08002C78"
+      }
+    ],
+    "schedulerLimit": {
+      "step3Handler": "func_80002454_3054",
+      "observed": "CallsFile11scheduler801CB460 then observes changedmainstep3ADD4; doesnotrewrite changedstep. Dispatcher selectsone handlerpercall. Markerconsumer onlyschedulesnext callback; destructive teardownlater801F7C14.",
+      "uncertainty": "Same-cycle scheduler reentry notestablished; live transitionbranch outcome notcaptured."
+    },
+    "proofArtifactSHA256": "09d9e95a83b7ea3ffcc097b31108c81ea189ac025de068aa0badd9987a6d1e15"
+  },
+  "sasukeMusicEvidence": {
+    "analysisDate": "2026-10-04",
+    "confidence": "Native Ghidra disassembly and bounded script-word reads; audible behavior and queue acceptance not runtime-verified.",
+    "artifactPath": "/private/tmp/mnsg-sasuke-music-native-report.md",
+    "artifactSHA256": "7b8e587fd9838b9be9356356e2c8801984abf835c067413f2c25eaccb8ebaf7d",
+    "scenario": {
+      "id": "0x0179",
+      "file": "File98.DATA",
+      "romBase": "0x00767640",
+      "sizeBytes": "0x38C0",
+      "tablePointer": "0x080033BC",
+      "scenarioRom": "0x0076A9FC",
+      "preInstructionCommandRom": "0x0076AB04",
+      "preInstructionCommand": "0x0292",
+      "completionWordsRom": "0x0076AB38..0x0076AB50",
+      "completionWords": [
+        "0x00008004",
+        "0x801C7740",
+        "0x00008009",
+        "0x00000052",
+        "0x0000800B",
+        "0x8003F608",
+        "0x00008008"
+      ],
+      "instructionFlag": "0x21"
+    },
+    "helper": {
+      "name": "func_8003F608_40208",
+      "loadUnsignedCommandPC": "0x8003F618",
+      "load": "lhu a0,0x7742(a0)",
+      "callPC": "0x8003F614",
+      "callee": "func_80038BC8_397C8"
+    },
+    "wrapper": {
+      "name": "func_80038BC8_397C8",
+      "address": "0x80038BC8",
+      "romAddress": "0x000397C8",
+      "section": ".main",
+      "sizeBytes": 48,
+      "declaration": "void func_80038BC8_397C8(unsigned short cue);",
+      "maskPC": "0x80038BD0",
+      "queueCallPC": "0x80038BE0",
+      "queue": "func_80038C30_39830(cue,0,0)",
+      "pendingCapacity": 8,
+      "deduplication": "Only while command remains pending; no persistent already-playing guard or delivery acknowledgment."
+    },
+    "controller": {
+      "name": "func_08000AD4_7068C4",
+      "scenarioCallPC": "0x08001458",
+      "scenarioArgumentPC": "0x0800145C",
+      "phase2VMCheckPC": "0x08001474",
+      "HUDConstructionPC": "0x08001494",
+      "timerSetPC": "0x080014AC",
+      "phase3StorePC": "0x080014D0",
+      "observed": "Phase2 HUD transition contains no audio call; skipping scenario179 bypasses command0052."
+    },
+    "inventoryReview": {
+      "previewInventory": "/private/tmp/mnsg-ebi-sasuke-inventory-review.json",
+      "previewSnapshots": "/private/tmp/mnsg-ebi-sasuke-source-review.json",
+      "previewSymbols": 1308,
+      "baseSymbolsBefore": 273,
+      "previewAdded": 1039,
+      "previewRemoved": [
+        "D_8016DADC_16E6DC",
+        "D_8020D1C0_5C90D0",
+        "D_8020D1D0_5C90E0",
+        "D_8020D220_5C9130"
+      ],
+      "adoptedSymbols": [
+        "func_80038BC8_397C8"
+      ],
+      "adoptedSnapshots": [
+        "mnsg-recomp-example/src/world/anchor_minigame_sasuke.c",
+        "mnsg-recomp-example/src/world/anchor_world_doll.c",
+        "mnsg-recomp-example/src/world/anchor_world_gate64.c"
+      ],
+      "unrelatedUnresolvedSymbol": "D_8015CDBC",
+      "adoptedMetadataConflicts": [],
+      "sourceDeclarationVariants": [
+        "extern void func_80038BC8_397C8(unsigned int);",
+        "extern void func_80038BC8_397C8(unsigned short);"
+      ],
+      "resolution": "Public ABI uses native u16 command; wider local declarations remain documented as assumptions, not evidence of different native parameters."
+    },
+    "limitations": [
+      "No named song, MIDI bank, player selector, fade or volume semantics inferred for command0292.",
+      "File98 is script DATA; its pointers are not C functions.",
+      "No native controller/VM replay is needed to submit the verified audio command.",
+      "No live gameplay or audible playback test performed by documentation worker."
+    ]
+  },
+  "ebiStartupEvidence": {
+    "analysisDate": "2026-10-04",
+    "confidence": "Native Ghidra disassembly/decompiled bodies and loader table reads; documentation worker did not execute native startup.",
+    "handoff": "/root/ghidra_decompiler",
+    "controller": {
+      "name": "func_08001954_6F1B64",
+      "address": "0x08001954",
+      "romAddress": "0x006F1B64",
+      "startupGate": "phase0 signed task+DE >1; first two callbacks wait from zero; third creates camera/HUD/mechanism",
+      "postConstruction": "Construction clearsDE then common epilogue08002E5C..70 returns u8DC1/s16DE1/s16E02.",
+      "HUD": "signed32 HUD+80=99*30=2970 via080008B8",
+      "phase1RobotSpawn": "s16E0 %201==10 and native robot count<2; entityFB can spawn before phase2 animation binder",
+      "phase1RobotSpawnPCs": "0x08001D94..0x08001DE0",
+      "phase1Exit": "s16DE > s16E2",
+      "phase2Exit": "s16DE>=81 then func8021664C(root,0,0.125f,1)",
+      "HUDTick": "FUN080005DC decrementsHUD+80 each callback independently of rootphase.",
+      "startupGatePCs": "0x08001A14..0x08001A28",
+      "mechanismCreatePCs": "0x08001C20..0x08001C38",
+      "phase1InitPCs": "0x08001C4C..0x08001C58",
+      "thresholdRange": "random(200)+50 =>50..249 initially; phase1 exit assignsrandom(200)+40",
+      "phase1ExitPCs": "0x08001D4C..0x08001D90",
+      "phase2ExitPCs": "0x08001FC0..0x08001FD4",
+      "phase2RootAnimationPCs": "0x08001FD8..0x08001FE4",
+      "phase2RateRaw": "a2=0x3E000000 =>f32 0.125",
+      "phase3StorePCs": "0x08002008..0x08002010"
+    },
+    "childGraph": {
+      "mechanism": {
+        "address": "0x0800139C",
+        "romAddress": "0x006F15AC",
+        "child": "entity1B1 at mechanism+D0",
+        "initializedPhase": "u8mechanism+D4=1",
+        "createPCs": "0x08001490..0x080014A8",
+        "phaseStorePC": "0x080014B4"
+      },
+      "platform": {
+        "address": "0x08001250",
+        "romAddress": "0x006F1460",
+        "initializedPhase": "u8platform+D0=1",
+        "phaseStorePC": "0x08001300"
+      }
+    },
+    "descriptors": {
+      "rootEntity142": [
+        "0x01CF",
+        "0x0173"
+      ],
+      "mechanismEntity1AE": [
+        "0x01E3"
+      ],
+      "platformEntity1B1": [
+        "0x01E6"
+      ],
+      "robotEntityFB": [
+        "0x0197",
+        "0x0159"
+      ]
+    },
+    "limitations": [
+      "Static direct File12 loader does not establish the reported run's live registry contents; separate preload could register it.",
+      "No fresh live gameplay startup or audible music check by documentation worker.",
+      "No callback ABI change or speculative partial-graph state fix inferred."
+    ],
+    "taskBanks": {
+      "root/mechanism/platform": "0x2A",
+      "robot": "0x20"
+    },
+    "fixedWorldLoader": {
+      "entry": "func_80020440_21040",
+      "table": "DAT_8006B73C",
+      "modes0To3OverlayPairs": [
+        [
+          11,
+          12
+        ],
+        [
+          11,
+          12
+        ],
+        [
+          11,
+          12
+        ],
+        [
+          11,
+          12
+        ]
+      ],
+      "delegate": "func_800203D4_20FD4",
+      "directLoad": "func_80001C00_2800(12,0x8020D2A0)",
+      "alsoObserved": "func_8001FA80 case10",
+      "doesNotCall": "func_80013B14_14714 dynamic registry insertion",
+      "lookupScope": "func_800141C4_14DC4 scans only DAT_80167FC0 dynamic registry; absence of File12 key0C cannot prove fixed File12 code unavailable.",
+      "selectorPCs": "0x800204B4..0x800204C8",
+      "firstLoadPCs": "0x800203F4..0x80020400",
+      "secondLoadPCs": "0x80020410..0x80020418",
+      "dynamicLookupPCs": "0x800141C4..0x80014214",
+      "dynamicInsertPCs": "0x80013B88..0x80013B98"
+    },
+    "artifactPath": "/private/tmp/minigame-ebisumaru-startup-native-proof.md",
+    "artifactSHA256": "49865c9b1fb585e456508d3a9a619c98d0ee842376feb9777fe914e81b2dc1d6",
+    "taskBankTableReads": {
+      "root142": "0x80229A5A=0x002A",
+      "mechanism1AE": "0x80229B32=0x002A",
+      "platform1B1": "0x80229B38=0x002A",
+      "robotFB": "0x802299CC=0x0020"
+    }
+  },
+  "ebiLiveRecheckEvidence": {
+    "analysisDate": "2026-10-04",
+    "confidence": "Native Ghidra decompilation/disassembly, table memory reads and bounded raw ROM disassembly; live freeze and invitation failure cause unverified.",
+    "artifactPath": "/private/tmp/minigame-ebisumaru-live-recheck-native-proof.md",
+    "artifactSHA256": "5c8716358071fb0ae6a9078d044de667ebdc24e76f189324d89d97179d8a7893",
+    "sourceROM": {
+      "path": "/Users/ahmad/git/Goemon64Recomp/mnsg.us.decompressed.z64",
+      "SHA256": "e40bee20508c2e29e651dca4e47504e40f908f0a2186e34a582784bf5a64be4c"
+    },
+    "roomPreload": {
+      "room": "0x01E1",
+      "dispatcher": "func_8020D6BC_5C8B8C",
+      "roomTableSlot": "0x80231A84",
+      "roomRecord": "0x802312AC",
+      "callbackFieldOffset": "0x18",
+      "callback": "func_8021126C_5CC73C",
+      "listLoader": "func_80013AC4_146C4",
+      "listAddress": "0x8022E9D4",
+      "fileIDs": [
+        "0x0020",
+        "0x0197",
+        "0x0159",
+        "0x002A",
+        "0x01E6",
+        "0x01E1",
+        "0x01E2",
+        "0x01E3",
+        "0x01CF",
+        "0x0173"
+      ],
+      "terminator": "0x0000",
+      "registration": "func_80013AC4 callsfunc_80013B14 for eachnonzero ID. FixedFile12 ID0x0C absent fromlist, loadedseparately to0x8020D2A0.",
+      "timing": "Room-specific callback onlyloads resources; no actor construction/scheduling. The normal room loader returns before first root callback."
+    },
+    "successfulStartupScalars": {
+      "root": {
+        "entity": "0x0142",
+        "callbackTableSlot": "0x80228CC4",
+        "callback": "0x08001954",
+        "taskFlags60": "0x002086E1",
+        "returnThirdCallback": "phaseDC1/frameDE1/clockE02",
+        "objectScale": "threef32=0.1 via mainfunc80035964",
+        "objectFrame28": "f32zero"
+      },
+      "mechanism": {
+        "entity": "0x01AE",
+        "callbackTableSlot": "0x80228E74",
+        "callback": "0x0800139C",
+        "taskFlags60": "0x20",
+        "phaseD4": "u8=1",
+        "phaseD5": "u8=0",
+        "privateD8/DC": "f32zero fromprivate storage clear",
+        "objectScale": "threef32=0.1 viafunc80216E1C",
+        "childStorePCs": "0x08001490..0x080014A8",
+        "phaseStorePCs": "0x080014A4..0x080014B4"
+      },
+      "platform": {
+        "entity": "0x01B1",
+        "callbackTableSlot": "0x80228E80",
+        "callback": "0x08001250",
+        "taskFlags60": "0x21",
+        "objectScale": "threef32=1.0",
+        "scaleStorePCs": "0x080012E8..0x080012F0",
+        "phaseD0": "u8=1",
+        "phaseStorePC": "0x08001300"
+      }
+    },
+    "schedulerAndAllocation": {
+      "privateStorageClear": "func80034A10 clears task+60..EC includingstatus68; checkedinitializers do notsetstatusbit2.",
+      "linkage": "func80217360 allocates childcallback/object beforefunc80218C28 linkage.",
+      "currentTask": "func80034734 writesD8016DAB4=currenttask before task+C callback and advances afterreturn; checkednestedchildchain doesnotreplace it.",
+      "platformFailure": "Mechanism phase0 setsD4=1 evenifplatformallocation returnsnull; checkedpath doesnotretry childD0.",
+      "runtimeLimit": "Allocationfailure occurrence and mapped camera/HUD addresses cannot be inferred from ROM."
+    },
+    "limitations": [
+      "No additional native layout, width, resource ID or startup-order mismatch established.",
+      "Preload ordering assumes native room loading succeeds.",
+      "Null platform allocation is a possible native incomplete-graph state; not observed in the reported run.",
+      "No live session ownership, readiness, invitation acceptance or freeze cause established.",
+      "Prior startup proof record/hash preserved separately."
+    ]
+  },
+  "ebiBirthHookEvidence": {
+    "analysisDate": "2026-10-04",
+    "confidence": "Native Ghidra disassembly/decompiled ABI plus recompiled runtime patch source review. Static callback representation/order proven; fresh registration/gameplay fix unverified.",
+    "artifactPath": "/private/tmp/mnsg-ebi-birth-hook-native-proof.md",
+    "artifactSHA256": "10ba53e672f21103b30325ba730b979900acb9fff2a5ee157db25252b5ecc1be",
+    "liveLogPath": "/private/tmp/mnsg-mini-ebisumaru.MzjGP0",
+    "liveObservation": "Root8016AAE0,mechanism8016ACC0,livecamera/HUD,residentmask7FF,phase1,timer2970; adapter actorcounts0/0/0,rootReady0. Log doesnotprint childcallback or hookrejection reason.",
+    "spawn": {
+      "function": "func_80217360_5D2830",
+      "callbackReadPCs": [
+        "0x80217408",
+        "0x802174C8"
+      ],
+      "fileReadPCs": [
+        "0x80217424",
+        "0x802174FC"
+      ],
+      "allocationCallPCs": [
+        "0x80217428",
+        "0x802174FC"
+      ],
+      "inheritanceCallPCs": [
+        "0x8021743C",
+        "0x80217510"
+      ],
+      "requestedEntityStorePCs": [
+        "0x80217454..0x80217458",
+        "0x80217528..0x8021752C"
+      ]
+    },
+    "inheritance": {
+      "function": "func_80218C28_5D40F8",
+      "ABI": "void(parent_a0,child_a1)",
+      "sizeBytes": 340,
+      "context98PCs": "0x80218C30..0x80218C3C",
+      "childObjectReadPC": "0x80218C44",
+      "parentEntityCopyPCs": "0x80218CB8..0x80218CD4",
+      "parentGenerationCopyPCs": "0x80218CEC..0x80218CF8",
+      "doesNotWrite": "child callback+C",
+      "entityTiming": "Requestedchildentity notwritten until caller resumesafter inheritancehelper; earlyfields not proof ofrequestedentity.",
+      "returnConfirmation": {
+        "tailPCs": "0x80218D5C..0x80218D78",
+        "observed": "Tail doesnotsetv0; caller ignoresreturn and reloadschild pointer fromstack54 at80217444/80217518.",
+        "declaration": "void func_80218C28_5D40F8(void *parent,void *child);"
+      }
+    },
+    "birthCallbacks": [
+      {
+        "entity": "0x01AE",
+        "callbackTableSlot": "0x80228E74",
+        "rawCallback": "0x0800139C",
+        "fileID": "0x002A",
+        "fileTableSlot": "0x80229B32"
+      },
+      {
+        "entity": "0x01B1",
+        "callbackTableSlot": "0x80228E80",
+        "rawCallback": "0x08001250",
+        "fileID": "0x002A",
+        "fileTableSlot": "0x80229B38"
+      },
+      {
+        "entity": "0x00FB",
+        "callbackTableSlot": "0x80228BA8",
+        "rawCallback": "0x08001720",
+        "fileID": "0x0020",
+        "fileTableSlot": "0x802299CC"
+      }
+    ],
+    "allocator": {
+      "function": "func_80034B58_35758",
+      "callbackStorePCs": "0x80034BFC..0x80034C04",
+      "fileStorePCs": "0x80034C08..0x80034C10",
+      "resourceHandlePCs": "0x80034C0C..0x80034C20",
+      "objectStorePCs": "0x80035E9C..0x80035EBC",
+      "observed": "Incomingcallback unchanged; fileID/resourcecontext andobject existbeforeinheritance call. Existing thirdargument was mislabeledflags in publicreference; corrected semanticname only, retained sourcewidth.",
+      "fileIDWidthConfirmation": {
+        "higherConstructorLoadPC": "0x8003556C",
+        "load": "lhu a3,0x86(sp)",
+        "allocationLoadPC": "0x80034BCC",
+        "allocationStorePC": "0x80034C10",
+        "store": "sh a0,0x28(child)",
+        "width": "Nativeu16 fileID, preserving existingunsignedshort allocator ABI.",
+        "source": "Final native researcher handoff following retained proof artifact; artifact hash unchanged."
+      }
+    },
+    "scheduler": {
+      "function": "func_80034734_35334",
+      "resourcePrepareCallPC": "0x800347E8",
+      "callbackReadPC": "0x80034814",
+      "callbackDispatchPC": "0x80034828",
+      "recompPatchPath": "/Users/ahmad/git/Goemon64Recomp/patches/required.c",
+      "recompPatchSHA256": "b4f0928933b4a13d92ceaa363e95467b87fb0c0c0d9213c621b20e30428da3c9",
+      "recompPatchLines": "74 onward",
+      "observed": "func8001481C relocates callbacks8/C/10 on childschedulerturn; importedcallbacks refer toloadedoverlayaddresses."
+    },
+    "resolver": {
+      "function": "func_80014840_15440",
+      "address": "0x80014840",
+      "romAddress": "0x00015440",
+      "sizeBytes": 128,
+      "ABI": "void*(void*raw,u32fileid) a0/a1->v0",
+      "signedPassThroughPCs": [
+        "0x8001484C",
+        "0x800148AC"
+      ],
+      "registryLookupPCs": "0x80014854..0x8001485C",
+      "missingFileFaultPCs": "0x80014870..0x80014874",
+      "codeTagClearPCs": "0x80014878..0x80014884",
+      "resolvePCs": "0x80014888..0x800148A8",
+      "formula": "raw + (registrybase & ~0x40000000) - (func80001E50(fileid)<<24)",
+      "doesNotMutate": "Taskcallback field",
+      "precondition": "Forpositiveraw, guardlookup!=null and!=FFFFFFFF; missingfile deliberatelyfaults."
+    },
+    "inventoryReview": {
+      "previewInventory": "/private/tmp/mnsg-ebi-birth-inventory-review.json",
+      "previewSnapshots": "/private/tmp/mnsg-ebi-birth-source-review.json",
+      "previewSymbols": 1308,
+      "baseSymbolsBefore": 274,
+      "previewAdded": 1038,
+      "historicalRemovalsNotAdopted": [
+        "D_8016DADC_16E6DC",
+        "D_8020D1C0_5C90D0",
+        "D_8020D1D0_5C90E0",
+        "D_8020D220_5C9130"
+      ],
+      "adoptedSymbols": [
+        "func_80014840_15440",
+        "func_80218C28_5D40F8"
+      ],
+      "adoptedSourceSnapshot": "mnsg-recomp-example/src/world/anchor_minigame_ebisumaru.c",
+      "sourceDeclarationVariants": {
+        "func_80014840_15440": [
+          "extern int func_80014840_15440(int address, unsigned int file);",
+          "extern signed int func_80014840_15440(signed int pointer, unsigned int file_id);",
+          "extern void *func_80014840_15440(void *, unsigned int);"
+        ],
+        "func_80218C28_5D40F8": []
+      },
+      "declarationResolution": "Native32bitpointer/u32resolver ABI; otherintpointeraliases are recorded sourceassumptions. Linkagehook lexicalreferences do notsupply nativeprototype; nativea0/a1 ABI traced."
+    },
+    "limitations": [
+      "Early native representation mismatch established; rawbirthcallback and hookrejection notprinted inlive log.",
+      "New classifier registration ofboth mechanism/platform andgameplay thaw require freshlive confirmation.",
+      "No mod fix implementation or live outcome claimed bydocsworker."
+    ]
+  }
+}

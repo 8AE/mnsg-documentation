@@ -1,0 +1,620 @@
+{
+  "date": "2026-09-27",
+  "scope": "Native Koryuta body actor lifecycle and movement dependencies in room 0x0155.",
+  "game": {
+    "region": "US",
+    "roomId": "0x0155",
+    "actorDataFileId": "0x0403",
+    "codeOverlay": "world_file_46.elf",
+    "cameraOverlay": "world_file_58.elf",
+    "romSha256": "e40bee20508c2e29e651dca4e47504e40f908f0a2186e34a582784bf5a64be4c"
+  },
+  "method": "Ghidra decompilation with selected disassembly confirmation for child callback signatures, root part-array indexing, and player-manager attachment updates.",
+  "findings": {
+    "rootConstructor": {
+      "address": "0x08001A28 (ROM 0x702B28)",
+      "confidence": "decompiled",
+      "behavior": "Creates the Koryuta root and eleven 0x01B4 body-part tasks. The root schedules func_080019AC_702AAC as its initial phase through func_8003521C."
+    },
+    "rootPhaseSequence": {
+      "confidence": "decompiled",
+      "callbacks": [
+        "func_080019AC_702AAC (0x080019AC, ROM 0x702AAC)",
+        "func_080018E4_7029E4 (0x080018E4, ROM 0x7029E4)",
+        "func_08001868_702968 (0x08001868, ROM 0x702968)",
+        "func_080017D4_7028D4 (0x080017D4, ROM 0x7028D4)",
+        "func_08001770_702870 (0x08001770, ROM 0x702870)"
+      ],
+      "rootStateFields": {
+        "+0xD0": "Local child-task pointer array; index 0 is the root and indices 1 through 11 are body-part tasks.",
+        "+0xD4": "Unsigned 16-bit segment angle.",
+        "+0xD8": "Unsigned 16-bit expansion value.",
+        "+0xDA": "Signed 16-bit tilt.",
+        "+0xDC": "Signed 16-bit departure step.",
+        "+0xDE": "Signed 16-bit sine phase.",
+        "+0x8A": "Signed 16-bit departure timer."
+      }
+    },
+    "departureAndCompletion": {
+      "confidence": "decompiled-and-disassembly-confirmed",
+      "initialDeparture": {
+        "address": "0x0800140C (ROM 0x70250C)",
+        "condition": "Local D_8015CDB6 equals 3.",
+        "effects": [
+          "Sets root task +0x8A to 0x0200.",
+          "Reasserts transient event-bank 0 bit 0 through func_80023DF0(0).",
+          "Schedules root callback func_080017D4_7028D4."
+        ]
+      },
+      "healthChildDeathPath": {
+        "addresses": [
+          "func_08002540_703640 (0x08002540, ROM 0x703640)",
+          "func_080031D8_7042D8 (0x080031D8, ROM 0x7042D8)"
+        ],
+        "effects": "The health-bearing child death path clears event-bank 0 bit 0 and sets D_8015CDB6 to 2; the later func_080031D8_7042D8 phase sets it to 3, admitting the root's departure transition."
+      },
+      "departureTimers": [
+        {
+          "callback": "func_080017D4_7028D4",
+          "behavior": "Pre-decrements root +0x8A; when it reaches zero, sets D_8015CDB6 to 4, resets the timer to 0x0100, and schedules func_08001770_702870."
+        },
+        {
+          "callback": "func_08001770_702870",
+          "behavior": "Pre-decrements root +0x8A; when it reaches zero, writes save value 0xC2 once."
+        }
+      ],
+      "cameraReturn": {
+        "address": "0x08000240 (ROM 0x701340), File_58",
+        "behavior": "Reads the delayed event-bank 0 state to enter local camera/return scene callback func_08000B8C_701C8C.",
+        "implication": "The camera/return handoff follows native event timing; it is not represented by the root movement counters alone."
+      },
+      "handoffGuidance": "Do not directly fast-forward a remote representation to terminal save value 0xC2 from owner counters. Resume the predeparture native path unless 0xC2 is already durable."
+    },
+    "partPoseUpdate": {
+      "address": "0x08001460 (ROM 0x702560)",
+      "confidence": "decompiled",
+      "signature": "void func_08001460_702560(root_task)",
+      "behavior": "Receives the root task in a0 and builds poses for the root and all eleven child parts. All five root phases call this routine, which has a single epilogue. Part index 10 is root array entry 10 at root +0x28 and has task byte +0x6C equal to 5.",
+      "verifiedMovementFacts": {
+        "rootLateralArticulation": {
+          "codeRange": "0x08001500-0x08001588 (ROM 0x702600-0x702688)",
+          "formula": "For child index i, theta = sin(root +0xD4 + i * 0x2000) * root +0xD8 controls lateral articulation.",
+          "confidence": "decompiled-and-disassembly-confirmed"
+        },
+        "childSpacing": {
+          "codeRange": "0x08001500-0x08001588 (ROM 0x702600-0x702688)",
+          "behavior": "The same X-Z chain loop that computes lateral articulation advances successive child positions by 240 world units along the chain.",
+          "confidence": "decompiled-and-disassembly-confirmed"
+        },
+        "rootTilt": {
+          "codeRange": "0x08001604-0x08001660 (ROM 0x702704-0x702760)",
+          "behavior": "Root +0xDA controls X/Y tilt.",
+          "confidence": "decompiled-and-disassembly-confirmed"
+        },
+        "rootRoll": {
+          "codeRange": "0x08001494-0x080014B8 (ROM 0x702594-0x7025B8)",
+          "behavior": "Writes the root object's roll from root +0xDA shifted right by 6 bits.",
+          "confidence": "decompiled-and-disassembly-confirmed"
+        },
+        "straightChainPose": {
+          "method": "Temporarily use zero for root +0xD8 and +0xDA only while running the pose builder, then restore the native values.",
+          "result": "Produces a straight chain along -Z while preserving the native root XYZ and the existing part-transform cache, player-attachment, and camera-coupling calls.",
+          "confidence": "decompiled-and-disassembly-confirmed",
+          "scopeLimit": "This describes a pose-builder input override; it does not establish multiplayer runtime behavior or authorize skipping the surrounding native callbacks."
+        }
+      }
+    },
+    "partTransformCache": {
+      "address": "0x080013C8 (ROM 0x7024C8)",
+      "confidence": "decompiled-and-disassembly-confirmed",
+      "signature": "void func_080013C8_7024C8(child_task)",
+      "behavior": "Caches the child object's XYZ coordinates into task +0x78/+0x7C/+0x80 and its three 10-bit rotations into task +0xE4/+0xE6/+0xE8."
+    },
+    "playerAttachmentUpdate": {
+      "address": "0x0800125C (ROM 0x70235C)",
+      "confidence": "decompiled-and-disassembly-confirmed",
+      "signature": "void func_0800125C_70235C(child_task)",
+      "behavior": "Updates player-manager attachment offsets at +0xC0/+0xC4/+0xC8 only when the child object pointer equals manager +0xA0.",
+      "negativeFindings": [
+        "No stack arguments.",
+        "Does not spawn tasks.",
+        "Does not dispatch damage."
+      ]
+    },
+    "cameraCoupling": {
+      "confidence": "decompiled",
+      "behavior": "The part task with byte +0x6C equal to 5 supplies segment X and Z to globals D_8015CDC4 and D_8015CDC8. The File_58 camera reads these globals."
+    },
+    "lateJoinBossCamera": {
+      "confidence": "decompiled",
+      "battleProximityTrigger": {
+        "address": "0x08002EB4 (ROM 0x703FB4)",
+        "arguments": "a0 is the battle task; a1 is its object.",
+        "codeRange": "0x08002EC8-0x08002F30",
+        "behavior": "Compares the absolute difference between local player Z and the health-bearing battle child Z against 200. When the proximity condition succeeds, writes transient save flag 0x019F, sets D_8015CDC0 to 1, and schedules func_08002F58_704058.",
+        "placementRelation": "The battle child is approximately 50 Z units from the dragon root; the check is not anchored to the dragon tip."
+      },
+      "cameraActor": {
+        "roomId": "0x0155",
+        "entityId": "0x02A0",
+        "constructor": "func_08000000_71A510 (0x08000000, ROM 0x71A510)",
+        "privateState": "Task +0xD0 points to a private 12-byte state block; byte 0 is the phase.",
+        "phaseCallback": "func_080004F8_71AA08 (0x080004F8, ROM 0x71AA08)"
+      },
+      "cameraPhaseTransitions": [
+        {
+          "phase": 8,
+          "codeRange": "0x08000A24-0x08000A64",
+          "behavior": "Consumes and clears transient save flag 0x019F, then enters phase 7."
+        },
+        {
+          "phase": 7,
+          "codeRange": "0x08000A68-0x08000AF8",
+          "behavior": "Advances to phase 6."
+        },
+        {
+          "phase": 6,
+          "codeRange": "0x08000AFC-0x08000B40",
+          "behavior": "Waits on immediate event-bank 0 boss-completion state."
+        }
+      ],
+      "geometryGlobals": {
+        "globals": [
+          "D_8015CDC4",
+          "D_8015CDC8"
+        ],
+        "readByCameraPhases": [
+          2,
+          12,
+          13
+        ],
+        "notReadByCameraPhases": [
+          8,
+          7,
+          6
+        ],
+        "interpretation": "The dragon segment X/Z values are camera geometry inputs for phases 2, 12, and 13; they do not provide the transition state for the phase-8/7/6 boss sequence."
+      },
+      "playerAttachmentLimit": "func_0800125C_70235C updates attachment offsets only for the local player and only when the current part object equals the player manager's attached-object pointer at +0xA0.",
+      "lateJoinLimit": "These native reads identify the local proximity trigger, transient intro handoff, and camera phase state. They do not establish that matching the segment geometry globals alone synchronizes or reconstructs the camera/boss cycle on a late-joining client.",
+      "cameraStartLatch": {
+        "address": "D_8015CDC0",
+        "width": "unsigned 16-bit",
+        "writer": {
+          "callback": "func_08002EB4_703FB4",
+          "address": "0x08002EB4 (ROM 0x703FB4)",
+          "codeRange": "0x08002F0C-0x08002F30",
+          "behavior": "After the local player-to-battle-child absolute Z separation is below 200.0, writes transient save flag 0x019F, stores 1 to D_8015CDC0 at 0x08002F28, and schedules func_08002F58_704058."
+        },
+        "cameraReader": {
+          "callback": "func_08004700_705800",
+          "address": "0x08004700 (ROM 0x705800)",
+          "codeRanges": [
+            {
+              "range": "0x0800471C-0x0800472C",
+              "behavior": "Loads D_8015CDC0 as an unsigned halfword and branches away when it is zero."
+            },
+            {
+              "range": "0x08004758-0x0800476C",
+              "behavior": "When the latch is nonzero, initializes a camera object position and spawns func_080049D8_705AD8."
+            },
+            {
+              "range": "0x08004700-0x08004824",
+              "behavior": "The callback allocates a camera handle, stores it at task +0xD0, and schedules func_08004824_705924, which writes the camera target from local-player and battle-child positions."
+            }
+          ],
+          "proximityRecheck": "None in this callback before native camera actor/handle creation."
+        },
+        "rootReader": {
+          "callback": "func_080018E4_7029E4",
+          "address": "0x080018E4 (ROM 0x7029E4)",
+          "condition": "At root timer +0xDE modulo 0x0200 equal to zero, a nonzero D_8015CDC0 selects clip 0 and schedules func_08001868_702968."
+        },
+        "otherFile46Readers": [
+          "func_080037B0_7048B0 gates a wave emitter.",
+          "func_08003A30_704B30 checks wave-child completion."
+        ],
+        "file58Readers": "No xrefs to D_8015CDC0 were found in world_file_58. File_58 phase 8 instead consumes transient save flag 0x019F; phase 7 performs the camera/player transition and advances to phase 6.",
+        "interpretation": "D_8015CDC0 is a native encounter latch used by wave, dragon-root, and camera callbacks, not a camera-only stop flag. Setting it independently of func_08002EB4_703FB4's local proximity transition can start the native camera actor and root transition before local proximity succeeds."
+      },
+      "combatLoop": {
+        "confidence": "decompiled-and-disassembly-confirmed",
+        "childIdentity": {
+          "constructor": "func_08001A28_702B28",
+          "initializer": "func_08002D18_703E18",
+          "behavior": "Creates a kind-6 child, stores root pointer at child task +0xD0, initializes entity/model family +0x5E to 0x1B0 and HP +0x8D to 5, clears D_8015CDC0, then schedules func_08002EB4_703FB4. Identify this battle child by its local +0xD0 root link and callback, not family ID alone."
+        },
+        "callbackCycle": [
+          {
+            "callback": "func_08002F58_704058",
+            "address": "0x08002F58 (ROM 0x704058)",
+            "behavior": "Entry; schedules spin-up."
+          },
+          {
+            "callback": "func_08002F8C_70408C",
+            "address": "0x08002F8C (ROM 0x70408C)",
+            "behavior": "Adds signed increment +0xDC to angular speed +0xDA, ramps +0xDE to 0xFF, and on absolute speed greater than 0x40 seeds timer +0x8A=0x80 and enters hold."
+          },
+          {
+            "callback": "func_08003054_704154",
+            "address": "0x08003054 (ROM 0x704154)",
+            "behavior": "Decrements timer; old timer zero enters spin-down."
+          },
+          {
+            "callback": "func_080030B0_7041B0",
+            "address": "0x080030B0 (ROM 0x7041B0)",
+            "behavior": "Subtracts signed increment +0xDC from angular speed +0xDA, fades +0xDE, and at zero speed reverses +0xDC, seeds +0x8A=0x50 and enters hit-accepting wait."
+          },
+          {
+            "callback": "func_0800316C_70426C",
+            "address": "0x0800316C (ROM 0x70426C)",
+            "codeRange": "0x0800316C-0x080031D4",
+            "behavior": "Decrements timer; old timer zero schedules spin-up; then runs pose updater func_080029CC_703ACC and damage helper func_08002540_703640."
+          }
+        ],
+        "callbackABI": "Scheduler callbacks consume a0=task and a1=object. The damage helper consumes only task in a0 and follows task +0x18 for the object; func_0800316C saves a0/a1 and calls the helper with task in a0.",
+        "typedFields": [
+          {
+            "owner": "task",
+            "offset": "+0x0C",
+            "type": "callback pointer",
+            "meaning": "Current AI phase identity."
+          },
+          {
+            "owner": "task",
+            "offset": "+0x18",
+            "type": "pointer",
+            "meaning": "Local object."
+          },
+          {
+            "owner": "task",
+            "offset": "+0x68",
+            "type": "u32",
+            "meaning": "Bit 0 pending hit, cleared by damage helper; bit 1 remove-pending."
+          },
+          {
+            "owner": "task",
+            "offset": "+0x8A",
+            "type": "s16/u16",
+            "meaning": "16-bit native timer; old-value-zero transitions; spin seeds 0x80 and 0x50."
+          },
+          {
+            "owner": "task",
+            "offset": "+0x8D",
+            "type": "u8",
+            "meaning": "Hit points; zero remains a live hit-accepting state."
+          },
+          {
+            "owner": "task",
+            "offset": "+0xD0",
+            "type": "pointer",
+            "meaning": "Local placed-root link."
+          },
+          {
+            "owner": "task",
+            "offset": "+0xD4",
+            "type": "u16",
+            "meaning": "Hit-flash countdown, seeded 0x50 after a nonterminal hit."
+          },
+          {
+            "owner": "task",
+            "offset": "+0xD8",
+            "type": "s16",
+            "meaning": "Orbital oscillation phase."
+          },
+          {
+            "owner": "task",
+            "offset": "+0xDA",
+            "type": "s16",
+            "meaning": "Angular speed; must be zero to decrement HP."
+          },
+          {
+            "owner": "task",
+            "offset": "+0xDC",
+            "type": "s16",
+            "meaning": "Spin increment/direction; initialized to 1."
+          },
+          {
+            "owner": "task",
+            "offset": "+0xDE",
+            "type": "s16",
+            "meaning": "Colour/alpha ramp, 0 through 255 during combat."
+          },
+          {
+            "owner": "task",
+            "offset": "+0xE0",
+            "type": "s16",
+            "meaning": "Object-yaw cache written by pose updater."
+          },
+          {
+            "owner": "object",
+            "offset": "+0x08/+0x0C/+0x10",
+            "type": "f32 x/y/z",
+            "meaning": "Position relative to local root object."
+          },
+          {
+            "owner": "object",
+            "offset": "+0x14/+0x16/+0x18",
+            "type": "s16 rotations",
+            "meaning": "Visual orientation; +0x16 advances with angular speed."
+          },
+          {
+            "owner": "object",
+            "offset": "+0x1C/+0x20/+0x24",
+            "type": "f32 scales",
+            "meaning": "Visual scale; used during flash/death growth."
+          }
+        ],
+        "damageBranch": {
+          "helper": "func_08002540_703640",
+          "hpRead": "0x080028DC lbu task+0x8D",
+          "hpWrite": "0x080028F4 sb decremented HP",
+          "branchRange": "0x080028F8-0x08002958",
+          "behavior": "Checks and clears task +0x68 bit 0. A nonzero +0xDA produces hit sound only. At zero speed, decrements u8 HP then branches on old HP: old HP nonzero stores status 1 and mirrors new HP to D_8015CDBC, adds pitch and seeds +0xD4=0x50; old HP zero stores status 2, seeds timer +0x8A=0x80 and schedules func_080031D8_7042D8. Therefore initial HP 5 reaches live HP 0 on hit five; hit six takes the death branch and the u8 wraps to 0xFF.",
+          "statusGlobal": "D_8015CDB6 is u16. Live evidence confirms 0 is a valid initial Control Machine encounter value, so status 10 is not a required initial state for this child. The prior static root path writes/uses status 10 as a root constructor/departure state; after hit processing the child writes 1 for nonterminal hit, 2 for terminal hit, 3 at death transition, and root departure writes 4.",
+          "hpMirror": "D_8015CDBC is u16 and mirrors remaining HP only on a nonterminal hit."
+        },
+        "deathAndDeparture": {
+          "callbacks": [
+            "func_080031D8_7042D8",
+            "func_08003634_704734",
+            "func_08003678_704778",
+            "func_080036CC_7047CC"
+          ],
+          "behavior": "At old timer +0x8A==0, func_080031D8 sets D_8015CDB6=3, clears task +0x60 and enters the death-effect sequence. Later callbacks finish the native grow/fade effects; func_080036CC_7047CC deletes the child when its old timer reaches zero. Root func_0800140C_70250C sees status 3, seeds root +0x8A=0x200 and enters departure; old timer zero writes status 4 and seeds 0x100, then the next old timer zero writes save bit 0xC2."
+        },
+        "terminalEvent": {
+          "writer": "func_80023DF0_249F0(0), main runtime 0x80023DF0 / ROM 0x000249F0",
+          "writerRange": "File46 call 0x0800292C-0x08002934, after status-2 write",
+          "reader": "func_80023E94_24A94(0) in File58 func_080004F8_71AA08 phase 6",
+          "behavior": "Writes/reads bit 0 of temporary event bank 0. Phase 6 exits its boss-completion wait when that local bank bit is set.",
+          "readiness": "A late-arriving local File58 controller reaches phase 6 only after phase 8 consumes local flag 0x19F and phase 7 completes."
+        },
+        "file58IntroBoundary": {
+          "callback": "func_080004F8_71AA08, task +0xD0 points to 12-byte private state; byte 0 phase, byte 1 subphase.",
+          "phase8Range": "0x08000A24-0x08000A64; consumes and clears local packed flag 0x19F, applies local player auxiliary mask 0x14, resets task timer and enters phase 7.",
+          "phase7Timer1Range": "0x08000A68-0x08000AA8; locks local input, sets D_8015CD04 bit 0, opens scenario 0x217, and waits for func_8003F1D8_3FDD8() to report scenario instruction pointer D_80077858 is null.",
+          "scenarioActivePredicate": "func_8003F1D8_3FDD8 tests whether D_80077858 is nonnull.",
+          "idleBoundaryRange": "0x08000AC0-0x08000AF8; after the scenario is idle, unlocks input, clears cue and player auxiliary masks, resets timer, enters phase 6.",
+          "proposal": "Before dispatch at phase 7/timer 1, if local arrival is complete and a peer fight-start marker is already known, clear local player auxiliary mask with func_801FC590_5B84A0, set phase 6 and timer 0. Native dispatch then enters phase 6 instead of opening scenario 0x217.",
+          "runtime": "Static proposal only; no runtime verification."
+        },
+        "projectileAndDeathVisuals": {
+          "sourceScope": "US world_file_46.elf, room 0x0155; static Ghidra decompilation/disassembly.",
+          "projectileProducer": {
+            "callback": "func_08004214_705314 (0x08004214, ROM 0x705314), scheduler callback ABI void(task*, object*). Decrements timer and calls func_80029E08_2AA08 using current object XYZ. On timeout, world collision result or task +0x68 bit 0x200, creates kind-8 visual func_80212088_5CD558 and deletes the projectile. The traced collision helper queries actor/world geometry and map; no direct player damage call was found in this callback.",
+            "address": "0x080029CC (ROM 0x703ACC)",
+            "producerCount": "One health-child producer; at most one projectile birth on an eligible frame.",
+            "birthGates": {
+              "codeRange": "0x08002AC4-0x08002B58",
+              "conditions": [
+                "object yaw > 0x140",
+                "object yaw < 0x2C0",
+                "abs(task +0xDA) >= 0x40",
+                "D_8015CC30 % 3 == 0"
+              ]
+            },
+            "constructorCall": {
+              "callee": "func_802171A8_5D2678 (common overlay RAM 0x802171A8, ROM 0x5D2678)",
+              "arguments": "a0=parent battle child, a1=func_0800413C_70523C, a2=10 (group byte)",
+              "abi": "Three arguments; creates a kind-10 child inheriting parent pose and common defaults."
+            },
+            "initializer": "func_0800413C_70523C (0x0800413C, ROM 0x70523C), scheduler callback ABI void(task*, object*). Sets entity +0x5E=0x7E, render flag +0x60=0x004006E0, model 7, object rotation 0x8000, attack-kind byte +0x4C=6, collision fields via func_80218DA8_5D4278(task,0x28,0,0), timer +0x8A=0x50, then schedules func_08004214_705314.",
+            "resourceAndSpawnPose": {
+              "codeRanges": [
+                "0x08002B60-0x08002CF8"
+              ],
+              "resourceId": "Task +0x28=0x2E; task +0x2C is func_800141C4_14DC4(0x2E).",
+              "pose": "Object XYZ is placed relative to the dragon root using a rotated vector.",
+              "velocity": "func_8021B988_5D6E58(task,targetX,targetY,targetZ,2.0f) writes normalized velocity at task +0x78/+0x7C/+0x80.",
+              "o32": "The velocity helper has five arguments; the fifth float 2.0f is passed at caller stack +0x10."
+            },
+            "localCollision": "The inherited native common pre/post path handles local collision and must remain active for each local player; do not manually invoke the projectile AI to replay historical ticks.",
+            "pointerFreeRow": {
+              "wordCount": 9,
+              "fields": [
+                {
+                  "word": 0,
+                  "name": "ownerSerial",
+                  "type": "u32 stable owner serial"
+                },
+                {
+                  "word": 1,
+                  "name": "ownerBirthTick",
+                  "type": "u32"
+                },
+                {
+                  "word": 2,
+                  "name": "timer",
+                  "type": "u16 native timer"
+                },
+                {
+                  "word": 3,
+                  "name": "objectX",
+                  "type": "f32 bit pattern"
+                },
+                {
+                  "word": 4,
+                  "name": "objectY",
+                  "type": "f32 bit pattern"
+                },
+                {
+                  "word": 5,
+                  "name": "objectZ",
+                  "type": "f32 bit pattern"
+                },
+                {
+                  "word": 6,
+                  "name": "velocityX",
+                  "type": "f32 bit pattern"
+                },
+                {
+                  "word": 7,
+                  "name": "velocityY",
+                  "type": "f32 bit pattern"
+                },
+                {
+                  "word": 8,
+                  "name": "velocityZ",
+                  "type": "f32 bit pattern"
+                }
+              ],
+              "lifecycle": "Call constructor and initializer at most once per newly observed owner ID. After initialization restore these scalar fields only; preserve local task pointers, task +0x68 contact state and native pre/post callbacks. Reconcile missing owner IDs through native remove-pending state."
+            },
+            "groupBudget": {
+              "initializer": "world_file_12_common.elf func_8020D724_5C8BF4 sets _DAT_8015CCE4=0x0F for group 10.",
+              "countCheck": "func_80219CA0_5D5170 refuses creation when limit < existing group count; count 15 therefore appears allowed (effective 16).",
+              "limit": "Observed group-10 budget only, not a universal actor cap. Overall task capacity, scene resources, and allocation failure can lower the live count."
+            },
+            "resourceRegistryHandle": {
+              "confidence": "function-and-raw-table-confirmed",
+              "resourceId": {
+                "hex": "0x2E",
+                "decimal": 46,
+                "role": "Control Machine projectile resource file"
+              },
+              "categoryRule": {
+                "function": "func_80001E50_2A50 (main static)",
+                "codeRange": "0x80001E7C-0x80001E90",
+                "behavior": "Compares unsigned file ID to successive u16 category-table thresholds and returns the category byte at entry +3 for the first threshold greater than the ID.",
+                "rawTableAddress": "0x80054920",
+                "rawBytes": "0007000d0051001100520009",
+                "entries": [
+                  {
+                    "threshold": "0x0007",
+                    "category": "0x0D"
+                  },
+                  {
+                    "threshold": "0x0051",
+                    "category": "0x11"
+                  },
+                  {
+                    "threshold": "0x0052",
+                    "category": "0x09"
+                  }
+                ],
+                "resolution": "File 0x2E (46) is at least 7 and below 0x51 (81), so its category is 0x11."
+              },
+              "typeTagFunction": {
+                "function": "func_80001DF4_29F4 (main static)",
+                "codeRange": "0x80001DFC-0x80001E00",
+                "behavior": "Passes the resource file code to func_80001E50_2A50. When that returns category 0x11, func_80001DF4 returns type tag 0x40000000; other categories use a separate file-table flag path."
+              },
+              "registryStore": {
+                "function": "func_80013B14_14714 (main static)",
+                "behavior": "For a registered resource, stores aligned data base ORed with the nonzero type tag in registry field +4."
+              },
+              "lookup": {
+                "function": "func_800141C4_14DC4 (main static)",
+                "behavior": "Returns the stored registry field +4 unchanged for a matching nonzero file ID; returns null for ID zero and 0xFFFFFFFF when a nonzero ID is absent."
+              },
+              "result": "A registered file-0x2E lookup result carries tag bit 0x40000000. Do not validate it as a normal actor/task pointer; pass the returned value unchanged when the resource consumer expects the registry value.",
+              "limit": "The exact lower address bits are runtime allocator-dependent and are not established by this static trace; no exact runtime base is claimed.",
+              "programs": [
+                "mnsg_main_static.elf",
+                "world_file_46.elf"
+              ]
+            }
+          },
+          "deathVisualChildren": {
+            "bossDeathCallback": "func_080031D8_7042D8 (0x080031D8, ROM 0x7042D8), scheduler callback ABI void(task*, object*).",
+            "visualBurst": "At a nonzero old timer divisible by 10, randomly chooses kind-8 child initializer func_8021159C_5CCA6C or func_802112EC_5CC7BC. After allocation the original routine writes child +0xD4=1 without a null check, scales/positions it and emits sound 0x106 or 0x10B; func_80218090_5D3560 creates additional debris (+0xDD=2). A bounded helper must null-check allocation and need not reproduce random debris.",
+            "constructorsAndFade": "The two constructors configure visual material/opacity and task fields +0x60=0x200, +0x64 bit 2, then schedule func_8021135C_5CC82C or func_8021160C_5CCADC. These fades suppress timer-expiry sound/particles when child +0xD4==1; they only perform visual fade and deletion in the inspected paths.",
+            "terminalBoundary": "When death timer reaches old value 0, File_46 calls func_802176C4_5D2B94(child,4), sets D_8015CDB6=3, clears boss task +0x60, emits sound 0x181, creates white flash through func_8022026C_5DB73C(child,255,255,255), and schedules func_08003634_704734. Death pose/scale belongs in the current snapshot, while task +0x60 and the flash are separate state.",
+            "renderColor": "Native func_08002540_703640 death entry calls func_8021DF60_5D9430(task,0,255,0,0). File_46 0x08002910-0x08002924 passes a0=task, a1=0, a2=255, a3=0, and fifth argument 0 at caller stack +0x10."
+          },
+          "ownedFlash": {
+            "allocation": "func_8022026C_5DB73C passes the child task unchanged to main func_80036B7C_3777C, which allocates a type-1 node with subtype +0x05=11 and alpha at node +0x10.",
+            "listLayout": "func_80035EEC_36AEC shows task +0x18 is head of an intrusive node list; task +0x1C is its tail pointer. Appending writes the new node through the current tail link. These are task fields, not object rotation +0x18.",
+            "singleton": "func_80036B7C caches the latest task tail pointer in DAT_800C7CD8. world_file_12_common.elf func_8020D724_5C8BF4 initializes D_8015C5C8=0x8008CCC0; adding 0x3B018 aliases the singleton at 0x800C7CD8.",
+            "sharedAccess": "func_80220210_5DB6E0 and func_80220168_5DB638 use this global alias without checking which actor owns the current node; a later actor can replace the alias before an earlier actor fades.",
+            "ownershipRule": "For internal follow-up, create once only under the confirmed local boss task when the singleton is available. Cache the task-owned candidate, verify node type bytes (+0x04=1,+0x05=11), then confirm membership with a bounded walk from task +0x18 through node +0 before changing alpha or releasing via func_80036158_36D58(task,node,1). Never mutate/free a bare global alias.",
+            "lateJoinGap": "The current 21-word boss snapshot omits exact owner flash alpha for a late join during intro phases 8/9; approximate local phase progress or add a validated flash-alpha scalar if exact reconstruction is required."
+          },
+          "abiAndEvidenceGaps": [
+            "The full local-player damage call chain through inherited common pre/post callbacks was not traced; local native pre/post collision handling must remain registered.",
+            "func_80029E08_2AA08 is observed receiving XYZ in floating-point registers and task/object arguments on the MIPS o32 stack, but a complete prototype and every stack slot were not reconstructed.",
+            "The fifth-argument stack slot for func_8021B988_5D6E58 and func_8021DF60_5D9430 is confirmed at caller +0x10; other helper argument stack layouts are not inferred here.",
+            "The group-10 count permits an observed count of 15 and suggests an effective 16th task, but this is not a guaranteed room capacity; allocator and resource limits remain possible.",
+            "The shared flash singleton has no owner check; safe list membership and lifetime need runtime validation. No live two-client projectile, damage or visual test was performed."
+          ]
+        },
+        "deterministicProducerAndStatus": {
+          "confidence": "decompiled-and-disassembly-confirmed",
+          "statusInitialValue": {
+            "symbol": "D_8015CDB6",
+            "width": "u16",
+            "ControlMachine": "Status 0 is a valid initial value for the Control Machine encounter. Status 10 is not a required initial condition for this battle child.",
+            "evidence": "The supplied evidence reports live logs and native xref/decompilation context for the local encounter. Keep the File46 battle-child state separate from the dragon-root constructor/departure state that uses status 10."
+          },
+          "phase1": {
+            "callback": "func_08002F58_704058",
+            "behavior": "Calls main func_8003521C_35E1C to replace the current task +0x0C callback with func_08002F8C_70408C; it does not initialize combat fields.",
+            "lifecycle": "This scheduler helper operates on the current task; do not call it from a foreign task."
+          },
+          "livePhases": {
+            "phase2": "func_08002F8C_70408C (0x08002F8C-0x08003050): clears +0xD4 and task +0x68 bit 0, adds 3 to +0xDE up to 255, applies color, advances signed speed +0xDA by signed direction +0xDC. When speed crosses +64 or -64, seeds u16 timer +0x8A=0x80 and schedules phase 3. Calls 029CC after transition logic.",
+            "phase3": "func_08003054_704154 (0x08003054-0x080030AC): reads timer as u16, stores old-1 (underflow 0 to 0xFFFF), and on old zero schedules phase 4; always calls 029CC.",
+            "phase4": "func_080030B0_7041B0 (0x080030B0-0x08003168): subtracts signed direction from signed speed, fades signed intensity +0xDE by 3, and at zero speed reverses direction, seeds u16 timer +0x8A=0x50, clears pending hit bit/flash and schedules phase 5; calls 029CC on that same frame.",
+            "phase5": "func_0800316C_70426C (0x0800316C-0x080031D4): decrements u16 timer, on old zero clears +0xDE and schedules phase 2; always calls 029CC then damage helper 02540 at 0x080031C0."
+          },
+          "determinism": "Phases 2-5 do not directly call RNG or write fight-status globals. Their per-frame child pose and shot side effect is 029CC; phase 5 also delegates damage/death to 02540. A command boundary is an observed task +0x0C callback transition or authoritative HP/death change. A command after the owner callback includes that callback's pose update. Installing the new phase and scalar seed before the follower's next scheduled AI call is an implementation inference, not live two-client validation.",
+          "shotProducer": {
+            "callback": "func_080029CC_703ACC",
+            "address": "0x080029CC / ROM 0x703ACC, File_46",
+            "behavior": "Reads root task at child +0xD0 and root object at root +0x18. Updates signed orbit +0xD8 by trunc-toward-zero(speed +0xDA / 4), preserves raw signed-16 yaw +2*speed in object +0x16 and task +0xE0, copies root roll, and transforms (sin(orbit)*10,40,cos(orbit)*50) through the root-roll matrix to produce child XYZ.",
+            "shotGate": {
+              "yaw": "unsigned16 object yaw >0x140 and <0x2C0",
+              "speed": "absolute signed16 task +0xDA >0x3F",
+              "cadence": "u16 D_8015CC30 modulo 3 equals 0",
+              "counter": "Local world frame counter, incremented by File12 func_8020DD78_5C9248 each update and reset by main func_80005EDC_6ADC; File46 029CC reads it only.",
+              "allocation": "At most one kind-10 task per eligible producer invocation, via func_802171A8_5D2678(parent,func_0800413C_70523C,10)."
+            },
+            "rng": "No RNG appears in 029CC.",
+            "inference": "Matching phase commands cannot guarantee equal shot-birth cadence across clients because D_8015CC30 is local. The documented live pose loop is deterministic per local tick, but exact frame agreement is not established."
+          },
+          "sourceComments": {
+            "nativeLocations": [
+              "world_file_46.elf: func_08002F58_704058, 08002F8C_70408C, 08003054_704154, 080030B0_7041B0, 0800316C_70426C, 080029CC_703ACC",
+              "world_file_12_common.elf: func_8020DD78_5C9248, func_8020D848_5C8D18",
+              "mnsg_main_static.elf: func_80005EDC_6ADC, func_8003521C_35E1C"
+            ],
+            "limits": "Owners and followers may run different frame rates or pauses. Phase/timer needs correction at command boundaries or sparse checkpoints; no two-client runtime verification was performed."
+          }
+        }
+      },
+      "dragonModelBinding": {
+        "confidence": "decompiled-and-disassembly-confirmed",
+        "constructor": "File_46 func_08001A28_702B28",
+        "parts": "Body/root and part 5 are animation-bound. Parts 1-4 and 6-11 use static model slots 3-7 through func_80216DF8_5D22C8; parts 8-11 map to slots 4-7.",
+        "animatedBindings": "Root/body uses func_8021664C_5D1B1C with clip 0. Animated part 5 is retagged to model 0x1B0, task +0x6C mode 1, and bound to clip 2. Static parts have modes 2-6.",
+        "staticBinder": {
+          "callback": "func_80216DF8_5D22C8, File_12 RAM 0x80216DF8 / ROM 0x5D22C8",
+          "delegatesTo": "func_80216CE0_5D21B0",
+          "behavior": "Selects a static slot model table and writes its pointer plus tag 0x40000000 to object +0x2C; updates resource IDs +0x34/+0x3C, writes +0x44=0x152, then resolves/binds resources through main func_80014218_14E18."
+        },
+        "animationBinder": {
+          "callback": "func_8021664C_5D1B1C, File_12 RAM 0x8021664C / ROM 0x5D1B1C",
+          "behavior": "Writes animation table pointer plus tag 0x10000000 to the same object +0x2C, rewrites the same resource fields, binds resources and resets object frame +0x28. It does not restore the static slot binding."
+        },
+        "confirmedMechanism": "Calling the animation binder on a static part persistently replaces that object's static model-slot binding with an animation-table binding. This can make the part render the animated clip-0 mesh.",
+        "runtimeCause": "The native binding clobber is confirmed statically. Whether this caused the reported duplicate dragon head in a live run requires a WQ_ANIM row-level diagnostic and was not proven here.",
+        "safeSelection": "Use func_8021664C_5D1B1C only for the animated body/root and animated part 5. Preserve static parts bound by func_80216DF8_5D22C8; if a static slot must change, rebind through the static binder.",
+        "researchLocations": [
+          "world_file_46.elf: func_08001A28_702B28",
+          "world_file_12_common.elf: func_8021664C_5D1B1C, func_80216DF8_5D22C8, func_80216CE0_5D21B0",
+          "mnsg_main_static.elf: func_80014218_14E18"
+        ]
+      }
+    }
+  },
+  "limits": [
+    "The findings establish native construction and movement state dependencies; they do not confirm the multiplayer modification's runtime behavior.",
+    "Root callback phases have side effects, including terminal save 0xC2, so directly replaying them for a remote visual representation is unsafe.",
+    "A standalone public symbol page is not currently generated for these root/body helpers because they are absent from data/inventory.json."
+  ],
+  "provenance": {
+    "researchWorkspace": "Ghidra program set world_file_46.elf and world_file_58.elf.",
+    "programHash": "Not supplied in the review notes; ROM image hash above identifies the US game image only."
+  }
+}

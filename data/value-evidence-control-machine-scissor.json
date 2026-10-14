@@ -1,0 +1,45 @@
+{
+  "reviewedAt": "2026-09-29",
+  "rom": {
+    "version": "USA decompressed native ROM",
+    "sha256": "e40bee20508c2e29e651dca4e47504e40f908f0a2186e34a582784bf5a64be4c"
+  },
+  "symbolTable": {
+    "path": "Goemon64RecompSyms/mnsg.syms.toml",
+    "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+  },
+  "method": "Ghidra decompilation and native display-path inspection. No project-specific NRM interface or live visibility behavior was tested.",
+  "nativeEvidence": {
+    "openingCamera": {
+      "symbol": "func_08000240_71A750",
+      "address": "0x08000240",
+      "romAddress": "0x0071A750",
+      "section": ".file_58",
+      "room": "0x0155",
+      "scissorStart": {"left": 8, "top": 38, "right": 312, "bottom": 202},
+      "scissorLater": {"left": 8, "top": 16, "right": 312, "bottom": 224},
+      "confidence": "decompiled"
+    },
+    "rdpEmission": {
+      "symbol": "func_80017D8C_1898C",
+      "address": "0x80017D8C",
+      "romAddress": "0x0001898C",
+      "section": ".main",
+      "finding": "Emits the RDP scissor command using camera fields +0x48 through +0x4E.",
+      "confidence": "decompiled"
+    },
+    "kind1SpritePath": {
+      "functions": [
+        "func_800087C4_93C4",
+        "func_800086F0_92F0",
+        "func_80008920_9520"
+      ],
+      "finding": "The inspected kind-1 sprite path does not write or replace the camera scissor rectangle."
+    }
+  },
+  "uncertainties": [
+    "The finding establishes native scissor behavior only; it does not establish an NRM aspect-mode ABI.",
+    "Live game visibility and rendering during the opening sequence were not checked."
+  ],
+  "scope": "Document the Control Machine room 0x155 opening-camera scissor and its native command path. Do not infer a user-facing aspect-mode control from these coordinates."
+}

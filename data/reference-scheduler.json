@@ -10,7 +10,8 @@
       "For an eligible task, the scheduler restores its resource context, then invokes non-null enabled callbacks at task +0x08, +0x0C and +0x10 in order. Each callback receives the current task and its object pointer from task +0x18. Callback addresses carrying bit 0x00800000 are inhibited.",
       "The native Start pause sequence adds mask bit 0x0001 to suspend matching gameplay task subtrees. The separate unsigned 16-bit field at full-system +0x3AE26 selects the Start menu state machine; setting it is not a generic way to pause an unrelated dialog.",
       "This function does not stop the game loop, input sampling, rendering, VI counter or frame counter. Systems outside its task hierarchy require their own pause policy.",
-      "The task +0x10 post callback runs after the +0x0C update callback with the same (task, task +0x18 object) arguments. The scheduler reloads the current task between callbacks and does not inspect effect state byte +0x65 before the post callback; a retirement-marking update can therefore still receive its post step during that scheduler pass."
+      "The task +0x10 post callback runs after the +0x0C update callback with the same (task, task +0x18 object) arguments. The scheduler reloads the current task between callbacks and does not inspect effect state byte +0x65 before the post callback; a retirement-marking update can therefore still receive its post step during that scheduler pass.",
+      "For a runnable task, resource-context preparation precedes callback dispatch. In the recompiled runtime this stage resolves raw overlay addresses in task +0x08/+0x0C/+0x10 to loaded callback addresses; it occurs after child allocation and parent-context inheritance, not during that early construction stage. For the verified raw callback family 0x08000000–0x08FFFFFF, mapping uses 32-bit unsigned arithmetic: raw_callback - 0x08000000u + (resource_handle & 0xBFFFFFFFu). This differs from func_80014840_15440's native per-file segment conversion."
     ],
     "example": "#include \"modding.h\"\n\nextern unsigned char *D_8015C5C8_15D1C8;\n\n/* Observe the scheduler mask without changing native ownership. */\nstatic unsigned short last_task_mask;\n\nRECOMP_HOOK(\"func_80034734_35334\")\nvoid observe_task_execution_mask(void)\n{\n    if (D_8015C5C8_15D1C8)\n        last_task_mask = *(unsigned short *)(D_8015C5C8_15D1C8 + 0x3AE24);\n}\n",
     "exampleExplanation": "The entry hook reads the established native mask while leaving task execution and ownership to the engine.",
@@ -20,11 +21,14 @@
       "A pause mask can suppress entire subtrees, including a desired interface task. Verify the selected task flags and ancestor relationships before changing it.",
       "Restore only state owned by the caller. A replacement native pause or scene can change the same mask during a callback.",
       "Actor AI callbacks installed at task +0x0C are commonly self-modifying: a state transition rewrites +0x0C to the next callback. Code that temporarily replaces an actor callback must save the replaced value, invoke it, and restore only while +0x0C still holds the replacement, preserving the 0x00800000 inhibit tag.",
-      "Task allocation resets +0x10 to null. Preserve any unexpected non-null post callback instead of replacing it, and keep any mirrored material buffer valid through graphics use and until the child is unlinked."
+      "Task allocation resets +0x10 to null. Preserve any unexpected non-null post callback instead of replacing it, and keep any mirrored material buffer valid through graphics use and until the child is unlinked.",
+      "Callback representation at child birth can differ from its later loaded representation even when callback identity is unchanged. For raw callbacks in the verified 0x08000000–0x08FFFFFF family, do not use func_80014840_15440's native segment-resolved result as the loaded callback identity. If an early comparison is required, validate the file context, reject null and 0xFFFFFFFF resource handles before clearing the tag, then apply the scheduler's fixed-base mapping to a local copy without mutating or dispatching the task callback."
     ],
     "related": [
       "D_8016DAB4_16E6B4",
-      "D_8015C5C8_15D1C8"
+      "D_8015C5C8_15D1C8",
+      "func_80014840_15440",
+      "func_80218C28_5D40F8"
     ],
     "confidence": "decompiled"
   },

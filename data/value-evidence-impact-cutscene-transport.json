@@ -1,0 +1,27 @@
+{
+  "date": "2026-09-27",
+  "game": "MNSG USA",
+  "finding": "func_80006140_6D40",
+  "native_address": "0x80006140",
+  "rom_address": "0x00006D40",
+  "evidence": {
+    "source": "Goemon64Recomp/RecompiledFuncs/funcs_8.c, lines 1314-1410",
+    "verified_operations": [
+      "Calls func_80006274_6E74(field90, field91).",
+      "Sets D_800C7A76 to 1.",
+      "Writes 0x80 to system +0x3AE29.",
+      "Writes 0x021C + (unsigned char)index to system +0x3AFE0."
+    ],
+    "stage_mapping": {
+      "0x1D": "0x0239 Kashiwagi",
+      "0x1E": "0x023A Thaisamba",
+      "0x1F": "0x023B Balberra"
+    },
+    "transition": "The caller separately invokes func_80003728_4328(12), as observed in src/bosses/anchor_boss_invite_world.c lines 306-319."
+  },
+  "unknowns": [
+    "The semantic meanings and valid ranges of field90 and field91 are not established by the inspected evidence.",
+    "The inspected source checkout commit/hash was not supplied in this task.",
+    "No fresh in-game test of the prepared transitions was supplied."
+  ]
+}

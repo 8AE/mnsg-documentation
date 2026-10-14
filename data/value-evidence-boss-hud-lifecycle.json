@@ -1,0 +1,72 @@
+{
+  "reviewedAt": "2026-09-29",
+  "rom": {
+    "version": "USA decompressed native ROM",
+    "sha256": "e40bee20508c2e29e651dca4e47504e40f908f0a2186e34a582784bf5a64be4c"
+  },
+  "symbolTable": {
+    "path": "Goemon64RecompSyms/mnsg.syms.toml",
+    "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+  },
+  "method": "Ghidra decompilation and call-path inspection. No live-game visibility or rendering check was performed.",
+  "nativeEvidence": {
+    "mindControlRobotChild": {
+      "overlay": ".file_46",
+      "spawnFunction": {
+        "symbol": "func_08001A28_702B28",
+        "address": "0x08001A28",
+        "finding": "Spawns a distinct kind-6 child through func_802171A8(root, func_08002D18_703E18, 6) and writes the root pointer into child +0xD0."
+      },
+      "initializer": {
+        "symbol": "func_08002D18_703E18",
+        "address": "0x08002D18",
+        "finding": "On its later scheduler invocation, sets child entity halfword +0x5E to 0x1B0 and child health byte +0x8D to 5. Task +0x04 is a mutable pointer-to-pointer backlink and does not identify the stable parent."
+      },
+      "proximity": {
+        "symbol": "func_08002EB4_703FB4",
+        "address": "0x08002EB4",
+        "finding": "Schedules func_08002F58_704058 when fabs(player_object.Z - child_object.Z) is less than 200.0. This uses Z separation, not full 3D distance."
+      },
+      "death": {
+        "entry": {
+          "symbol": "func_08002540_703640",
+          "address": "0x08002540",
+          "finding": "At zero child HP, schedules func_080031D8_7042D8."
+        },
+        "continuation": [
+          {"symbol": "func_080031D8_7042D8", "address": "0x080031D8"},
+          {"symbol": "func_08003634_704734", "address": "0x08003634"},
+          {"symbol": "func_08003678_704778", "address": "0x08003678"},
+          {"symbol": "func_080036CC_7047CC", "address": "0x080036CC", "finding": "Deletes the child at the end of the native death chain."}
+        ]
+      },
+      "confidence": "Ghidra-verified task creation, child identity, health initialization, proximity check and death chain; runtime visibility was not checked."
+    },
+    "dharumanyoHealthCarrier": {
+      "neutralState": {
+        "symbol": "func_08000970_6C8B80",
+        "address": "0x08000970",
+        "finding": "The entity-0xCC lives carrier has 12 remaining lives in byte +0xD1."
+      },
+      "genericDamage": {
+        "symbol": "func_80218350_5D3820",
+        "address": "0x80218350",
+        "finding": "The common actor path resets the carrier's generic health byte +0x8D to 10; this byte is separate from the +0xD1 lives count."
+      },
+      "confidence": "Ghidra-verified field distinction and values."
+    },
+    "tsuramiHealthRoot": {
+      "initializer": {
+        "symbol": "func_080017F4_6B4A94",
+        "address": "0x080017F4"
+      },
+      "update": {
+        "symbol": "func_08000388_6B3628",
+        "address": "0x08000388",
+        "finding": "The initialized health-bearing root has 12 HP in byte +0x8D; its custom lethal path proceeds at one remaining HP."
+      },
+      "confidence": "Ghidra-verified initialized root health and custom lethal threshold."
+    }
+  },
+  "scope": "These values describe the Congo mind-control robot child, Dharumanyo lives carrier, and Tsurami health root. They do not make Congo's boss-root HP interchangeable with any child or carrier field."
+}

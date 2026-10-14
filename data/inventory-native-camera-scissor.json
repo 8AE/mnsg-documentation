@@ -1,0 +1,21 @@
+{
+  "scope": "Ghidra-verified Control Machine opening-camera scissor state and native RDP scissor emission.",
+  "symbols": [
+    {
+      "name": "func_08000240_71A750",
+      "kind": "function",
+      "address": "0x08000240",
+      "size": 492,
+      "romAddress": "0x0071A750",
+      "section": ".file_58"
+    },
+    {
+      "name": "func_80017D8C_1898C",
+      "kind": "function",
+      "address": "0x80017D8C",
+      "size": 1360,
+      "romAddress": "0x0001898C",
+      "section": ".main"
+    }
+  ]
+}

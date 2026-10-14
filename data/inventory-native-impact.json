@@ -1,0 +1,12 @@
+{
+  "scope": "Verified native Impact encounter and stage-loading routines.",
+  "symbols": [
+    {
+      "name": "func_80006140_6D40",
+      "kind": "function",
+      "address": "0x80006140",
+      "romAddress": "0x00006D40",
+      "section": ".main"
+    }
+  ]
+}

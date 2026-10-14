@@ -1,0 +1,85 @@
+{
+  "scope": "Ghidra-reviewed native sprite queue, texture descriptors, and player-heart routines.",
+  "symbols": [
+    {
+      "name": "func_800086C4_92C4",
+      "kind": "function",
+      "address": "0x800086C4",
+      "size": 20,
+      "romAddress": "0x000092C4",
+      "section": ".main"
+    },
+    {
+      "name": "func_80010230_10E30",
+      "kind": "function",
+      "address": "0x80010230",
+      "size": 176,
+      "romAddress": "0x00010E30",
+      "section": ".main"
+    },
+    {
+      "name": "func_800102E0_10EE0",
+      "kind": "function",
+      "address": "0x800102E0",
+      "size": 56,
+      "romAddress": "0x00010EE0",
+      "section": ".main"
+    },
+    {
+      "name": "func_80010358_10F58",
+      "kind": "function",
+      "address": "0x80010358",
+      "size": 28,
+      "romAddress": "0x00010F58",
+      "section": ".main"
+    },
+    {
+      "name": "func_80010374_10F74",
+      "kind": "function",
+      "address": "0x80010374",
+      "size": 104,
+      "romAddress": "0x00010F74",
+      "section": ".main"
+    },
+    {
+      "name": "func_800103DC_10FDC",
+      "kind": "function",
+      "address": "0x800103DC",
+      "size": 464,
+      "romAddress": "0x00010FDC",
+      "section": ".main"
+    },
+    {
+      "name": "func_800105AC_111AC",
+      "kind": "function",
+      "address": "0x800105AC",
+      "size": 260,
+      "romAddress": "0x000111AC",
+      "section": ".main"
+    },
+    {
+      "name": "func_800106F0_112F0",
+      "kind": "function",
+      "address": "0x800106F0",
+      "size": 148,
+      "romAddress": "0x000112F0",
+      "section": ".main"
+    },
+    {
+      "name": "func_801FBB30_5B7A40",
+      "kind": "function",
+      "address": "0x801FBB30",
+      "size": 544,
+      "romAddress": "0x005B7A40",
+      "section": ".file_0C"
+    },
+    {
+      "name": "func_801FBD50_5B7C60",
+      "kind": "function",
+      "address": "0x801FBD50",
+      "size": 2088,
+      "romAddress": "0x005B7C60",
+      "section": ".file_0C"
+    }
+  ]
+}

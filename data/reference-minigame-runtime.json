@@ -1,0 +1,1157 @@
+{
+  "func_08000AD4_7068C4": {
+    "title": "Run Sasuke's high-jump challenge controller",
+    "summary": "Initializes seventeen native collision platforms, runs instruction and gameplay-music transitions, and creates the challenge HUD before active play.",
+    "confidence": "decompiled",
+    "declaration": "void func_08000AD4_7068C4(void *task, void *object);",
+    "parameters": [
+      {
+        "name": "task",
+        "type": "void *",
+        "description": "Live task initialized by the matching native constructor."
+      },
+      {
+        "name": "object",
+        "type": "void *",
+        "description": "The task's own native render or collision object, where this callback uses one."
+      }
+    ],
+    "returns": "No return value.",
+    "behavior": [
+      "Task byte +0xD0 is the controller phase. Initialization phase 0 creates seventeen platforms; phase 1 is reached only after the complete graph exists. An initialization failure selects inert phase 4.",
+      "Task byte +0xD1 selects the camera; +0xD2 is the warning state. Halfwords +0xD4, +0xD6 and +0xD8 hold the frame counter, repeat state and previous input. Words +0xDC and +0xE0 are local display handles; +0xE4 is the HUD task pointer.",
+      "Phase 1 starts scenario 0x0179 at frame 6 and then selects phase 2. The scenario supplies instruction dialogue, waits and audio commands; it does not construct platforms.",
+      "Scenario 0x0179 queues native audio command 0x0292 before its final instruction text and wait. After setting instruction flag 0x21, it queues gameplay music command 0x0052 through func_80038BC8_397C8 and ends.",
+      "Phase 2 creates the local HUD, initializes its displayed timer to 99 (raw 3960), clears the native instruction-state byte, and advances to phase 3.",
+      "Phase 2 waits for the native instruction VM to become inactive. Its HUD transition contains no music call, so continuing past scenario 0x0179 also bypasses that scenario's gameplay-music command."
+    ],
+    "cautions": [
+      "A phase change alone cannot recreate platform initialization. A continuation past the introduction requires all seventeen native platform initializers to have completed and the instruction VM to be inactive.",
+      "Camera state, display handles and task pointers belong to the local native graph. Copying raw pointers into another graph is not established as safe.",
+      "A continuation that skips the instruction scenario must account for its local audio transition separately. Queue the gameplay command once at the intended active-play transition; repeated frame-by-frame submission is not prevented by a persistent already-playing check."
+    ],
+    "example": "extern void func_08000AD4_7068C4(void *task, void *object);\n\ntypedef void (*NativeTaskCallback)(void *, void *);\n\n/* Observe callback identity; the native scheduler owns execution. */\nNativeTaskCallback documented_callback(void)\n{\n    return func_08000AD4_7068C4;\n}\n",
+    "exampleExplanation": "This returns the callback address without executing initialization, moving a platform, or advancing the challenge. The callback requires the matching resident overlay and initialized native task graph.",
+    "related": [
+      "func_080006F8_7064E8",
+      "func_08000980_706770",
+      "func_080002B4_7060A4",
+      "func_800371B4_37DB4",
+      "func_80038BC8_397C8"
+    ]
+  },
+  "func_080006F8_7064E8": {
+    "title": "Update an orbiting high-jump platform",
+    "summary": "Initializes a native collision platform and updates its orbit and vertical motion using a 360- or 240-tick period and a floating-point radius of 30.",
+    "confidence": "decompiled",
+    "declaration": "void func_080006F8_7064E8(void *task, void *object);",
+    "parameters": [
+      {
+        "name": "task",
+        "type": "void *",
+        "description": "Live task initialized by the matching native constructor."
+      },
+      {
+        "name": "object",
+        "type": "void *",
+        "description": "The task's own native render or collision object, where this callback uses one."
+      }
+    ],
+    "returns": "No return value.",
+    "behavior": [
+      "Phase 0 initializes the native platform and binds its collision representation. Phase 1 updates pose, visibility and the local motion counter.",
+      "Task signed halfwords +0xD2, +0xD4 and +0xD6 hold yaw offset, period and tick. Task floats +0xD8, +0xDC and +0xE0 hold radius, baseline Y and amplitude. The observed radius is 30.0 and amplitude is 20.0.",
+      "The first four orbit platforms, in native creation slots 0, 1, 2 and 3, use period 360. The later five orbit platforms, in slots 9, 11, 13, 15 and 16, use period 240. The constructor truncates its floating-point period argument into the signed halfword at +0xD4.",
+      "The object XYZ floats are at +0x08, +0x0C and +0x10; object yaw is the halfword at +0x16."
+    ],
+    "cautions": [
+      "Collision binding is part of native initialization. A pose-only object is not a replacement for an initialized collision platform.",
+      "The documented layout belongs to this platform callback; it is not a general task layout."
+    ],
+    "example": "extern void func_080006F8_7064E8(void *task, void *object);\n\ntypedef void (*NativeTaskCallback)(void *, void *);\n\n/* Observe callback identity; the native scheduler owns execution. */\nNativeTaskCallback documented_callback(void)\n{\n    return func_080006F8_7064E8;\n}\n",
+    "exampleExplanation": "This returns the callback address without executing initialization, moving a platform, or advancing the challenge. The callback requires the matching resident overlay and initialized native task graph.",
+    "related": [
+      "func_08000AD4_7068C4",
+      "func_08000980_706770"
+    ]
+  },
+  "func_08000980_706770": {
+    "title": "Update a spinning high-jump platform",
+    "summary": "Initializes a native collision platform, then updates its rotation and vertical placement.",
+    "confidence": "decompiled",
+    "declaration": "void func_08000980_706770(void *task, void *object);",
+    "parameters": [
+      {
+        "name": "task",
+        "type": "void *",
+        "description": "Live task initialized by the matching native constructor."
+      },
+      {
+        "name": "object",
+        "type": "void *",
+        "description": "The task's own native render or collision object, where this callback uses one."
+      }
+    ],
+    "returns": "No return value.",
+    "behavior": [
+      "Phase 0 initializes the native platform and binds collision. Phase 1 updates its pose and visibility.",
+      "Task halfword +0xD2 is the yaw increment; the observed instances use +2 or -2. Task float +0xD4 is the platform Y value.",
+      "The object XYZ floats are at +0x08, +0x0C and +0x10; object yaw is the halfword at +0x16."
+    ],
+    "cautions": [
+      "Run native collision initialization before using the platform.",
+      "The documented fields are callback-specific and do not describe arbitrary world actors."
+    ],
+    "example": "extern void func_08000980_706770(void *task, void *object);\n\ntypedef void (*NativeTaskCallback)(void *, void *);\n\n/* Observe callback identity; the native scheduler owns execution. */\nNativeTaskCallback documented_callback(void)\n{\n    return func_08000980_706770;\n}\n",
+    "exampleExplanation": "This returns the callback address without executing initialization, moving a platform, or advancing the challenge. The callback requires the matching resident overlay and initialized native task graph.",
+    "related": [
+      "func_08000AD4_7068C4",
+      "func_080006F8_7064E8"
+    ]
+  },
+  "func_080002B4_7060A4": {
+    "title": "Draw and advance the high-jump HUD timer",
+    "summary": "Draws the high-jump HUD and decrements its raw timer toward zero; the initial displayed 99 uses 3960 ticks at forty ticks per unit.",
+    "confidence": "decompiled",
+    "declaration": "void func_080002B4_7060A4(void *task, void *object);",
+    "parameters": [
+      {
+        "name": "task",
+        "type": "void *",
+        "description": "Live task initialized by the matching native constructor."
+      },
+      {
+        "name": "object",
+        "type": "void *",
+        "description": "The task's own native render or collision object, where this callback uses one."
+      }
+    ],
+    "returns": "No return value.",
+    "behavior": [
+      "The HUD task uses private sprite data beginning at +0x5C. Words +0x64 and +0x68 hold UI coordinates, +0x78 is the text buffer pointer, and +0x7C is the sprite handle.",
+      "Task word +0x80 is the raw timer. Initializing the displayed value to 99 produces raw 3960: forty raw ticks per displayed unit.",
+      "The draw callback performs a saturating timer decrement; zero does not wrap into a positive timer."
+    ],
+    "cautions": [
+      "This is a sprite task. World-actor interpretations of +0x68 or +0x74 must not be applied to this private HUD layout.",
+      "Keep text buffers, sprite handles and screen coordinates in the local HUD lifecycle."
+    ],
+    "example": "extern void func_080002B4_7060A4(void *task, void *object);\n\ntypedef void (*NativeTaskCallback)(void *, void *);\n\n/* Observe callback identity; the native scheduler owns execution. */\nNativeTaskCallback documented_callback(void)\n{\n    return func_080002B4_7060A4;\n}\n",
+    "exampleExplanation": "This returns the callback address without executing initialization, moving a platform, or advancing the challenge. The callback requires the matching resident overlay and initialized native task graph.",
+    "related": [
+      "func_08000AD4_7068C4"
+    ]
+  },
+  "func_80217360_5D2830": {
+    "title": "Spawn a native child actor from an owner",
+    "summary": "Selects an actor owner list, allocates the requested entity, copies owner context, and increments the shared actor count.",
+    "confidence": "decompiled",
+    "declaration": "void *func_80217360_5D2830(void *owner, uint16_t entity_id, uint8_t group);",
+    "parameters": [
+      {
+        "name": "owner",
+        "type": "void *",
+        "description": "Valid owner task. A null object at owner +0x18 selects a zero-transform spawn; the owner task itself must be valid."
+      },
+      {
+        "name": "entity_id",
+        "type": "uint16_t",
+        "description": "Validated native entity ID used to index callback and model tables."
+      },
+      {
+        "name": "group",
+        "type": "uint8_t",
+        "description": "Native actor category passed to the owner-list selector."
+      }
+    ],
+    "returns": "New task pointer on success, or null when owner-list selection or task allocation fails.",
+    "behavior": [
+      "Uses func_80219CA0_5D5170 to select the native owner list, then allocates the entity using callback and model tables indexed by entity_id.",
+      "If the owner has an object at +0x18, copies its XYZ and rotation into the allocation request. Otherwise requests zero position and rotation. The initial scale is 0.1 on all three axes.",
+      "Copies native owner context through func_80218C28_5D40F8, writes entity_id at task +0x5C and +0x5E, and increments the shared actor count only after allocation succeeds.",
+      "Allocation stores the callback table value unchanged at child +0x0C and establishes the object at +0x18 and file ID at +0x28 before func_80218C28_5D40F8. The requested entity ID at +0x5C/+0x5E is assigned only after that inheritance helper returns.",
+      "For direct Ebisumaru explosion children, func_80218C28_5D40F8 is entered while task bank +0x28 and resource base +0x2C are both zero. The allocator later writes the 0xFFFE/0xFFFFFFFF pending-resource sentinels; the File42 caller then installs bank 0x2A and its resident resource base before the first scheduled update."
+    ],
+    "cautions": [
+      "Validate entity_id against the resident native tables before calling; this routine does not establish a bounds-checking contract.",
+      "Check for null before initializing the returned task. Child creation alone does not finish the entity-specific initialization callback.",
+      "An early child-construction hook can observe a raw segmented callback before scheduler relocation. Do not compare it directly with a loaded callback address or assume the requested entity halfwords are already final. For verified raw callback addresses from 0x08000000 through 0x08FFFFFF, an early identity comparison must use the recompiled scheduler's 32-bit unsigned mapping, raw_callback - 0x08000000u + (resource_handle & 0xBFFFFFFFu), on a local copy after validating the child file and resource handle; func_80014840_15440 uses native per-file segment mapping instead.",
+      "At the context-copy entry boundary, bank/resource identity is not final. Do not classify a direct child solely from those entry fields; preserve the native construction order and confirm the later caller-installed values."
+    ],
+    "example": "#include <stdint.h>\n\nextern void *func_80217360_5D2830(void *, uint16_t, uint8_t);\n\n/* The caller validates the owner, entity tables and native category. */\nvoid *spawn_native_child(void *owner, uint16_t entity_id, uint8_t group)\n{\n    if (!owner) return 0;\n    return func_80217360_5D2830(owner, entity_id, group);\n}\n",
+    "exampleExplanation": "The result can be null. The native scheduler must still execute the child's own initialization; callers must not fabricate a task graph from a copied pose.",
+    "related": [
+      "func_80219CA0_5D5170",
+      "func_80218C28_5D40F8",
+      "func_80217144_5D2614",
+      "func_80014840_15440",
+      "func_80034734_35334"
+    ]
+  },
+  "func_80217144_5D2614": {
+    "title": "Initialize native actor collision scalars",
+    "summary": "Writes a fixed initial image of attack, collision and actor scalar fields into an existing task.",
+    "confidence": "decompiled",
+    "declaration": "void func_80217144_5D2614(void *task);",
+    "parameters": [
+      {
+        "name": "task",
+        "type": "void *",
+        "description": "Writable initialized task storage containing the native actor fields through +0x9B."
+      }
+    ],
+    "returns": "No return value.",
+    "behavior": [
+      "Sets task word +0x48 to 0xFFFFFFFF, byte +0x4C to 1, and halfwords +0x4E/+0x50/+0x52 to 2/40/0.",
+      "Clears task words +0x34 and +0x38. Writes halfwords +0x3C/+0x3E/+0x40 as 100/160/0 and byte +0x44 as 0.",
+      "Writes bytes +0x98/+0x99/+0x9A/+0x9B as 10/5/5/0 and byte +0x8D as 1. The routine makes no calls."
+    ],
+    "cautions": [
+      "These are initial scalar values, not a complete actor constructor or a collision pass.",
+      "Byte +0x4C is separate from the shape halfword at +0x4E. The cleared word at +0x38 does not establish contact-source identity for every actor callback."
+    ],
+    "example": "extern void func_80217144_5D2614(void *task);\n\n/* Use only at an actor initialization boundary. */\nvoid initialize_actor_scalars(void *task)\n{\n    if (task) func_80217144_5D2614(task);\n}\n",
+    "exampleExplanation": "This resets the documented fields on existing native task storage. Repeating it on a live actor can overwrite mutable collision state.",
+    "related": [
+      "func_80217360_5D2830",
+      "func_80218DA8_5D4278"
+    ]
+  },
+  "func_801FA6E4_5B65F4": {
+    "title": "Prepare a native return request from room history",
+    "summary": "Copies the saved room and arrival fields into pending transition state and selects a return marker.",
+    "confidence": "decompiled",
+    "declaration": "void func_801FA6E4_5B65F4(char marker_mode);",
+    "parameters": [
+      {
+        "name": "marker_mode",
+        "type": "char",
+        "description": "Zero selects marker 1; any nonzero value selects marker 4."
+      }
+    ],
+    "returns": "No return value.",
+    "behavior": [
+      "Copies the saved room halfword from system-state +0x3ADFC to pending room +0x3AFE0.",
+      "Copies saved XYZ halfwords from +0x3AFF8/+0x3AFFA/+0x3AFFC to pending +0x3AFE4/+0x3AFE6/+0x3AFE8, and copies the saved orientation halfword at +0x3AFFE to pending +0x3AFEA.",
+      "Writes system-state marker byte +0x3AE29 as 4 for nonzero marker_mode, or 1 for zero.",
+      "The separate pending player-rotation halfword at +0x3AFE2 is not written by this helper. The basic destination setter documents +0x3AFEA as its camera-rotation slot."
+    ],
+    "cautions": [
+      "Requires valid initialized system state and saved room history from the surrounding native entry lifecycle.",
+      "This routine records pending transition fields; it does not by itself execute the room transition, restore challenge statistics or grant a reward.",
+      "The copy itself does not prove whether every caller originally saved a camera angle or player facing into +0x3AFFE. Keep the saved halfword distinct from the separate pending player-rotation field."
+    ],
+    "example": "extern void func_801FA6E4_5B65F4(char marker_mode);\n\n/* Invoke at the native exit boundary after room history is valid. */\nvoid record_saved_room_return(void)\n{\n    func_801FA6E4_5B65F4(1);\n}\n",
+    "exampleExplanation": "This selects marker 4 using the native saved room and arrival fields. The native exit controller remains responsible for the rest of the transition lifecycle.",
+    "related": [
+      "func_801FA4FC_5B640C",
+      "func_801FA420_5B6330",
+      "func_800370E8_37CE8",
+      "func_800371B4_37DB4",
+      "func_8000607C_6C7C",
+      "func_80003728_4328"
+    ]
+  },
+  "func_080023A4_709DE4": {
+    "title": "Initialize Goemon's Impact challenge controller",
+    "summary": "Allocates the controller work area and installs its native update callback.",
+    "confidence": "decompiled",
+    "declaration": "void func_080023A4_709DE4(void *task, void *object);",
+    "parameters": [
+      {
+        "name": "task",
+        "type": "void *",
+        "description": "The matching live native task."
+      },
+      {
+        "name": "object",
+        "type": "void *",
+        "description": "Object supplied by the native scheduler for this task callback."
+      }
+    ],
+    "returns": "No return value.",
+    "behavior": [
+      "Allocates a zeroed 60-byte work area and stores its pointer in task word +0xD0.",
+      "Installs func_080018E8_709328 as the task update callback. The object argument is preserved by the calling convention but unused by this initializer."
+    ],
+    "cautions": [
+      "Task +0xD0 is a work pointer for this controller. The target callback in the same challenge uses inline data beginning at +0xD0.",
+      "Use the native constructor and scheduler lifecycle; rerunning this initializer is not established as a reset operation."
+    ],
+    "example": "extern void func_080023A4_709DE4(void *task, void *object);\n\ntypedef void (*NativeTaskCallback)(void *, void *);\n\n/* Observe identity without replaying the native lifecycle. */\nNativeTaskCallback documented_callback(void)\n{\n    return func_080023A4_709DE4;\n}\n",
+    "exampleExplanation": "The native scheduler owns callback execution. This example returns the function address and does not allocate work, advance challenge state or replay a contact pass.",
+    "related": [
+      "func_080018E8_709328",
+      "func_0800127C_708CBC"
+    ]
+  },
+  "func_080018E8_709328": {
+    "title": "Run Goemon's Impact challenge controller",
+    "summary": "Runs the native introduction, six targets and 100-second (3000-frame) Impact challenge, including carrying, throwing, result and exit phases.",
+    "confidence": "decompiled",
+    "declaration": "void func_080018E8_709328(void *task, void *object);",
+    "parameters": [
+      {
+        "name": "task",
+        "type": "void *",
+        "description": "The matching live native task."
+      },
+      {
+        "name": "object",
+        "type": "void *",
+        "description": "Object supplied by the native scheduler for this task callback."
+      }
+    ],
+    "returns": "No return value.",
+    "behavior": [
+      "Task word +0xD0 points to its 60-byte work area. Work byte +0x00 is the phase, halfword +0x02 is yaw modulo 1024, signed halfword +0x04 is the phase frame, halfword +0x06 is the held-button repeat count, and word +0x08 is the previous held-button mask.",
+      "Work words +0x0C and +0x10 are native visual pointers; +0x14 is the timer HUD task pointer. Six target task pointers occupy +0x18 through +0x2C; three throwable task pointers occupy +0x30 through +0x38.",
+      "Phase 0 performs setup. Phase 3 starts introduction scenario 0x0173. Phase 4 waits for the instruction VM to be idle, then constructs the timer and six targets.",
+      "Phases 1 and 2 implement local carrying/aiming and throwing. The timer starts at 100 seconds, represented by 3000 native frames. Timer zero selects timeout phase 5; all six target completion bytes equal to 1 select success phase 6. Phase 7 handles exit."
+    ],
+    "cautions": [
+      "Pointers and carry/throw state belong to this native controller graph. Preserve native child initialization and cleanup.",
+      "The target hit bit is observed, but attribution of a specific cube through task +0x38 has not been established."
+    ],
+    "example": "extern void func_080018E8_709328(void *task, void *object);\n\ntypedef void (*NativeTaskCallback)(void *, void *);\n\n/* Observe identity without replaying the native lifecycle. */\nNativeTaskCallback documented_callback(void)\n{\n    return func_080018E8_709328;\n}\n",
+    "exampleExplanation": "The native scheduler owns callback execution. This example returns the function address and does not allocate work, advance challenge state or replay a contact pass.",
+    "related": [
+      "func_080023A4_709DE4",
+      "func_0800127C_708CBC",
+      "func_08000790_7081D0",
+      "func_080007A4_7081E4",
+      "func_801FA6E4_5B65F4"
+    ]
+  },
+  "func_0800127C_708CBC": {
+    "title": "Update an Impact challenge target",
+    "summary": "Advances a target using inline task work and the native hit-status bit.",
+    "confidence": "decompiled",
+    "declaration": "void func_0800127C_708CBC(void *task, void *object);",
+    "parameters": [
+      {
+        "name": "task",
+        "type": "void *",
+        "description": "The matching live native task."
+      },
+      {
+        "name": "object",
+        "type": "void *",
+        "description": "Object supplied by the native scheduler for this task callback."
+      }
+    ],
+    "returns": "No return value.",
+    "behavior": [
+      "This callback stores inline target work beginning at task +0xD0. It does not dereference task +0xD0 as a heap-work pointer.",
+      "The inline work begins with a phase byte at +0x00 and a signed completion byte at +0x01. The controller checks each completion byte for value 1.",
+      "Relative to inline task work, signed halfword +0x06 is the frame counter, signed halfwords +0x08/+0x0A are random intervals, float +0x0C is Y displacement, float +0x14 is the motion threshold, and word +0x18 is a visual child pointer.",
+      "Reads task word +0x68 bit 0x80 as native hit status and advances the target lifecycle."
+    ],
+    "cautions": [
+      "The hit-status bit does not establish the identity of the attacking cube. Task +0x38 must not be documented as that cube pointer without additional collision-path evidence.",
+      "Use this target layout only for the matching callback; the challenge controller uses a heap pointer at the same task offset."
+    ],
+    "example": "extern void func_0800127C_708CBC(void *task, void *object);\n\ntypedef void (*NativeTaskCallback)(void *, void *);\n\n/* Observe identity without replaying the native lifecycle. */\nNativeTaskCallback documented_callback(void)\n{\n    return func_0800127C_708CBC;\n}\n",
+    "exampleExplanation": "The native scheduler owns callback execution. This example returns the function address and does not allocate work, advance challenge state or replay a contact pass.",
+    "related": [
+      "func_080018E8_709328",
+      "func_80217144_5D2614"
+    ]
+  },
+  "func_08000790_7081D0": {
+    "title": "Initialize the Impact challenge timer",
+    "summary": "Stores a signed seconds value multiplied by thirty in the timer task.",
+    "confidence": "decompiled",
+    "declaration": "void func_08000790_7081D0(void *timer_task, int seconds);",
+    "parameters": [
+      {
+        "name": "timer_task",
+        "type": "void *",
+        "description": "Initialized native challenge timer task."
+      },
+      {
+        "name": "seconds",
+        "type": "int",
+        "description": "Signed duration; the challenge controller supplies 100."
+      }
+    ],
+    "returns": "No return value.",
+    "behavior": [
+      "Writes signed task word +0x84 as seconds multiplied by 30. The observed value 100 produces 3000 native frames."
+    ],
+    "cautions": [
+      "This writes timer data only. It does not allocate the HUD or run its draw callback.",
+      "Negative or overflowing durations have no established supported contract."
+    ],
+    "example": "extern void func_08000790_7081D0(void *timer_task, int seconds);\n\nvoid initialize_challenge_timer(void *timer_task)\n{\n    if (timer_task) func_08000790_7081D0(timer_task, 100);\n}\n",
+    "exampleExplanation": "Uses the native controller's observed 100-second duration on an already initialized timer task.",
+    "related": [
+      "func_080007A4_7081E4",
+      "func_080018E8_709328"
+    ]
+  },
+  "func_080007A4_7081E4": {
+    "title": "Read the Impact challenge timer in seconds",
+    "summary": "Returns the timer task's signed raw frame counter divided by thirty.",
+    "confidence": "decompiled",
+    "declaration": "int func_080007A4_7081E4(void *timer_task);",
+    "parameters": [
+      {
+        "name": "timer_task",
+        "type": "void *",
+        "description": "Live native timer task containing the signed counter at +0x84."
+      }
+    ],
+    "returns": "Signed timer counter divided by 30.",
+    "behavior": [
+      "Reads signed task word +0x84 and divides it by 30 to obtain the displayed seconds value."
+    ],
+    "cautions": [
+      "This read does not advance the counter.",
+      "The timer task must remain valid; a saved task pointer is not valid after native cleanup."
+    ],
+    "example": "extern int func_080007A4_7081E4(void *timer_task);\n\nint challenge_seconds_remaining(void *timer_task)\n{\n    if (!timer_task) return 0;\n    return func_080007A4_7081E4(timer_task);\n}\n",
+    "exampleExplanation": "Reads the documented timer task rather than interpreting a controller work pointer as a timer.",
+    "related": [
+      "func_08000790_7081D0",
+      "func_080018E8_709328"
+    ]
+  },
+  "func_080005D0_708010": {
+    "title": "Draw and advance the Impact challenge timer",
+    "summary": "Draws a thirty-tick-per-second timer HUD before decrementing its frame counter; a 100-second start passes numeric value 99 on the next draw.",
+    "confidence": "decompiled",
+    "declaration": "void func_080005D0_708010(void *task, void *object);",
+    "parameters": [
+      {
+        "name": "task",
+        "type": "void *",
+        "description": "Live native timer task with a signed frame counter at +0x84."
+      },
+      {
+        "name": "object",
+        "type": "void *",
+        "description": "Native HUD object supplied by the task scheduler."
+      }
+    ],
+    "returns": "No return value.",
+    "behavior": [
+      "Reads the signed frame counter at task +0x84 and divides it by 30 for the local HUD draw before decrementing that counter. The draw uses the native two-digit number format.",
+      "Decrements signed task word +0x84 once per native frame and clamps a negative result to zero. The counter uses thirty ticks per second; the controller initializes 3000 for 100 seconds.",
+      "At the native 100-second start, the first draw passes numeric value 100 to the two-digit formatter from 3000 frames. That callback leaves 2999 frames after its decrement; the next draw passes 99 through integer division by 30. The displayed glyphs do not determine the timer duration."
+    ],
+    "cautions": [
+      "The native timer rate does not define a network update cadence.",
+      "HUD resources and task pointers must remain in the matching local lifecycle."
+    ],
+    "example": "extern void func_080005D0_708010(void *task, void *object);\n\ntypedef void (*NativeTaskCallback)(void *, void *);\n\nNativeTaskCallback documented_timer_callback(void)\n{\n    return func_080005D0_708010;\n}\n",
+    "exampleExplanation": "Returns callback identity without drawing or decrementing the timer. The native scheduler runs the callback with valid local resources.",
+    "related": [
+      "func_08000790_7081D0",
+      "func_080007A4_7081E4",
+      "func_080018E8_709328"
+    ]
+  },
+  "func_08001954_6F1B64": {
+    "title": "Run Ebisumaru's sweets challenge controller",
+    "summary": "Runs the sweets challenge lifecycle, including local camera and player-state work, hide detection against four native positions, and phase-based bomb emission.",
+    "confidence": "decompiled",
+    "declaration": "void func_08001954_6F1B64(void *task, void *object);",
+    "parameters": [
+      {
+        "name": "task",
+        "type": "void *",
+        "description": "Live native challenge controller task."
+      },
+      {
+        "name": "object",
+        "type": "void *",
+        "description": "The controller's native object supplied by its scheduler."
+      }
+    ],
+    "returns": "No return value.",
+    "behavior": [
+      "During a normal room 0x01E1 load, the room-specific callback preloads dynamic resource IDs 0x0020, 0x0197, 0x0159, 0x002A, 0x01E6, 0x01E1, 0x01E2, 0x01E3, 0x01CF and 0x0173 before the controller's first task callback. This callback loads resources only; it does not construct an actor. The fixed common File12 bank is separate from that preload list.",
+      "Task words +0xD0/+0xD4/+0xD8 point to the mechanism, native camera and HUD. Byte +0xDC is the phase. Signed halfwords +0xDE/+0xE0/+0xE2 hold phase frames, the spawn clock and the random threshold.",
+      "Phase 0 waits until signed frame counter +0xDE exceeds 1. With an initial zero counter, the first two callbacks wait and the third constructs the camera, HUD and mechanism. Construction sets phase +0xDC to 1 and clears +0xDE; the common epilogue leaves +0xDE at 1 and spawn clock +0xE0 at 2 on return.",
+      "The private HUD stores a signed timer at +0x80, sweets count at +0x84 and a signed displayed-heart count at +0x88. The controller initializes local maximum and current HP to 20; the displayed count is current HP minus 17, so 20 HP shows three icons and 17 HP shows none. The timer initializes to 99 seconds, represented by 2970 native frames at thirty ticks per second.",
+      "The HUD callback decrements its raw timer on each callback independently of the controller phase; controller-phase changes alone do not pause the private timer.",
+      "The native HUD timer callback reads signed raw frames at HUD task +0x80, draws signed(raw/30) seconds, then decrements the frame count once per admitted task update; normal setup starts it at 99 seconds (2970 frames). The controller's seconds getter returns zero below 30 raw frames, so its timer failure branch begins at raw < 30.",
+      "In phase 4, the controller updates its local camera and then reads the current player object directly. The native hide-center table contains these world X/Z positions:\n\n| Center | X | Z |\n| --- | ---: | ---: |\n| 1 | 80 | -49 |\n| 2 | 49 | 48 |\n| 3 | -96 | 99 |\n| 4 | -62 | -23 |",
+      "A center qualifies when native single-precision sqrt(dx*dx + dz*dz) is strictly less than 14 and player Y + 15 is strictly less than -40. No character/form, action, line-of-sight or target-pointer gate participates in this check.",
+      "On a hidden path, a warning sound is selected when the signed phase frame modulo 60 equals 2. The controller remains in phase 4 through frame 120; after that it begins a separate retraction transition. If no center qualifies, phase 4 selects animation 2 at rate 0.25 with flags 1, changes to phase 6 and resets its phase frame to 0. The ordinary epilogue advances that frame to 1; an early return after sweet allocation failure can leave it at 0.",
+      "The root creates mechanism entity 0x01AE, whose callback creates platform entity 0x01B1. It also controls robot entity 0x00FB, sweet entity 0x01AD and bomb entity 0x01AC spawning; the robot callback resides in a different native overlay.",
+      "The mechanism begins in its own phase 0, creates platform entity 0x01B1 at mechanism word +0xD0, and sets byte +0xD4 to 1. The platform separately initializes its phase byte +0xD0 to 1.",
+      "During controller phase 1, robot entity 0x00FB is requested when signed spawn clock +0xE0 modulo 201 equals 10 and the native robot count is below 2. Robot creation can therefore occur before the controller reaches its later animation phase.",
+      "Phase 1 advances when its frame counter exceeds the random threshold at +0xE2. Phase 2 reaches phase 3 when +0xDE is at least 81, selecting root animation index 0 with rate 0.125 and flags 1 through func_8021664C_5D1B1C.",
+      "The root, mechanism and platform use native task bank 0x2A; the robot uses task bank 0x20. Their model/animation resource pairs are root 0x01CF/0x0173 and robot 0x0197/0x0159; mechanism and platform model resources are 0x01E3 and 0x01E6.",
+      "Common File12 world code is loaded directly to its fixed destination by the native world loader. It need not appear in the dynamic scene-resource registry queried by func_800141C4_14DC4.",
+      "In phase 6, after checking whether the signed entry phase-frame +0xDE exceeds 120 and changing the phase back to 5 when it does, the controller still checks bomb cadence using that unchanged entry value. For example, entry frame 121 can trigger the phase change and still satisfy the residue-1 bomb request.",
+      "For a phase-6 bomb, native allocation and birth/context initialization happen before the controller consumes its two random values and stores the final X/Y/Z. A bomb position observed when allocation returns is therefore not necessarily its final placement; the controller writes the final coordinates afterward.",
+      "During phase 6, the controller requests a bomb when the entry phase-frame is 1 or 21 modulo 40. For residue 1, two native RNG calls produce X/Z offsets in [-10,9], added to the current player object's X/Z; bomb Y is 50. For residue 21, two RNG calls produce offsets in [-100,99]; X is the controller's player X clamped to [-112,112], divided by 1.2 in double precision and converted to float before adding the offset, while Z uses the current unclamped player Z plus its offset. Bomb Y is 50 in both branches.",
+      "A 120-frame pass requests six bombs; repeated phases and surviving parents can yield more than six live bombs. The bomb callback does not select a target: after its active phase waits for task status +0x68 bit 0x20 to clear, it creates two native explosion children and retires.",
+      "At current HP 17 or lower, the controller enters its failure phase. Phase 0 saves a 48-byte native player-statistics block. Phase 9 at tick 10 restores that block, runs the native exit cleanup and records the request for room 0x016D, XYZ (0,7,1), camera 0x0100, setup 0xA0 and option 0 through func_801FA420_5B6330.",
+      "Native child callback table values are mechanism 0x0800139C and platform 0x08001250 in file 0x2A, and robot 0x08001720 in file 0x20. At the parent-context inheritance stage these values can remain segmented; the recompiled scheduler resolves them before dispatch."
+    ],
+    "cautions": [
+      "Local health and native camera/HUD pointers are distinct from shared challenge progress. Preserve each task's native initialization and cleanup.",
+      "This scheduler-owned callback combines the local camera, phase logic, player state, statistics backup/restoration and cleanup with its position reads. Do not invoke it a second time as a hide query or swap the global player object around the whole callback.",
+      "Child actors use the shared native actor pool. This graph has no established fixed six-bomb live limit; the common selector uses strict cap<count rejection and later allocation may still fail. Direct visual tasks can use a separate scheduler allocation path.",
+      "The 48-byte statistics block is copied as a whole; individual field meanings are not established by this copy. The observed exit request is scoped to this native challenge lifecycle.",
+      "A missing dynamic-registry entry for fixed File12 code does not establish that its native world functions are unavailable. Task banks and model resources have separate native loading requirements.",
+      "The mechanism sets its initialization phase byte +0xD4 to 1 even when platform allocation returns null. The checked native path does not retry that null child at mechanism +0xD0, so the phase byte alone does not establish a complete child graph.",
+      "A child can have its object and file ID initialized while its callback still has a raw segmented representation. For the verified 0x08000000–0x08FFFFFF callback family, compare identities using the recompiled scheduler's fixed-base mapping on a local copy, after checking file and resource residency; func_80014840_15440 applies native per-file segment mapping and does not produce the same loaded callback address. Do not advance the child's native initialization to observe its callback.",
+      "The displayed hearts are a view of participant-local health, not a separate challenge health pool. The root saves and restores the participant’s 48-byte statistics block on the native exit path."
+    ],
+    "example": "extern void func_08001954_6F1B64(void *task, void *object);\n\ntypedef void (*NativeTaskCallback)(void *, void *);\n\n/* Observe callback identity without running an exit or spawning children. */\nNativeTaskCallback documented_sweets_controller(void)\n{\n    return func_08001954_6F1B64;\n}\n",
+    "exampleExplanation": "Returns the native callback identity. The game must supply its resident overlays, initialized controller graph and local display resources.",
+    "related": [
+      "func_08001AE4_718984",
+      "func_801FA420_5B6330",
+      "func_80217360_5D2830",
+      "func_80219CA0_5D5170",
+      "func_80217144_5D2614",
+      "func_80218DA8_5D4278",
+      "func_800141C4_14DC4",
+      "func_8021664C_5D1B1C",
+      "func_80218C28_5D40F8",
+      "func_80014840_15440",
+      "func_080008E4_6F0AF4",
+      "func_08000E2C_6F103C",
+      "func_8021927C_5D474C",
+      "func_8021928C_5D475C",
+      "func_80219448_5D4918",
+      "func_802196FC_5D4BCC",
+      "func_8021BB04_5D6FD4",
+      "func_8021B610_5D6AE0"
+    ]
+  },
+  "func_08000E2C_6F103C": {
+    "title": "Advance an Ebisumaru bomb",
+    "summary": "Waits for the native ground-status gate, creates two explosion children, and retires the bomb task.",
+    "confidence": "decompiled",
+    "declaration": "void func_08000E2C_6F103C(void *task, void *object);",
+    "parameters": [
+      {
+        "name": "task",
+        "type": "void *",
+        "description": "Live bomb task supplied by the native scheduler."
+      },
+      {
+        "name": "object",
+        "type": "void *",
+        "description": "The bomb's native object supplied by the scheduler."
+      }
+    ],
+    "returns": "No return value.",
+    "behavior": [
+      "In its active phase, waits until task status +0x68 bit 0x20 is clear. It then creates the group-0 visual explosion child first, creates the group-1 damaging explosion child second, and deletes the bomb task after both constructions.",
+      "The callback does not choose a player target or revise the bomb's position. Position selection and bomb creation occur in the challenge controller.",
+      "The two direct children inherit the grounded bomb transform. Their context-copy helper is entered before the direct-child allocator finalizes its bank/resource fields; the File42 caller installs the resident File42 bank and resource base afterward.",
+      "The two spawn calls use zero owner-relative XYZ offsets, so both child objects begin at the grounded bomb origin rather than at a separately selected target.",
+      "Only after both children have completed their bank/mode/resource setup does the bomb callback request deletion of the current parent task. The native deletion wrapper enters cleanup before later unlinking the task; the verified bomb path does not pre-set task status +0x68 bit 0x02 before that wrapper entry."
+    ],
+    "cautions": [
+      "The task and object must be valid within the matching native scheduler lifecycle. This callback includes child creation and task retirement; it is not a position-only query.",
+      "This callback emits two native children, performs audio and deletes its parent. Do not call it again to reproduce visual or contact state."
+    ],
+    "related": [
+      "func_08001954_6F1B64",
+      "func_80217360_5D2830",
+      "func_80217144_5D2614",
+      "func_08000B58_6F0D68",
+      "func_80218C28_5D40F8",
+      "func_8021DDE8_5D92B8",
+      "func_80034ED4_35AD4"
+    ],
+    "example": "extern void func_08000E2C_6F103C(void *task, void *object);\n\ntypedef void (*NativeTaskCallback)(void *, void *);\n\n/* Observe the callback identity without advancing or retiring a bomb. */\nNativeTaskCallback documented_bomb_callback(void)\n{\n    return func_08000E2C_6F103C;\n}\n",
+    "exampleExplanation": "Returns the verified callback identity without creating children or changing task state. The native scheduler owns invocation."
+  },
+  "func_80014840_15440": {
+    "title": "Resolve a segmented resource address",
+    "summary": "Resolves a segmented address using a resident file without changing a task; a missing file can fault.",
+    "confidence": "decompiled",
+    "declaration": "void *func_80014840_15440(void *raw_address, uint32_t file_id);",
+    "parameters": [
+      {
+        "name": "raw_address",
+        "type": "void *",
+        "description": "Native 32-bit address to resolve. Addresses whose signed 32-bit interpretation is nonpositive pass through unchanged."
+      },
+      {
+        "name": "file_id",
+        "type": "uint32_t",
+        "description": "Native file ID supplying the resident resource base and segment number."
+      }
+    ],
+    "returns": "Resolved loaded address, or the input unchanged when its signed 32-bit value is nonpositive. Missing-file lookup is a fault path, not a normal failure return.",
+    "behavior": [
+      "If the input address interpreted as signed 32 bits is zero or negative, returns it unchanged. This includes ordinary loaded KSEG0 addresses.",
+      "For a positive input, looks up the file through func_800141C4_14DC4, clears the stored resource-base tag 0x40000000, subtracts the file segment number shifted left by 24 from the input, and adds the loaded base.",
+      "Reads native resource state without rewriting task callbacks. Its native file-segment conversion is distinct from the recompiled scheduler's loaded callback mapping for raw 0x08000000–0x08FFFFFF actor-table addresses; do not use this function's result as the scheduler-loaded identity for that family.",
+      "For that verified raw callback family, the recompiled scheduler maps the callback with 32-bit unsigned arithmetic: loaded_callback = raw_callback - 0x08000000u + (resource_handle & 0xBFFFFFFFu). This fixed-base mapping is separate from the per-file segment subtraction performed here.",
+      "A registry lookup result of 0xFFFFFFFF enters an intentional native fault path. The resolver does not turn that condition into null."
+    ],
+    "cautions": [
+      "Before resolving a positive address, establish that the correct file is resident; reject both null and 0xFFFFFFFF from func_800141C4_14DC4. This dynamic-registry precondition applies to the file used for resolution.",
+      "Before this function resolves a positive address, validate that the corresponding resource is resident; the native resolver faults on a missing file. Its result is not interchangeable with the recompiled scheduler's loaded callback mapping for raw 0x08000000–0x08FFFFFF actor-table addresses. For that family, use the scheduler mapping on a local copy only after validating the file context and resource handle; preserve callback inhibition policy and never dispatch or rewrite an early child callback to compare identities.",
+      "The result has the resource's native lifetime. Reacquire after resource teardown or reload."
+    ],
+    "example": "#include <stdint.h>\n\nextern void *func_800141C4_14DC4(unsigned int file_id);\nextern void *func_80014840_15440(void *raw_address, uint32_t file_id);\n\n/* raw_address is an untagged native address; file_id is validated. */\nvoid *resolve_resident_address(void *raw_address, uint32_t file_id)\n{\n    if ((int32_t)(uintptr_t)raw_address <= 0)\n        return raw_address;\n    void *base = func_800141C4_14DC4(file_id);\n    if (!base || base == (void *)(uintptr_t)UINT32_MAX)\n        return 0;\n    return func_80014840_15440(raw_address, file_id);\n}\n",
+    "exampleExplanation": "Preflights the dynamic registry before resolving a positive segmented address, while preserving the native pass-through for loaded or null addresses. It does not modify a task.",
+    "related": [
+      "func_800141C4_14DC4",
+      "func_80218C28_5D40F8",
+      "func_80034734_35334"
+    ]
+  },
+  "func_80218C28_5D40F8": {
+    "title": "Copy parent actor context into an allocated child",
+    "summary": "Copies inherited actor context into an existing child before the spawning caller assigns its requested entity ID.",
+    "confidence": "decompiled",
+    "declaration": "void func_80218C28_5D40F8(void *parent, void *child);",
+    "parameters": [
+      {
+        "name": "parent",
+        "type": "void *",
+        "description": "Live native parent task whose actor context is inherited."
+      },
+      {
+        "name": "child",
+        "type": "void *",
+        "description": "Already allocated child task with its native object and resource context."
+      }
+    ],
+    "returns": "No return value.",
+    "behavior": [
+      "Receives the parent in the first argument and the allocated child in the second. Copies parent context including the +0x98 field, entity halfwords and generation byte +0x74; it does not allocate the child or rewrite callback +0x0C.",
+      "In the func_80217360_5D2830 spawn path, the child object at +0x18 and file ID at +0x28 already exist when this helper is entered. Callback +0x0C can still be the raw segmented address taken from the native callback table.",
+      "The spawning caller writes the requested entity ID to child +0x5C/+0x5E only after this helper returns. Those halfwords at helper entry or return are therefore not proof of the requested child identity.",
+      "The recompiled scheduler resolves task callback addresses later, before the child's first dispatch. A raw birth-time address and its loaded callback address can represent the same callback. For the verified raw 0x08000000–0x08FFFFFF family, it uses the fixed-base 32-bit unsigned mapping raw_callback - 0x08000000u + (resource_handle & 0xBFFFFFFFu), distinct from func_80014840_15440's native per-file segment conversion.",
+      "In the direct Ebisumaru explosion path, task bank +0x28 and resource base +0x2C are both zero on entry. After this helper returns, the allocator writes 0xFFFE and 0xFFFFFFFF as pending-resource sentinels, then the overlay caller installs bank 0x2A and the resident File42 base.",
+      "Copies the child entity halfword +0x5C and model halfword +0x5E from the parent independently; equality between those identifiers is not an invariant of this helper."
+    ],
+    "cautions": [
+      "Requires valid parent and allocated child objects. It is an inheritance stage of construction, not a substitute for allocation or entity-specific initialization.",
+      "At this early boundary, use verified callback/file context for identity checks. For raw callbacks in the verified 0x08000000–0x08FFFFFF family, do not compare func_80014840_15440's per-file segment result with the scheduler-loaded address. If an early comparison is required, validate the corresponding resident resource, reject null and 0xFFFFFFFF handles before clearing tags, then apply the scheduler's fixed-base 32-bit unsigned mapping to a local copy only.",
+      "Do not mutate or run a callback merely to normalize an identity comparison.",
+      "For this direct-child path, the values seen at helper entry are temporary construction state, not the final overlay identity. Do not classify the callback from only those early fields."
+    ],
+    "example": "extern void func_80218C28_5D40F8(void *parent, void *child);\n\ntypedef void (*NativeContextCopy)(void *, void *);\n\n/* Observe the interface without copying an unrelated actor context. */\nNativeContextCopy documented_child_context_copy(void)\n{\n    return func_80218C28_5D40F8;\n}\n",
+    "exampleExplanation": "Returns the helper identity. Native spawning supplies the valid parent, child and construction order.",
+    "related": [
+      "func_80217360_5D2830",
+      "func_8003555C_3615C",
+      "func_80014840_15440",
+      "func_80034734_35334"
+    ]
+  },
+  "func_080008E4_6F0AF4": {
+    "title": "Set the minigame heart display",
+    "summary": "Stores the displayed heart count in a minigame HUD task.",
+    "confidence": "decompiled",
+    "declaration": "extern void func_080008E4_6F0AF4(void *hud, int displayed_hearts);",
+    "parameters": [
+      {
+        "name": "hud",
+        "type": "void *",
+        "description": "Live native minigame HUD task."
+      },
+      {
+        "name": "displayed_hearts",
+        "type": "int",
+        "description": "Signed heart count written to HUD task +0x88."
+      }
+    ],
+    "returns": "No return value.",
+    "behavior": [
+      "Stores the signed 32-bit displayed-heart count at HUD task +0x88. The renderer draws one heart for each positive count.",
+      "In the sweets challenge, the controller supplies local player HP minus 17; this setter changes the HUD display and does not change player health."
+    ],
+    "cautions": [
+      "This setter only changes the display count. It is not a health adjustment or a separate health authority."
+    ],
+    "related": [
+      "func_08001954_6F1B64"
+    ],
+    "example": "#include \"modding.h\"\nextern void func_080008E4_6F0AF4(void *hud, int displayed_hearts);\n\nvoid set_minigame_display(void *hud, int hearts)\n{\n    if (hud) func_080008E4_6F0AF4(hud, hearts);\n}\n",
+    "exampleExplanation": "The example shows the verified native call shape. Use it only at a lifecycle point where the documented task and state are valid."
+  },
+  "func_8021927C_5D474C": {
+    "title": "Copy the current player object into a task target",
+    "summary": "Refreshes a task’s target-object pointer from the current-player global.",
+    "confidence": "decompiled",
+    "declaration": "extern void func_8021927C_5D474C(void *task);",
+    "parameters": [
+      {
+        "name": "task",
+        "type": "void *",
+        "description": "Live native task with the expected initialized fields."
+      }
+    ],
+    "returns": "No return value.",
+    "behavior": [
+      "Copies the pointer stored in D_8015CD60 to task +0x84.",
+      "The helper does not select a target or compute a position. Native robot logic can call it again during later phases, replacing a target pointer set between those refreshes."
+    ],
+    "cautions": [
+      "Use only with a live task and a valid current-player object. The copied pointer is runtime state and must not be retained after its native owner or target is gone."
+    ],
+    "related": [
+      "func_8021928C_5D475C",
+      "func_08001954_6F1B64"
+    ],
+    "example": "#include \"modding.h\"\nextern void func_8021927C_5D474C(void *task);\n\nvoid refresh_native_target(void *task)\n{\n    if (task) func_8021927C_5D474C(task);\n}\n",
+    "exampleExplanation": "The example shows the verified native call shape. Use it only at a lifecycle point where the documented task and state are valid."
+  },
+  "func_8021928C_5D475C": {
+    "title": "Copy the current player object into a task target",
+    "summary": "Performs the same current-player target-pointer copy as func_8021927C_5D474C.",
+    "confidence": "decompiled",
+    "declaration": "extern void func_8021928C_5D475C(void *task);",
+    "parameters": [
+      {
+        "name": "task",
+        "type": "void *",
+        "description": "Live native task with the expected initialized fields."
+      }
+    ],
+    "returns": "No return value.",
+    "behavior": [
+      "Copies the pointer stored in D_8015CD60 to task +0x84.",
+      "It neither chooses among players nor transforms coordinates; a later call overwrites any different target pointer previously stored at +0x84."
+    ],
+    "cautions": [
+      "Use only with a live task and a valid current-player object. The copied pointer is runtime state and must not be serialized."
+    ],
+    "related": [
+      "func_8021927C_5D474C",
+      "func_08001954_6F1B64"
+    ],
+    "example": "#include \"modding.h\"\nextern void func_8021928C_5D475C(void *task);\n\nvoid refresh_native_target(void *task)\n{\n    if (task) func_8021928C_5D475C(task);\n}\n",
+    "exampleExplanation": "The example shows the verified native call shape. Use it only at a lifecycle point where the documented task and state are valid."
+  },
+  "func_80219448_5D4918": {
+    "title": "Advance a task’s orbit motion",
+    "summary": "Updates the seeded ellipse phase and writes planar velocity for the common actor integration step.",
+    "confidence": "decompiled",
+    "declaration": "extern void func_80219448_5D4918(void *task);",
+    "parameters": [
+      {
+        "name": "task",
+        "type": "void *",
+        "description": "Live native task with the expected initialized fields."
+      }
+    ],
+    "returns": "No return value.",
+    "behavior": [
+      "Advances the unsigned 10-bit phase at task +0xD0 by the signed-byte step at +0xD6, then computes the ellipse point from unsigned radii +0xD4/+0xD5 and rotation +0xD2.",
+      "Stores the new planar point in +0xD8/+0xDC and writes X/Z velocities to +0x78/+0x80 as half the point delta. The normal common integration applies twice those velocities."
+    ],
+    "cautions": [
+      "The task must have valid orbit phase, angle, radii, signed step, rotation and prior-point fields. Calling this helper does not seed them or run actor collision, damage or scheduler callbacks."
+    ],
+    "related": [
+      "func_802196FC_5D4BCC",
+      "func_8021BB04_5D6FD4"
+    ],
+    "example": "#include \"modding.h\"\nextern void func_80219448_5D4918(void *task);\n\nvoid advance_seeded_orbit(void *task)\n{\n    if (task) func_80219448_5D4918(task);\n}\n",
+    "exampleExplanation": "The example shows the verified native call shape. Use it only at a lifecycle point where the documented task and state are valid."
+  },
+  "func_802196FC_5D4BCC": {
+    "title": "Turn a task toward an XZ target",
+    "summary": "Steps a task object’s 10-bit yaw toward a target using a caller-supplied turn step.",
+    "confidence": "decompiled",
+    "declaration": "extern int func_802196FC_5D4BCC(void *task, float target_x, float target_y, float target_z, int turn_step);",
+    "parameters": [
+      {
+        "name": "task",
+        "type": "void *",
+        "description": "Task whose object pointer is at +0x18."
+      },
+      {
+        "name": "target_x",
+        "type": "float",
+        "description": "Target world X coordinate."
+      },
+      {
+        "name": "target_y",
+        "type": "float",
+        "description": "Native argument slot; this helper does not use the value."
+      },
+      {
+        "name": "target_z",
+        "type": "float",
+        "description": "Target world Z coordinate."
+      },
+      {
+        "name": "turn_step",
+        "type": "int",
+        "description": "Signed step; the helper applies twice this value to 10-bit yaw."
+      }
+    ],
+    "returns": "Returns 0 when aligned or snapped, 1 or 2 for the two nonzero turn directions.",
+    "behavior": [
+      "Computes the target yaw from target X/Z and the task object at task +0x18, then changes object yaw at +0x16 by twice the signed turn_step, wrapping to 10 bits.",
+      "The target Y argument occupies the native calling-convention slot but is not read. Returns 0 when aligned or snapped to the target, 1 for one yaw direction, and 2 for the other."
+    ],
+    "cautions": [
+      "The helper requires a valid task object at +0x18. It changes yaw only; callers retain responsibility for target choice and scheduling."
+    ],
+    "related": [
+      "func_80219448_5D4918",
+      "func_8021BB04_5D6FD4"
+    ],
+    "example": "#include \"modding.h\"\nextern int func_802196FC_5D4BCC(void *task, float target_x, float target_y, float target_z, int turn_step);\n\nint turn_actor(void *task, float x, float y, float z)\n{\n    if (!task) return 0;\n    return func_802196FC_5D4BCC(task, x, y, z, 8);\n}\n",
+    "exampleExplanation": "The example shows the verified native call shape. Use it only at a lifecycle point where the documented task and state are valid."
+  },
+  "func_8021BB04_5D6FD4": {
+    "title": "Move a task toward an XZ waypoint",
+    "summary": "Sets planar velocity toward a waypoint and snaps the object to the target when the next step would pass it.",
+    "confidence": "decompiled",
+    "declaration": "extern int func_8021BB04_5D6FD4(void *task, float target_x, float target_z, float speed);",
+    "parameters": [
+      {
+        "name": "task",
+        "type": "void *",
+        "description": "Task whose native object pointer is at +0x18."
+      },
+      {
+        "name": "target_x",
+        "type": "float",
+        "description": "Target world X coordinate."
+      },
+      {
+        "name": "target_z",
+        "type": "float",
+        "description": "Target world Z coordinate."
+      },
+      {
+        "name": "speed",
+        "type": "float",
+        "description": "Magnitude used to set planar velocity."
+      }
+    ],
+    "returns": "Returns 1 while moving toward the waypoint, or 0 when at the waypoint or snapped to it.",
+    "behavior": [
+      "Reads the task object at +0x18 and compares its X/Z with the requested waypoint. For a nonzero distance, sets task velocity +0x78/+0x80 using the normalized direction and speed.",
+      "If the helper detects that the next velocity increment crosses the waypoint, it snaps object X/Z to the waypoint and clears both planar velocities. Returns 1 while movement remains and 0 when already at or snapped to the waypoint."
+    ],
+    "cautions": [
+      "The common actor integration applies twice the stored planar velocity. Speed is not the final per-tick displacement. This helper does not run collision, damage or task retirement."
+    ],
+    "related": [
+      "func_802196FC_5D4BCC",
+      "func_80219448_5D4918"
+    ],
+    "example": "#include \"modding.h\"\nextern int func_8021BB04_5D6FD4(void *task, float target_x, float target_z, float speed);\n\nint approach_waypoint(void *task, float x, float z)\n{\n    if (!task) return 0;\n    return func_8021BB04_5D6FD4(task, x, z, 2.0f);\n}\n",
+    "exampleExplanation": "The example shows the verified native call shape. Use it only at a lifecycle point where the documented task and state are valid."
+  },
+  "func_8021B610_5D6AE0": {
+    "title": "Apply actor fall effects and removal checks",
+    "summary": "Runs the common actor’s fall-effect and below-world removal tests.",
+    "confidence": "decompiled",
+    "declaration": "extern int func_8021B610_5D6AE0(void *task);",
+    "parameters": [
+      {
+        "name": "task",
+        "type": "void *",
+        "description": "Live native task with the expected initialized fields."
+      }
+    ],
+    "returns": "Returns 1 when the below-world removal condition is met; otherwise returns 0. The fall-effect branch can independently set removal-pending status.",
+    "behavior": [
+      "When task flags +0x60 bit 0x40000000 is set and vertical velocity +0x7C is above -3.0, attempts the native fall effect and sets removal-pending status bit 0x02 at +0x68.",
+      "When flags +0x60 bit 0x00000400 is set and the object Y coordinate at task object +0x0C is below -1000.0, writes status +0x68 to exactly 0x02 and returns 1. Otherwise it returns 0."
+    ],
+    "cautions": [
+      "This helper is part of the native common actor finalizer. Its below-world branch overwrites status +0x68 with 0x02; do not call it a second time just to advance visual motion."
+    ],
+    "related": [
+      "func_80219448_5D4918",
+      "func_802196FC_5D4BCC",
+      "func_8021BB04_5D6FD4"
+    ],
+    "example": "#include \"modding.h\"\nextern int func_8021B610_5D6AE0(void *task);\n\nint check_actor_fall(void *task)\n{\n    if (!task) return 0;\n    return func_8021B610_5D6AE0(task);\n}\n",
+    "exampleExplanation": "The example shows the verified native call shape. Use it only at a lifecycle point where the documented task and state are valid."
+  },
+  "func_8021ADD0_5D62A0": {
+    "title": "Convert planar direction to native yaw",
+    "summary": "Maps an X/Z direction to the game's 10-bit yaw scale and returns the raw result as a zero-extended 16-bit value.",
+    "confidence": "decompiled",
+    "declaration": "extern unsigned int func_8021ADD0_5D62A0(float delta_x, float delta_z);",
+    "parameters": [
+      {
+        "name": "delta_x",
+        "type": "float",
+        "description": "Finite planar X direction component."
+      },
+      {
+        "name": "delta_z",
+        "type": "float",
+        "description": "Finite planar Z direction component."
+      }
+    ],
+    "returns": "Raw yaw value zero-extended from the low 16 bits; one full turn uses 1024 yaw units.",
+    "behavior": [
+      "Converts an X/Z direction using a native lookup table. The cardinal results are +Z 0, +X 256, -Z 512 and -X 768; equal-magnitude diagonals return 128, 384, 640 or 896 according to quadrant.",
+      "For an exact zero vector, the equal-magnitude path returns 128. Some callers avoid updating yaw when planar velocity is zero so an idle actor keeps its current facing.",
+      "The native function masks its result to 16 bits, not 10. Near +Z, a small negative X can produce raw value 1024 when the lookup-table angle quantizes to zero. Mask with 1023 at the call site when a normalized 10-bit yaw is required."
+    ],
+    "cautions": [
+      "Use finite, validated inputs; NaN behavior is not established. The helper is a scalar conversion and does not update an actor or check whether a zero direction should preserve facing.",
+      "Do not assume every raw return is in the range 0 through 1023. Apply the native 10-bit mask where the receiving field or operation requires it."
+    ],
+    "related": [
+      "func_802196FC_5D4BCC",
+      "func_80219448_5D4918",
+      "func_8021BB04_5D6FD4"
+    ],
+    "example": "#include \"modding.h\"\nextern unsigned int func_8021ADD0_5D62A0(float delta_x, float delta_z);\n\nunsigned int direction_yaw(float x, float z, unsigned int current_yaw)\n{\n    if (x == 0.0f && z == 0.0f) return current_yaw;\n    return func_8021ADD0_5D62A0(x, z) & 1023u;\n}\n",
+    "exampleExplanation": "Preserves the current facing for an idle direction and normalizes the helper's raw result before storing a 10-bit yaw."
+  },
+  "func_8021A328_5D57F8": {
+    "title": "Check a task's native proximity retirement gate",
+    "summary": "A task-entry helper that checks status and spawn-descriptor state before applying its local-player proximity cleanup path.",
+    "confidence": "decompiled",
+    "declaration": "extern void func_8021A328_5D57F8(void *task);",
+    "parameters": [
+      {
+        "name": "task",
+        "type": "void *",
+        "description": "Live task entry passed in the first argument register, with the native status and spawn-descriptor fields expected by this helper."
+      }
+    ],
+    "returns": "No public return value is established; the verified helper body is a task-entry routine.",
+    "behavior": [
+      "Runs its proximity path only when task status +0x68 has bit 0x08 set and task +0x70 contains a non-null static spawn descriptor.",
+      "Compares the descriptor's configured activation bounds with the local player position. Outside those bounds, the helper may create the native disappearance effect, clears the descriptor's active byte at +0x10, clears task +0x70, and sets task status +0x68 to 0x02."
+    ],
+    "cautions": [
+      "Dynamic child inheritance clears task +0x70. The studied blast-parent initialization path does not repopulate it, so this descriptor branch remains inactive there; its separate effect child and unrelated constructors are not covered by that observation.",
+      "The helper depends on local-player position and mutates task/descriptor lifecycle state. Do not replay it as a general visual-motion step or assume the proximity path is active for every task."
+    ],
+    "related": [
+      "func_80218C28_5D40F8",
+      "func_8021B610_5D6AE0",
+      "func_80218F30_5D4400"
+    ],
+    "example": "#include \"modding.h\"\nextern void func_8021A328_5D57F8(void *task);\n\ntypedef void (*NativeTaskEntry)(void *);\n\nNativeTaskEntry documented_proximity_helper(void)\n{\n    return func_8021A328_5D57F8;\n}\n",
+    "exampleExplanation": "Returns the verified task-entry identity without executing proximity cleanup. The native scheduler owns invocation and lifecycle timing."
+  },
+  "func_8021A978_5D5E48": {
+    "title": "Apply local-player carrier displacement",
+    "summary": "When its task flags and object identity match the local carrier case, transforms a local-player-relative offset into traversal displacement.",
+    "confidence": "decompiled",
+    "declaration": "extern void func_8021A978_5D5E48(void *task);",
+    "parameters": [
+      {
+        "name": "task",
+        "type": "void *",
+        "description": "Live task entry passed in the first argument register, with an initialized object pointer at +0x18."
+      }
+    ],
+    "returns": "No public return value is established; the verified helper body is a task-entry routine.",
+    "behavior": [
+      "Runs only when task flags +0x64 include bit 0x4000 and the task object pointer at +0x18 equals the local player task's object pointer at +0xA0.",
+      "Transforms the local player's position relative to the matching object and writes the resulting displacement to local player task fields +0xC0, +0xC4 and +0xC8."
+    ],
+    "cautions": [
+      "This helper can change local traversal state. The native Ebisumaru actor families examined do not establish a carry role, and this behavior is conditional on matching the local player's object pointer.",
+      "The entry is documented as a task helper; broader callable semantics and use outside the native scheduler lifecycle are not established."
+    ],
+    "related": [
+      "func_80218990_5D3E60",
+      "func_80218F30_5D4400"
+    ],
+    "example": "#include \"modding.h\"\nextern void func_8021A978_5D5E48(void *task);\n\ntypedef void (*NativeTaskEntry)(void *);\n\nNativeTaskEntry documented_carrier_helper(void)\n{\n    return func_8021A978_5D5E48;\n}\n",
+    "exampleExplanation": "Returns the verified task-entry identity without changing local player displacement. The native scheduler owns invocation."
+  },
+  "func_80218990_5D3E60": {
+    "title": "Check local-player overlap rollback",
+    "summary": "A task-entry helper that can restore actor position and velocity from native pre-physics state when an overlap flag is enabled.",
+    "confidence": "decompiled",
+    "declaration": "extern void func_80218990_5D3E60(void *task);",
+    "parameters": [
+      {
+        "name": "task",
+        "type": "void *",
+        "description": "Live task entry passed in the first argument register, with an initialized object pointer at +0x18."
+      }
+    ],
+    "returns": "No public return value is established; the verified helper body is a task-entry routine.",
+    "behavior": [
+      "Runs only when task flags +0x60 include bit 0x10000000. It compares planar distance from the task object to the local player against the squared radius formed from local-player scale X times 50 plus the actor byte at +0x99.",
+      "When the overlap test succeeds, restores the actor object's X/Y/Z and task X/Y/Z velocities from native pre-physics scratch values."
+    ],
+    "cautions": [
+      "The test uses local-player state and can roll back actor motion on one participant. The examined authored Ebisumaru actor flags do not set bit 0x10000000; this is not a reason to mask unrelated finalizer flags.",
+      "The entry is documented as a task helper; broader callable semantics and use outside the native scheduler lifecycle are not established."
+    ],
+    "related": [
+      "func_8021A978_5D5E48",
+      "func_80218F30_5D4400"
+    ],
+    "example": "#include \"modding.h\"\nextern void func_80218990_5D3E60(void *task);\n\ntypedef void (*NativeTaskEntry)(void *);\n\nNativeTaskEntry documented_overlap_helper(void)\n{\n    return func_80218990_5D3E60;\n}\n",
+    "exampleExplanation": "Returns the verified task-entry identity without running the local-player overlap test or restoring movement state."
+  },
+  "func_080005DC_6F07EC": {
+    "title": "Update the Ebisumaru challenge timer display",
+    "summary": "Draws the HUD countdown from signed remaining-frame state, then decrements that state once per eligible native task update.",
+    "confidence": "decompiled",
+    "declaration": "void func_080005DC_6F07EC(void *hud_task, void *object);",
+    "parameters": [
+      {
+        "name": "hud_task",
+        "type": "void *",
+        "description": "Live HUD task whose signed timer word is stored at +0x80."
+      },
+      {
+        "name": "object",
+        "type": "void *",
+        "description": "Scheduler-supplied HUD object; this callback body does not use it."
+      }
+    ],
+    "returns": "No return value.",
+    "behavior": [
+      "Reads the signed 32-bit remaining-frame word at HUD task +0x80, converts it to whole seconds by signed division by 30, and draws that number before changing the timer.",
+      "After drawing, decrements the raw frame word by one. A negative result is clamped to zero.",
+      "The callback has no challenge-phase or result-state test. Its countdown pauses when the native task is not admitted to an update; it is invoked once per eligible task pass, before the main loop camera processing."
+    ],
+    "cautions": [
+      "This is a scheduled stateful callback, not a read-only timer query. Let the native task scheduler control its cadence and pause admission.",
+      "The pause-mask bit combination is not fully decoded by this record; do not infer every pause reason from the observed task skip test."
+    ],
+    "related": [
+      "func_080008B8_6F0AC8",
+      "func_080008CC_6F0ADC",
+      "func_080008F4_6F0B04",
+      "func_08001954_6F1B64"
+    ],
+    "example": "#include <stdint.h>\n\nextern void func_080005DC_6F07EC(void *, void *);\ntypedef void (*NativeTaskCallback)(void *, void *);\n\n/* Observe the callback identity; the native scheduler owns invocation. */\nNativeTaskCallback documented_timer_hud_callback(void)\n{\n    return func_080005DC_6F07EC;\n}\n",
+    "exampleExplanation": "Returns the verified scheduled callback identity without advancing the countdown."
+  },
+  "func_080008B8_6F0AC8": {
+    "title": "Set the Ebisumaru HUD countdown in seconds",
+    "summary": "Stores a seconds value as signed native frames at the HUD task timer field.",
+    "confidence": "decompiled",
+    "declaration": "void func_080008B8_6F0AC8(void *hud_task, int32_t seconds);",
+    "parameters": [
+      {
+        "name": "hud_task",
+        "type": "void *",
+        "description": "HUD task with signed timer word at +0x80."
+      },
+      {
+        "name": "seconds",
+        "type": "int32_t",
+        "description": "Seconds value multiplied by the native 30-frame-per-second unit."
+      }
+    ],
+    "returns": "No return value.",
+    "behavior": [
+      "Stores seconds × 30 as a signed 32-bit word at HUD task +0x80. The setter performs no range validation.",
+      "The normal challenge setup uses 99 seconds, producing an initial value of 2970 frames."
+    ],
+    "cautions": [
+      "Pass a live HUD task in its native lifecycle. This setter does not clamp or validate the supplied seconds value."
+    ],
+    "related": [
+      "func_080005DC_6F07EC",
+      "func_080008CC_6F0ADC",
+      "func_08001954_6F1B64"
+    ],
+    "example": "#include <stdint.h>\n\nextern void func_080008B8_6F0AC8(void *, int32_t);\n\nvoid set_hud_countdown(void *hud_task, int32_t seconds)\n{\n    if (hud_task) func_080008B8_6F0AC8(hud_task, seconds);\n}\n",
+    "exampleExplanation": "Sets the timer through the native seconds-to-frames helper; the caller must supply the live HUD task."
+  },
+  "func_080008CC_6F0ADC": {
+    "title": "Read the Ebisumaru HUD countdown in seconds",
+    "summary": "Converts the signed raw HUD timer frames to whole seconds using native signed division.",
+    "confidence": "decompiled",
+    "declaration": "int32_t func_080008CC_6F0ADC(void *hud_task);",
+    "parameters": [
+      {
+        "name": "hud_task",
+        "type": "void *",
+        "description": "HUD task with signed timer word at +0x80."
+      }
+    ],
+    "returns": "Signed whole seconds from HUD task +0x80 divided by 30; it does not return the raw frame count.",
+    "behavior": [
+      "Loads the signed 32-bit timer word at HUD task +0x80, divides by 30 with signed integer division, and returns the quotient.",
+      "The challenge controller tests this whole-seconds result against zero. With the nonnegative countdown, the failure threshold is fewer than 30 raw frames remaining, not only a raw value of zero."
+    ],
+    "cautions": [
+      "This helper reads timer state; it does not advance the scheduled HUD callback or change the countdown."
+    ],
+    "related": [
+      "func_080005DC_6F07EC",
+      "func_080008B8_6F0AC8",
+      "func_08001954_6F1B64"
+    ],
+    "example": "#include <stdint.h>\n\nextern int32_t func_080008CC_6F0ADC(void *);\n\nint32_t read_hud_countdown_seconds(void *hud_task)\n{\n    return hud_task ? func_080008CC_6F0ADC(hud_task) : 0;\n}\n",
+    "exampleExplanation": "Returns whole seconds, not raw timer frames."
+  },
+  "func_080008F4_6F0B04": {
+    "title": "Create the Ebisumaru challenge HUD task",
+    "summary": "Establishes the scheduled HUD timer task and installs its native update callback; the complete callable ABI is not published here.",
+    "confidence": "decompiled",
+    "behavior": [
+      "The verified creator installs the HUD timer callback `func_080005DC_6F07EC` and assigns native task bank 0x2A.",
+      "Available call-site evidence shows a parent-task pointer, X/Y words and a priority word supplied during setup. The complete callable prototype and all return/error details are not established in this reference."
+    ],
+    "cautions": [
+      "Do not call the creator from a guessed prototype. Use only an ABI established for the exact native build."
+    ],
+    "related": [
+      "func_080005DC_6F07EC",
+      "func_080008B8_6F0AC8",
+      "func_080008CC_6F0ADC",
+      "func_08001954_6F1B64"
+    ],
+    "example": "/* func_080008F4_6F0B04 creator ABI is not established; do not call it here. */\n#include <stdint.h>\n\nextern void func_080005DC_6F07EC(void *, void *);\ntypedef void (*NativeTaskCallback)(void *, void *);\n\n/* Observe the callback identity without calling the creator. */\nNativeTaskCallback verified_hud_task_callback(void)\n{\n    return func_080005DC_6F07EC;\n}\n",
+    "exampleExplanation": "Returns the verified update callback installed by HUD creation. This example does not invoke the creator or assume its arguments."
+  },
+  "func_08000B58_6F0D68": {
+    "title": "Advance an Ebisumaru explosion",
+    "summary": "Runs the two native explosion modes: one visual effect and one outgoing contact sphere that can cause ordinary player damage.",
+    "confidence": "decompiled",
+    "declaration": "void func_08000B58_6F0D68(void *task, void *object);",
+    "parameters": [
+      {
+        "name": "task",
+        "type": "void *",
+        "description": "Live File42 explosion task supplied by the scheduler."
+      },
+      {
+        "name": "object",
+        "type": "void *",
+        "description": "Explosion object supplied by the scheduler."
+      }
+    ],
+    "returns": "No return value.",
+    "behavior": [
+      "The initializer selects model resource 0x0191, variant 8, and starts a lifetime counter at 30. The callback distinguishes a visual mode from a contact mode using task mode flags.",
+      "During phase 0, mode flag 0x01 (spawn group 0) leaves outgoing kind +0x4C at zero, uses the local explosion material, and creates a separate visual-effect task.",
+      "With mode flag 0x04 (spawn group 1), it uses a different local material. On the first phase-1 update it calls func_80218DA8_5D4278 to install a descriptor whose stored radius is 120, then sets outgoing kind 1. The sphere is transformed by explosion object position and scale, so radius 120 is a local descriptor value rather than a fixed world-space radius.",
+      "Native player contact handling accepts ordinary type-1 contact under its own collision, defense and invulnerability gates. For this explosion the damage byte is 1, and the accepted path applies a signed health delta of -1 through the normal player-health routine.",
+      "The signed halfword lifetime at task +0x8A starts at 30 and decrements once per phase-1 update. When the entry life value is already zero, the callback deletes the task; the zero-life update is the expiry boundary."
+    ],
+    "cautions": [
+      "This callback changes native task state, creates a visual-effect task in one mode and configures contact in the other. Let the native scheduler and collision/player pipelines run it once in their normal lifecycle.",
+      "A visual cue alone is not proof that the damaging contact was accepted. Native collision and player intake retain their defense, control-state and invulnerability gates.",
+      "Do not replay this callback or transmit raw task/object pointers to reproduce an explosion on another process.",
+      "Material and model references belong to local native resource/object state. Do not treat those runtime handles as transferable actor pointers."
+    ],
+    "related": [
+      "func_08000E2C_6F103C",
+      "func_08001954_6F1B64",
+      "func_80218C28_5D40F8",
+      "func_801D9E9C_595DAC",
+      "func_801DCD48_598C58",
+      "func_80218DA8_5D4278"
+    ],
+    "example": "extern void func_08000B58_6F0D68(void *, void *);\ntypedef void (*NativeTaskCallback)(void *, void *);\n\n/* Observe callback identity; the native scheduler owns invocation. */\nNativeTaskCallback documented_explosion_callback(void)\n{\n    return func_08000B58_6F0D68;\n}\n",
+    "exampleExplanation": "Returns the verified callback identity without advancing an explosion or applying contact."
+  }
+}

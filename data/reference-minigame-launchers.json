@@ -1,0 +1,135 @@
+{
+  "func_800370E8_37CE8": {
+    "title": "Prepare Goemon's Impact minigame entry",
+    "summary": "Saves the current player position and facing, then records native transition values for room 0x01E0.",
+    "confidence": "decompiled",
+    "declaration": "void func_800370E8_37CE8(void);",
+    "behavior": [
+      "Copies the current player XYZ position and facing into native transition state before preparing the minigame entry.",
+      "Calls func_801FA4FC_5B640C with room 0x01E0, arrival XYZ (0, 25, 0), camera value 0, and final argument 1. The helper's nonzero branch writes transition marker 4.",
+      "The associated File 98 event scenarios are 0x0172 through 0x0175."
+    ],
+    "returns": "No return value.",
+    "cautions": [
+      "This documents the verified native launch path and its transition-state writes; a generic room transfer is not established as an equivalent replacement.",
+      "The saved transition-state fields are not documented here as general-purpose save data."
+    ],
+    "example": "extern void func_800370E8_37CE8(void);\n\n/* Invoke only from a context with the native player state initialized. */\nvoid enter_goemon_impact_minigame(void)\n{\n    func_800370E8_37CE8();\n}\n",
+    "exampleExplanation": "This calls the native launcher, which snapshots the active player's position and prepares the documented room request. It does not demonstrate that an unrelated room-transfer routine recreates this path.",
+    "related": [
+      "D_800C7AB2",
+      "func_801FA4FC_5B640C"
+    ]
+  },
+  "func_800371B4_37DB4": {
+    "title": "Prepare Sasuke's high-jump minigame entry",
+    "summary": "Saves the current player position and facing, then records native transition values for room 0x01E2.",
+    "confidence": "decompiled",
+    "declaration": "void func_800371B4_37DB4(void);",
+    "behavior": [
+      "Copies the current player XYZ position and facing into native transition state before preparing the minigame entry.",
+      "Calls func_801FA4FC_5B640C with room 0x01E2, arrival XYZ (-213, 0, -357), camera value 0x0060, and final argument 1. The helper's nonzero branch writes transition marker 4.",
+      "The associated File 98 event scenarios are 0x0178 and 0x0179."
+    ],
+    "returns": "No return value.",
+    "cautions": [
+      "This documents the verified native launch path and its transition-state writes; a generic room transfer is not established as an equivalent replacement.",
+      "The saved transition-state fields are not documented here as general-purpose save data."
+    ],
+    "example": "extern void func_800371B4_37DB4(void);\n\n/* Invoke only from a context with the native player state initialized. */\nvoid enter_sasuke_high_jump_minigame(void)\n{\n    func_800371B4_37DB4();\n}\n",
+    "exampleExplanation": "This calls the native launcher, which snapshots the active player's position and prepares the documented room request. It does not demonstrate that an unrelated room-transfer routine recreates this path.",
+    "related": [
+      "D_800C7AB2",
+      "func_801FA4FC_5B640C"
+    ]
+  },
+  "func_08001AE4_718984": {
+    "title": "Prepare Ebisumaru's sweets minigame entry",
+    "summary": "Configures the native transition to room 0x01E1 and queues the common continuation used by the sweets minigame path.",
+    "confidence": "decompiled",
+    "declaration": "void func_08001AE4_718984(void);",
+    "behavior": [
+      "Calls func_801FA420_5B6330 with room 0x01E1, arrival XYZ (0, 0, 0), camera value 0, setup value 0x50, and final option 0.",
+      "Queues scheduler callback 0x800354B4 after preparing the transition state.",
+      "The associated File 98 event scenarios are 0x017A and 0x017B. In the one-shot route, save flag 0x007D is cleared before this entry handler is queued."
+    ],
+    "returns": "No return value.",
+    "cautions": [
+      "The documented behavior is this native start sequence; it does not establish that a generic room transfer reproduces the transition state or scheduler continuation.",
+      "Only the observed setup value 0x50 and final option 0 are documented for this route; the full meanings and valid ranges of those fields are not established."
+    ],
+    "example": "extern void func_08001AE4_718984(void);\n\n/* Invoke only from the native event path that has prepared this transition. */\nvoid enter_ebisumaru_sweets_minigame(void)\n{\n    func_08001AE4_718984();\n}\n",
+    "exampleExplanation": "This invokes the native entry handler. The handler configures the room request and queues the game's continuation callback.",
+    "related": [
+      "D_800C7AB2",
+      "D_8015C608_15D208",
+      "func_801FA420_5B6330"
+    ]
+  },
+  "func_801FA4FC_5B640C": {
+    "title": "Record a native room-entry request",
+    "summary": "Stores a room, arrival coordinates, camera value, and marker mode in native transition state.",
+    "confidence": "decompiled",
+    "declaration": "void func_801FA4FC_5B640C(uint16_t room_id, int16_t x, int16_t y, int16_t z, uint16_t camera, char marker_mode);",
+    "parameters": [
+      {"name":"room_id","type":"uint16_t","description":"Raw destination room ID. The verified minigame callers use 0x01E0 and 0x01E2."},
+      {"name":"x","type":"int16_t","description":"Raw arrival X value; the verified callers include a negative value."},
+      {"name":"y","type":"int16_t","description":"Raw arrival Y value."},
+      {"name":"z","type":"int16_t","description":"Raw arrival Z value; the verified Sasuke caller uses -357."},
+      {"name":"camera","type":"uint16_t","description":"Raw camera value supplied by the caller; the verified calls use 0 and 0x0060."},
+      {"name":"marker_mode","type":"char","description":"A zero value stores marker 1; a nonzero value stores marker 4. Broader marker semantics are not established here."}
+    ],
+    "behavior": [
+      "Stores the five 16-bit request values in native transition state, then selects marker 1 for a zero marker_mode or marker 4 for any nonzero marker_mode.",
+      "The Goemon and Sasuke minigame launchers call this helper with marker_mode 1 after saving the current player position and facing."
+    ],
+    "returns": "No return value.",
+    "cautions": [
+      "This helper records transition state; its implementation alone does not establish a complete room transfer or the lifecycle that consumes the fields.",
+      "Use the exact values and surrounding native sequence verified for the intended launcher. Do not treat this call as a generic teleport API."
+    ],
+    "example": "#include <stdint.h>\n\nextern void func_801FA4FC_5B640C(uint16_t room_id, int16_t x, int16_t y, int16_t z, uint16_t camera, char marker_mode);\n\n/* These are the transition request values used by the Sasuke launcher. */\nvoid record_sasuke_minigame_entry(void)\n{\n    func_801FA4FC_5B640C(0x01E2, -213, 0, -357, 0x0060, 1);\n}\n",
+    "exampleExplanation": "This reproduces the helper's observed field values only. The native Sasuke launcher also snapshots the current player position and facing before making this call.",
+    "related": [
+      "func_800370E8_37CE8",
+      "func_800371B4_37DB4",
+      "func_801FA420_5B6330"
+    ]
+  },
+  "func_801FA420_5B6330": {
+    "title": "Prepare an extended native room-entry request",
+    "summary": "Records native room-entry state plus setup and option values, then selects final transition marker 9.",
+    "confidence": "decompiled",
+    "declaration": "void func_801FA420_5B6330(uint16_t room_id, int16_t x, int16_t y, int16_t z, uint16_t camera, uint32_t setup_value, uint16_t option);",
+    "parameters": [
+      {"name":"room_id","type":"uint16_t","description":"Raw destination room ID. The sweets challenge entry supplies 0x01E1; its native exit supplies 0x016D."},
+      {"name":"x","type":"int16_t","description":"Raw arrival X value."},
+      {"name":"y","type":"int16_t","description":"Raw arrival Y value."},
+      {"name":"z","type":"int16_t","description":"Raw arrival Z value."},
+      {"name":"camera","type":"uint16_t","description":"Raw camera value. The sweets challenge entry supplies 0; its exit supplies 0x0100."},
+      {"name":"setup_value","type":"uint32_t","description":"Stored in an additional native transition field. The sweets challenge entry supplies 0x50 and its exit supplies 0xA0; the full semantic range is not established."},
+      {"name":"option","type":"uint16_t","description":"Stored in another transition field. The verified Ebisumaru caller supplies 0; broader semantics are not established."}
+    ],
+    "behavior": [
+      "Forwards the room, XYZ, and camera values to func_801FA4FC_5B640C with marker_mode 0, which selects marker 1.",
+      "Stores setup_value and option in additional native transition fields, then ORs 0x08 into the same marker byte at system +0x3AE29 that the inner helper set to 1. The wrapper therefore finishes with marker 9.",
+      "The verified Ebisumaru entry supplies room 0x01E1, XYZ (0, 0, 0), camera 0, setup value 0x50, and option 0; its caller then queues scheduler callback 0x800354B4.",
+      "The sweets challenge exit calls this helper after restoring its saved 48-byte statistics block, using room 0x016D, XYZ (0,7,1), camera 0x0100, setup 0xA0 and option 0.",
+      "One native camera-initialization path uses a nonzero setup word independently of marker bit 0x08; another path reads that bit together with the setup word and option halfword. These fields are part of the surrounding room/camera lifecycle."
+    ],
+    "returns": "No return value.",
+    "cautions": [
+      "This helper prepares native state but does not queue the scheduler callback itself.",
+      "The semantic meanings and valid ranges of setup_value and option are not established beyond the observed sweets challenge entry and exit calls.",
+      "The basic destination setter and saved-history request helper do not establish this same setup/option contract. Preserve the fields required by the verified native entry or exit path."
+    ],
+    "example": "#include <stdint.h>\n\nextern void func_801FA420_5B6330(uint16_t room_id, int16_t x, int16_t y, int16_t z, uint16_t camera, uint32_t setup_value, uint16_t option);\n\n/* Observed setup values for the Ebisumaru sweets minigame route. */\nvoid record_ebisumaru_minigame_entry(void)\n{\n    func_801FA420_5B6330(0x01E1, 0, 0, 0, 0, 0x50, 0);\n}\n",
+    "exampleExplanation": "The separate native entry handler queues scheduler callback 0x800354B4 after preparing these fields. This helper call by itself does not reproduce that surrounding lifecycle.",
+    "related": [
+      "func_08001AE4_718984",
+      "func_801FA4FC_5B640C",
+      "func_08001954_6F1B64",
+      "func_8000607C_6C7C"
+    ]
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "scope": "Internal native evidence for Ebisumaru sweets-challenge hide detection, bomb emission and bomb-task completion; not copied to the website.",
+  "analysisDate": "2026-10-13",
+  "analysisTool": "Ghidra decompilation and MIPS disassembly",
+  "proofs": [
+    {
+      "path": "/private/tmp/mnsg-ebi-bomb-target-native-proof-20261013.md",
+      "sha256": "fdfe57e94702bd11f5dc5c37a2d28c24e3a3889dfc8856f664cc2c074a7626a4",
+      "scope": "File42 root callback ABI, phase4 hide predicate and native positions, phase6 bomb coordinates and RNG ordering, bomb callback ground gate/children/retirement, and D_801FC60C ownership consequences."
+    }
+  ],
+  "functions": [
+    {
+      "name": "func_08001954_6F1B64",
+      "program": "mini_ebisumaru_file42.bin",
+      "address": "0x08001954",
+      "romAddress": "0x006F1B64",
+      "size": 5428,
+      "abi": "void (task pointer in a0, object pointer in a1); entry assembly confirms both arguments despite misleading decompiler typing",
+      "observed": "Phase 4 reads the live D_801FC60C player object after local-camera work. It tests four signed X/Z centers [(80,-49),(49,48),(-96,99),(-62,-23)] and hides if any has single-precision sqrt(dx*dx+dz*dz)<14.0 and playerY+15.0<-40.0. No form, action, line-of-sight or target-field gate was found. If exposed, selects animation 2 at rate 0.25 and flags 1, sets phase 6 and phase frame 0; normal epilogue increments the frame unless the sweet-allocation early return bypasses it. Hidden retraction follows the frame-120 gate. Phase 6 residues 1 and 21 emit at most one bomb per matching callback: residue 1 uses two RNG(20) samples minus 10 and adds them to current player X/Z; residue 21 uses two RNG(200) samples minus 100, with X based on clamp(playerX,-112,112)/1.2 in double precision then converted to float, and Z based on current player Z. Both write Y=50. The callback also owns local camera, player state and statistics backup/restoration paths; it is not a pure hide query.",
+      "confidence": "disassembly and decompilation"
+    },
+    {
+      "name": "func_08000E2C_6F103C",
+      "program": "mini_ebisumaru_file42.bin",
+      "address": "0x08000E2C",
+      "romAddress": "0x006F103C",
+      "size": 516,
+      "abi": "void (task pointer in a0, object pointer in a1)",
+      "observed": "In its active phase, waits for task status +0x68 bit 0x20 to clear, then creates two native explosion children and retires. The callback does not perform target selection; root emission chooses bomb position earlier.",
+      "confidence": "decompilation and disassembly"
+    },
+    {
+      "name": "D_801FC60C_5B851C",
+      "address": "0x801FC60C",
+      "romAddress": "0x005B851C",
+      "observed": "The shared current-player object pointer supplies phase4 hide detection and phase6 bomb coordinates to the root callback. The same callback has local camera, player-state and statistics backup/restoration work, so substituting the global position for the whole callback is not a read-only target redirection.",
+      "confidence": "disassembly"
+    }
+  ],
+  "limitations": [
+    "The visual description of the native detector as a tall bomb-dropper is an inference from its central hide-check and bomb-emission behavior; no model identity is established by this proof.",
+    "Hide testing uses native single-precision subtraction, square root and strict comparisons. The documented threshold is not guaranteed bit-identical to a squared-distance rewrite at floating-point boundaries.",
+    "Evidence is static decompilation/disassembly. No additional native callback invocation, gameplay run, or live multiplayer test was performed."
+  ]
+}
