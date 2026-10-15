@@ -1327,6 +1327,7 @@
     "behavior": [
       "Status bit 0x00040000 at actor+0x68 enables a fast one-point health subtraction at byte +0x8D without the usual attacker pointer. The ordinary path checks actor flags, hit bit 0x80, attacker data and damage type, then reads the hit-kind byte at attacker +0x4C. For ordinary actors, kinds 0x15, 0x19 and 0x1F subtract 1 HP; 0x16 and 0x23 subtract 2; 0x17 and 0x24 subtract 4; 0x1B subtracts 3; 0x22 subtracts 8; other kinds default to 1. Native weapon-tier dispatch maps tier 0/1/2 to kinds 0x15/0x16/0x17 for character slots 0 and 1, and 0x19/0x23/0x24 for slots 2 and 3. Fire Ryo uses kind 0x1B and subtracts 3 HP on this actor path. These values describe ordinary actor damage, not the separate playable-player intake path.",
       "The fast no-attacker branch is selected by status +0x68 bit 0x00040000. The same numeric mask in the separate flags word at +0x60 is a different field and does not arm the fast branch.",
+      "The ordinary path requires flags +0x60 bit 0x00200000 and status +0x68 bit 0x80. It loads the attacker pointer at +0x38 and returns before storing status & ~0x80 when that pointer is null; an unowned hit bit is not automatically consumed. With a non-null attacker, the bit is cleared before later damage/reaction gates. Flags +0x60 bit 0x00400000 can select the target-style reaction without ordinary HP subtraction, but does not bypass the non-null-attacker prerequisite for clearing bit 0x80.",
       "Nonzero health sets status bit 0 and may install/invoke the actor-specific +0x90 callback. Zero health enters generic death. The inner routine does not clear the synthetic pending-damage bit the same way the outer func_80218E7C wrapper does.",
       "Some bosses use generic health only as a damage carrier. Dharumanyo's carrier stores its 12 remaining lives in byte +0xD1; the common actor path resets generic HP byte +0x8D to 10, so +0x8D is not its lives count. Tsurami instead uses its custom remaining-health callback, with 12 initial root HP at +0x8D.",
       "The native zero-health entry is func_80218548_5D3A18, called immediately inside this damage routine. Scene unloads and distance culls do not call it. Health one with status bit 0x00040000 reaches native death, counters, optional loot and cleanup. This fast branch skips the ordinary death sound and fragment constructors; it does not reproduce every hit-specific visual effect."
@@ -1335,12 +1336,14 @@
       "Generic HP zero is not a universal boss-completion signal. Tsurami and Dharmanyo require their custom remaining-HP callbacks.",
       "The inner routine does not clear pending bit 0x40000 like the outer func_80218E7C wrapper; synthetic direct-call inputs must not persist across frames.",
       "The entry-hook actor argument is established; a full direct-call return ABI is not specified here.",
-      "A return hook runs after death and loot side effects. Defer an accepted hit before native damage if a later decision must authorize death. Never call a fragment initializer with a selector in place of its native object pointer."
+      "A return hook runs after death and loot side effects. Defer an accepted hit before native damage if a later decision must authorize death. Never call a fragment initializer with a selector in place of its native object pointer.",
+      "Do not set status bit 0x00040000 merely to clear bit 0x80: that branch applies real health damage and can enter native death. Preserve native attacker and post-pass lifetimes when supplying a one-shot hit."
     ],
     "related": [
       "func_80218E7C_5D434C",
       "func_08003F84_6CC194",
-      "func_0800432C_6CC53C"
+      "func_0800432C_6CC53C",
+      "func_0800127C_708CBC"
     ],
     "confidence": "decompiled",
     "example": "#include \"modding.h\"\n\nRECOMP_HOOK(\"func_80218350_5D3820\")\nvoid inspect_actor_damage(void *actor) {\n    if (!actor) return;\n    unsigned char health = ((unsigned char *)actor)[0x8D];\n    unsigned int status = *(unsigned int *)((char *)actor + 0x68);\n    /* Observe the exact actor and encounter; do not damage every caller. */\n    (void)health; (void)status;\n}",

@@ -1,0 +1,114 @@
+{
+  "scope": "Internal evidence for the US Goemon Sudden Impact target, controller, throwable, balloon visual, player release, and native sine-table behavior. Not copied into public pages.",
+  "analysisDate": "2026-10-14",
+  "confidence": "High for inspected function bodies, branch order, scalar values, and the stated ABIs. Native appearance and gameplay were not exercised.",
+  "evidenceArtifacts": [
+    {
+      "path": "/private/tmp/mnsg-goemon-action-motion-native-proof-20261014.md",
+      "sha256": "05d7321a2c4cdf19c31be919ef651084004b0087c247d01a77c732d118d68fd7",
+      "role": "Primary report covering File 48 target/controller/cube and File 11 player release."
+    },
+    {
+      "path": "/private/tmp/mnsg-goemon-action-motion-native-evidence-20261014.json",
+      "sha256": "27aceeef63ff9be58be81bca9ffa7174d8d2b6f059152cb7faa4bea708e89781",
+      "role": "Raw decompilation/disassembly companion for the primary report."
+    },
+    {
+      "path": "/private/tmp/mnsg-goemon-sine-pop-safety-proof-20261014.md",
+      "sha256": "a4754f3d0f3a72fa83ad59dd3da97f763f27d1d9dadf1937e1d7190f75e2d142",
+      "role": "Supplement on integer-angle sine ABI and the native cosmetic pop descendant chain."
+    },
+    {
+      "path": "/private/tmp/mnsg-goemon-sine-pop-safety-evidence-20261014.json",
+      "sha256": "37b9c4dd4c5b5a0c10255b20ea35089f1417ae52eb125bc8a3f76979563397b2",
+      "role": "Raw disassembly/decompilation companion for the supplement."
+    }
+  ],
+  "nativeFunctions": [
+    {
+      "name": "func_0800127C_708CBC",
+      "program": "goemon_timer_file48.bin",
+      "address": "0x0800127C",
+      "romAddress": "0x00708CBC",
+      "section": ".file_48",
+      "confidence": "decompiled-and-disassembled",
+      "observed": "Inline work is at task+0xD0. E0 is desired Y; E4 is interpolation step. Signed phase-1 schedule/frame comparison selects 0.05 or 0.4; phases 3/4 use the verified sine wobble while frame<60. Phase 2 has no phase body. The common epilogue sets result 1 only when current Y > -10. Result 3 forces phase 7; result 4 increments the local balloon phase once then forces phase 7."
+    },
+    {
+      "name": "func_080018E8_709328",
+      "program": "goemon_timer_file48.bin",
+      "address": "0x080018E8",
+      "romAddress": "0x00709328",
+      "section": ".file_48",
+      "confidence": "decompiled-and-disassembled",
+      "observed": "The signed timer word at task+0x84 divided by 30 equaling zero selects phase 5. The following scan admits phase 6 when ANY of six target signed bytes at task+0xD1 equals 1: it first writes 3 to every target result byte, then writes 4 to the matching target. This result-4 write drives the target callback’s one-step local balloon pop transition. Timer check precedes target scan; terminal child cleanup occurs next callback at phase frame 1. Existing native branches alone do not establish phase 5/6 as named win/loss outcomes."
+    },
+    {
+      "name": "func_08000CC8_708708",
+      "program": "goemon_timer_file48.bin",
+      "address": "0x08000CC8",
+      "romAddress": "0x00708708",
+      "section": ".file_48",
+      "confidence": "decompiled-and-disassembled",
+      "observed": "Phase 1 treats status68 bit0x8000 as the held gate; the free path installs collider helper argument20 and gravity byte75=10. Contact status68&0x3200 or object Y<0 sets result byte+0xD1 to zero; root retirement observes zero on a later callback. Common gravity subtracts unsigned byte75/50; the integration gate adds velocity*2."
+    },
+    {
+      "name": "func_08000FCC_708A0C",
+      "program": "goemon_timer_file48.bin",
+      "address": "0x08000FCC",
+      "romAddress": "0x00708A0C",
+      "section": ".file_48",
+      "confidence": "decompiled-and-disassembled",
+      "observed": "Phase 2 plays the pop sound, attempts File48 flash creation, creates five common particles and three common debris children only on successful flash creation, then deletes the balloon. This path uses allocation, RNG and audio. Inspected callbacks contain no outgoing damage, score, reward or item-spawn call."
+    },
+    {
+      "name": "func_0800126C_708CAC",
+      "program": "goemon_timer_file48.bin",
+      "address": "0x0800126C",
+      "romAddress": "0x00708CAC",
+      "section": ".file_48",
+      "confidence": "decompiled",
+      "observed": "Increments the byte at task+0xD0 once. The target result-4 path uses this to advance the local balloon into its pop phase."
+    },
+    {
+      "name": "func_80003E10_4A10",
+      "program": "mnsg_main_static.elf",
+      "address": "0x80003E10",
+      "romAddress": "0x00004A10",
+      "section": ".main",
+      "confidence": "raw-disassembly-verified",
+      "observed": "ABI float(unsigned int angle): integer word in a0, float result in f0. Masks input to low 10 bits, reflects/signs table quadrants, returns a lookup value without gameplay-state updates."
+    },
+    {
+      "name": "func_801E55D4_5A14E4",
+      "program": "mnsg_player_file_11.elf",
+      "address": "0x801E55D4",
+      "romAddress": "0x005A14E4",
+      "section": ".file_11",
+      "confidence": "decompiled-and-disassembled",
+      "observed": "ABI void(player*,float localX,float localY,float localZ). Rotates supplied velocity and fixed local offset by current player angles, writes held object world position/velocity/angles, then detaches it. Sudden Impact caller uses (0,4.4,1.8). Writes are complete on return; the operation is local-player stateful."
+    }
+  ],
+  "relatedNativeMechanics": [
+    {
+      "name": "func_80218090_5D3560",
+      "program": "world_file_12_common.elf",
+      "address": "0x80218090",
+      "confidence": "decompiled",
+      "observed": "Creates a local rotating debris child used by the inspected balloon pop path; the child continues through native initialization and its own visual lifecycle."
+    },
+    {
+      "name": "func_80218C28_5D40F8",
+      "program": "world_file_12_common.elf",
+      "address": "0x80218C28",
+      "confidence": "decompiled",
+      "observed": "Common child constructor used in pop descendants; initializes child kind and flags such that the inspected cosmetic descendants do not advertise outgoing attacks."
+    }
+  ],
+  "limitations": [
+    "No livegame or visual confirmation was performed.",
+    "The no-damage/no-reward finding is scoped to the listed Sudden Impact callback chain and identified pop descendants, not all native effects.",
+    "The target/helper and balloon task pointers are local native handles and are not safe network pointers.",
+    "The native controller can override target result bytes; prediction alone does not own terminal admission."
+  ]
+}

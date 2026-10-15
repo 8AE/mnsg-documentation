@@ -4,7 +4,7 @@ slug: "/functions"
 description: "Native functions for the US recompilation of Mystical Ninja Starring Goemon."
 ---
 
-317 functions with C interfaces, behavior, and usage examples. Use the search bar to look up an exact symbol, address, or purpose.
+322 functions with C interfaces, behavior, and usage examples. Use the search bar to look up an exact symbol, address, or purpose.
 
 | Symbol | Purpose |
 | --- | --- |
@@ -38,9 +38,12 @@ description: "Native functions for the US recompilation of Mystical Ninja Starri
 | [`func_08000AD4_7068C4`](func_08000AD4_7068C4.md) | Run Sasuke's high-jump challenge controller |
 | [`func_08000B58_6F0D68`](func_08000B58_6F0D68.md) | Advance an Ebisumaru explosion |
 | [`func_08000B98_70ABD8`](func_08000B98_70ABD8.md) | Benkei live battle controller |
+| [`func_08000CC8_708708`](func_08000CC8_708708.md) | Advance a local Impact throwable |
 | [`func_08000DCC_6B406C`](func_08000DCC_6B406C.md) | Initialize a Congo flame |
 | [`func_08000E2C_6F103C`](func_08000E2C_6F103C.md) | Advance an Ebisumaru bomb |
+| [`func_08000FCC_708A0C`](func_08000FCC_708A0C.md) | Advance the Impact balloon visual |
 | [`func_08001020_6F4500`](func_08001020_6F4500.md) | Update a live locked doorway |
+| [`func_0800126C_708CAC`](func_0800126C_708CAC.md) | Advance a local minigame actor phase |
 | [`func_0800127C_708CBC`](func_0800127C_708CBC.md) | Update an Impact challenge target |
 | [`func_080012C8_6F47A8`](func_080012C8_6F47A8.md) | Open a locked travel door |
 | [`func_08001464_70B4A4`](func_08001464_70B4A4.md) | Update Benkei bridge encounter topology |
@@ -137,6 +140,7 @@ description: "Native functions for the US recompilation of Mystical Ninja Starri
 | [`func_80003478_4078`](func_80003478_4078.md) | Initialize gameplay control/UI state |
 | [`func_80003728_4328`](func_80003728_4328.md) | Switch the system execution step |
 | [`func_8000383C_443C`](func_8000383C_443C.md) | Reset render and texture buffers |
+| [`func_80003E10_4A10`](func_80003E10_4A10.md) | Read the native sine table |
 | [`func_80004240_4E40`](func_80004240_4E40.md) | Clear native text/UI slots |
 | [`func_80004AF8_56F8`](func_80004AF8_56F8.md) | Update derived gameplay-controller input |
 | [`func_8000607C_6C7C`](func_8000607C_6C7C.md) | Set the engine destination |
@@ -233,6 +237,7 @@ description: "Native functions for the US recompilation of Mystical Ninja Starri
 | [`func_801DD50C_59941C`](func_801DD50C_59941C.md) | Cycle the live player character |
 | [`func_801DD5C0_5994D0`](func_801DD5C0_5994D0.md) | Apply a live player character swap |
 | [`func_801E0944_59C854`](func_801E0944_59C854.md) | Advance a player character transition |
+| [`func_801E55D4_5A14E4`](func_801E55D4_5A14E4.md) | Release and launch the held object |
 | [`func_801E8820_5A4730`](func_801E8820_5A4730.md) | Configure an effect texture |
 | [`func_801E8858_5A4768`](func_801E8858_5A4768.md) | Initialize animated effect textures |
 | [`func_801E8890_5A47A0`](func_801E8890_5A47A0.md) | Select an animated effect texture frame |

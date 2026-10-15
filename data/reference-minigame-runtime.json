@@ -306,12 +306,17 @@
     "behavior": [
       "Task word +0xD0 points to its 60-byte work area. Work byte +0x00 is the phase, halfword +0x02 is yaw modulo 1024, signed halfword +0x04 is the phase frame, halfword +0x06 is the held-button repeat count, and word +0x08 is the previous held-button mask.",
       "Work words +0x0C and +0x10 are native visual pointers; +0x14 is the timer HUD task pointer. Six target task pointers occupy +0x18 through +0x2C; three throwable task pointers occupy +0x30 through +0x38.",
-      "Phase 0 performs setup. Phase 3 starts introduction scenario 0x0173. Phase 4 waits for the instruction VM to be idle, then constructs the timer and six targets.",
-      "Phases 1 and 2 implement local carrying/aiming and throwing. The timer starts at 100 seconds, represented by 3000 native frames. Timer zero selects timeout phase 5; all six target completion bytes equal to 1 select success phase 6. Phase 7 handles exit."
+      "Phase 0 performs setup. Phase 3 starts introduction scenario 0x0173. Phase 4 waits for the instruction VM to be idle, then constructs the timer and six targets. Phases 1 and 2 implement local carrying/aiming and throwing. The timer starts at 100 seconds, represented by 3000 native frames.",
+      "Introduction scenario 0x0173 queues native audio command 0x0292 before its final instruction wait and text. After setting instruction flag 0x1B, it queues gameplay music command 0x0052 through func_80038BC8_397C8 and ends. The phase-4 VM-idle/HUD/target transition contains no audio call.",
+      "The terminal checks run from ordinary controller callbacks. Timer expiry is tested by signed timer word +0x84 divided by 30 equaling zero and selects phase 5. The controller then scans the six target result bytes; any target with byte +0xD1 equal to 1 selects phase 6, writes 3 to every target result byte, then writes 4 to the matching target byte. That final value is consumed by the target callback to advance its local balloon into the pop phase. The timer test precedes the target scan, so a target result can select phase 6 in the same callback after timer expiry selected phase 5.",
+      "The controller performs terminal child cleanup on the following callback when the phase frame is 1. It also owns the local camera and player reset path. The meanings of phases 5 and 6 as win/loss outcomes are not established by these native predicates alone."
     ],
     "cautions": [
       "Pointers and carry/throw state belong to this native controller graph. Preserve native child initialization and cleanup.",
-      "The target hit bit is observed, but attribution of a specific cube through task +0x38 has not been established."
+      "The native target predicate is ANY one of the six result bytes equaling 1; do not describe it as requiring all six targets to be complete.",
+      "The target hit bit is observed, but attribution of a specific cube through task +0x38 has not been established.",
+      "The controller resets the local player and camera during its normal callback. Its state is not a transferable remote actor graph.",
+      "Bypassing scenario 0x0173 also bypasses its gameplay-music command. Account for that local transition once when active play begins; do not replay the instruction scenario or submit its audio command every frame."
     ],
     "example": "extern void func_080018E8_709328(void *task, void *object);\n\ntypedef void (*NativeTaskCallback)(void *, void *);\n\n/* Observe identity without replaying the native lifecycle. */\nNativeTaskCallback documented_callback(void)\n{\n    return func_080018E8_709328;\n}\n",
     "exampleExplanation": "The native scheduler owns callback execution. This example returns the function address and does not allocate work, advance challenge state or replay a contact pass.",
@@ -320,12 +325,13 @@
       "func_0800127C_708CBC",
       "func_08000790_7081D0",
       "func_080007A4_7081E4",
-      "func_801FA6E4_5B65F4"
+      "func_801FA6E4_5B65F4",
+      "func_80038BC8_397C8"
     ]
   },
   "func_0800127C_708CBC": {
     "title": "Update an Impact challenge target",
-    "summary": "Advances a target using inline task work and the native hit-status bit.",
+    "summary": "Advances a rising target through native hit, interpolation, and wobble phases.",
     "confidence": "decompiled",
     "declaration": "void func_0800127C_708CBC(void *task, void *object);",
     "parameters": [
@@ -342,20 +348,28 @@
     ],
     "returns": "No return value.",
     "behavior": [
-      "This callback stores inline target work beginning at task +0xD0. It does not dereference task +0xD0 as a heap-work pointer.",
-      "The inline work begins with a phase byte at +0x00 and a signed completion byte at +0x01. The controller checks each completion byte for value 1.",
-      "Relative to inline task work, signed halfword +0x06 is the frame counter, signed halfwords +0x08/+0x0A are random intervals, float +0x0C is Y displacement, float +0x14 is the motion threshold, and word +0x18 is a visual child pointer.",
-      "Reads task word +0x68 bit 0x80 as native hit status and advances the target lifecycle."
+      "This callback stores target work inline beginning at task +0xD0. The phase is a byte at +0x00; the signed result byte is +0x01; the signed frame counter is halfword +0x06; signed halfwords +0x08 and +0x0A are rapid-rise schedule values; current Y displacement is float +0x0C; desired Y is float +0x10; interpolation step size is float +0x14; and +0x18 holds a local balloon task pointer.",
+      "Before phase handling, interpolation runs when the step size is greater than 0.001. If the absolute difference between desired and current Y is strictly smaller than the step size, current Y snaps to the desired value and the step becomes zero; otherwise the callback moves by one step toward the desired value. Equality steps to the destination and clears the step on the following callback.",
+      "In phase 1, the signed comparison of schedule halfword +0x08 against the signed frame counter selects a 0.4 Y increment when schedule < frame, otherwise 0.05. A hit lowers current Y by 8, clamps it at -130, resets the frame counter, and switches to phase 3; the phase-1 rise body still runs in that callback. The faster rise can schedule later intervals through native random-number calls.",
+      "Phases 3 and 4 use a sine wobble while the signed frame counter is below 60: angle = signed-trunc((frame × 0x3C00) / 60), then converted to u16; scale = 1 + sine(angle) × 0.1 × ((60 − frame) / 60)^2, written to object +0x1C, +0x20, and +0x24. Phase 3 clears the result byte; a hit lowers current Y by 16, resets the frame, and switches to phase 4. A phase-4 hit resets current Y to -130 and the frame counter. When the signed frame counter becomes greater than 60, phases 3 and 4 return to phase 1. At frame 60 the scale is not updated, and phase 2 has no phase-body action; interpolation and the shared epilogue still run.",
+      "The phase-1, phase-3 and phase-4 hit branches read task +0x68 status bit 0x80 but do not clear it. The ordinary common damage pass clears that bit only after its actor-flag gate and a non-null task +0x38 attacker pointer. A source-free injected bit can therefore survive the post pass and repeatedly reset the target's hit-recovery frame and height.",
+      "The shared epilogue copies current Y to object +0x0C, increments the signed frame counter, and writes result byte 1 when current Y is strictly greater than -10. The native controller owns terminal admission: it observes the result byte and may replace it while advancing the challenge.",
+      "A result byte of 3 forces phase 7. A result byte of 4 increments the local balloon phase once through func_0800126C_708CAC, then forces phase 7."
     ],
     "cautions": [
-      "The hit-status bit does not establish the identity of the attacking cube. Task +0x38 must not be documented as that cube pointer without additional collision-path evidence.",
-      "Use this target layout only for the matching callback; the challenge controller uses a heap pointer at the same task offset."
+      "The result byte is native controller state, not a network-ready completion event. Do not grant an authoritative result from a separately predicted height crossing.",
+      "The hit-status bit does not establish the identity of the attacking cube. Task +0x38 must not be treated as that cube pointer without additional collision-path evidence.",
+      "Use this target layout only for the matching callback; the challenge controller uses a heap pointer at the same task offset. The balloon pointer at +0x18 in this inline work is local and must not be transmitted.",
+      "A supplied hit must be consumed once at the target's naturally scheduled update. Preserve a pre-existing native contact bit and unrelated status bits; do not fabricate task +0x38 or set status bit 0x00040000 to force consumption, since the latter enters actual damage handling."
     ],
     "example": "extern void func_0800127C_708CBC(void *task, void *object);\n\ntypedef void (*NativeTaskCallback)(void *, void *);\n\n/* Observe identity without replaying the native lifecycle. */\nNativeTaskCallback documented_callback(void)\n{\n    return func_0800127C_708CBC;\n}\n",
     "exampleExplanation": "The native scheduler owns callback execution. This example returns the function address and does not allocate work, advance challenge state or replay a contact pass.",
     "related": [
       "func_080018E8_709328",
-      "func_80217144_5D2614"
+      "func_0800126C_708CAC",
+      "func_80003E10_4A10",
+      "func_80217144_5D2614",
+      "func_80218350_5D3820"
     ]
   },
   "func_08000790_7081D0": {
@@ -1153,5 +1167,172 @@
     ],
     "example": "extern void func_08000B58_6F0D68(void *, void *);\ntypedef void (*NativeTaskCallback)(void *, void *);\n\n/* Observe callback identity; the native scheduler owns invocation. */\nNativeTaskCallback documented_explosion_callback(void)\n{\n    return func_08000B58_6F0D68;\n}\n",
     "exampleExplanation": "Returns the verified callback identity without advancing an explosion or applying contact."
+  },
+  "func_08000CC8_708708": {
+    "title": "Advance a local Impact throwable",
+    "summary": "Runs the native held, free, contact, and below-ground lifecycle for an Impact cube.",
+    "confidence": "decompiled",
+    "declaration": "void func_08000CC8_708708(void *task, void *object);",
+    "parameters": [
+      {
+        "name": "task",
+        "type": "void *",
+        "description": "The matching native throwable task."
+      },
+      {
+        "name": "object",
+        "type": "void *",
+        "description": "The throwable object supplied by the native scheduler."
+      }
+    ],
+    "returns": "No return value.",
+    "behavior": [
+      "Phase 0 initializes the throwable with a zero-radius native collider, then enters phase 1. When the held status bit 0x8000 in task +0x68 is set, phase 1 skips the free-object collider installation; that branch does not clear or rewrite the phase-0 collider on each update. When the bit is clear, it installs the free-object collider using helper argument 20, which corresponds to radius scalar 2 after the helper’s divide-by-10 conversion.",
+      "The native common update applies gravity from task byte +0x75 as an unsigned value divided by 50 when gravity is enabled. This callback sets that byte to 10, yielding a 0.2 downward velocity adjustment per update. The separate integration flag advances world position by velocity multiplied by 2.",
+      "When native contact bits 0x3200 are present, the callback plays its contact response and sets task result byte +0xD1 to zero. It also sets that result byte to zero when object Y is below zero, even without the contact bits. The controller observes a zero result and retires the throwable on a later callback."
+    ],
+    "cautions": [
+      "Contact, terrain, gravity, and integration are native lifecycle stages. Do not add a second gravity or 2×velocity step when observing an actor that still receives the native update.",
+      "This is a local child task/object pair. The callback’s native hit/contact state and task pointer are not remote actor state."
+    ],
+    "example": "extern void func_08000CC8_708708(void *task, void *object);\ntypedef void (*TaskCallback)(void *, void *);\n\nTaskCallback documented_throwable_callback(void)\n{\n    return func_08000CC8_708708;\n}\n",
+    "exampleExplanation": "Returns the callback address for inspection. The native scheduler owns invocation and the throwable lifecycle.",
+    "related": [
+      "func_080018E8_709328",
+      "func_801E55D4_5A14E4",
+      "func_80218DA8_5D4278"
+    ]
+  },
+  "func_801E55D4_5A14E4": {
+    "title": "Release and launch the held object",
+    "summary": "Detaches a local player’s held object after rotating its launch velocity and offset into world space.",
+    "confidence": "decompiled",
+    "declaration": "void func_801E55D4_5A14E4(void *player, float local_x, float local_y, float local_z);",
+    "parameters": [
+      {
+        "name": "player",
+        "type": "void *",
+        "description": "The live local player task whose held-object state is updated."
+      },
+      {
+        "name": "local_x",
+        "type": "float",
+        "description": "Local launch-velocity X component."
+      },
+      {
+        "name": "local_y",
+        "type": "float",
+        "description": "Local launch-velocity Y component."
+      },
+      {
+        "name": "local_z",
+        "type": "float",
+        "description": "Local launch-velocity Z component."
+      }
+    ],
+    "returns": "No return value.",
+    "behavior": [
+      "Reads the held object from the player task and uses the player object’s current angles to rotate the supplied local velocity into world space. The Impact controller calls it with local velocity (0.0, 4.4, 1.8).",
+      "It separately rotates the native launch offset (0, 10, 12), adds the player object world position, writes the held object’s world position and angles, then detaches it from the player.",
+      "After the function returns, its writes to the held object’s position, velocity, and attachment state are complete. A return observer can inspect this local release edge after validating the held task identity."
+    ],
+    "cautions": [
+      "This function reads and mutates the live local player and its held object. Do not call it for a remote player or substitute a remote actor pointer.",
+      "Before return, the object can still be attached and its final world velocity and position have not all been written. Observe the completed release after return if needed."
+    ],
+    "example": "extern void func_801E55D4_5A14E4(void *player, float local_x, float local_y, float local_z);\ntypedef void (*ReleaseCallback)(void *, float, float, float);\n\nReleaseCallback documented_release_callback(void)\n{\n    return func_801E55D4_5A14E4;\n}\n",
+    "exampleExplanation": "Returns the native routine address without invoking the local-player release operation.",
+    "related": [
+      "func_080018E8_709328",
+      "func_08000CC8_708708",
+      "func_801E54A8_5A13B8"
+    ]
+  },
+  "func_08000FCC_708A0C": {
+    "title": "Advance the Impact balloon visual",
+    "summary": "Runs the balloon’s native visual lifecycle and its single cosmetic pop branch.",
+    "confidence": "decompiled",
+    "declaration": "void func_08000FCC_708A0C(void *task, void *object);",
+    "parameters": [
+      {
+        "name": "task",
+        "type": "void *",
+        "description": "The matching balloon task."
+      },
+      {
+        "name": "object",
+        "type": "void *",
+        "description": "The balloon object supplied by the native scheduler."
+      }
+    ],
+    "returns": "No return value.",
+    "behavior": [
+      "Phase 0 initializes the visual model, scale, and position. Phase 1 has no callback body; it does not follow the rising target or play an animation clip.",
+      "In phase 2, the callback plays its pop sound, attempts to create a File 48 flash, and on successful flash creation emits native particles and three common debris children. It then deletes the balloon task. The pop path contains allocations, random-number use, sound, and deletion.",
+      "The rising target’s result-4 path advances the local balloon phase once through func_0800126C_708CAC. This exact native callback chain produces cosmetic visuals; the inspected path contains no outgoing damage, score, reward, or item-spawn call."
+    ],
+    "cautions": [
+      "Keep the pop branch on the naturally scheduled local balloon task and consume its phase transition once. Replaying the callback or phase increment can duplicate allocations, random-number changes, sound, and deletion.",
+      "This finding is limited to the inspected File 48 callback chain and its identified common descendants; it does not establish that every native effect is harmless."
+    ],
+    "example": "extern void func_08000FCC_708A0C(void *task, void *object);\ntypedef void (*TaskCallback)(void *, void *);\n\nTaskCallback documented_balloon_callback(void)\n{\n    return func_08000FCC_708A0C;\n}\n",
+    "exampleExplanation": "Returns the callback address for inspection. The native scheduler owns phase progression and child creation.",
+    "related": [
+      "func_0800126C_708CAC",
+      "func_0800127C_708CBC",
+      "func_80218090_5D3560",
+      "func_8021242C_5CD8FC"
+    ]
+  },
+  "func_0800126C_708CAC": {
+    "title": "Advance a local minigame actor phase",
+    "summary": "Increments the byte phase at task +0xD0 by one.",
+    "confidence": "decompiled",
+    "declaration": "void func_0800126C_708CAC(void *task);",
+    "parameters": [
+      {
+        "name": "task",
+        "type": "void *",
+        "description": "The matching local minigame task with inline phase byte at +0xD0."
+      }
+    ],
+    "returns": "No meaningful return value.",
+    "behavior": [
+      "Adds one to the byte at task +0xD0. The rising-target callback uses it for the local balloon phase when consuming result byte 4."
+    ],
+    "cautions": [
+      "The function changes lifecycle state. Do not call it repeatedly to reproduce a result event; the balloon pop path includes allocation and other native side effects."
+    ],
+    "example": "extern void func_0800126C_708CAC(void *task);\ntypedef void (*PhaseIncrement)(void *);\n\nPhaseIncrement documented_phase_increment(void)\n{\n    return func_0800126C_708CAC;\n}\n",
+    "exampleExplanation": "Returns the helper address without advancing a live task.",
+    "related": [
+      "func_0800127C_708CBC",
+      "func_08000FCC_708A0C"
+    ]
+  },
+  "func_80003E10_4A10": {
+    "title": "Read the native sine table",
+    "summary": "Returns a float from the game’s 1024-step sine lookup table.",
+    "confidence": "decompiled",
+    "declaration": "float func_80003E10_4A10(unsigned int angle);",
+    "parameters": [
+      {
+        "name": "angle",
+        "type": "unsigned int",
+        "description": "Integer angle word; the helper masks it to its low 10 bits."
+      }
+    ],
+    "returns": "The sine-table value as a float in floating-point return register f0.",
+    "behavior": [
+      "Masks the integer angle with 0x3FF and returns the corresponding table value with quadrant reflection/sign handling. It performs no gameplay-state update."
+    ],
+    "cautions": [
+      "The parameter is an integer word, not a floating-point angle. Keep the native 10-bit angle convention when reproducing callers."
+    ],
+    "example": "extern float func_80003E10_4A10(unsigned int angle);\n\nfloat sample_native_sine(unsigned int angle)\n{\n    return func_80003E10_4A10(angle & 0x3FFu);\n}\n",
+    "exampleExplanation": "Uses the native integer-angle lookup. The helper itself also masks the input to 10 bits.",
+    "related": [
+      "func_0800127C_708CBC"
+    ]
   }
 }

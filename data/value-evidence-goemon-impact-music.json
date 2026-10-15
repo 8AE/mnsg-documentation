@@ -1,0 +1,77 @@
+{
+  "scope": "Internal evidence for the Goemon Sudden Impact instruction-scenario audio transition. Not copied into public pages.",
+  "analysisDate": "2026-10-14",
+  "confidence": "Native disassembly, decompiled controller and bounded scenario-data reads; audible playback and queue acceptance were not runtime-tested.",
+  "evidenceArtifacts": [
+    {
+      "path": "/private/tmp/mnsg-goemon-music-20261014-proof.md",
+      "sha256": "2021951d82e245222e2af4f58362d80a543d5a1689e7bc183a698464f43e3ae8",
+      "role": "Native report."
+    },
+    {
+      "path": "/private/tmp/mnsg-goemon-music-20261014-raw.json",
+      "sha256": "ffad99215c4bf6211c78c3ab819eb1f247bc39f86ab0fa825f4baef3a6559760",
+      "role": "Raw Ghidra decompilation, disassembly and bounded memory-read responses."
+    }
+  ],
+  "controller": {
+    "symbol": "func_080018E8_709328",
+    "program": "goemon_timer_file48.bin",
+    "address": "0x080018E8",
+    "romAddress": "0x00709328",
+    "section": ".file_48",
+    "observed": "Phase 3 at signed frame >=6 starts scenario 0x0173 at PC0x08001B9C (argument delay slot0x08001BA0). Phase 4 waits for VM idle, builds the HUD and six targets, then stores phase1 at0x08001C64. This phase-4 transition contains no audio call."
+  },
+  "scenario": {
+    "id": "0x0173",
+    "program": "sasuke_music_file98.bin",
+    "overlay": "0x0062 (File98)",
+    "pointerTableEntry": "0x80077F6C ->0x080025D8",
+    "overlayTableEntry": "0x800788EE ->0x0062",
+    "introCommand": {
+      "literalAddress": "0x08002730",
+      "value": "0x0292",
+      "callbackOperandAddress": "0x08002738",
+      "callback": "0x8003F608"
+    },
+    "completion": {
+      "flagOpcodeAddress": "0x0800275C",
+      "flagOperandAddress": "0x08002760",
+      "flag": "0x1B",
+      "storeOpcodeAddress": "0x08002764",
+      "commandWordOperandAddress": "0x08002768",
+      "commandWord": "0x801C7740",
+      "commandLiteralAddress": "0x08002770",
+      "command": "0x0052",
+      "callOpcodeAddress": "0x08002774",
+      "callbackOperandAddress": "0x08002778",
+      "callback": "0x8003F608",
+      "endOpcodeAddress": "0x0800277C"
+    }
+  },
+  "audioPath": {
+    "program": "mnsg_main_static.elf",
+    "helper": "func_8003F608_40208",
+    "helperAddress": "0x8003F608",
+    "loadPC": "0x8003F618",
+    "load": "lhu a0,0x7742(a0), the unsigned low halfword of global0x801C7740 in the big-endian game",
+    "wrapper": "func_80038BC8_397C8",
+    "wrapperAddress": "0x80038BC8",
+    "wrapperRomAddress": "0x000397C8",
+    "declaration": "void func_80038BC8_397C8(unsigned short cue);",
+    "maskPC": "0x80038BD0",
+    "queueCallPC": "0x80038BE0",
+    "queue": "func_80038C30_39830(cue,0,0)",
+    "lifetime": "At most8 pending commands. Duplicate suppression applies only while a command remains pending; no persistent already-playing guard or acceptance acknowledgment."
+  },
+  "conflicts": [
+    "The earlier action-motion proof abbreviated controller calls to func_80024038_24C38(0x5F/0x60/0x19E) as audio. The inspected callee is a save-flag setter; those are save-flag IDs. Neither updated public record contained that mistaken claim. No result-music mapping is inferred."
+  ],
+  "limitations": [
+    "The scenario is DATA in File98; repeated0800 addresses must not be interpreted as File48 code.",
+    "The attempted decompilation of encoded text data at0x0800022C was discarded.",
+    "No live gameplay, audible playback, queue acceptance or two-client verification was performed.",
+    "No song title, bank, player-selector, fade or volume semantics are inferred for command0x0292; no explicit stop command appears in this inspected transition.",
+    "No source snapshots or inventory refresh were needed; both symbols were already inventoried."
+  ]
+}

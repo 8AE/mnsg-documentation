@@ -1,0 +1,66 @@
+{
+  "scope": "Internal evidence for Sudden Impact target hit-status consumption and recovery. Not copied into public pages.",
+  "analysisDate": "2026-10-14",
+  "confidence": "Native target/damage/post/scheduler disassembly and decompilation. Static lifecycle finding; no live gameplay or physical collision-producer identity was tested.",
+  "evidenceArtifacts": [
+    {
+      "path": "/private/tmp/mnsg-goemon-hit-recovery-20261014-proof.md",
+      "sha256": "f9345b23516dd77c6aced62287d6843483169a8c504d56069d7e7de57a318b9b",
+      "role": "Native proof report."
+    },
+    {
+      "path": "/private/tmp/mnsg-goemon-hit-recovery-20261014-evidence.json",
+      "sha256": "62f2a32dda0eb26e425704382317bda34023ec1acfa30ebc53d32898c1ed2d10",
+      "role": "Raw target, damage and common post-pass evidence."
+    },
+    {
+      "path": "/private/tmp/mnsg-goemon-hit-recovery-20261014-scheduler.json",
+      "sha256": "b2cbf4bc066f73c84d3864700840a6810a1cfc351b24af7179cb2cf4ddec187e",
+      "role": "Raw factory, post callback installation and scheduler-order evidence."
+    }
+  ],
+  "target": {
+    "symbol": "func_0800127C_708CBC",
+    "program": "goemon_timer_file48.bin",
+    "address": "0x0800127C",
+    "romAddress": "0x00708CBC",
+    "section": ".file_48",
+    "observed": "Phase1/3/4 read task status +0x68 bit0x80 at0x08001440/0x08001580/0x080016D0. The body contains no store to status +0x68. Repeated phase4 hit resets frame to0 at0x0800172C and height to-130 at0x08001730; epilogue increments frame to1. Recovery requires signed frame>60, already correctly documented. Frame61 selects phase1 without same-callback ascent, epilogue reaches62, next callback ascends."
+  },
+  "damage": {
+    "symbol": "func_80218350_5D3820",
+    "program": "world_file_12_common.elf",
+    "address": "0x80218350",
+    "romAddress": "0x005D3820",
+    "section": ".file_12",
+    "observed": "The ordinary actor-flag gate requires flags60 bit0x00200000 and status68 bit0x80. It loads attacker task38 at0x802183B4, computes status&~0x80 at0x802183C8, tests attacker before the store at0x802183CC, and null attacker returns at0x802183D4..D8 without clearing status80. Non-null attacker reaches the delay-slot store at0x802183E0. Target flags0x006000A0 include0x00400000, selecting status1 reaction without ordinary HP subtraction only after the attacker gate. The separate status68 bit0x00040000 fast path clears80 at0x80218378 and applies HP damage; it is not a harmless consumption mechanism."
+  },
+  "relatedNativeMechanics": [
+    {
+      "symbol": "func_80218E7C_5D434C",
+      "program": "world_file_12_common.elf",
+      "address": "0x80218E7C",
+      "romAddress": "0x005D434C",
+      "observed": "Calls damage helper at0x80218EF0. Later clear at0x80218F00..10 concerns status0x40000, not hit80."
+    },
+    {
+      "symbol": "func_80218F30_5D4400",
+      "program": "world_file_12_common.elf",
+      "address": "0x80218F30",
+      "romAddress": "0x005D4400",
+      "observed": "Calls common post then clears task38/34 at0x80218F4C/50. No unconditional80 clear; task lifetime can end later in this pass."
+    },
+    {
+      "symbol": "func_80034734_35334",
+      "program": "mnsg_main_static.elf",
+      "address": "0x80034734",
+      "romAddress": "0x00035334",
+      "observed": "Scheduler invokes task08pre at0x80034808, task0Cupdate(task,task18object) at0x80034828, then task10post at0x80034848, reloading current task between callbacks. Factory/constructor chain installs commonpost80218F30 at task10 through80035244."
+    }
+  ],
+  "limitations": [
+    "The physical collision producer and specific attacking cube identity were not independently retraced; task38 must not be assumed to identify a cube.",
+    "No native callback replay, live game, two-client gameplay, or runtime recovery confirmation was performed.",
+    "Only existing target and damage reference records were updated. Existing strict-frame recovery math, prior action/music findings, inventory and source snapshots were preserved."
+  ]
+}

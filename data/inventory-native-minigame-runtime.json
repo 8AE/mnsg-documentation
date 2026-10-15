@@ -238,6 +238,41 @@
       "romAddress": "0x006F0D68",
       "section": ".file_42",
       "size": 724
+    },
+    {
+      "name": "func_08000CC8_708708",
+      "kind": "function",
+      "address": "0x08000CC8",
+      "romAddress": "0x00708708",
+      "section": ".file_48"
+    },
+    {
+      "name": "func_08000FCC_708A0C",
+      "kind": "function",
+      "address": "0x08000FCC",
+      "romAddress": "0x00708A0C",
+      "section": ".file_48"
+    },
+    {
+      "name": "func_0800126C_708CAC",
+      "kind": "function",
+      "address": "0x0800126C",
+      "romAddress": "0x00708CAC",
+      "section": ".file_48"
+    },
+    {
+      "name": "func_80003E10_4A10",
+      "kind": "function",
+      "address": "0x80003E10",
+      "romAddress": "0x00004A10",
+      "section": ".main"
+    },
+    {
+      "name": "func_801E55D4_5A14E4",
+      "kind": "function",
+      "address": "0x801E55D4",
+      "romAddress": "0x005A14E4",
+      "section": ".file_11"
     }
   ]
 }
