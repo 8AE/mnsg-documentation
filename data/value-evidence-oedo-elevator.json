@@ -1,0 +1,92 @@
+{
+  "scope": "Internal maintenance evidence for the D_8015CDE0 Oedo Castle room 0x001A elevator table. No ROM or overlay binaries are included.",
+  "researchDate": "2026-10-27",
+  "confidence": "decompiled",
+  "symbol": "D_8015CDE0",
+  "tableId": "oedo-castle-room-001a-elevator",
+  "rom": {
+    "region": "US",
+    "decompressedSha256": "e40bee20508c2e29e651dca4e47504e40f908f0a2186e34a582784bf5a64be4c"
+  },
+  "handoff": {
+    "role": "ghidra-decompiler",
+    "program": "world_file_44.elf",
+    "methods": [
+      "decompile_function",
+      "disassemble_function",
+      "read_memory"
+    ],
+    "scope": "Same File_44 constructor, idle and rearm established for the elevator family; route 0 verified by a raw 52-byte table read and validated US room roster.",
+    "confidence": "decompiled and ROM-verified"
+  },
+  "roster": {
+    "evidencePath": "/tmp/dharumanyo-elevator-roster.json",
+    "evidenceSha256": "02e32f13af2514a26ca85eb57fe144ad0bd312d809d9616a3ce3c9a6e8919af8",
+    "tool": "mnsg-recomp-example/tools/inspect_world_roster.py",
+    "room": "0x001A",
+    "actorDataFile": 848,
+    "placedIndex": 14,
+    "entity": "0x1FC",
+    "definitionRom": "0x12A6100",
+    "sourceRom": "0x12A6238",
+    "sourcePosition": [
+      0,
+      0,
+      0
+    ],
+    "definitionPayloadWords": [
+      0,
+      0,
+      0
+    ]
+  },
+  "native": {
+    "constructor": {
+      "symbol": "func_08001F44_6FD144",
+      "runtime": "0x08001F44",
+      "rom": "0x6FD144",
+      "behavior": "Consumes task +0xD0 route index, sets local route pointer +0xE0, chooses endpoint by local player Y and binds native collision mesh."
+    },
+    "route": {
+      "index": 0,
+      "runtime": "0x080032C0",
+      "rom": "0x6FE4C0",
+      "recordSize": 52,
+      "upper": [
+        -50,
+        -66,
+        280
+      ],
+      "lower": [
+        -50,
+        -225,
+        280
+      ],
+      "signedYThreshold": -146,
+      "xMargin": 30,
+      "zMargin": 30,
+      "motionParameter": 1.0,
+      "model": "0x1FC",
+      "meshSelector": 3,
+      "layer": 3
+    },
+    "idle": {
+      "symbol": "func_0800204C_6FD24C",
+      "behavior": "Local player Y or player task +0xA0 equality with lift object triggers movement, subject to the native local gate."
+    },
+    "travel": [
+      "func_08002180_6FD380",
+      "func_0800220C_6FD40C"
+    ],
+    "movementHelper": "func_8021B988_5D6E58",
+    "rearm": {
+      "symbol": "func_080022E8_6FD4E8",
+      "behavior": "Waits for local player to leave the X/Z footprint before idle."
+    }
+  },
+  "limits": [
+    "No native gameplay or two-client runtime verification performed.",
+    "This mapping is Oedo Castle room 0x001A and establishes no Dharumanyo intro trigger in that room.",
+    "Route mapping is specific to the validated US room roster; placed source origin is not a live endpoint."
+  ]
+}

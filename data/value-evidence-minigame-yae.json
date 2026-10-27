@@ -1,0 +1,482 @@
+{
+  "scope": "Internal fresh Ghidra and native-symbol-table evidence for File 69 Mermaid training. Public entries describe native behavior only.",
+  "confidence": "decompiled",
+  "date": "2026-10-25",
+  "program": "mnsg-yae-file69.elf",
+  "section": ".file_69",
+  "sectionRomAddress": "0x0072B850",
+  "sectionVram": "0x08000000",
+  "sectionSize": "0x2A10",
+  "symbolTable": {
+    "path": "/Users/ahmad/git/mnsg-recomp-example/Goemon64RecompSyms/mnsg.syms.toml",
+    "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77"
+  },
+  "artifacts": [
+    {
+      "path": "/tmp/mnsg-yae-native-20261025.md",
+      "sha256": "617db8a24f79e1c0ca056ab1dd05eebdf3bf21738bd0878fea71fed6987e16fe"
+    },
+    {
+      "path": "/tmp/mnsg-yae-decomp-0.json",
+      "sha256": "8993f5b019c3f717ce62e4ad6db8a9b30f69f23c01f5a28046825e4b9e326439"
+    },
+    {
+      "path": "/tmp/mnsg-yae-decomp-1.json",
+      "sha256": "d08e73e59451b9b687a56dbc01a80d49774111830201b4bf44adad2bb4ada88f"
+    },
+    {
+      "path": "/tmp/mnsg-yae-more-0.json",
+      "sha256": "60adb4c16b7705aa567191cd95de8ea76b3bc66abc1654902f6dbc6d0f7fdaf6"
+    },
+    {
+      "path": "/tmp/mnsg-yae-more-1.json",
+      "sha256": "cb093653ba1ee3048755f7815d2c2b28ef673f78ff192c9f8a536b8aa2cd467e"
+    },
+    {
+      "path": "/tmp/mnsg-yae-more-2.json",
+      "sha256": "41cc90c9bb6cf80c8e382db7fb90707ad2d4aacf41f7cd5af1c1b30a87ebd8a9"
+    },
+    {
+      "path": "/tmp/mnsg-yae-motion-8021c444.json",
+      "sha256": "60e62d568144372d54d189b0b6f5d935c8c1c08acedc3d5a5df9257647c3ea8a"
+    },
+    {
+      "path": "/tmp/mnsg-yae-motion-8021b808.json",
+      "sha256": "2c305b3ac38e05ee5c08ac8f78e316127e234d467531b5c3e981597f6a4ad267"
+    },
+    {
+      "path": "/tmp/mnsg-yae-motion-80218e7c.json",
+      "sha256": "530b01c5c9d8ac21fbfd6933ce76bbe19d6d0a9c0d00576099f86780ea351cd9"
+    },
+    {
+      "path": "/tmp/mnsg-yae-motion-80218c28.json",
+      "sha256": "7de3001a845f9ff421286418b7febedd12ad3625e5a2d02645e152a79e04d830"
+    },
+    {
+      "path": "/tmp/mnsg-yae-motion-decomp.json",
+      "sha256": "88c4f288d033734b9b2d38e13ad6d18b2d414a15150e2ed84338dd14492a4db9"
+    },
+    {
+      "path": "/tmp/mnsg-yae-launch-followup-20261026.md",
+      "sha256": "c3833927c0be8f2053d8be156bd36239a1afbcbf3b8044c5fa0af04bd346edd8"
+    },
+    {
+      "path": "/tmp/mnsg-yae-direct-timed-launch-20261026.md",
+      "sha256": "cc7d15f1719173c4aa13483333d1f425a50c7b834636423baea73b12cdb6207e"
+    },
+    {
+      "path": "/tmp/mnsg-yae-hud-native-20261026.md",
+      "sha256": "a7c9dcd0b90ab792d4492455208d540a30ebe7eff3d7c2785a6a3b974b7b6bdc"
+    },
+    {
+      "path": "/tmp/mnsg-yae-instruction-wait-native-20261026.md",
+      "sha256": "af3ff593fe77268f1a163037ae8dbbef039149ba8f3aaf0b18e634f200c25777"
+    }
+  ],
+  "symbols": [
+    {
+      "name": "func_080014E8_72CD38",
+      "kind": "function",
+      "address": "0x080014E8",
+      "romAddress": "0x0072CD38",
+      "section": ".file_69",
+      "size": 4264
+    },
+    {
+      "name": "func_0800107C_72C8CC",
+      "kind": "function",
+      "address": "0x0800107C",
+      "romAddress": "0x0072C8CC",
+      "section": ".file_69",
+      "size": 1040
+    },
+    {
+      "name": "func_08000E1C_72C66C",
+      "kind": "function",
+      "address": "0x08000E1C",
+      "romAddress": "0x0072C66C",
+      "section": ".file_69",
+      "size": 572
+    },
+    {
+      "name": "func_080002B4_72BB04",
+      "kind": "function",
+      "address": "0x080002B4",
+      "romAddress": "0x0072BB04",
+      "section": ".file_69",
+      "size": 608
+    },
+    {
+      "name": "func_0800058C_72BDDC",
+      "kind": "function",
+      "address": "0x0800058C",
+      "romAddress": "0x0072BDDC",
+      "section": ".file_69",
+      "size": 20
+    },
+    {
+      "name": "func_080005A8_72BDF8",
+      "kind": "function",
+      "address": "0x080005A8",
+      "romAddress": "0x0072BDF8",
+      "section": ".file_69",
+      "size": 24
+    },
+    {
+      "name": "func_08000000_72B850",
+      "kind": "function",
+      "address": "0x08000000",
+      "romAddress": "0x0072B850",
+      "section": ".file_69",
+      "size": 96
+    },
+    {
+      "name": "func_800115E0_121E0",
+      "kind": "function",
+      "address": "0x800115E0",
+      "romAddress": "0x000121E0",
+      "section": ".main",
+      "size": 24
+    },
+    {
+      "name": "func_80036158_36D58",
+      "kind": "function",
+      "address": "0x80036158",
+      "romAddress": "0x00036D58",
+      "section": ".main",
+      "size": 264
+    },
+    {
+      "name": "func_8001136C_11F6C",
+      "kind": "function",
+      "address": "0x8001136C",
+      "romAddress": "0x00011F6C",
+      "section": ".main",
+      "size": 332
+    },
+    {
+      "name": "D_801FC628_5B8538",
+      "kind": "variable",
+      "address": "0x801FC628",
+      "romAddress": "0x005B8538",
+      "section": ".file_11",
+      "size": null
+    }
+  ],
+  "observations": [
+    {
+      "subject": "controller birth versus initialized identity",
+      "address": "0x08001624",
+      "finding": "Native phase 0 overwrites task+0x5E with0x0327; birth entity0x033A cannot be required after initialization."
+    },
+    {
+      "subject": "local block",
+      "finding": "Root task+D0 holds a work pointer. Work +0u8phase,+1s8camera,+2s8warning,+4s16frame,+6u16repeat,+8u32buttons,+Ccamera,+10HUD,+14scheduler-group parent task pointer,+18proxy,+1Cfade. Inline proxy/obstacle D0 layouts differ."
+    },
+    {
+      "subject": "native entry",
+      "finding": "Sign phase3 requires flag15set,flag1Eclear,char3,flag7Aset. Verified explicit phase4 continuation can bypass predicates after initialized phase1 and safe live Yae/player/control/visit gates, without setting story/reward flags."
+    },
+    {
+      "subject": "active timer and height",
+      "finding": "HUD+84s32ticks at30Hz,50seconds=1500ticks, getter raw/30; active root expiry getter<=0, proxy y<-440failure,y>380success, progressinteger(y+440)."
+    },
+    {
+      "subject": "obstacle lifecycle",
+      "finding": "Root7spawns2children per40frames, local RNG indices0..6, x=index*160/6-80,y400,zlocal. Obstacle phase1mask2200impact, below-468delete;phase2frame1velocities+7C=4/+80=-4,frame30debris+delete."
+    },
+    {
+      "subject": "native music",
+      "romAddresses": [
+        "0x0076A51C",
+        "0x0076A520",
+        "0x0076A524",
+        "0x0076A528",
+        "0x0076A52C",
+        "0x0076A530"
+      ],
+      "finding": "Scenario177 stages0292 through801C7740 and8003F608; no0052in inspected Yae instruction path. Song identity and audible playback unverified."
+    },
+    {
+      "subject": "native success reward",
+      "romAddresses": [
+        "0x0076A808",
+        "0x0076A814",
+        "0x0076A818",
+        "0x0076A81C"
+      ],
+      "finding": "Scenario176 success branch grants saveF0=1 and packedflag1F; interimflag1Eset in root9distinct."
+    },
+    {
+      "subject": "cleanup",
+      "finding": "Root11frame20 camera/proxy/HUDteardown precedes reward. Root11frame40scenario176->phase12;phase12->1afterdialogue/unlock is full success cleanup boundary."
+    },
+    {
+      "subject": "constructor ABI",
+      "finding": "File69 childconstructor parent,callback,u8priority allinregisters; storesfile69in+28andopaquehandlein+2C. HUDconstructor uses4registerargs(void*parent,intx,inty,intpriority). 80219CA0 returns task/group parent pointers:case0global8015CCBC,case13inputparent."
+    },
+    {
+      "subject": "native failure flag",
+      "addresses": [
+        "0x08002088",
+        "0x0800208C"
+      ],
+      "finding": "Rootphase10/frame1 SETS packedflag1D through80024038. Earlier research-note shorthand saying clears was corrected after call-site review."
+    },
+    {
+      "subject": "verified obstacle post-callback motion",
+      "functions": [
+        "func_80034734_35334",
+        "func_80218C28_5D40F8",
+        "func_8021925C_5D472C",
+        "func_80218F30_5D4400",
+        "func_80218E7C_5D434C",
+        "func_8021C444_5D7914",
+        "func_8021B808_5D6CD8"
+      ],
+      "addresses": [
+        "0x80218D54",
+        "0x80218D64",
+        "0x80218EB8",
+        "0x80218EC0",
+        "0x8021B810"
+      ],
+      "finding": "Scheduler calls task+8 then+C then+10. Inheritance pre=8021925C/post=80218F30; post->80218E7C calls gravity8021C444 before integrator8021B808. Obstacle task60=00C006E1 enables gravity00800000 and integration200. Unsigned75=10 gives vy-=.2; default lower clamp-3 or-6 with task64bit1000. IntegratorXYZ+=2*velocity78/7C/80. Zero velocity at obstacle callback tail therefore still yields Y-.4 after nativepost; holding requires scoped motion-bit suppression/restoration or a validated post boundary, without replaying callbacks."
+    },
+    {
+      "subject": "phase-3 exact normal acceptance",
+      "confidence": "decompiled",
+      "addresses": [
+        "0x08001768",
+        "0x080017A0",
+        "0x080017B0",
+        "0x080017C0",
+        "0x080017D4",
+        "0x080017E8",
+        "0x080017F4"
+      ],
+      "finding": "After scenario-idle test, root phase3 accepts iff flag15 set, flag1E clear, selected character3 and accepted choice7A set; acceptedphase4, rejectedphase12. No abilityF0 or obtained1F read occurs in acceptance block; failure1D is not a prohibition. Scenario176 clears choice7A at start. Normal JOIN policy and session eligibility must remain separate from an explicit debug bypass."
+    },
+    {
+      "subject": "root work pointer valid before initialization phase",
+      "confidence": "decompiled",
+      "addresses": [
+        "0x0800151C",
+        "0x08001624",
+        "0x080016C8"
+      ],
+      "finding": "Native entry loads task+D0 and reads local+8/+6 before phase switch. Phase0 rewrites entity327 and ends in phase1; it does not allocate local work. No proof supports relaxing valid-local-at-entry guards as a fix for the reported live landing symptom."
+    },
+    {
+      "subject": "second-controller held Start native story shortcut",
+      "confidence": "decompiled",
+      "addresses": [
+        "0x08001560",
+        "0x08001564",
+        "0x08001568",
+        "0x08001574",
+        "0x08001580",
+        "0x08001584"
+      ],
+      "finding": "Full system+3B092 is pad1 HELD per native3B07A+n*18 layout. HeldStart1000 calls packedflag setter80024038 with15 before phase dispatch, including initialization/idle without dialogue. No proof that pad0Start, opening a debug menu, or a new adapter write causes this native mutation."
+    },
+    {
+      "subject": "File69 callback representation",
+      "confidence": "source-reviewed",
+      "finding": "Native file69 segment11 differs from raw08 callback address representation. Required patch8001481C maps rawcallback08 to(raw-08000000)+(registeredfilebase&~40000000); scheduler runs preparation before callbackslots. Runtime relocatable imported references similarly use registered section base+offset. Legacy80014840 on raw08 instead usesbase-09000000+offset for file69, so must not be used as canonical expected callback or written back. These are source proofs; no live raw/imported/scheduled pointer pair was printed."
+    },
+    {
+      "subject": "mandatory scheduled direct-trial construction",
+      "confidence": "decompiled",
+      "addresses": [
+        "0x08001808",
+        "0x08001844",
+        "0x08001878",
+        "0x080019E8",
+        "0x080019F4",
+        "0x08001A14",
+        "0x08001A18",
+        "0x08001A8C",
+        "0x08001AA4",
+        "0x08001AD8",
+        "0x08001BAC",
+        "0x08001BB4"
+      ],
+      "finding": "Native phase4/frame1 constructs fade; phase4/frame20 prepares resources, local player and camera and emits event64. Phase4/frame40 only starts VM177 and phase5 only waits for it. Phase6/frame1 creates HUD/timer50 and proxy and configures20-tick camera targets. Phase6/frame20 enters7. Approved direct route retains real20ticks under black instead of adding instant-camera setter calls; scheduled camera/HUD/proxy initialization must complete before reveal. No native collision callback is replayed to compress work."
+    },
+    {
+      "subject": "camera HUD proxy reveal readiness",
+      "confidence": "decompiled",
+      "finding": "Camera task must run native80011CAC and root later copy its updated descriptor through80012900. HUD local10 requires initialized callback080002B4, heap buffer78, sprite7C, marker80; timer84 must retain1500 until visible run. Proxy local18 requires live File69 identity, initialized inlinephaseD0=1 after scheduled0800107C phase0; that edge sets actualYae actionCB/scale and proxy->player pose. Allocation alone is not readiness."
+    },
+    {
+      "subject": "ordinary world-start fade completion must proceed",
+      "confidence": "decompiled",
+      "addresses": [
+        "0x801F77B0",
+        "0x801F77D8"
+      ],
+      "finding": "Worldstart801F770C calls native80036860(task,32), clears busyD_8015C562 only after its return0. Holding worldfadealpha255 or suppressing fade advancement would deadlockcan_prompt. File69 rootfade and ordinaryworldfade are separate objects. OutputVI masking is implementation-specific and does not justify blocking nativefade."
+    },
+    {
+      "subject": "direct intro omission audio cue",
+      "confidence": "decompiled",
+      "finding": "Skipping VM177 requires one native command0292 at preparedplay edge while retaining phase4/frame20 event64. Do not queue0052, startthenforceendVM177, or duplicate normal sign scenario audio. Native sign acceptance predicates and original instruction timeline remain unchanged."
+    },
+    {
+      "subject": "native waterfall marker and fill mapping",
+      "confidence": "decompiled",
+      "addresses": [
+        "0x080002CC",
+        "0x0800034C",
+        "0x0800037C",
+        "0x080003E4",
+        "0x08000460",
+        "0x080004F8"
+      ],
+      "finding": "HUD+90 signed height drives empty=((820-height)*150)/820 with no native height clamp, marker relative offsets(30,empty+56), black and green alpha160 fill at absHUD+(26,48), width12,totalheight150. HUD+78 first16 bytes are icon-only wrapper calling resolved File69 display list08002610, followed by text/fill at+16. Marker material+30 uses buffer|20000000. Full callback decrements timer once; transforms alone do not."
+    },
+    {
+      "subject": "displayed player coordinate correction for waterfall height",
+      "confidence": "decompiled",
+      "addresses": [
+        "0x08001428",
+        "0x08001460",
+        "0x080024AC",
+        "0x080024EC"
+      ],
+      "finding": "Swimmer callback copies current player X=proxyX,Y=proxyY+15,Z=proxyZ+16; controller uses trunc(proxyY+440). Thus trunc(displayedPlayerY+425) yields equivalent climbed height. Formula, constants and stores verified in disassembly. Separately supplied nonfinite values must be rejected and bounds handled before integer conversion."
+    },
+    {
+      "subject": "native icon construction and owner lifetime",
+      "confidence": "decompiled",
+      "addresses": [
+        "0x08000784",
+        "0x08000820"
+      ],
+      "finding": "HUD constructor080005C0 creates marker with DBF0(HUD,480002E0,8006D920,0,0,0,8000,8000,8000,3,3,3,4D1,0), sets mode+5=10, and stores atHUD+80. Model segment8 File4D1 and File69 icon must remain resident. Attached render records are released by native owner cleanup; cached freed records must not be dereferenced."
+    },
+    {
+      "subject": "relative HUD offset helper ABI",
+      "confidence": "decompiled",
+      "addresses": [
+        "0x800115E0",
+        "0x800115F4"
+      ],
+      "finding": "Six instructions prove null-object return and signed32 stores a1->object80,a2->object84. ABI void(object,int,int); no draw, countdown or bridge effects."
+    },
+    {
+      "subject": "HUD linked-record transform helper",
+      "confidence": "decompiled",
+      "address": "0x8001136C",
+      "finding": "Native updates HUD absolute6C/70 from base64/68 and optional parent10/14, then walks task18 through record0. Exact kindbyte4=2 maps signed offsets80/84 to X=(absX+offX)*5/8-100+.3,Y=65-(absY+offY)*5/8+9.7,Z=-200. Also handles kind1. Full decompilation and81-instruction disassembly inspected. No display-list generation or timer update."
+    },
+    {
+      "subject": "individual attachment removal ABI and lifetime",
+      "confidence": "decompiled",
+      "address": "0x80036158",
+      "finding": "void*(task,first,u8count), count low8 verified via andi s3,a2,ff. Finds first in task chain, removes count records, repairs owner head/tail, runs model/cache record cleanup and returns first surviving successor or null. Owner task cleanup also releases all attachments, so retained record pointers must be validated against still-live membership before removal."
+    },
+    {
+      "subject": "instruction intro graph and nonedge controller wait",
+      "confidence": "decompiled",
+      "addresses": [
+        "0x080017F8",
+        "0x08001830",
+        "0x08001838",
+        "0x08001A00"
+      ],
+      "finding": "Phase4/f1 constructs fade once;4/f20 prepares native actual player(0,-454,190),actionC4,control fields,intro camera,resource list and cue64, targets trainingfade0. NoHUD/proxy until6/f1. Nonedgephase4/f21 follows common camera-copy/input-history tail without4/f40VM177 edge. Holding that nonedge branch once per scheduled slot is a source-derived waiting carrier; calling nativephase5 with noVM immediately advances6."
+    },
+    {
+      "subject": "instruction action and control semantics",
+      "confidence": "decompiled",
+      "addresses": [
+        "0x80203EA0",
+        "0x801E1210",
+        "0x801E1218"
+      ],
+      "finding": "ActionC4 table selects801E1210, three-instruction no-op callback. Native control entry80221F70 sets control state/clears input halfwords;4/f20 clears pointed second halfword. D8015C562 participates in mainpause-entry gating and is not established as universalphysicsdisable. Later801FC5C0 ORs14 into task22 of fullsystemCF8F0; no extra early suspension required by inspected intro path."
+    },
+    {
+      "subject": "intro camera scalars descriptor and world commit",
+      "confidence": "decompiled",
+      "addresses": [
+        "0x08001504",
+        "0x08001528",
+        "0x080023EC",
+        "0x0800240C",
+        "0x80012164",
+        "0x800121B8",
+        "0x80012900",
+        "0x80012934"
+      ],
+      "finding": "Intro immediate scalar eye(0,-354,-110),look(0,-404,190),distance2560. Setters zero rates but descriptor+6C retains incoming world bytes until scheduled80011CAC writes6floats first24bytes and u16distance+1A. Root decodes u32(D801FC628+2C)&8FFFFFFE, common-tail80012900 copies96bytes camera descriptor to world destination. Matching expected fields both sides proves current presentation, not callback-event count; no20tick intro settling interval is required."
+    },
+    {
+      "subject": "File69 native linear fade layout and visibility",
+      "confidence": "decompiled",
+      "functions": [
+        "func_0800090C_72C15C",
+        "func_08000AB4_72C304",
+        "func_08000AC8_72C318",
+        "func_08000B1C_72C36C"
+      ],
+      "finding": "Floatduration60default16,currentalpha64,target68,step6C,buffer74. Currentsetter only writes64; targetsetter computesabs(target-current)/duration with floatbitsina1. Scheduledfade steps to target, alpha<1 emits no cover. Native4/f20targets0. This trainingfade differs from ordinaryworldfade and independent VIcoverownership; no universal ownership proof claimed."
+    },
+    {
+      "subject": "terminal arrival before swimmer construction",
+      "confidence": "decompiled",
+      "functions": [
+        "func_080014E8_72CD38",
+        "func_080014B0_72CD00",
+        "func_080014D0_72CD20",
+        "func_080014DC_72CD2C"
+      ],
+      "finding": "Phase9 unconditionally calls swimmerposition helper before frame switch;9/f1 setsflag1E and writes swimmerD0=-1 without nullguard.10/f1 setsflag1D/actionCD and writes swimmerD0=-2 without nullguard.11/f20 separately null-checks camera/swimmer/HUD before deletion. Direct11 avoidsnullaccess but bypasses successflag1E and rewardbranch; terminal phase assignment must retain native graph/result prerequisites."
+    }
+  ],
+  "limitations": [
+    "No live game, two-client play, audio playback, or direct-launch runtime test was performed by the research worker.",
+    "The native training action0xCB is verified; a fish-tail mesh or Mermaid-form flag is not established.",
+    "No whole-workspace source inventory refresh was adopted during concurrent mod edits; these are explicit reviewed native-only additions.",
+    "Follow-up establishes this obstacle native post-callback gravity/integration order. It is not a complete catalog of all actor collision or scheduler paths.",
+    "The 2026-10-26 launch follow-up did not reproduce the reported debug landing in a live game. Native acceptance and second-pad shortcut are proven; no specific live callback/readiness mismatch is established.",
+    "Direct timed-launch follow-up used static native/source evidence and the supplied recording only; no game process or game UI was launched. No global VI black ownership/arbitration proof or new instant camera setter API is claimed by this documentation update.",
+    "The 2026-10-26 HUD follow-up verified native formulas, offsets and helper call sites through decompilation/disassembly; it did not run the game or establish live participant-marker layout or graphics capacity.",
+    "Instruction-wait follow-up is decompiled/source-reviewed native evidence only. It did not launch game or UI, observe a live invited client, establish universal VI ownership, or verify network/two-client presentation."
+  ],
+  "callbackRepresentationSources": [
+    {
+      "path": "/Users/ahmad/git/Goemon64Recomp/patches/required.c",
+      "lines": "74-112",
+      "sha256": "b4f0928933b4a13d92ceaa363e95467b87fb0c0c0d9213c621b20e30428da3c9",
+      "confidence": "source-reviewed"
+    },
+    {
+      "path": "/Users/ahmad/git/Goemon64Recomp/lib/N64ModernRuntime/librecomp/src/mods.cpp",
+      "lines": "2194-2196",
+      "sha256": "ff4f0f8d7a8db54ea7b9df431e3f0c7f249df6c4e089e229b435265773c60400",
+      "confidence": "source-reviewed"
+    },
+    {
+      "path": "/Users/ahmad/git/Goemon64Recomp/lib/N64ModernRuntime/N64Recomp/LiveRecomp/live_generator.cpp",
+      "lines": "879-890",
+      "sha256": "3baca6b7a1fef908891a7af556837b611df231a5998e3ac0a32f6db4de306be0",
+      "confidence": "source-reviewed"
+    }
+  ],
+  "instructionWaitPrograms": [
+    "mnsg-yae-file69.elf",
+    "mnsg_main_static.elf",
+    "mnsg_player_file_11.elf",
+    "world_file_12_common.elf"
+  ],
+  "instructionWaitDataSymbols": {
+    "path": "/Users/ahmad/git/mnsg-recomp-example/Goemon64RecompSyms/mnsg.datasyms.toml",
+    "sha256": "af7855b91d29f74351faaf8052c21f1e378badb4c322b9784d205da5016e9ce2",
+    "name": "D_801FC628_5B8538",
+    "declaration": "extern void *D_801FC628_5B8538;",
+    "confidence": "decompiled"
+  }
+}

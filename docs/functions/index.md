@@ -4,10 +4,11 @@ slug: "/functions"
 description: "Native functions for the US recompilation of Mystical Ninja Starring Goemon."
 ---
 
-322 functions with C interfaces, behavior, and usage examples. Use the search bar to look up an exact symbol, address, or purpose.
+332 functions with C interfaces, behavior, and usage examples. Use the search bar to look up an exact symbol, address, or purpose.
 
 | Symbol | Purpose |
 | --- | --- |
+| [`func_08000000_72B850`](func_08000000_72B850.md) | Construct a File 69 waterfall task child |
 | [`func_08000000_732F30`](func_08000000_732F30.md) | Initialize Tsurami reward and story controller |
 | [`func_0800000C_6B32AC`](func_0800000C_6B32AC.md) | Congo private actor post |
 | [`func_08000090_732FC0`](func_08000090_732FC0.md) | Run Tsurami Miracle Star and story scene |
@@ -17,8 +18,11 @@ description: "Native functions for the US recompilation of Mystical Ninja Starri
 | [`func_08000224_6AC774`](func_08000224_6AC774.md) | Initialize a Dango wiper child |
 | [`func_08000240_71A750`](func_08000240_71A750.md) | Set the Control Machine opening-camera scissor |
 | [`func_080002B4_7060A4`](func_080002B4_7060A4.md) | Draw and advance the high-jump HUD timer |
+| [`func_080002B4_72BB04`](func_080002B4_72BB04.md) | Draw Mermaid training time and climb progress |
 | [`func_08000388_6B3628`](func_08000388_6B3628.md) | Process Tsurami root pipeline and damage |
 | [`func_08000434_6AEC14`](func_08000434_6AEC14.md) | Collect a food pickup |
+| [`func_0800058C_72BDDC`](func_0800058C_72BDDC.md) | Set the Mermaid training countdown |
+| [`func_080005A8_72BDF8`](func_080005A8_72BDF8.md) | Read the Mermaid training countdown |
 | [`func_080005D0_708010`](func_080005D0_708010.md) | Draw and advance the Impact challenge timer |
 | [`func_080005DC_6ACB2C`](func_080005DC_6ACB2C.md) | Rotate an active spike chain |
 | [`func_080005DC_6F07EC`](func_080005DC_6F07EC.md) | Update the Ebisumaru challenge timer display |
@@ -40,13 +44,16 @@ description: "Native functions for the US recompilation of Mystical Ninja Starri
 | [`func_08000B98_70ABD8`](func_08000B98_70ABD8.md) | Benkei live battle controller |
 | [`func_08000CC8_708708`](func_08000CC8_708708.md) | Advance a local Impact throwable |
 | [`func_08000DCC_6B406C`](func_08000DCC_6B406C.md) | Initialize a Congo flame |
+| [`func_08000E1C_72C66C`](func_08000E1C_72C66C.md) | Update a waterfall training obstacle |
 | [`func_08000E2C_6F103C`](func_08000E2C_6F103C.md) | Advance an Ebisumaru bomb |
 | [`func_08000FCC_708A0C`](func_08000FCC_708A0C.md) | Advance the Impact balloon visual |
 | [`func_08001020_6F4500`](func_08001020_6F4500.md) | Update a live locked doorway |
+| [`func_0800107C_72C8CC`](func_0800107C_72C8CC.md) | Update Yae's local waterfall swimmer |
 | [`func_0800126C_708CAC`](func_0800126C_708CAC.md) | Advance a local minigame actor phase |
 | [`func_0800127C_708CBC`](func_0800127C_708CBC.md) | Update an Impact challenge target |
 | [`func_080012C8_6F47A8`](func_080012C8_6F47A8.md) | Open a locked travel door |
 | [`func_08001464_70B4A4`](func_08001464_70B4A4.md) | Update Benkei bridge encounter topology |
+| [`func_080014E8_72CD38`](func_080014E8_72CD38.md) | Run Yae's Mermaid waterfall training controller |
 | [`func_080017F4_6B4A94`](func_080017F4_6B4A94.md) | Initialize Tsurami health-bearing root |
 | [`func_080018E4_6EAA34`](func_080018E4_6EAA34.md) | Advance a giant spinning top |
 | [`func_080018E8_709328`](func_080018E8_709328.md) | Run Goemon's Impact challenge controller |
@@ -167,6 +174,8 @@ description: "Native functions for the US recompilation of Mystical Ninja Starri
 | [`func_800103DC_10FDC`](func_800103DC_10FDC.md) | Create a native sprite queue |
 | [`func_800105AC_111AC`](func_800105AC_111AC.md) | Finalize a native sprite queue |
 | [`func_800106F0_112F0`](func_800106F0_112F0.md) | Append a sprite to a native queue |
+| [`func_8001136C_11F6C`](func_8001136C_11F6C.md) | Refresh attached HUD render object transforms |
+| [`func_800115E0_121E0`](func_800115E0_121E0.md) | Set a HUD render object relative position |
 | [`func_80013B14_14714`](func_80013B14_14714.md) | Load a file into the scene registry |
 | [`func_800141C4_14DC4`](func_800141C4_14DC4.md) | Look up a loaded resource file |
 | [`func_800144E8_150E8`](func_800144E8_150E8.md) | Load and decode a resource |
@@ -210,6 +219,7 @@ description: "Native functions for the US recompilation of Mystical Ninja Starri
 | [`func_80035DFC_369FC`](func_80035DFC_369FC.md) | Prepend display records to a task |
 | [`func_80035EEC_36AEC`](func_80035EEC_36AEC.md) | Allocate task-owned pool records |
 | [`func_80036058_36C58`](func_80036058_36C58.md) | Recycle records from an owner list |
+| [`func_80036158_36D58`](func_80036158_36D58.md) | Remove attached native render records |
 | [`func_80036388_36F88`](func_80036388_36F88.md) | Promote an existing child cache |
 | [`func_800363F4_36FF4`](func_800363F4_36FF4.md) | Promote an existing sibling cache |
 | [`func_80036448_37048`](func_80036448_37048.md) | Allocate a single kind-2 record |

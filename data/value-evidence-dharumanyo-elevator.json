@@ -1,0 +1,101 @@
+{
+  "scope": "Internal maintenance evidence for the D_8015CDE0 Dharumanyo entrance elevator table. No ROM or overlay binaries are included.",
+  "researchDate": "2026-10-27",
+  "confidence": "decompiled",
+  "symbol": "D_8015CDE0",
+  "tableId": "dharumanyo-entrance-elevator",
+  "rom": {
+    "region": "US",
+    "decompressedSha256": "e40bee20508c2e29e651dca4e47504e40f908f0a2186e34a582784bf5a64be4c"
+  },
+  "handoff": {
+    "role": "ghidra-decompiler",
+    "program": "world_file_44.elf",
+    "methods": [
+      "decompile_function",
+      "disassemble_function",
+      "read_memory"
+    ],
+    "scope": "Constructor, idle, both travel callbacks, wait/rearm, native route 5, and validated room roster. Boss entry independently source-reviewed in File_31."
+  },
+  "roster": {
+    "evidencePath": "/tmp/dharumanyo-elevator-roster.json",
+    "evidenceSha256": "02e32f13af2514a26ca85eb57fe144ad0bd312d809d9616a3ce3c9a6e8919af8",
+    "tool": "mnsg-recomp-example/tools/inspect_world_roster.py",
+    "room": "0x0049",
+    "actorDataFile": 892,
+    "placedIndex": 4,
+    "entity": "0x1FC",
+    "definitionRom": "0x12A9D00",
+    "sourceRom": "0x12A9DB0",
+    "sourcePosition": [
+      0,
+      0,
+      0
+    ],
+    "definitionPayloadWords": [
+      5,
+      0,
+      0
+    ]
+  },
+  "native": {
+    "constructor": {
+      "symbol": "func_08001F44_6FD144",
+      "runtime": "0x08001F44",
+      "rom": "0x6FD144",
+      "behavior": "Consumes task +0xD0 route index, sets local route pointer +0xE0, chooses endpoint by local player Y, binds native collision mesh."
+    },
+    "route": {
+      "index": 5,
+      "runtime": "0x080033C4",
+      "rom": "0x6FE5C4",
+      "upper": [
+        -177,
+        294,
+        -5
+      ],
+      "lower": [
+        -177,
+        -104,
+        -5
+      ],
+      "signedYThreshold": 95,
+      "xMargin": 30,
+      "zMargin": 30,
+      "motionParameter": 1.0
+    },
+    "idle": {
+      "symbol": "func_0800204C_6FD24C",
+      "runtime": "0x0800204C",
+      "rom": "0x6FD24C",
+      "behavior": "Gated by byte D_8015CD30 == 0; local player Y crossing or player task +0xA0 equality with lift object triggers movement."
+    },
+    "travel": [
+      "func_08002180_6FD380",
+      "func_0800220C_6FD40C"
+    ],
+    "movementHelper": "func_8021B988_5D6E58",
+    "rearm": {
+      "symbol": "func_080022E8_6FD4E8",
+      "behavior": "Waits for local player to leave X/Z footprint before idle."
+    },
+    "bossEntry": {
+      "symbol": "func_08000000_6C8210",
+      "overlay": "File_31",
+      "source": "/Users/ahmad/git/Goemon64Recomp/RecompiledFuncs/funcs_111.c:5",
+      "bounds": {
+        "yGreaterThan": 50,
+        "zMinInclusive": -38,
+        "zMaxInclusive": 28,
+        "xMaxInclusive": -143
+      },
+      "behavior": "Separate local player position gate for native intro."
+    }
+  },
+  "limits": [
+    "No native gameplay or two-client runtime verification performed.",
+    "Lift callbacks inspected do not write boss progression flags. The separate intro controller has its own local lifecycle.",
+    "Route mapping is specific to the validated US room roster; do not treat the placed source origin as a live endpoint."
+  ]
+}

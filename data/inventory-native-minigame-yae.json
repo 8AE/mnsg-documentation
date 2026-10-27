@@ -1,0 +1,93 @@
+{
+  "scope": "Reviewed native File 69 Mermaid training controller, local swimming and obstacle callbacks, HUD timer accessors, and child constructor. Includes reviewed native HUD offset, transform and attached-record cleanup helpers. Includes the verified active world-camera presentation pointer used by the controller.",
+  "symbols": [
+    {
+      "name": "func_080014E8_72CD38",
+      "kind": "function",
+      "address": "0x080014E8",
+      "romAddress": "0x0072CD38",
+      "section": ".file_69",
+      "size": 4264
+    },
+    {
+      "name": "func_0800107C_72C8CC",
+      "kind": "function",
+      "address": "0x0800107C",
+      "romAddress": "0x0072C8CC",
+      "section": ".file_69",
+      "size": 1040
+    },
+    {
+      "name": "func_08000E1C_72C66C",
+      "kind": "function",
+      "address": "0x08000E1C",
+      "romAddress": "0x0072C66C",
+      "section": ".file_69",
+      "size": 572
+    },
+    {
+      "name": "func_080002B4_72BB04",
+      "kind": "function",
+      "address": "0x080002B4",
+      "romAddress": "0x0072BB04",
+      "section": ".file_69",
+      "size": 608
+    },
+    {
+      "name": "func_0800058C_72BDDC",
+      "kind": "function",
+      "address": "0x0800058C",
+      "romAddress": "0x0072BDDC",
+      "section": ".file_69",
+      "size": 20
+    },
+    {
+      "name": "func_080005A8_72BDF8",
+      "kind": "function",
+      "address": "0x080005A8",
+      "romAddress": "0x0072BDF8",
+      "section": ".file_69",
+      "size": 24
+    },
+    {
+      "name": "func_08000000_72B850",
+      "kind": "function",
+      "address": "0x08000000",
+      "romAddress": "0x0072B850",
+      "section": ".file_69",
+      "size": 96
+    },
+    {
+      "name": "func_800115E0_121E0",
+      "kind": "function",
+      "address": "0x800115E0",
+      "romAddress": "0x000121E0",
+      "section": ".main",
+      "size": 24
+    },
+    {
+      "name": "func_80036158_36D58",
+      "kind": "function",
+      "address": "0x80036158",
+      "romAddress": "0x00036D58",
+      "section": ".main",
+      "size": 264
+    },
+    {
+      "name": "func_8001136C_11F6C",
+      "kind": "function",
+      "address": "0x8001136C",
+      "romAddress": "0x00011F6C",
+      "section": ".main",
+      "size": 332
+    },
+    {
+      "name": "D_801FC628_5B8538",
+      "kind": "variable",
+      "address": "0x801FC628",
+      "romAddress": "0x005B8538",
+      "section": ".file_11",
+      "size": null
+    }
+  ]
+}

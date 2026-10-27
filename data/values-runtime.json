@@ -1380,6 +1380,135 @@
         ]
       },
       {
+        "id": "dharumanyo-entrance-elevator",
+        "title": "Dharumanyo entrance elevator",
+        "description": "Actor 0x1FC in room 0x0049 uses File_44 elevator route 5. Definition word +0x04 is copied to task +0xD0 as the route index; the constructor installs a local route-table pointer at task +0xE0 and chooses its initial endpoint from the local player Y. Endpoint coordinates are native world units and describe the elevator object, rather than the standing player. The native idle callback responds to the local player crossing the route threshold or standing on the elevator object (player task +0xA0), while byte D_8015CD30 is zero. Its wait callback rearms after the local player leaves the X/Z footprint.",
+        "columns": [
+          "Field",
+          "Native value",
+          "Meaning"
+        ],
+        "rows": [
+          [
+            "Room / actor",
+            "`0x0049` / `0x1FC`",
+            "Dharumanyo arena entrance lift."
+          ],
+          [
+            "Placed roster index",
+            "`4`",
+            "Zero-based slot in this room; actor-data file 892."
+          ],
+          [
+            "Definition +0x04",
+            "`5`",
+            "Route index, rather than a platform variant or progression flag."
+          ],
+          [
+            "Placed source XYZ",
+            "`(0, 0, 0)`",
+            "The route supplies the actual elevator endpoints."
+          ],
+          [
+            "Upper endpoint XYZ",
+            "`(-177, 294, -5)`",
+            "Elevator object position at the arena floor."
+          ],
+          [
+            "Lower endpoint XYZ",
+            "`(-177, -104, -5)`",
+            "Elevator object position at the entrance floor."
+          ],
+          [
+            "Signed Y threshold",
+            "`95`",
+            "Local player Y selects the floor during initialization and the idle call check."
+          ],
+          [
+            "X / Z margins",
+            "`30` / `30`",
+            "Local footprint bounds used by the rearm check."
+          ],
+          [
+            "Motion parameter",
+            "`1.0`",
+            "Route value passed to the native movement helper."
+          ],
+          [
+            "Separate boss-entry bounds",
+            "`Y > 50`, `-38 <= Z <= 28`, `X <= -143`",
+            "The File_31 intro controller checks the local player position independently of the elevator callbacks."
+          ]
+        ]
+      },
+      {
+        "id": "oedo-castle-room-001a-elevator",
+        "title": "Oedo Castle elevator in room 0x001A",
+        "description": "Actor 0x1FC in Oedo Castle room 0x001A uses File_44 elevator route 0. Definition word +0x04 supplies the route index through task +0xD0; the constructor installs the local route-table pointer at task +0xE0 and chooses the initial endpoint from local player Y. Native endpoint coordinates describe the elevator object. The shared elevator idle callback responds to local player Y or standing-object contact, and its wait callback rearms after the local player leaves the X/Z footprint.",
+        "columns": [
+          "Field",
+          "Native value",
+          "Meaning"
+        ],
+        "rows": [
+          [
+            "Room / actor",
+            "`0x001A` / `0x1FC`",
+            "Oedo Castle elevator."
+          ],
+          [
+            "Placed roster index",
+            "`14`",
+            "Zero-based slot in this room; actor-data file 848."
+          ],
+          [
+            "Definition +0x04",
+            "`0`",
+            "File_44 route index."
+          ],
+          [
+            "Placed source XYZ",
+            "`(0, 0, 0)`",
+            "The route supplies the actual elevator endpoints."
+          ],
+          [
+            "Upper endpoint XYZ",
+            "`(-50, -66, 280)`",
+            "Elevator object position at the upper floor, in native world units."
+          ],
+          [
+            "Lower endpoint XYZ",
+            "`(-50, -225, 280)`",
+            "Elevator object position at the lower floor, in native world units."
+          ],
+          [
+            "Signed Y threshold",
+            "`-146`",
+            "Local player Y selects the floor during initialization and the idle call check."
+          ],
+          [
+            "X / Z margins",
+            "`30` / `30`",
+            "Local footprint bounds used by the rearm check."
+          ],
+          [
+            "Motion parameter",
+            "`1.0`",
+            "Route value passed to the native movement helper."
+          ],
+          [
+            "Native model",
+            "`0x1FC`",
+            "Model bound by this route."
+          ],
+          [
+            "Mesh selector / layer",
+            "`3` / `3`",
+            "Native collision-mesh selector and layer for this route."
+          ]
+        ]
+      },
+      {
         "id": "town-npc-continuations",
         "title": "Town NPC continuation state",
         "description": "File_59 NPC state beyond the common path checkpoint. Offsets belong to native tasks; callback, texture and route pointers retain their local resource identity.",

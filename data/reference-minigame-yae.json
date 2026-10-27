@@ -1,0 +1,440 @@
+{
+  "func_080014E8_72CD38": {
+    "title": "Run Yae's Mermaid waterfall training controller",
+    "summary": "Runs the sign interaction, local camera and swimming setup, 50-second countdown, obstacle spawning, result cleanup, and Mermaid reward dialogue at the Waterfall of Kegon.",
+    "confidence": "decompiled",
+    "declaration": "void func_080014E8_72CD38(void *task, void *object);",
+    "parameters": [
+      {
+        "name": "task",
+        "type": "void *",
+        "description": "Live task owned by the matching native scheduler and resident File 69 resource."
+      },
+      {
+        "name": "object",
+        "type": "void *",
+        "description": "This task's own initialized native object; not another player's object."
+      }
+    ],
+    "returns": "No return value.",
+    "behavior": [
+      "This File 69 controller runs in room 0x0154. Merely entering that room does not start the trial. In phase 3, after the native scenario becomes idle, the controller accepts the normal start exactly when story flag 0x0015 is set, interim success flag 0x001E is clear, selected character is 3 (Yae), and accepted-dialogue-choice flag 0x007A is set. Acceptance changes phase 3 to phase 4; rejection selects phase 12. This block does not read the Mermaid ability counter at save +0xF0 or permanent reward flag 0x001F.",
+      "Before dispatching any phase, the native controller reads the unsigned 16-bit held-button field at full system +0x3B092. This is the second native controller's held state. When Start mask 0x1000 is held there, the routine sets story flag 0x0015, including while the sign is idle or the controller is initializing. This native input path does not require a sign conversation.",
+      "Initialization phase 0 changes task halfword +0x5E from its birth entity 0x033A to 0x0327, configures the sign, and ends in phase 1. The initialized controller cannot be identified by requiring its old +0x5E value.",
+      "Scenario 0x0176 clears flag 0x007A before selecting its dialogue branch. That flag records a transient accepted choice, rather than persistent permission to join a trial. Failure flag 0x001D is a retry outcome; the phase-3 acceptance block does not use it as a prohibition.",
+      "Task +0xD0 points to a separate local work block. Local +0 is an unsigned phase byte; +1 is signed camera choice; +2 is signed timer-warning state; +4 is a signed 16-bit frame counter; +6 is an unsigned 16-bit input-repeat counter; +8 stores the previous 32-bit input mask. Local +0x0C, +0x10, +0x18 and +0x1C hold camera, HUD, swimmer and fade task references; +0x14 is a native scheduler-group parent task pointer. The callback requires this work pointer at entry: it reads the previous input and repeat fields before its phase switch. Phase 0 does not allocate the local work block.",
+      "Phase 4 frame 1 constructs the local File 69 fade and sets its alpha targets. Phase 4 frame 20 prepares resources, selects player action 0xC4, places the actual player at (0,-454,190), initializes player angles and control fields, constructs or configures the local camera, and emits native audio event 0x0064. Room coordinates alone do not reproduce this scheduled construction edge.",
+      "The instruction presentation already exists after phase 4 frame 20: actual player position (0,-454,190), action 0xC4, local control fields, fade and intro camera. There is no HUD or swimmer proxy at this stage. Ordinary nonedge phase-4 frames, including frame 21, run the common camera-copy and input-history tail without constructing the phase-6 graph or starting the frame-40 scenario.",
+      "Yae action 0xC4 selects a native no-op update callback. Together with the native control-entry state and the input-control fields cleared at phase 4 frame 20, this preserves the instruction pose before swimming begins. It is not evidence that a general busy or pause flag disables all player physics.",
+      "The intro camera uses immediate setters: distance 2560, eye (0,-354,-110), and look (0,-404,190). These setters update the camera scalar fields and clear their interpolation rates. They do not require the later phase-6 20-tick interpolation interval, but they also do not immediately refresh the projection descriptor.",
+      "The scheduled camera callback writes six floats into the first 24 descriptor bytes: eye XYZ at +0x00/+0x04/+0x08 and look XYZ at +0x0C/+0x10/+0x14. It writes the rounded unsigned 16-bit distance at descriptor +0x1A; the intro value is 0x0A00. The camera task stores its descriptor pointer at +0x6C. Allocation alone can still leave the old incoming world-camera descriptor in that storage.",
+      "Controller entry obtains the current world-camera presentation record through D_801FC628_5B8538. It decodes the descriptor address from the unsigned word at record +0x2C with mask 0x8FFFFFFE. The common tail calls func_80012900_13500(camera,destination), copying exactly 96 bytes from the camera descriptor to that decoded destination. Correct intro eye, look and distance in both descriptors establish presentation readiness independently of whether the camera or controller runs first that frame.",
+      "Phase 4 frame 40 starts instruction scenario 0x0177 and enters phase 5. Phase 5 only waits for that scenario to become idle before selecting phase 6 at frame 0. A controlled continuation that omits these instructions can omit those two branches; it must retain the native construction work at phase 4 frames 1 and 20 and phase 6 frame 1.",
+      "Phase 6 frame 1 suspends the ordinary player task, creates the local HUD, initializes its timer to 50 seconds (1500 raw ticks), adds the camera display record, and constructs the local swimmer proxy at (0,-350,264). It configures camera targets for zoom 3840, eye (0,190,-315), and look (0,swimmer Y+50,swimmer Z). A direct jump to phase 7 would omit this graph.",
+      "The File 69 fade is separate from the world-start fade. Its local task stores floating duration at +0x60, current alpha at +0x64, target alpha at +0x68 and step at +0x6C; the default duration is 16. The target setter computes abs(target-current)/duration, and the scheduled fade advances by that step. Phase 4 frame 20 targets alpha zero, producing the native intro fade-in. Alpha zero draws no opaque fullscreen cover. Repeating the target setter recalculates the step and changes that linear progression.",
+      "Phase 6 frame 20 selects camera mode 2 and active phase 7. The preceding 20-tick native interval allows the camera interpolation to settle; no new camera, HUD or swimmer is constructed at frame 20. A hidden preparation interval can preserve this native wait while holding the timer and swimmer input until visible play is ready.",
+      "Gameplay readiness requires a scheduled camera update and the controller's later copy of its projection descriptor, a fully initialized HUD with live display buffers and sprite objects, and the swimmer callback having naturally advanced from phase 0 to phase 1. A nonnull allocated proxy or camera is insufficient. The proxy initialization selects player action 0xCB and copies the training position to the actual Yae object.",
+      "Instruction scenario 0x0177 stages audio command 0x0292 before its final instruction text. This inspected path does not contain the 0x0052 command used by other challenge introductions. The identity of the audible song is not established here. If a continuation omits scenario 0x0177, it must supply command 0x0292 once at its prepared gameplay edge. Preserve the original scenario's audio ownership when the normal sign route runs.",
+      "Active phase 7 keeps camera choice and swimming input local. Every 40 signed frame counts it chooses two random horizontal obstacle indices in 0..6, resampling the second up to 20 times to seek a separation of at least two. It spawns both obstacles at Y=400 and the local swimmer Z.",
+      "The active tail reads this controller's swimmer height, updates the local HUD progress value to integer(Y+440), and selects failure phase 10 when the displayed countdown is zero or the swimmer is below -440. A swimmer above 380 selects success phase 9. These are native local-player checks, not a room-wide activity flag.",
+      "Success phase 9 sets interim packed flag 0x001E and runs its victory animation before cleanup phase 11. Failure phase 10 sets packed flag 0x001D and runs its own native animation before phase 11. At phase 11 frame 20, the camera, swimmer and HUD are destroyed, normal player presentation is restored, and the native return or reward continuation is selected.",
+      "Phase 9 reads the swimmer position unconditionally before its frame switch, and phase 9 frame 1 writes the swimmer victory phase without a null guard. Phase 10 frame 1 likewise writes the swimmer failure phase without a null guard. These terminal phases require the initialized phase-6 swimmer graph. Phase 11 frame 20 separately tests camera, swimmer and HUD references before deletion, allowing cleanup of an intro graph that has no HUD or swimmer. Bypassing phase 9 also bypasses interim success flag 0x001E, so nullable cleanup alone does not reproduce native success and reward handling.",
+      "On success, phase 11 frame 40 starts scenario 0x0176 and enters phase 12. The success branch of that scenario grants Mermaid ability by writing 1 at save-block offset +0xF0 and sets packed flag 0x001F. Phase 12 waits for dialogue completion, releases local control, and returns the controller to sign phase 1. Interim flag 0x001E is distinct from the permanent ability and reward flag."
+    ],
+    "cautions": [
+      "The root local block is pointer-based; the swimmer and obstacle task state at +0xD0 is inline. Do not apply one layout to another task type.",
+      "Exact frame tests at 1, 20, 40 and 60 perform constructors, audio and cleanup. Assigning a later phase/frame can skip required native work. Preserve initialized task identities, resource residency and generation before reading the graph.",
+      "Local camera choice, input history, task references and the scheduler-group parent pointer are not portable state. A successful result does not make its reward complete before scenario 0x0176 has run.",
+      "The ordinary-world return and the success dialogue have different continuations. Do not start a replacement room transfer before camera, swimmer and HUD cleanup, or infer saved-return fields from another challenge.",
+      "The trial selects native Yae action 0xCB through its movement proxy. These findings do not establish a fish-tail mesh switch or a separate Mermaid-form flag.",
+      "The native story-flag shortcut is tied to the second controller held-state field at full system +0x3B092. This trace does not establish that first-controller Start writes that field.",
+      "File 69 uses native segment 0x11 even though raw callback addresses use the 0x08000000 range. The required callback preparation translates a raw address to the registered File 69 base plus its offset before dispatch. Imported callback references use the same base-plus-offset representation. A legacy segment resolver applied directly to a raw 0x08 callback can produce a different value; do not write that legacy result into a scheduled callback field or treat a static representation difference as an observed runtime failure.",
+      "Execute construction through the normal scheduled task slots. Repeatedly invoking the controller in one game frame can replay its shared tail and does not replace the swimmer, camera and HUD initialization that must run on their own schedules.",
+      "The ordinary world-start fade must finish normally. The native world-start routine clears its room-start busy state only after func_80036860_37460 reports completion; holding that fade opaque or suppressing its callback can prevent player readiness indefinitely. This world-start fade is separate from the File 69 training fade.",
+      "Visibility masking is separate from native construction and camera readiness. These findings do not establish global VI black-state ownership or prove that a local cover owner may release a black state requested by another native subsystem.",
+      "Keep intro presentation readiness separate from gameplay readiness. Waiting in the prepared phase-4 intro requires a correctly updated and copied camera descriptor, while the later active game additionally requires its own initialized HUD and swimmer. Constructing the swimmer early moves the actual player to proxy Y+15 and proxy Z+16, replacing the intro pose and coordinates.",
+      "The decoded world-camera descriptor is a native tagged-pointer field. Preserve mask 0x8FFFFFFE and validate the resulting native pointer before reading or copying its 96 bytes. The current world-camera presentation record is distinct from the local camera task and from the player body.",
+      "Advancing a phase-4 wait through native phase 5 when its instruction scenario is absent immediately selects phase 6. A retained nonedge frame must execute only once per normal scheduled controller slot, preserving exact constructor and scenario edges.",
+      "Do not select native success or failure phases on a graph without its swimmer. The nullable phase-11 cleanup path is not a substitute for the success flag and reward work performed by phase 9."
+    ],
+    "example": "extern void func_080014E8_72CD38(void *task, void *object);\n\ntypedef void (*NativeTaskCallback)(void *, void *);\n\n/* The native scheduler owns execution of this callback. */\nNativeTaskCallback documented_callback(void)\n{\n    return func_080014E8_72CD38;\n}\n",
+    "exampleExplanation": "This exposes callback identity without running initialization, rendering, movement, collision handling or result cleanup a second time. The resident overlay and native task lifetime remain required.",
+    "related": [
+      "func_0800107C_72C8CC",
+      "func_08000E1C_72C66C",
+      "func_080002B4_72BB04",
+      "func_0800058C_72BDDC",
+      "func_080005A8_72BDF8",
+      "func_08000000_72B850",
+      "D_800C7AB2",
+      "D_8015C608_15D208",
+      "func_80221F70_5DD440",
+      "func_80221FB0_5DD480",
+      "func_80038BC8_397C8",
+      "D_8015C5C8_15D1C8",
+      "func_80024038_24C38",
+      "func_800240DC_24CDC",
+      "func_80034734_35334",
+      "D_801FC628_5B8538"
+    ]
+  },
+  "func_0800107C_72C8CC": {
+    "title": "Update Yae's local waterfall swimmer",
+    "summary": "Handles the Mermaid training player's own swimming input and contact impulse, then copies its movement proxy position to the current local Yae object.",
+    "confidence": "decompiled",
+    "declaration": "void func_0800107C_72C8CC(void *task, void *object);",
+    "parameters": [
+      {
+        "name": "task",
+        "type": "void *",
+        "description": "Live task owned by the matching native scheduler and resident File 69 resource."
+      },
+      {
+        "name": "object",
+        "type": "void *",
+        "description": "This task's own initialized native object; not another player's object."
+      }
+    ],
+    "returns": "No return value.",
+    "behavior": [
+      "This movement task stores state inline at task +0xD0: signed phase byte +0xD0, unsigned input-repeat byte +0xD1, signed frame halfword +0xD2, previous 32-bit input mask +0xD4, floating vertical velocity +0xD8, and floating contact impulse +0xDC.",
+      "Initialization sets task entity halfwords +0x5C and +0x5E to 0x033A, configures the native collision bounds, changes local player presentation and scale, and selects player action 0xCB.",
+      "In active phase 1, an A-button press edge adds 1 to vertical velocity. The signed horizontal input changes X by input/20 and clamps X to [-80,80]. Native gravity clamps vertical velocity to [-2,2]. Contact status bit 0x80 sets a -48 impulse, which is halved during subsequent movement updates.",
+      "After updating the proxy object, the callback writes the actual current player object to X=proxy X, Y=proxy Y+15 and Z=proxy Z+16. This explains why the normal local-player movement stream observes the training pose.",
+      "The controller computes climbed height from integer(proxy Y+440). Because the displayed player object is 15 units higher, its equivalent height is integer(player-object Y+425). Keep the proxy and displayed-player coordinate spaces distinct.",
+      "An inline phase request of 0xFF is converted to victory phase 3 with initial vertical velocity 10; 0xFE selects failure phase 4. These transitions belong to the matching controller result sequence."
+    ],
+    "cautions": [
+      "The routine writes global current-player state, animation and transforms. Running it for another player is not a general animation or position update API.",
+      "The contact read participates in native collision behavior. Do not replay the callback to restore a scalar checkpoint or to fabricate an extra collision response.",
+      "Keep each swimmer's input, camera and physical task independent. The initialized entity 0x033A is also used by obstacle tasks, so entity identity alone is insufficient.",
+      "Construction returns before this callback has run phase 0. Before revealing a prepared trial, let the native scheduler initialize phase 1 so the actual player scale, action 0xCB and proxy-to-player transform have been established."
+    ],
+    "example": "extern void func_0800107C_72C8CC(void *task, void *object);\n\ntypedef void (*NativeTaskCallback)(void *, void *);\n\n/* The native scheduler owns execution of this callback. */\nNativeTaskCallback documented_callback(void)\n{\n    return func_0800107C_72C8CC;\n}\n",
+    "exampleExplanation": "This exposes callback identity without running initialization, rendering, movement, collision handling or result cleanup a second time. The resident overlay and native task lifetime remain required.",
+    "related": [
+      "func_080014E8_72CD38",
+      "func_08000E1C_72C66C"
+    ]
+  },
+  "func_08000E1C_72C66C": {
+    "title": "Update a waterfall training obstacle",
+    "summary": "Initializes a native Mermaid training obstacle, reacts to collision status, and finishes its impact and debris lifecycle.",
+    "confidence": "decompiled",
+    "declaration": "void func_08000E1C_72C66C(void *task, void *object);",
+    "parameters": [
+      {
+        "name": "task",
+        "type": "void *",
+        "description": "Live task owned by the matching native scheduler and resident File 69 resource."
+      },
+      {
+        "name": "object",
+        "type": "void *",
+        "description": "This task's own initialized native object; not another player's object."
+      }
+    ],
+    "returns": "No return value.",
+    "behavior": [
+      "State is inline at task +0xD0: unsigned phase byte +0xD0, unsigned active byte +0xD1, and signed frame halfword +0xD4. Both entity halfwords +0x5C/+0x5E are initialized to 0x033A.",
+      "Phase 0 binds its native model and animation, sets collision bounds, configures damage kind 1 at task +0x4C, sets object scale and visibility, and enters active phase 1. Model binding and collision-bound setup are separate native operations.",
+      "Phase 1 rotates the object. Contact status mask 0x2200 emits positional sound event 0x013B, clears the active byte and selects impact phase 2. If object Y is below -468, it requests task deletion.",
+      "Impact phase 2 sets task velocity words +0x7C to 4 and +0x80 to -4 at frame 1. At frame 30 it constructs native debris and requests deletion.",
+      "The waterfall controller chooses obstacle birth positions from local random values every 40 active frames. Ordinary falling motion is applied after this obstacle callback by the common native actor lifecycle.",
+      "The native scheduler runs task callback slots +0x08, +0x0C and +0x10 in that order. Child inheritance installs func_8021925C_5D472C as the pre-callback and func_80218F30_5D4400 as the post-callback. The obstacle callback occupies +0x0C, so the common post-callback runs afterward.",
+      "The post-callback reaches func_80218E7C_5D434C, which applies gravity through func_8021C444_5D7914 before integrating position through func_8021B808_5D6CD8. Obstacle task flags +0x60 are initialized to 0x00C006E1, enabling gravity bit 0x00800000 and position-integration bit 0x00000200.",
+      "Gravity subtracts unsigned task byte +0x75 divided by 50 from floating vertical velocity +0x7C. The obstacle initializes that byte to 10, giving -0.2 velocity per native post-callback. The lower velocity clamp is -3 when task +0x64 bit 0x1000 is clear, or -6 when it is set.",
+      "With position-integration bit 0x00000200 enabled, the native integrator adds twice task velocities +0x78, +0x7C and +0x80 to object X, Y and Z respectively. The ordinary -3 terminal vertical velocity therefore produces -6 height units per scheduled update."
+    ],
+    "cautions": [
+      "This callback has collision, audio, allocation and deletion side effects. Restoring an obstacle by manually calling it can duplicate those effects; the native scheduler owns its next turn.",
+      "Use the verified task/object generation and resident File 69 identity. The same entity value is shared with the swimming proxy.",
+      "Zeroing the velocity words inside the obstacle callback does not hold its position: the later native post-callback reapplies gravity and moves Y by -0.4 from zero velocity. Any deliberate hold must account for that post-callback order and preserve unrelated native motion and collision flags."
+    ],
+    "example": "extern void func_08000E1C_72C66C(void *task, void *object);\n\ntypedef void (*NativeTaskCallback)(void *, void *);\n\n/* The native scheduler owns execution of this callback. */\nNativeTaskCallback documented_callback(void)\n{\n    return func_08000E1C_72C66C;\n}\n",
+    "exampleExplanation": "This exposes callback identity without running initialization, rendering, movement, collision handling or result cleanup a second time. The resident overlay and native task lifetime remain required.",
+    "related": [
+      "func_080014E8_72CD38",
+      "func_08000000_72B850",
+      "func_80034734_35334",
+      "func_80218C28_5D40F8",
+      "func_80218E7C_5D434C",
+      "func_80218F30_5D4400",
+      "func_8021B808_5D6CD8"
+    ]
+  },
+  "func_080002B4_72BB04": {
+    "title": "Draw Mermaid training time and climb progress",
+    "summary": "Renders the waterfall challenge countdown and height meter, then decrements the signed 30 Hz countdown with a zero clamp.",
+    "confidence": "decompiled",
+    "declaration": "void func_080002B4_72BB04(void *task);",
+    "parameters": [
+      {
+        "name": "task",
+        "type": "void *",
+        "description": "Live task owned by the matching native scheduler and resident File 69 resource."
+      }
+    ],
+    "returns": "No return value.",
+    "behavior": [
+      "HUD task +0x84 is the signed 32-bit raw countdown in 30 Hz ticks. The displayed integer seconds are raw ticks divided by 30.",
+      "HUD task +0x90 is the signed 32-bit climbed-height value supplied by the controller from integer(swimmer Y+440). The meter calculation uses a total range of 820 native height units.",
+      "Computes the unfilled height with signed integer arithmetic as empty=((820-height)*150)/820, truncating division toward zero. It applies no native height clamp. func_800115E0_121E0 positions the marker at relative X=30 and Y=empty+56; func_8001136C_11F6C then updates the attached render-object transforms.",
+      "The local marker is the kind-2 render object at HUD +0x80. Its material pointer at object +0x30 selects the first 16 bytes of buffer HUD +0x78, tagged with 0x20000000. That wrapper calls the resolved File 69 display list 0x08002610 and ends; the countdown and meter display list begins separately at buffer+16.",
+      "Draws a 12-unit-wide black rectangle with alpha 160 at absolute HUD X+26, Y+48 and height empty, followed by a green rectangle with alpha 160 at Y+48+empty and height 150-empty. Both rectangles use the single local height field at HUD +0x90.",
+      "The callback draws the local display lists, text and progress meter before subtracting one from +0x84. Negative results are clamped to zero.",
+      "The native controller initializes the countdown through func_0800058C_72BDDC(HUD,50). It tests the getter's truncated integer seconds for expiry, so the final low-second boundary follows the native division."
+    ],
+    "cautions": [
+      "This is a HUD task layout, not an entity task layout. Its display buffers, sprite handles and resource pointers must remain local and live.",
+      "Suppressing the whole callback also suppresses rendering. If controlling the countdown separately, preserve the native draw operation and avoid decrementing the same timer a second time.",
+      "During a hidden preparation interval, this callback still decrements the timer. Preserve the intended 1500-tick start value until visible gameplay begins while allowing the native HUD to initialize and render normally.",
+      "Validate or clamp a separately supplied height to [0,820] before using the meter formula; the callback itself does not prevent negative or excessive fill lengths. A displayed player-object Y coordinate is 15 units above the swimmer proxy, so the corresponding climbed height is integer(player Y+425), not integer(player Y+440).",
+      "A marker-only visual can share the live local icon wrapper without sharing or rebuilding the countdown and fill display list. The owning HUD, its buffer, the File 69 icon and the marker model resource must all remain live. Replaying the complete callback would also decrement the countdown."
+    ],
+    "example": "extern void func_080002B4_72BB04(void *task);\n\ntypedef void (*NativeTaskCallback)(void *);\n\n/* The native scheduler owns execution of this callback. */\nNativeTaskCallback documented_callback(void)\n{\n    return func_080002B4_72BB04;\n}\n",
+    "exampleExplanation": "This exposes callback identity without running initialization, rendering, movement, collision handling or result cleanup a second time. The resident overlay and native task lifetime remain required.",
+    "related": [
+      "func_080014E8_72CD38",
+      "func_0800058C_72BDDC",
+      "func_080005A8_72BDF8",
+      "func_800115E0_121E0",
+      "func_8001136C_11F6C",
+      "func_8000DBF0_E7F0"
+    ]
+  },
+  "func_0800058C_72BDDC": {
+    "title": "Set the Mermaid training countdown",
+    "summary": "Stores seconds multiplied by 30 in the waterfall HUD's signed raw timer at +0x84.",
+    "confidence": "decompiled",
+    "declaration": "void func_0800058C_72BDDC(void *hud_task, int seconds);",
+    "parameters": [
+      {
+        "name": "hud_task",
+        "type": "void *",
+        "description": "The live File 69 waterfall HUD task, not its display object or a player task."
+      },
+      {
+        "name": "seconds",
+        "type": "int",
+        "description": "Whole-second value. The native trial supplies 50; arbitrary ranges and multiplication overflow behavior are not established."
+      }
+    ],
+    "returns": "No return value.",
+    "behavior": [
+      "Writes seconds*30 as a 32-bit word at HUD task +0x84. The normal controller call supplies 50, producing 1500 raw 30 Hz countdown ticks.",
+      "This helper initializes only the timer scalar. It does not construct the HUD, draw it, create the swimmer, or start the trial."
+    ],
+    "cautions": [
+      "The helper does not validate the task pointer or clamp seconds. Use only the matching live HUD and a verified bounded value."
+    ],
+    "example": "extern void func_0800058C_72BDDC(void *hud_task, int seconds);\n\n/* hud_task must already be the native waterfall HUD. */\nvoid initialize_waterfall_time(void *hud_task)\n{\n    func_0800058C_72BDDC(hud_task, 50);\n}\n",
+    "exampleExplanation": "Uses the native trial's observed 50-second timer value after HUD construction. This is not a complete challenge-start sequence.",
+    "related": [
+      "func_080014E8_72CD38",
+      "func_080002B4_72BB04",
+      "func_080005A8_72BDF8"
+    ]
+  },
+  "func_080005A8_72BDF8": {
+    "title": "Read the Mermaid training countdown",
+    "summary": "Reads the waterfall HUD's signed raw timer and returns integer seconds using division by 30.",
+    "confidence": "decompiled",
+    "declaration": "int func_080005A8_72BDF8(void *hud_task);",
+    "parameters": [
+      {
+        "name": "hud_task",
+        "type": "void *",
+        "description": "The matching live File 69 waterfall HUD task."
+      }
+    ],
+    "returns": "Signed integer result of the 32-bit timer at HUD +0x84 divided by 30.",
+    "behavior": [
+      "Reads HUD task +0x84 and performs signed integer division by 30. It does not mutate the timer.",
+      "The active waterfall controller uses a result of zero or less as its timeout condition. Positive raw values below 30 therefore already display as zero."
+    ],
+    "cautions": [
+      "This helper performs no task/lifetime validation. A pointer to a player, obstacle or expired HUD does not satisfy its layout contract."
+    ],
+    "example": "extern int func_080005A8_72BDF8(void *hud_task);\n\n/* The caller supplies the currently live waterfall HUD. */\nint waterfall_seconds_remaining(void *hud_task)\n{\n    return func_080005A8_72BDF8(hud_task);\n}\n",
+    "exampleExplanation": "Reads the same whole-second timer value used by the native controller, without advancing its state.",
+    "related": [
+      "func_080014E8_72CD38",
+      "func_080002B4_72BB04",
+      "func_0800058C_72BDDC"
+    ]
+  },
+  "func_08000000_72B850": {
+    "title": "Construct a File 69 waterfall task child",
+    "summary": "Allocates a native Mermaid training child and records File 69 resource identity for its scheduled callback.",
+    "confidence": "decompiled",
+    "declaration": "void *func_08000000_72B850(void *parent, void (*callback)(void *, void *), unsigned char priority);",
+    "parameters": [
+      {
+        "name": "parent",
+        "type": "void *",
+        "description": "Live native parent task. The verified waterfall root is the parent of swimmers and obstacles."
+      },
+      {
+        "name": "callback",
+        "type": "void (*)(void *, void *)",
+        "description": "Resident native child callback. The verified root uses the swimming proxy callback or obstacle callback."
+      },
+      {
+        "name": "priority",
+        "type": "unsigned char",
+        "description": "Unsigned 8-bit priority forwarded to the native allocator. The root uses 2 for its swimmer and 5 for an obstacle."
+      }
+    ],
+    "returns": "New native task pointer, or null on allocation failure.",
+    "behavior": [
+      "Forwards parent, callback and the low unsigned 8 bits of priority to the native task constructor.",
+      "On success, stores 0x0045 (File 69) at task halfword +0x28 and the resource handle returned for File 69 at task word +0x2C.",
+      "The verified root subsequently initializes the returned child object position. The child callback's own phase 0 performs its model, collision and gameplay initialization on the native schedule."
+    ],
+    "cautions": [
+      "The returned task pointer and the opaque resource handle stored at +0x2C are different kinds of values. Do not dereference the resource handle as an actor pointer.",
+      "Construction requires the matching native resource and parent lifecycle. A successful allocation is not proof that the child callback has finished initialization.",
+      "The scheduled callback may be represented initially as a raw 0x08 address and later as the resident File 69 base plus offset after native callback preparation. Preserve the constructor and scheduler lifecycle rather than normalizing the field through a legacy segment resolver."
+    ],
+    "example": "typedef void (*NativeTaskCallback)(void *, void *);\ntypedef void *(*NativeChildConstructor)(void *, NativeTaskCallback, unsigned char);\n\nextern void *func_08000000_72B850(void *parent, NativeTaskCallback callback, unsigned char priority);\n\n/* Expose the verified interface without allocating a task. */\nNativeChildConstructor documented_constructor(void)\n{\n    return func_08000000_72B850;\n}\n",
+    "exampleExplanation": "Shows the constructor's register-argument interface without duplicating a native child allocation or bypassing phase-0 initialization.",
+    "related": [
+      "func_080014E8_72CD38",
+      "func_0800107C_72C8CC",
+      "func_08000E1C_72C66C",
+      "func_800141C4_14DC4"
+    ]
+  },
+  "func_800115E0_121E0": {
+    "title": "Set a HUD render object relative position",
+    "summary": "Writes signed X and Y offsets into an attached HUD render object without drawing it.",
+    "confidence": "decompiled",
+    "declaration": "void func_800115E0_121E0(void *object, int x, int y);",
+    "parameters": [
+      {
+        "name": "object",
+        "type": "void *",
+        "description": "Live attached render object with signed offsets at +0x80 and +0x84; null is accepted."
+      },
+      {
+        "name": "x, y",
+        "type": "int",
+        "description": "Signed 32-bit relative HUD coordinates."
+      }
+    ],
+    "returns": "No return value.",
+    "behavior": [
+      "Returns without writing when object is null. Otherwise stores X at object +0x80 and Y at +0x84 as signed 32-bit integers.",
+      "These are relative coordinates. A later func_8001136C_11F6C call resolves them against the owning HUD position and updates attached render transforms.",
+      "The Mermaid training HUD uses X=30 and Y=56+((820-height)*150)/820 for its local character marker. This setter does not change the timer or the progress fill."
+    ],
+    "cautions": [
+      "A non-null pointer still must belong to a live compatible native render record. The setter does not validate ownership, kind or lifetime.",
+      "Setting offsets alone does not submit a draw or refresh world-space transforms. Keep the owning HUD update and native renderer lifecycle."
+    ],
+    "example": "extern void func_800115E0_121E0(void *object, int x, int y);\n\n/* The caller retains ownership of a live compatible HUD object. */\nvoid position_hud_icon(void *object, int x, int y)\n{\n    func_800115E0_121E0(object, x, y);\n}\n",
+    "exampleExplanation": "Updates only the native relative offsets. The normal owning HUD update resolves transforms and the renderer draws the object.",
+    "related": [
+      "func_8001136C_11F6C",
+      "func_080002B4_72BB04",
+      "func_8000DBF0_E7F0"
+    ]
+  },
+  "func_8001136C_11F6C": {
+    "title": "Refresh attached HUD render object transforms",
+    "summary": "Resolves a HUD position and updates its attached sprite and model records from their relative offsets.",
+    "confidence": "decompiled",
+    "declaration": "void func_8001136C_11F6C(void *hud);",
+    "parameters": [
+      {
+        "name": "hud",
+        "type": "void *",
+        "description": "Live native HUD task with compatible position fields and an intact attached render-object chain."
+      }
+    ],
+    "returns": "No return value.",
+    "behavior": [
+      "Computes absolute HUD X and Y at task +0x6C and +0x70 from base coordinates +0x64 and +0x68. When a native parent is present, its position at +0x10 and +0x14 contributes to the result.",
+      "Walks the attached render-object chain from task +0x18 through each record +0x00. It updates the supported kind-1 sprite records and kind-2 model records.",
+      "For exact kind byte +0x04 equal to 2, reads signed relative offsets at object +0x80 and +0x84 and writes model X=(absoluteX+offsetX)*5/8-100+0.3, Y=65-(absoluteY+offsetY)*5/8+9.7 and Z=-200. The transform maps native HUD coordinates into its model rendering space.",
+      "The Mermaid training HUD invokes this after setting its local marker offsets. The function refreshes transforms without constructing display lists, drawing objects or decrementing the countdown."
+    ],
+    "cautions": [
+      "The function expects a live compatible HUD and intact native links. It performs no public lifetime or ownership validation.",
+      "It updates every attached compatible record. Do not call it on a generic actor task or a partially torn-down HUD."
+    ],
+    "example": "extern void func_8001136C_11F6C(void *hud);\n\n/* The caller has validated the live native HUD and its attached list. */\nvoid refresh_hud_layout(void *hud)\n{\n    if (hud) func_8001136C_11F6C(hud);\n}\n",
+    "exampleExplanation": "Refreshes the native HUD transforms after compatible relative offsets change, without running a gameplay or countdown callback.",
+    "related": [
+      "func_800115E0_121E0",
+      "func_080002B4_72BB04",
+      "func_8000DBF0_E7F0"
+    ]
+  },
+  "func_80036158_36D58": {
+    "title": "Remove attached native render records",
+    "summary": "Unlinks and cleans a count of consecutive render records from their owning native task.",
+    "confidence": "decompiled",
+    "declaration": "void *func_80036158_36D58(void *task, void *first, unsigned char count);",
+    "parameters": [
+      {
+        "name": "task",
+        "type": "void *",
+        "description": "Live native task that still owns the attached record chain."
+      },
+      {
+        "name": "first",
+        "type": "void *",
+        "description": "First still-owned record in the task chain to remove."
+      },
+      {
+        "name": "count",
+        "type": "unsigned char",
+        "description": "Unsigned 8-bit number of consecutive records to remove. Use 1 for one known owned record."
+      }
+    ],
+    "returns": "First surviving successor after the removed records, or null when no successor remains.",
+    "behavior": [
+      "Finds the supplied first record in the native task attachment chain, unlinks the requested consecutive records and repairs the owner head and tail pointers.",
+      "Runs native render-record cleanup, including internal model-cache cleanup, before returning each removed record to its native pool.",
+      "The count parameter uses only the low unsigned 8 bits of the argument. The returned pointer identifies the surviving successor; it is not a removed record or a new allocation."
+    ],
+    "cautions": [
+      "Validate that the task is still live and that first is still a member of its attachment chain before calling. A retained pointer may have been freed or reused after native task cleanup.",
+      "Do not remove unrelated original HUD records or free the same attachment again after the owning task has already released its chain.",
+      "The single-record example assumes ownership has already been established; non-null checks alone do not prove that precondition."
+    ],
+    "example": "extern void *func_80036158_36D58(void *task, void *first, unsigned char count);\n\n/* Both pointers must already be validated as live and still linked. */\nvoid *remove_one_owned_record(void *task, void *record)\n{\n    if (!task || !record) return 0;\n    return func_80036158_36D58(task, record, 1);\n}\n",
+    "exampleExplanation": "Removes one known owned attachment through native cleanup rather than manually repairing list links or retaining a freed object.",
+    "related": [
+      "func_80035EEC_36AEC",
+      "func_8000DBF0_E7F0"
+    ]
+  },
+  "D_801FC628_5B8538": {
+    "title": "Current world-camera presentation record pointer",
+    "summary": "Pointer to the active world-camera render record containing the tagged projection-descriptor address.",
+    "confidence": "decompiled",
+    "declaration": "extern void *D_801FC628_5B8538;",
+    "behavior": [
+      "This global stores a pointer to the native world-camera presentation record. It is a pointer variable, not inline descriptor storage and not the local player object or local camera task.",
+      "The Mermaid waterfall controller reads the unsigned 32-bit word at record +0x2C and decodes the active projection-descriptor address with mask 0x8FFFFFFE. That decoded pointer identifies a separate 96-byte descriptor.",
+      "The descriptor begins with six floats: eye XYZ at +0x00/+0x04/+0x08 and look XYZ at +0x0C/+0x10/+0x14. Its rounded unsigned 16-bit distance is at +0x1A. The waterfall intro uses eye (0,-354,-110), look (0,-404,190), and distance 0x0A00.",
+      "The waterfall controller copies the local camera descriptor into this world descriptor through its common update tail. Immediate camera setters change scalar fields first; descriptor contents establish whether the scheduled camera update and world commit have produced the intended presentation.",
+      "Waterfall setup at phase 4 frame 20 writes 1 to this record byte +0x64. This is a field of the world-camera presentation record, not the local Yae body."
+    ],
+    "cautions": [
+      "Validate the global pointer, decoded descriptor pointer, current scene and native owner lifetime before reading record fields or the 96-byte descriptor. A nonzero global does not prove that the target still belongs to the current camera.",
+      "Preserve the native tagged-word mask 0x8FFFFFFE. Do not replace it with an unrelated physical-address mask or treat the encoded word itself as a plain pointer.",
+      "Reading this pointer does not initialize a camera, update its scheduled descriptor, commit world projection state, or grant ownership of either record. These observations do not establish a general camera-control API for arbitrary writes."
+    ],
+    "example": "extern void *D_801FC628_5B8538;\n\n/* Consumers validate scene ownership and lifetime before dereferencing. */\nvoid *current_world_camera_record(void)\n{\n    return D_801FC628_5B8538;\n}\n",
+    "exampleExplanation": "Reads the pointer variable without treating its storage as a descriptor or changing native camera state.",
+    "related": [
+      "func_080014E8_72CD38",
+      "D_801FC604_5B8514",
+      "D_801FC60C_5B851C"
+    ]
+  }
+}

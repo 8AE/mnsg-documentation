@@ -4,7 +4,7 @@ slug: "/variables"
 description: "Native variables for the US recompilation of Mystical Ninja Starring Goemon."
 ---
 
-106 variables with C interfaces, behavior, and usage examples. Use the search bar to look up an exact symbol, address, or purpose.
+107 variables with C interfaces, behavior, and usage examples. Use the search bar to look up an exact symbol, address, or purpose.
 
 Value tables decode established raw values and document known field layouts. Select **Tables** to jump to a variable’s mappings.
 
@@ -57,6 +57,7 @@ Value tables decode established raw values and document known field layouts. Sel
 | [`D_801FC600_5B8510`](D_801FC600_5B8510.md) | Player-manager task subtree root | — |
 | [`D_801FC604_5B8514`](D_801FC604_5B8514.md) | Current player task pointer | [Tables](D_801FC604_5B8514.md#known-values) |
 | [`D_801FC60C_5B851C`](D_801FC60C_5B851C.md) | Current player object pointer | [Tables](D_801FC60C_5B851C.md#known-values) |
+| [`D_801FC628_5B8538`](D_801FC628_5B8538.md) | Current world-camera presentation record pointer | — |
 | [`D_801FC660_5B8570`](D_801FC660_5B8570.md) | Player body radius table | [Tables](D_801FC660_5B8570.md#known-values) |
 | [`D_801FC668_5B8578`](D_801FC668_5B8578.md) | Player body height table | [Tables](D_801FC668_5B8578.md#known-values) |
 | [`D_80203F34_5BFE44`](D_80203F34_5BFE44.md) | Per-character action metadata tables | [Tables](D_80203F34_5BFE44.md#known-values) |
