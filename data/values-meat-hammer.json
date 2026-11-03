@@ -1,0 +1,41 @@
+{
+  "D_8015C604": {
+    "tables": [
+      {
+        "id": "selected-weapon-slots",
+        "title": "Selected weapon slots",
+        "description": "Stored 32-bit selection values. Ebisumaru meanings apply only when the active character index is 1. These values are neither acquisition flags nor native attack-kind bytes.",
+        "columns": [
+          "Stored value (hex)",
+          "Stored value (decimal)",
+          "General meaning",
+          "Ebisumaru weapon",
+          "Ebisumaru armed attack kind"
+        ],
+        "rows": [
+          [
+            "`0x01`",
+            "`1`",
+            "Ordinary tiered weapon",
+            "Ordinary mallet",
+            "`0x15`, `0x16` or `0x17`, according to tier"
+          ],
+          [
+            "`0x02`",
+            "`2`",
+            "Character-specific secondary weapon",
+            "Meat Hammer",
+            "`0x1D`"
+          ],
+          [
+            "`0x03`",
+            "`3`",
+            "Character-specific third weapon",
+            "Wind-up Camera",
+            "`0x14`"
+          ]
+        ]
+      }
+    ]
+  }
+}

@@ -4,7 +4,7 @@ slug: "/variables"
 description: "Native variables for the US recompilation of Mystical Ninja Starring Goemon."
 ---
 
-107 variables with C interfaces, behavior, and usage examples. Use the search bar to look up an exact symbol, address, or purpose.
+108 variables with C interfaces, behavior, and usage examples. Use the search bar to look up an exact symbol, address, or purpose.
 
 Value tables decode established raw values and document known field layouts. Select **Tables** to jump to a variable’s mappings.
 
@@ -29,6 +29,7 @@ Value tables decode established raw values and document known field layouts. Sel
 | [`D_8015C5CC_15D1CC`](D_8015C5CC_15D1CC.md) | Current graphics-command cursor | — |
 | [`D_8015C5D8_15D1D8`](D_8015C5D8_15D1D8.md) | Runtime save/control mirror | [Tables](D_8015C5D8_15D1D8.md#known-values) |
 | [`D_8015C5E4`](D_8015C5E4.md) | Runtime current health and Tsurami update gate | [Tables](D_8015C5E4.md#known-values) |
+| [`D_8015C604`](D_8015C604.md) | Selected playable weapon slot | [Tables](D_8015C604.md#known-values) |
 | [`D_8015C608_15D208`](D_8015C608_15D208.md) | Save flags and persistent counters | [Tables](D_8015C608_15D208.md#known-values) |
 | [`D_8015CDDC`](D_8015CDDC.md) | Current room actor instance pointer | [Tables](D_8015CDDC.md#known-values) |
 | [`D_8015CDE0`](D_8015CDE0.md) | Current resolved actor definition pointer | [Tables](D_8015CDE0.md#known-values) |

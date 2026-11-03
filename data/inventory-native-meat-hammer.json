@@ -1,0 +1,21 @@
+{
+  "scope": "Reviewed native playable attack initialization and selected-weapon storage.",
+  "symbols": [
+    {
+      "name": "func_801E3834_59F744",
+      "kind": "function",
+      "address": "0x801E3834",
+      "romAddress": "0x0059F744",
+      "section": ".file_11",
+      "size": 652
+    },
+    {
+      "name": "D_8015C604",
+      "kind": "variable",
+      "address": "0x8015C604",
+      "romAddress": null,
+      "section": "ABSOLUTE_SYMS",
+      "size": null
+    }
+  ]
+}

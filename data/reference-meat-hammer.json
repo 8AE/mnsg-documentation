@@ -1,0 +1,63 @@
+{
+  "func_801E3834_59F744": {
+    "title": "Initialize a playable attack variant",
+    "summary": "Arms the real playable task with an attack descriptor and native kind chosen from the character, weapon selection and attack variant.",
+    "declaration": "extern void func_801E3834_59F744(void *player, unsigned char attack_variant);",
+    "parameters": [
+      {
+        "name": "player",
+        "type": "void *",
+        "description": "Live real playable task with character byte +0x60, initialized private work at +0x5C and its native resource context."
+      },
+      {
+        "name": "attack_variant",
+        "type": "unsigned char",
+        "description": "Native attack/animation variant index into character-specific 20-entry tables. This is not the selected-weapon value."
+      }
+    ],
+    "behavior": [
+      "Writes the outgoing attack descriptor at task +0x48 and the unsigned native attack-kind byte at +0x4C. The character index is the unsigned byte at task +0x60: 0 Goemon, 1 Ebisumaru, 2 Sasuke, 3 Yae.",
+      "For the ordinary tiered weapon, Goemon and Ebisumaru use kinds 0x15, 0x16 and 0x17 at tiers zero, one and two. Sasuke and Yae use 0x19, 0x23 and 0x24.",
+      "For selected weapon 2, the kind table by character index is [0x15, 0x1D, 0x1C, 0x15]. Ebisumaru therefore arms the Meat Hammer with kind 0x1D.",
+      "For selected weapon 3, the kind table by character index is [0x15, 0x14, 0x1A, 0x15]. Ebisumaru therefore arms the Wind-up Camera with kind 0x14.",
+      "An already armed attack is identified by the task kind, rather than merely by the current selected weapon. For an active native outgoing sphere, the real playable task with character 1 and kind 0x1D identifies an Ebisumaru Meat Hammer strike. A child projectile or a display-only task does not become that playable attack because it shares a kind value.",
+      "The native variant tables contain 20 entries, indexed 0 through 0x13, without a bounds check. The inspected Meat Hammer setup contexts pass variants 0x0F, 0x12 and 0x13. The initializer also performs per-variant native setup and may request an effect; it is not a descriptor-only or visual-only setter."
+    ],
+    "returns": "No return value.",
+    "example": "#include \"modding.h\"\n\nstatic unsigned char observed_attack_variant;\nstatic unsigned char observed_character;\n\nRECOMP_HOOK(\"func_801E3834_59F744\")\nvoid observe_attack_setup(void *player, unsigned char attack_variant)\n{\n    const unsigned char *task = player;\n    if (!task) return;\n    observed_attack_variant = attack_variant;\n    observed_character = task[0x60];\n}\n",
+    "exampleExplanation": "Observe an existing native call without changing its arguments or replaying attack initialization. This entry hook sees the supplied variant before the original initializer arms the descriptor and kind.",
+    "cautions": [
+      "Only use the callable interface in the matching native playable action, with complete task, work and loaded-resource state. A valid variant range alone does not establish that the variant is appropriate for a particular character or action.",
+      "The initializer mutates outgoing gameplay collision state. Do not invoke it on a visual-only task or to replay another player’s attack.",
+      "The variant parameter is byte-sized; preserve its unsigned width. Do not substitute the 32-bit weapon selection word or a weapon-acquisition flag."
+    ],
+    "confidence": "decompiled",
+    "related": [
+      "D_8015C604",
+      "D_801FC604_5B8514",
+      "func_80033404_34004"
+    ]
+  },
+  "D_8015C604": {
+    "title": "Selected playable weapon slot",
+    "summary": "Mutable 32-bit weapon selection whose character-specific slots distinguish ordinary weapons from secondary and third weapons.",
+    "declaration": "extern unsigned int D_8015C604;",
+    "behavior": [
+      "Stores the current selected weapon as a 32-bit word at runtime address 0x8015C604, four bytes before the save-data base D_8015C608_15D208. It is mutable selection state, not a packed acquisition flag.",
+      "Value 1 selects the ordinary tiered weapon. Values 2 and 3 select character-specific secondary and third weapons. For Ebisumaru, slot 2 is the Meat Hammer and slot 3 is the Wind-up Camera.",
+      "The native weapon-cycle path permits the 1-to-2 transition when the character equipment word at save +0xB4 + character_index * 4 is nonzero. Ebisumaru uses save +0xB8 for that acquisition check.",
+      "The attack initializer consumes this selection while arming a native attack. Inspect the already armed task kind to identify that attack afterward; a later selection change does not by itself rewrite an existing attack sphere."
+    ],
+    "example": "extern unsigned int D_8015C604;\n\nunsigned int selected_weapon_slot(void)\n{\n    return *(volatile unsigned int *)&D_8015C604;\n}\n",
+    "exampleExplanation": "Read the full native selection word. Interpret slots 2 and 3 together with the active character; this accessor does not establish that an attack is currently armed.",
+    "cautions": [
+      "Preserve the 32-bit storage width. The negative save-relative offset is adjacent runtime storage, not a save-flag array index.",
+      "Owning a weapon and selecting it are separate states. Do not infer attack contact or damage from the selection word alone."
+    ],
+    "confidence": "decompiled",
+    "related": [
+      "D_8015C608_15D208",
+      "func_801E3834_59F744"
+    ]
+  }
+}

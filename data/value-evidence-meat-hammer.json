@@ -1,0 +1,135 @@
+{
+  "scope": "Internal native attack-kind and selected-weapon evidence; no game binaries or binary dumps are included.",
+  "researchDate": "2026-11-03",
+  "confidence": "decompiled and disassembled",
+  "handoff": {
+    "role": "ghidra-decompiler",
+    "program": "mnsg_player_file_11.elf",
+    "methods": [
+      "decompile_function",
+      "disassemble_function",
+      "get_xrefs_to",
+      "read_memory"
+    ],
+    "nativeExecutableSHA256": null,
+    "nativeExecutableHashNote": "No current native executable hash was provided by the research handoff."
+  },
+  "symbolTables": [
+    {
+      "project": "mnsg-recomp-example",
+      "checkoutHead": "6441bd9e426b4fa6dc16386ef51b35f62670a952",
+      "path": "Goemon64RecompSyms/mnsg.syms.toml",
+      "line": 1619,
+      "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77",
+      "name": "func_801E3834_59F744",
+      "address": "0x801E3834",
+      "romAddress": "0x0059F744",
+      "section": ".file_11",
+      "size": 652
+    },
+    {
+      "project": "mnsg-recomp-example",
+      "checkoutHead": "6441bd9e426b4fa6dc16386ef51b35f62670a952",
+      "path": "Goemon64RecompSyms/mnsg.datasyms.toml",
+      "line": 30487,
+      "sha256": "af7855b91d29f74351faaf8052c21f1e378badb4c322b9784d205da5016e9ce2",
+      "name": "D_8015C604",
+      "address": "0x8015C604",
+      "section": "ABSOLUTE_SYMS",
+      "romAddress": null
+    }
+  ],
+  "findings": [
+    {
+      "symbol": "func_801E3834_59F744",
+      "abi": "void (void *player, unsigned char attack_variant); a0 is the playable task; a1 is a byte-sized native variant, not the selected weapon. The prologue stores a1 to its caller home, and lbu at stack offset 0x1EF selects its low byte. No stack-passed arguments; callers ignore the return and no authored return value is present.",
+      "fields": {
+        "task+0x48": "attack descriptor",
+        "task+0x4C": "unsigned attack kind",
+        "task+0x60": "unsigned character index",
+        "task+0x5C": "playable private work"
+      },
+      "variantBounds": "Character-specific tables contain 20 entries (0..0x13), no bounds check. Hammer setup contexts pass 0x0F,0x12,0x13.",
+      "sideEffects": "Per-variant setup calls func_801DD830_599740 and conditionally requests native effect selector 0x21.",
+      "disassemblyRange": "0x801E3A00-0x801E3A64",
+      "tables": [
+        {
+          "address": "0x802046BC",
+          "meaning": "Ordinary per-character tier table",
+          "rows": [
+            [
+              21,
+              22,
+              23
+            ],
+            [
+              21,
+              22,
+              23
+            ],
+            [
+              25,
+              35,
+              36
+            ],
+            [
+              25,
+              35,
+              36
+            ]
+          ]
+        },
+        {
+          "address": "0x802046C8",
+          "meaning": "Selected-weapon-2 kinds by character",
+          "values": [
+            21,
+            29,
+            28,
+            21
+          ]
+        },
+        {
+          "address": "0x802046CC",
+          "meaning": "Selected-weapon-3 kinds by character",
+          "values": [
+            21,
+            20,
+            26,
+            21
+          ]
+        }
+      ]
+    },
+    {
+      "symbol": "D_8015C604",
+      "width": "32-bit word",
+      "saveRelativeOffset": "-0x04",
+      "meanings": {
+        "1": "ordinary tiered weapon",
+        "2": "secondary weapon; Ebisumaru Meat Hammer",
+        "3": "third weapon; Ebisumaru Wind-up Camera"
+      },
+      "corroboration": [
+        {
+          "symbol": "func_801DD2C4_5991D4",
+          "runtimeAddress": "0x801DD2C4",
+          "romAddress": "0x005991D4",
+          "disassemblyRange": "0x801DD320-0x801DD338",
+          "finding": "Weapon-cycle 1-to-2 checks save+0xB4+4*character; Ebisumaru index1 selects documented Meat Hammer acquisition word save+0xB8."
+        },
+        {
+          "symbol": "func_801E4624_5A0534",
+          "runtimeAddress": "0x801E4624",
+          "romAddress": "0x005A0534",
+          "finding": "Ebisumaru selected-weapon2 dispatches actions0x84/0x8A/0x8B; selected-weapon3 dispatches camera actions0x8C/0x8D."
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "No live gameplay or two-client run was performed.",
+    "The native selection table is not evidence that an outgoing sphere is currently active. Native collision descriptor/state and real playable ownership remain required.",
+    "Native executable hash was unavailable; symbol-table hashes and exact Ghidra program identity record the available reproducibility evidence."
+  ]
+}

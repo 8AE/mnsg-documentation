@@ -4,7 +4,7 @@ slug: "/functions"
 description: "Native functions for the US recompilation of Mystical Ninja Starring Goemon."
 ---
 
-336 functions with C interfaces, behavior, and usage examples. Use the search bar to look up an exact symbol, address, or purpose.
+337 functions with C interfaces, behavior, and usage examples. Use the search bar to look up an exact symbol, address, or purpose.
 
 | Symbol | Purpose |
 | --- | --- |
@@ -247,6 +247,7 @@ description: "Native functions for the US recompilation of Mystical Ninja Starri
 | [`func_801DD50C_59941C`](func_801DD50C_59941C.md) | Cycle the live player character |
 | [`func_801DD5C0_5994D0`](func_801DD5C0_5994D0.md) | Apply a live player character swap |
 | [`func_801E0944_59C854`](func_801E0944_59C854.md) | Advance a player character transition |
+| [`func_801E3834_59F744`](func_801E3834_59F744.md) | Initialize a playable attack variant |
 | [`func_801E55D4_5A14E4`](func_801E55D4_5A14E4.md) | Release and launch the held object |
 | [`func_801E8820_5A4730`](func_801E8820_5A4730.md) | Configure an effect texture |
 | [`func_801E8858_5A4768`](func_801E8858_5A4768.md) | Initialize animated effect textures |
