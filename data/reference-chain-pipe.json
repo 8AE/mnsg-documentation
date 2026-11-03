@@ -103,7 +103,8 @@
       "The normal pull updater may call this helper on its first tick when signed 16-bit player work +0x30 is zero, using the selected native target at work +0x88. An already initialized custom latch must preserve that first-tick state or the updater can dereference a missing or stale selected target.",
       "The native pull arrival radius is approximately 8.660254 world units. Other solid-body contact can prevent reaching that radius and requires a compatible release condition.",
       "Copying an endpoint does not establish that the route is clear; retain native head collision, wall contact and release processing.",
-      "Native movement state can select a lower cap: bit 0 of the unsigned byte at private work +0x18 makes func_801CD310_589220 use 4.0. The latch constants alone do not guarantee the distance traveled in a frame."
+      "Native movement state can select a lower cap: bit 0 of the unsigned byte at private work +0x18 makes func_801CD310_589220 use 4.0. The latch constants alone do not guarantee the distance traveled in a frame.",
+      "The movement integrator has a special velocity-retention check for floor codes 0x0095 and 0x009A at player +0x98. It still reads raw controller magnitude D_800C7DBC under forced movement mode 3: a value below 0.1 can discard prior velocity before adding the current acceleration, preventing speed from accumulating. These numeric floor codes are not identified as named surface types here."
     ],
     "confidence": "decompiled",
     "related": [
@@ -144,7 +145,8 @@
       "Use only with the real playable owner and a fully initialized native pull. Replaying it on visual tasks can traverse invalid native managers and change gameplay state.",
       "On its first tick, the selected target at private work +0x88 must be valid unless the pull was already initialized and its first-tick counter was advanced consistently.",
       "Native movement uses stored heading and forced acceleration, then integrates velocity subject to its speed cap and contact state. Changing only the chain endpoint does not make the playable player steer toward a moving target.",
-      "Do not run this updater twice for the same native action tick merely to force a release; retain its ordinary action and lifecycle ordering."
+      "Do not run this updater twice for the same native action tick merely to force a release; retain its ordinary action and lifecycle ordering.",
+      "The movement integrator has a special velocity-retention check for floor codes 0x0095 and 0x009A at player +0x98. It still reads raw controller magnitude D_800C7DBC under forced movement mode 3: a value below 0.1 can discard prior velocity before adding the current acceleration, preventing speed from accumulating. These numeric floor codes are not identified as named surface types here."
     ],
     "confidence": "decompiled",
     "related": [

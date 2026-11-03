@@ -164,5 +164,34 @@
       "This corrects field semantics and constants; it does not establish the cause of any observed gameplay slowdown.",
       "The separate slide flag can lower the cap, but no runtime evidence shows that it was set in any reported case."
     ]
+  },
+  "floorInputRetentionReview": {
+    "researchDate": "2026-11-03",
+    "confidence": "decompiled; branch ordering corroborated by disassembly",
+    "nativeSymbol": "func_801CD310_589220",
+    "nativeProof": {
+      "instructions": "0x801CDB90-0x801CDCA8",
+      "floorField": {
+        "offset": "player+0x98",
+        "width": "16 bits",
+        "load": "lhu"
+      },
+      "floorCodes": [
+        "0x0095",
+        "0x009A"
+      ],
+      "rawController": "float D_800C7DBC",
+      "threshold": {
+        "type": "double",
+        "value": 0.1,
+        "address": "0x8020A920"
+      },
+      "ordering": "The special floor branch checks raw controller magnitude before its forced-mode acceleration test. Raw magnitude below0.1 sets the retention multiplier to0 even under forced mode3. It scales prior velocity components by that multiplier, then adds current acceleration and clamps the result."
+    },
+    "correction": "A general zero-friction calculation for ordinary flat-floor forced movement cannot exclude loss of retained velocity on floor codes0x0095/0x009A, because their separate raw-input branch still applies.",
+    "limits": [
+      "The floor codes remain numeric identifiers; no named surface mapping is established.",
+      "This update describes a native code branch and does not certify an individual runtime event or post-change gameplay behavior."
+    ]
   }
 }
