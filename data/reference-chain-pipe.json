@@ -1,0 +1,156 @@
+{
+  "func_801E9AE0_5A59F0": {
+    "title": "Construct the native chain-pipe effect",
+    "summary": "Builds the chain head, targeting marker and eight link actors for the playable chain-pipe attack, including their outgoing collision state.",
+    "behavior": [
+      "Creates a head using model 0x49009020, a targeting marker using 0x49009238, and eight link actors using 0x49009348. These models use Goemon broad resource 0x120 and material 0xC006D920.",
+      "The head and marker use uniform scale 0.09. Link actors use scale 0.045 and the native 0x8000 rotation markers on all three axes.",
+      "The construction path calls the native outgoing-attack setup for the head and links. It creates gameplay collision state as well as visible geometry.",
+      "The head stores its playable owner at task +0x5C. Each link stores its owning head at task +0x9C; head and links have distinct update callbacks."
+    ],
+    "example": "#include \"modding.h\"\n\nstatic unsigned int observed_chain_constructions;\n\n/* Entry observation does not consume the unknown constructor arguments. */\nRECOMP_HOOK(\"func_801E9AE0_5A59F0\")\nvoid observe_chain_construction(void)\n{\n    ++observed_chain_constructions;\n}\n",
+    "exampleExplanation": "Observe an existing native construction without calling it or replacing any allocation, collision, or cleanup operation. A standalone constructor prototype is not established here.",
+    "cautions": [
+      "This constructor is not a visual-only helper. Invoking it for an inert display task can arm attacks and expose uninitialized playable-owner state.",
+      "The playable owner, its native child manager, loaded model resources and complete task lifecycle are preconditions. Preserve native task cleanup and allocation-failure handling.",
+      "Do not infer a callable C declaration from this observation hook; it deliberately reads no arguments."
+    ],
+    "confidence": "decompiled",
+    "related": [
+      "func_801E9AE0_5A59F0",
+      "func_801EA4E8_5A63F8",
+      "func_801EA5E4_5A64F4",
+      "func_801F4C20_5B0B30",
+      "func_801EA0D8_5A5FE8"
+    ]
+  },
+  "func_801EA4E8_5A63F8": {
+    "title": "Position one native chain-pipe link",
+    "summary": "Updates one chain link from its head endpoint and the playable owner pose without applying attacks, collision or damage.",
+    "declaration": "extern void func_801EA4E8_5A63F8(void *link, void *object);",
+    "parameters": [
+      {
+        "name": "link",
+        "type": "void *",
+        "description": "Live native link task with its playable owner at +0x5C and chain head at +0x9C."
+      },
+      {
+        "name": "object",
+        "type": "void *",
+        "description": "Existing display object belonging to this link."
+      }
+    ],
+    "behavior": [
+      "Reads the chain head through link task +0x9C and the playable owner through +0x5C. The head endpoint is the XYZ position of the head object at head task +0x18.",
+      "For owner actions 0x77 and 0x78, the player-relative hand offset is (0, 3, 11.5); other inspected chain actions use (0, 4, 14). Rotate this offset by the owner object rotations and add owner XYZ to obtain H.",
+      "Rotate (0, 0, 2.5) by the same owner rotations to obtain R. For link index i from 0 through 7, position is H + ((8 - i) / 9) * (headXYZ - H - R). The scalar division is floating point.",
+      "Head phase byte +0x60 equal to 3 hides the link through object byte +0x64. The latched phase 2 continues to display the links.",
+      "The inspected update performs position and visibility work only. It makes no function calls and does not service collision or apply damage."
+    ],
+    "returns": "No return value.",
+    "example": "#include \"modding.h\"\n\nstatic float observed_link_position[3];\n\n/* Entry reads the existing object pose before native placement updates it. */\nRECOMP_HOOK(\"func_801EA4E8_5A63F8\")\nvoid observe_link_entry(void *link, const void *object)\n{\n    const unsigned char *bytes = object;\n    (void)link;\n    if (!bytes) return;\n    observed_link_position[0] = *(const float *)(bytes + 0x08);\n    observed_link_position[1] = *(const float *)(bytes + 0x0C);\n    observed_link_position[2] = *(const float *)(bytes + 0x10);\n}\n",
+    "exampleExplanation": "This read-only entry hook copies the existing display pose before the native update computes the next link position. It retains no task or object pointers. Observing the post-update position instead requires saving and validating the intended object separately; a return hook cannot recover original arguments from caller-saved registers.",
+    "cautions": [
+      "The update expects a fully initialized native link, head, playable owner and display object. Its lack of gameplay calls does not make arbitrary task layouts valid.",
+      "The head and owner must remain live for every read. Do not retain link +0x9C across native teardown or task-pool reuse.",
+      "The formula is specific to the inspected File 11 chain-pipe actors and their native scales."
+    ],
+    "confidence": "decompiled",
+    "related": [
+      "func_801E9AE0_5A59F0",
+      "func_801EA4E8_5A63F8",
+      "func_801EA5E4_5A64F4",
+      "func_801F4C20_5B0B30",
+      "func_801EA0D8_5A5FE8"
+    ]
+  },
+  "func_801EA5E4_5A64F4": {
+    "title": "Latch a native chain pipe to a target",
+    "summary": "Copies a target object position into an existing chain head and initializes the real playable player's native pull movement.",
+    "declaration": "extern void func_801EA5E4_5A64F4(void *head, void *player, void *target);",
+    "parameters": [
+      {
+        "name": "head",
+        "type": "void *",
+        "description": "Fully constructed live native chain-head task, including its marker object."
+      },
+      {
+        "name": "player",
+        "type": "void *",
+        "description": "Real playable owner with live object and private work area at task +0x5C."
+      },
+      {
+        "name": "target",
+        "type": "void *",
+        "description": "Target task whose +0x18 points to an object containing world XYZ."
+      }
+    ],
+    "behavior": [
+      "Reads target +0x18, then only object XYZ at +0x08/+0x0C/+0x10. It copies those values into the chain-head object. It does not retain the target pointer, traverse a target list, or invoke a target callback.",
+      "Sets unsigned 16-bit player work +0x00 to movement mode 3, unsigned 16-bit work +0x02 to the heading toward the target, and float work +0x04 to the native pull speed. It also initializes native movement fields and stores heading at player +0x94.",
+      "Immediately sets the playable object Y to target object Y minus 3. This is a vertical snap at latch, rather than a gradual upward pull.",
+      "Stores the rotated hand offset in head task +0x9C/+0xA0/+0xA4. Owner actions 0x77 or 0x78 use (0, 3, 11.5); the other inspected launch states use (0, 4, 14).",
+      "Sets head phase +0x60 to 2 for a latched chain, or 3 when already within its native completion threshold. Hides the head and marker objects through their byte +0x64.",
+      "The endpoint is a copied position. Subsequent native pull movement consumes the stored heading and speed and remains horizontal after the initial Y snap; this helper does not continuously follow a moving target."
+    ],
+    "returns": "No return value.",
+    "example": "#include \"modding.h\"\n\nstatic float observed_latch_target[3];\n\nRECOMP_HOOK(\"func_801EA5E4_5A64F4\")\nvoid observe_chain_latch(void *head, void *player, const void *target)\n{\n    const unsigned char *task = target;\n    const unsigned char *object;\n    (void)head;\n    (void)player;\n    if (!task) return;\n    object = *(const unsigned char *const *)(task + 0x18);\n    if (!object) return;\n    observed_latch_target[0] = *(const float *)(object + 0x08);\n    observed_latch_target[1] = *(const float *)(object + 0x0C);\n    observed_latch_target[2] = *(const float *)(object + 0x10);\n}\n",
+    "exampleExplanation": "Observe the target consumed by an existing native latch. The hook copies coordinates during the call and retains neither target nor object addresses. Null checks do not replace the native caller's lifecycle and ownership guarantees.",
+    "cautions": [
+      "This function mutates the real playable player and its chain. Never call it on a render-only player task or an uninitialized chain descriptor.",
+      "The helper does not select a player action. The normal ground pull action is 0x73 and airborne pull action is 0x7A; native release actions are 0x74 and 0x7B respectively.",
+      "The normal pull updater may call this helper on its first tick when signed 16-bit player work +0x30 is zero, using the selected native target at work +0x88. An already initialized custom latch must preserve that first-tick state or the updater can dereference a missing or stale selected target.",
+      "The native pull arrival radius is approximately 8.660254 world units. Other solid-body contact can prevent reaching that radius and requires a compatible release condition.",
+      "Copying an endpoint does not establish that the route is clear; retain native head collision, wall contact and release processing."
+    ],
+    "confidence": "decompiled",
+    "related": [
+      "func_801E9AE0_5A59F0",
+      "func_801EA4E8_5A63F8",
+      "func_801EA5E4_5A64F4",
+      "func_801F4C20_5B0B30",
+      "func_801EA0D8_5A5FE8"
+    ]
+  },
+  "func_801F4C20_5B0B30": {
+    "title": "Update the playable chain-pipe pull",
+    "summary": "Services the native chain-pipe pull and transitions the real player to a supplied release action when the head completes or world contact stops travel.",
+    "declaration": "extern void func_801F4C20_5B0B30(void *player, unsigned char release_action);",
+    "parameters": [
+      {
+        "name": "player",
+        "type": "void *",
+        "description": "Real playable task with complete private work and owned chain-manager state."
+      },
+      {
+        "name": "release_action",
+        "type": "unsigned char",
+        "description": "Native continuation action: 0x74 for ground pull or 0x7B for airborne pull."
+      }
+    ],
+    "behavior": [
+      "Finds the owned category-2 chain helper through the playable task's native child manager and reads its phase. The ordinary ground action 0x73 calls this update with release action 0x74; airborne action 0x7A supplies 0x7B.",
+      "A missing chain clears stored movement and selects the release action. Head phase 3, nonzero player wall-contact halfword +0x96, or the native object world probe also ends the pull.",
+      "The completion path requests removal of the owned chain helper, clears signed 16-bit private work +0x30 and float work +0x04, clears the native movement fields and selects the supplied release action.",
+      "While pulling, it increments signed 16-bit work +0x30. On the first tick, when the prior value was zero, it obtains the owned chain head and calls func_801EA5E4_5A64F4 using the selected target pointer at private work +0x88.",
+      "The inspected update clears bit 0 of player byte +0x30 during this native action. It owns native collision and action state and is not a generic movement helper."
+    ],
+    "returns": "No return value.",
+    "example": "#include \"modding.h\"\n\nstatic unsigned char observed_release_action;\n\nRECOMP_HOOK(\"func_801F4C20_5B0B30\")\nvoid observe_chain_pull(void *player, unsigned char release_action)\n{\n    (void)player;\n    observed_release_action = release_action;\n}\n",
+    "exampleExplanation": "Observe the native continuation chosen by the existing ground or airborne action. The hook allows the original update, collision checks and action transition to run once.",
+    "cautions": [
+      "Use only with the real playable owner and a fully initialized native pull. Replaying it on visual tasks can traverse invalid native managers and change gameplay state.",
+      "On its first tick, the selected target at private work +0x88 must be valid unless the pull was already initialized and its first-tick counter was advanced consistently.",
+      "Native movement uses stored heading and speed. Changing only the chain endpoint does not make the playable player steer toward a moving target.",
+      "Do not run this updater twice for the same native action tick merely to force a release; retain its ordinary action and lifecycle ordering."
+    ],
+    "confidence": "decompiled",
+    "related": [
+      "func_801E9AE0_5A59F0",
+      "func_801EA4E8_5A63F8",
+      "func_801EA5E4_5A64F4",
+      "func_801F4C20_5B0B30",
+      "func_801EA0D8_5A5FE8"
+    ]
+  }
+}

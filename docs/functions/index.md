@@ -4,7 +4,7 @@ slug: "/functions"
 description: "Native functions for the US recompilation of Mystical Ninja Starring Goemon."
 ---
 
-332 functions with C interfaces, behavior, and usage examples. Use the search bar to look up an exact symbol, address, or purpose.
+336 functions with C interfaces, behavior, and usage examples. Use the search bar to look up an exact symbol, address, or purpose.
 
 | Symbol | Purpose |
 | --- | --- |
@@ -255,7 +255,10 @@ description: "Native functions for the US recompilation of Mystical Ninja Starri
 | [`func_801E8E24_5A4D34`](func_801E8E24_5A4D34.md) | Cancel eligible player-owned projectiles |
 | [`func_801E8F50_5A4E60`](func_801E8F50_5A4E60.md) | Set up a Fire Ryo projectile |
 | [`func_801E936C_5A527C`](func_801E936C_5A527C.md) | Update an ordinary Goemon coin |
-| [`func_801EA0D8_5A5FE8`](func_801EA0D8_5A5FE8.md) | Update the charged Goemon coin |
+| [`func_801E9AE0_5A59F0`](func_801E9AE0_5A59F0.md) | Construct the native chain-pipe effect |
+| [`func_801EA0D8_5A5FE8`](func_801EA0D8_5A5FE8.md) | Update the native chain-pipe head |
+| [`func_801EA4E8_5A63F8`](func_801EA4E8_5A63F8.md) | Position one native chain-pipe link |
+| [`func_801EA5E4_5A64F4`](func_801EA5E4_5A64F4.md) | Latch a native chain pipe to a target |
 | [`func_801EA860_5A6770`](func_801EA860_5A6770.md) | Create character-switch smoke |
 | [`func_801EAE88_5A6D98`](func_801EAE88_5A6D98.md) | Update character-switch smoke |
 | [`func_801EAF50_5A6E60`](func_801EAF50_5A6E60.md) | Rotate a character-switch smoke child |
@@ -283,6 +286,7 @@ description: "Native functions for the US recompilation of Mystical Ninja Starri
 | [`func_801F19A4_5AD8B4`](func_801F19A4_5AD8B4.md) | Update the Sudden Impact aura |
 | [`func_801F1BD0_5ADAE0`](func_801F1BD0_5ADAE0.md) | Initialize a Sudden Impact satellite |
 | [`func_801F1CC4_5ADBD4`](func_801F1CC4_5ADBD4.md) | Update a Sudden Impact aura satellite |
+| [`func_801F4C20_5B0B30`](func_801F4C20_5B0B30.md) | Update the playable chain-pipe pull |
 | [`func_801F50A4_5B0FB4`](func_801F50A4_5B0FB4.md) | Select a Goemon projectile sound |
 | [`func_801F6C4C_62202C`](func_801F6C4C_62202C.md) | Dispatch Thaisamba collision and damage |
 | [`func_801F77F4_5B3704`](func_801F77F4_5B3704.md) | Run scene contacts and player-state maintenance |

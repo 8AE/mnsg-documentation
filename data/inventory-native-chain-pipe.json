@@ -1,0 +1,37 @@
+{
+  "scope": "Reviewed native File 11 chain-pipe constructor, link placement, latch and player pull update. Existing source inventory already contains the chain-head update.",
+  "symbols": [
+    {
+      "name": "func_801E9AE0_5A59F0",
+      "kind": "function",
+      "address": "0x801E9AE0",
+      "romAddress": "0x005A59F0",
+      "section": ".file_11",
+      "size": 1324
+    },
+    {
+      "name": "func_801EA4E8_5A63F8",
+      "kind": "function",
+      "address": "0x801EA4E8",
+      "romAddress": "0x005A63F8",
+      "section": ".file_11",
+      "size": 252
+    },
+    {
+      "name": "func_801EA5E4_5A64F4",
+      "kind": "function",
+      "address": "0x801EA5E4",
+      "romAddress": "0x005A64F4",
+      "section": ".file_11",
+      "size": 636
+    },
+    {
+      "name": "func_801F4C20_5B0B30",
+      "kind": "function",
+      "address": "0x801F4C20",
+      "romAddress": "0x005B0B30",
+      "section": ".file_11",
+      "size": 372
+    }
+  ]
+}

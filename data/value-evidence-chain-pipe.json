@@ -1,0 +1,113 @@
+{
+  "scope": "Internal maintenance evidence for the native File 11 chain pipe. No game binaries or binary dumps are included.",
+  "researchDate": "2026-11-02",
+  "confidence": "decompiled",
+  "handoff": {
+    "roles": [
+      "ghidra-decompiler",
+      "ghidra-chain-visuals"
+    ],
+    "programs": [
+      "mnsg_player_file_11.elf",
+      "mnsg_main_static.elf"
+    ],
+    "methods": [
+      "decompile_function",
+      "disassemble_function",
+      "get_function_xrefs",
+      "read_memory"
+    ],
+    "abi": "Latch has three register arguments a0/a1/a2. Head update has a0/a1. Full latch and link disassembly and constructor allocation stack arguments were reviewed by the native research workers.",
+    "nativeExecutableSHA256": null,
+    "nativeExecutableHashNote": "No current game executable file hash was provided by the research handoff."
+  },
+  "symbolTable": {
+    "project": "mnsg-recomp-example",
+    "checkoutHead": "862c2a231afce564bd42aee46f0b3d0255a571c4",
+    "path": "Goemon64RecompSyms/mnsg.syms.toml",
+    "sha256": "705ced76961997efe1fc96bc1ad88395fd443ed473c2d3b7b2cba318c15dbe77",
+    "symbols": [
+      {
+        "name": "func_801E9AE0_5A59F0",
+        "kind": "function",
+        "address": "0x801E9AE0",
+        "romAddress": "0x005A59F0",
+        "section": ".file_11",
+        "size": 1324
+      },
+      {
+        "name": "func_801EA4E8_5A63F8",
+        "kind": "function",
+        "address": "0x801EA4E8",
+        "romAddress": "0x005A63F8",
+        "section": ".file_11",
+        "size": 252
+      },
+      {
+        "name": "func_801EA5E4_5A64F4",
+        "kind": "function",
+        "address": "0x801EA5E4",
+        "romAddress": "0x005A64F4",
+        "section": ".file_11",
+        "size": 636
+      },
+      {
+        "name": "func_801F4C20_5B0B30",
+        "kind": "function",
+        "address": "0x801F4C20",
+        "romAddress": "0x005B0B30",
+        "section": ".file_11",
+        "size": 372
+      },
+      {
+        "name": "func_801EA0D8_5A5FE8",
+        "kind": "function",
+        "address": "0x801EA0D8",
+        "romAddress": "0x005A5FE8",
+        "section": ".file_11",
+        "size": 860
+      }
+    ]
+  },
+  "rawResearch": {
+    "path": "/private/tmp/mnsg-chain-native-evidence.txt",
+    "sha256": "50539935d23f1c3290939d2ab7cd43bee11db35f932dc6996c193f30eaaef431",
+    "committed": false
+  },
+  "corrections": [
+    {
+      "symbol": "func_801EA0D8_5A5FE8",
+      "previousReference": "data/reference-projectile-spawns.json described this as the charged Goemon coin.",
+      "newFinding": "Native reads and callback allocation show this is the chain-pipe head. Native phase2 uses the player hand offset and checks the fixed chain endpoint; world-hit handling recognizes chain-block entity0x196.",
+      "confidence": "decompiled; head entry and full latch/link ABI corroborated by disassembly"
+    }
+  ],
+  "findings": [
+    {
+      "symbol": "func_801EA5E4_5A64F4",
+      "finding": "Only target+18 object and object XYZ are read. Target pointer is not retained. Player Y becomes targetY-3; worku16+0=3,+2heading,float+4speed. Headphase2or3, hiding head+marker."
+    },
+    {
+      "symbol": "func_801F4C20_5B0B30",
+      "finding": "Ground73->74 and air7A->7B. First tick signed16work30==0 re-latches against work88; phase3/wall96/worldprobe cleanup releases and clears movement."
+    },
+    {
+      "symbol": "func_801EA4E8_5A63F8",
+      "finding": "Call-free positioning/visibility callback; link9c references head. H=player+rotate(0,4,14), air77/78offset(0,3,11.5); R=rotate(0,0,2.5); P_i=H+(8-i)/9*(head-H-R),i0..7."
+    },
+    {
+      "symbol": "func_801E9AE0_5A59F0",
+      "finding": "Creates head49009020,marker49009238,8links49009348,Goemonbroad120,materialC006D920. Head/marker scale.09; links.045 with8000rotationmarkers. Calls EE228_5AA138 arming outgoing attacks."
+    },
+    {
+      "symbol": "func_801CE870_58A780",
+      "finding": "When work movement mode low bit is set, movement consumes fixed headingwork2/speedwork4 and has horizontal motion after initial Y snap. This task does not establish its complete standalone ABI."
+    }
+  ],
+  "limits": [
+    "No game launch, native gameplay test, or two-client runtime visual validation occurred.",
+    "The constructor standalone prototype was not established. Its example is an entry-only observation hook reading no arguments.",
+    "Native endpoint is fixed and native arrival distance may conflict with additional solid-body separation.",
+    "The action setter standalone entry is deliberately outside this focused inventory update."
+  ]
+}
