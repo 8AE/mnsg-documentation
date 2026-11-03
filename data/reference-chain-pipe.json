@@ -87,11 +87,12 @@
     ],
     "behavior": [
       "Reads target +0x18, then only object XYZ at +0x08/+0x0C/+0x10. It copies those values into the chain-head object. It does not retain the target pointer, traverse a target list, or invoke a target callback.",
-      "Sets unsigned 16-bit player work +0x00 to movement mode 3, unsigned 16-bit work +0x02 to the heading toward the target, and float work +0x04 to the native pull speed. It also initializes native movement fields and stores heading at player +0x94.",
+      "Sets unsigned 16-bit player work +0x00 to movement mode 3 and unsigned 16-bit work +0x02 to the heading toward the target. Float work +0x04 receives forced acceleration magnitude 1.5606060028 (IEEE-754 bits 0x3FC7C1F0). Heading is also stored at player +0x94.",
+      "Initializes both float player fields +0xE4 and +0xE8 to the native speed cap 18.7272720337 (IEEE-754 bits 0x4195D174). These cap values are separate from the acceleration in private work +0x04.",
       "Immediately sets the playable object Y to target object Y minus 3. This is a vertical snap at latch, rather than a gradual upward pull.",
       "Stores the rotated hand offset in head task +0x9C/+0xA0/+0xA4. Owner actions 0x77 or 0x78 use (0, 3, 11.5); the other inspected launch states use (0, 4, 14).",
       "Sets head phase +0x60 to 2 for a latched chain, or 3 when already within its native completion threshold. Hides the head and marker objects through their byte +0x64.",
-      "The endpoint is a copied position. Subsequent native pull movement consumes the stored heading and speed and remains horizontal after the initial Y snap; this helper does not continuously follow a moving target."
+      "The endpoint is a copied position. func_801CE870_58A780 generates the horizontal force from stored heading and acceleration; func_801CD310_589220 integrates and caps the resulting movement. Native pull travel remains horizontal after the initial Y snap; this helper does not continuously follow a moving target."
     ],
     "returns": "No return value.",
     "example": "#include \"modding.h\"\n\nstatic float observed_latch_target[3];\n\nRECOMP_HOOK(\"func_801EA5E4_5A64F4\")\nvoid observe_chain_latch(void *head, void *player, const void *target)\n{\n    const unsigned char *task = target;\n    const unsigned char *object;\n    (void)head;\n    (void)player;\n    if (!task) return;\n    object = *(const unsigned char *const *)(task + 0x18);\n    if (!object) return;\n    observed_latch_target[0] = *(const float *)(object + 0x08);\n    observed_latch_target[1] = *(const float *)(object + 0x0C);\n    observed_latch_target[2] = *(const float *)(object + 0x10);\n}\n",
@@ -101,7 +102,8 @@
       "The helper does not select a player action. The normal ground pull action is 0x73 and airborne pull action is 0x7A; native release actions are 0x74 and 0x7B respectively.",
       "The normal pull updater may call this helper on its first tick when signed 16-bit player work +0x30 is zero, using the selected native target at work +0x88. An already initialized custom latch must preserve that first-tick state or the updater can dereference a missing or stale selected target.",
       "The native pull arrival radius is approximately 8.660254 world units. Other solid-body contact can prevent reaching that radius and requires a compatible release condition.",
-      "Copying an endpoint does not establish that the route is clear; retain native head collision, wall contact and release processing."
+      "Copying an endpoint does not establish that the route is clear; retain native head collision, wall contact and release processing.",
+      "Native movement state can select a lower cap: bit 0 of the unsigned byte at private work +0x18 makes func_801CD310_589220 use 4.0. The latch constants alone do not guarantee the distance traveled in a frame."
     ],
     "confidence": "decompiled",
     "related": [
@@ -131,7 +133,7 @@
     "behavior": [
       "Finds the owned category-2 chain helper through the playable task's native child manager and reads its phase. The ordinary ground action 0x73 calls this update with release action 0x74; airborne action 0x7A supplies 0x7B.",
       "A missing chain clears stored movement and selects the release action. Head phase 3, nonzero player wall-contact halfword +0x96, or the native object world probe also ends the pull.",
-      "The completion path requests removal of the owned chain helper, clears signed 16-bit private work +0x30 and float work +0x04, clears the native movement fields and selects the supplied release action.",
+      "The completion path requests removal of the owned chain helper, clears signed 16-bit private work +0x30 and forced acceleration float work +0x04, clears the native movement fields and selects the supplied release action.",
       "While pulling, it increments signed 16-bit work +0x30. On the first tick, when the prior value was zero, it obtains the owned chain head and calls func_801EA5E4_5A64F4 using the selected target pointer at private work +0x88.",
       "The inspected update clears bit 0 of player byte +0x30 during this native action. It owns native collision and action state and is not a generic movement helper."
     ],
@@ -141,7 +143,7 @@
     "cautions": [
       "Use only with the real playable owner and a fully initialized native pull. Replaying it on visual tasks can traverse invalid native managers and change gameplay state.",
       "On its first tick, the selected target at private work +0x88 must be valid unless the pull was already initialized and its first-tick counter was advanced consistently.",
-      "Native movement uses stored heading and speed. Changing only the chain endpoint does not make the playable player steer toward a moving target.",
+      "Native movement uses stored heading and forced acceleration, then integrates velocity subject to its speed cap and contact state. Changing only the chain endpoint does not make the playable player steer toward a moving target.",
       "Do not run this updater twice for the same native action tick merely to force a release; retain its ordinary action and lifecycle ordering."
     ],
     "confidence": "decompiled",

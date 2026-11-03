@@ -85,7 +85,7 @@
   "findings": [
     {
       "symbol": "func_801EA5E4_5A64F4",
-      "finding": "Only target+18 object and object XYZ are read. Target pointer is not retained. Player Y becomes targetY-3; worku16+0=3,+2heading,float+4speed. Headphase2or3, hiding head+marker."
+      "finding": "Only target+18 object and object XYZ are read. Target pointer is not retained. Player Y becomes targetY-3; worku16+0=3,+2heading,float+4forcedAcceleration1.5606060028(bits3FC7C1F0). Player floatE4/E8 speed caps18.7272720337(bits4195D174). Headphase2or3, hiding head+marker."
     },
     {
       "symbol": "func_801F4C20_5B0B30",
@@ -101,7 +101,7 @@
     },
     {
       "symbol": "func_801CE870_58A780",
-      "finding": "When work movement mode low bit is set, movement consumes fixed headingwork2/speedwork4 and has horizontal motion after initial Y snap. This task does not establish its complete standalone ABI."
+      "finding": "When work movement mode low bit is set, CE870 generates horizontal force from headingwork2 and forced accelerationwork4. CD310 integrates/caps velocity. Native pull remains horizontal after initial Y snap. Complete standalone ABI remains outside this task."
     }
   ],
   "limits": [
@@ -109,5 +109,60 @@
     "The constructor standalone prototype was not established. Its example is an entry-only observation hook reading no arguments.",
     "Native endpoint is fixed and native arrival distance may conflict with additional solid-body separation.",
     "The action setter standalone entry is deliberately outside this focused inventory update."
-  ]
+  ],
+  "speedCorrection": {
+    "researchDate": "2026-11-02",
+    "confidence": "decompiled; raw scalar bytes decoded as IEEE-754 floats",
+    "rawResearch": [
+      {
+        "path": "/private/tmp/mnsg-chain-speed-evidence.txt",
+        "sha256": "c2386f374ad5313be3d8d493f1ba5fe4eb21f0befc6aed56d440c4ac23a44547",
+        "committed": false
+      },
+      {
+        "path": "/private/tmp/mnsg-chain-ground-physics-evidence.txt",
+        "sha256": "0bd305cbf655fd0b0b9269fa05c66f1567bc41edac1d2d33ed3b542409ba31ea",
+        "committed": false
+      }
+    ],
+    "correction": "Previous public/reference evidence described private work+04 as pull speed. Native readers establish it is forced acceleration; playerE4/E8 are separate speed caps.",
+    "constants": [
+      {
+        "sourceAddress": "0x8020B86C",
+        "bits": "0x3FC7C1F0",
+        "floatValue": 1.5606060028076172,
+        "destination": "float at private work+0x04",
+        "role": "forced horizontal acceleration magnitude"
+      },
+      {
+        "sourceAddress": "0x8020B868",
+        "bits": "0x4195D174",
+        "floatValue": 18.727272033691406,
+        "destinations": [
+          "float player+0xE4",
+          "float player+0xE8"
+        ],
+        "role": "native movement speed cap inputs"
+      }
+    ],
+    "readers": [
+      {
+        "symbol": "func_801CE870_58A780",
+        "finding": "Movement mode mask1 uses privateworkheading+02 and acceleration+04 to construct horizontal force."
+      },
+      {
+        "symbol": "func_801CD310_589220",
+        "finding": "Integrates native velocity and clamps magnitude to the selected cap. Workbyte+18mask1 independently selects cap4.0. Mode3mask2 selects the slope integration branch for ground and air."
+      },
+      {
+        "symbol": "func_801CBAF8_587A08",
+        "finding": "Passes playerE4/E8 as native movement inputs to CC4C0 before later movement/contact processing."
+      }
+    ],
+    "limits": [
+      "No native gameplay or speed measurement was performed.",
+      "This corrects field semantics and constants; it does not establish the cause of any observed gameplay slowdown.",
+      "The separate slide flag can lower the cap, but no runtime evidence shows that it was set in any reported case."
+    ]
+  }
 }
